@@ -1,0 +1,284 @@
+---
+layout: layouts/project.njk
+title: Mean Reversion in FX and Commodities
+permalink: /projects/fx-commodities-mean-reversion.html
+styles: [hub.css, projects/study-layout.css, projects/project.css, projects/mean-reversion.css]
+scripts: ["https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"]
+meta: ["Personal project", "Daily data, 2012 to 2026", "Python, pandas, NumPy"]
+---
+
+{% psec 1, "Does Yesterday's Move Undo Itself?", "What did I set out to test?", "Overview" %}
+<p class="topic-intro">
+  This started with a MemLabs YouTube tutorial. It bet against every daily move in Bitcoin Cash: buy after a down day, sell after an up day. Over four years it showed a Sharpe ratio of about \(0.94\). I rebuilt the idea for the markets I want to trade, EURUSD, USDJPY, gold and oil. First I fixed the problems I found in the original. Then I kept going, one stage at a time, until something either clearly worked or clearly didn't.
+</p>
+<div class="proj-links">
+  <a class="proj-link" href="/projects/1_mean_reversion.ipynb">Stage 1 notebook &nearr;</a>
+  <a class="proj-link" href="/projects/2_mean_reversion.ipynb">Stage 2 notebook &nearr;</a>
+  <a class="proj-link" href="/projects/3_mean_reversion.ipynb">Stage 3 notebook &nearr;</a>
+  <a class="proj-link" href="/projects/4_mean_reversion.ipynb">Stage 4 notebook &nearr;</a>
+</div>
+
+<div class="metric-row">
+  <div class="metric"><div class="metric-lbl">Best single market, unseen years</div><div class="metric-val">\(0.33\)</div><div class="metric-sub">Sharpe after costs (gold)</div></div>
+  <div class="metric"><div class="metric-lbl">Trades a year</div><div class="metric-val">\(130 \to 9\)</div><div class="metric-sub">single markets vs pairs</div></div>
+  <div class="metric"><div class="metric-lbl">Brent vs WTI, unseen years</div><div class="metric-val">\(1.57\)</div><div class="metric-sub">Sharpe after costs, \(t = 2.99\)</div></div>
+  <div class="metric"><div class="metric-lbl">Trading one day late</div><div class="metric-val">\(0.92\)</div><div class="metric-sub">the edge is still there</div></div>
+</div>
+
+<div class="sh">In plain words</div>
+<p class="np">Imagine a rubber band. Pull it one way and it snaps back. <strong>Mean reversion</strong> is the bet that prices behave like that: if a price fell yesterday, it should bounce back a little today. If that were true, you could buy after every fall and sell after every rise.</p>
+<p class="np">The project tests that bet four times, each stage fixing what broke in the one before:</p>
+
+<div class="summary-grid">
+  <div class="sum-card"><div class="sum-icon green">1</div><div class="sum-title">Copy it honestly</div><div class="sum-body">The same rule on FX, gold and oil, with <strong>real trading costs</strong> and proper compounding. Costs eat almost all of it.</div></div>
+  <div class="sum-card"><div class="sum-icon blue">2</div><div class="sum-title">Only trade the big moves</div><div class="sum-body">Skip the noise and act only on unusually big days. It turns out <strong>big moves keep going</strong>: they're news, and news doesn't reverse.</div></div>
+  <div class="sum-card"><div class="sum-icon amber">3</div><div class="sum-title">Trade the gap between cousins</div><div class="sum-body">Gold vs silver, Brent vs WTI, AUD vs NZD. When news hits both, it cancels out in the gap. <strong>Brent vs WTI works.</strong></div></div>
+  <div class="sum-card"><div class="sum-icon purple">4</div><div class="sum-title">Try to break it</div><div class="sum-body">I found a flaw in my own data that could have faked the result, removed it, and <strong>the edge survived</strong>.</div></div>
+</div>
+{% endpsec %}
+
+{% psec 2, "Stage 1: Copy It Honestly", "Does the crypto rule work in FX, gold and oil?", "Stage 1 · The copy" %}
+<p class="topic-intro">The rule is one line: hold the opposite of whatever the market did yesterday. I tested it on 14 years of daily prices for EURUSD, USDJPY, gold and WTI oil, chosen before looking at any results.</p>
+
+<div class="f-label">Bet against yesterday's move</div>
+<div class="f-box">\[ \text{position}_t = -\,\text{sign}(r_{t-1}), \qquad r_t = \ln\!\left(\frac{P_t}{P_{t-1}}\right) \]</div>
+<table class="vt">
+  <tr><td>\(r_t\)</td><td>Today's move, as a log return: \(P_t\) is today's closing price, \(P_{t-1}\) is yesterday's</td></tr>
+  <tr><td>\(+1\)</td><td>Buy (go long) after a down day</td></tr>
+  <tr><td>\(-1\)</td><td>Sell (go short) after an up day</td></tr>
+</table>
+
+<div class="sh">Fixing the original first</div>
+<p class="np">Before trusting any numbers, I went through the tutorial's code and fixed five things that flattered the result.</p>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>The original</th><th>My version</th></tr>
+  <tr><td>Added daily returns together</td><td>Compounds them, the way money actually grows</td></tr>
+  <tr><td>Called <code>12 * r</code> an annual return</td><td>Proper annual growth rate (CAGR)</td></tr>
+  <tr><td>Sharpe scaled by 365 days</td><td>252 trading days, right for FX and commodities</td></tr>
+  <tr><td>Charged a fee every day</td><td>Pays the bid-ask spread only when the position changes</td></tr>
+  <tr><td>Counted flat days as "down"</td><td>A flat day means no trade</td></tr>
+</table></div>
+
+<div class="chart-block">
+  <div class="chart-block-title">Sharpe Ratio Before and After Trading Costs, 2012 to 2026</div>
+  <div class="chart-wrap"><canvas id="chartS1"></canvas></div>
+</div>
+<p class="diagram-cap">Sharpe = return per unit of bumpiness. Above 1 is good. Every market loses at least a third of it to costs.</p>
+
+<div class="sh">Costs decide it</div>
+<p class="np">The rule flips position about \(130\) times a year, and every flip pays the spread. So I re-ran it with costs at zero, half, double and triple my estimate. A strategy worth trading should survive a broker that's worse than expected.</p>
+<div class="chart-block">
+  <div class="chart-block-title">Sharpe After Costs as Trading Gets More Expensive</div>
+  <div class="chart-wrap"><canvas id="chartS1Cost"></canvas></div>
+</div>
+<p class="diagram-cap">USDJPY breaks even at exactly my cost estimate; oil at about 1.8 times it; EURUSD and gold at about 2.2 times.</p>
+
+<div class="worked">
+  <div class="worked-title">Something the numbers taught me: volatility drag</div>
+  <div class="worked-body">Oil had a <em>positive</em> Sharpe after costs (\(0.11\)) yet lost \(5.1\%\) a year. A small positive average day can still shrink an account if the swings are big enough. Lose \(50\%\), then gain \(50\%\), and \(\text{£}100\) becomes \(\text{£}75\). Roughly:
+    <div class="worked-math tex">\[ \text{growth} \approx \text{average return} - \tfrac{1}{2}\,\sigma^2 \approx 4.9\% - \tfrac{1}{2}(44.6\%)^2 \approx -5\% \]</div>
+    With \(44.6\%\) volatility, oil's average gain was wiped out by the swings alone.
+  </div>
+</div>
+
+<div class="sh">The test that killed it</div>
+<p class="np">The backtest assumes I see the closing price and trade at that exact price. That's hard in practice. So I made it act one day later.</p>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Market</th><th>Sharpe, trading at the close</th><th>Sharpe, one day late</th></tr>
+  <tr><td>EURUSD</td><td>\(0.19\)</td><td>\(-0.12\)</td></tr>
+  <tr><td>USDJPY</td><td>\(0.00\)</td><td>\(-0.29\)</td></tr>
+  <tr><td>Gold</td><td>\(0.29\)</td><td>\(-0.36\)</td></tr>
+  <tr><td>WTI oil</td><td>\(0.11\)</td><td>\(0.01\)</td></tr>
+</table></div>
+<div class="insight">
+  <div class="insight-lbl">What Stage 1 showed</div>
+  The rubber band is <strong>faint or missing</strong> in these markets. Only gold passed the luck test, and only on one side: it rose \(6.8\) basis points on average after down days (\(t = 2.7\)), but didn't fall after up days. That's buying the dip in a long bull market, not a two-way snap-back. Costs took half the Sharpe or more, and a one-day delay wiped out every market. Deep, heavily traded markets like EURUSD don't leave an edge this simple lying around.
+</div>
+{% endpsec %}
+
+{% psec 3, "Stage 2: Only the Big Moves", "If small moves are noise, do the big ones snap back harder?", "Stage 2 · Big moves" %}
+<p class="topic-intro">Most daily moves are noise. Betting on every one means paying the spread over and over for nothing. So Stage 2 only acts when yesterday's move was unusually big, and sizes every trade so each one carries the same risk.</p>
+
+<div class="sh">A ruler for "big"</div>
+<p class="np">A \(1\%\) day is huge for EURUSD and quiet for oil. So I measure every move against that market's own recent wobble: its volatility over the previous \(20\) days, using only data available at the time.</p>
+<div class="f-box">\[ z_t = \frac{r_t}{\sigma_{t-1}}, \qquad \text{size}_t = \min\!\left(\frac{10\% / \sqrt{252}}{\sigma_{t-1}},\; 3\right) \]</div>
+<table class="vt">
+  <tr><td>\(z_t\)</td><td>Today's move in units of normal wobble. Beyond \(\pm 2\) happens about one day in twenty</td></tr>
+  <tr><td>\(\sigma_{t-1}\)</td><td>Standard deviation of the previous \(20\) days' returns</td></tr>
+  <tr><td>size</td><td>Bigger positions in calm markets, smaller in wild ones, aiming for \(10\%\) volatility a year, capped at \(3\times\)</td></tr>
+</table>
+
+<div class="chart-block">
+  <div class="chart-block-title">Today's Extra Move, Grouped by How Big Yesterday's Move Was</div>
+  <div class="chart-wrap" style="height:320px"><canvas id="chartS2"></canvas></div>
+</div>
+<p class="diagram-cap">Measured against an ordinary day in that market, in units of normal wobble. A real snap-back would slope down from left to right, tallest at the edges.</p>
+
+<div class="insight">
+  <div class="insight-lbl">The surprise</div>
+  The biggest moves <strong>don't</strong> snap back. In gold and oil they tend to <strong>carry on</strong>: after a big rise, oil rose a further \(0.22\) units the next day (\(t = 2.0\)). That's momentum, the opposite of mean reversion. The only reversal shows up in medium-sized moves, such as EURUSD after a moderate rise (\(t = -2.3\)). A likely reason: medium moves are mostly noise that fades, while the biggest ones are <strong>news</strong>, like a rate decision or an OPEC announcement. News doesn't stretch the rubber band; it moves the place it's pinned to.
+</div>
+
+<div class="sh">Choosing the threshold without cheating</div>
+<p class="np">How big is "big"? If I tried lots of thresholds on all the data and kept the best, I'd be choosing my lottery numbers after the draw. So I chose each market's threshold on <strong>2012 to 2022 only</strong>, then judged it on <strong>2023 onwards</strong>, which it had never seen.</p>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Market</th><th>Threshold chosen</th><th>Stage 1 Sharpe, unseen years</th><th>Stage 2 Sharpe, unseen years</th></tr>
+  <tr><td>EURUSD</td><td>\(0.5\)</td><td>\(-0.13\)</td><td>\(0.15\)</td></tr>
+  <tr><td>USDJPY</td><td>\(0.5\)</td><td>\(-0.65\)</td><td>\(-0.41\)</td></tr>
+  <tr><td>Gold</td><td>\(0.5\)</td><td>\(0.33\)</td><td>\(-0.55\)</td></tr>
+  <tr><td>WTI oil</td><td>\(3.0\)</td><td>\(-0.03\)</td><td>\(-0.88\)</td></tr>
+</table></div>
+<p class="np">Even choosing with hindsight, the best training Sharpe was only \(0.35\). On unseen data, USDJPY, gold and oil lost money <strong>even with free trading</strong>, so the problem was no longer costs. The signal itself didn't work.</p>
+{% endpsec %}
+
+{% psec 4, "Stage 3: Trade the Gap Between Cousins", "Do markets tied together snap back where single markets don't?", "Stage 3 · Pairs" %}
+<p class="topic-intro">Picture someone walking a dog on a lead. You can't predict where either will wander, but the distance between them can't grow forever. Some markets are tied like that, because the same forces drive them. When news hits, it hits both, so it cancels out in the gap. What's left in the gap is more likely to be noise that snaps back.</p>
+
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Pair</th><th>Why they're tied</th></tr>
+  <tr><td>Gold and silver</td><td>Both precious metals, bought for similar reasons</td></tr>
+  <tr><td>Brent and WTI</td><td>The same product, crude oil, priced in Europe and in the US</td></tr>
+  <tr><td>AUDUSD and NZDUSD</td><td>Neighbouring commodity-exporting economies, both priced in dollars</td></tr>
+</table></div>
+
+<div class="sh">Is the lead real?</div>
+<p class="np">First, the balance between the two: how much of B moves like one unit of A. That's the <strong>hedge ratio</strong>, \(\beta\). The <strong>gap</strong> is what's left over. Then I check whether a wide gap tends to shrink the next day, and how fast.</p>
+<div class="f-box">\[ \text{gap}_t = \ln A_t - \beta \ln B_t, \qquad \Delta\text{gap}_t = a + b\,\text{gap}_{t-1}, \qquad \text{half-life} = -\frac{\ln 2}{\ln(1+b)} \]</div>
+<p class="np">A negative \(b\) means the lead pulls back. Because \(\beta\) was chosen to make the gap look as tidy as possible, the bar is stricter than usual: the t-stat must be below \(-3.34\) (the Engle–Granger test). I ran this on 2012 to 2022 only.</p>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Pair</th><th>Hedge ratio</th><th>t-stat</th><th>Passes?</th><th>Half-life</th></tr>
+  <tr><td>Gold vs silver</td><td>\(0.53\)</td><td>\(-1.0\)</td><td>No</td><td>\(675\) days</td></tr>
+  <tr class="hl"><td>Brent vs WTI</td><td>\(1.00\)</td><td>\(-6.8\)</td><td>Yes, easily</td><td>\(21\) days</td></tr>
+  <tr><td>AUDUSD vs NZDUSD</td><td>\(1.31\)</td><td>\(-3.4\)</td><td>Only just</td><td>\(111\) days</td></tr>
+</table></div>
+<p class="np">A hedge ratio of almost exactly \(1\) for Brent vs WTI makes sense: one barrel balances one barrel. Gold vs silver's gap takes almost three years to close halfway, which matches the gold/silver ratio drifting from about \(50\) to over \(100\) during the period.</p>
+
+<div class="sh">The strategy</div>
+<div class="flow">
+  <div class="flow-step"><div class="fs-n">Gap too wide</div><div class="fs-t">\(z &gt; 2\)</div><div class="fs-b">Sell the expensive one, buy the cheap one</div></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-step"><div class="fs-n">Gap back to normal</div><div class="fs-t">\(|z| &lt; 0.5\)</div><div class="fs-b">Close both legs</div></div>
+  <div class="flow-arrow" aria-hidden="true">→</div>
+  <div class="flow-step"><div class="fs-n">Throughout</div><div class="fs-t">Sized for risk</div><div class="fs-b">\(10\%\) volatility a year, spread paid on both legs</div></div>
+</div>
+<p class="np">Here \(z\) is how stretched the gap is against its last \(60\) days. Every setting is a textbook value, fixed <strong>before</strong> looking at results, and \(\beta\) is re-estimated each day from the past year only.</p>
+
+<div class="chart-block">
+  <div class="chart-block-title">Pairs Strategy: Sharpe After Costs, Training vs Unseen Test</div>
+  <div class="chart-wrap"><canvas id="chartS3"></canvas></div>
+</div>
+
+<div class="insight">
+  <div class="insight-lbl">Too good to trust</div>
+  Only the pair with a short, real lead made money, which is what the test above predicted. Brent vs WTI returned <strong>\(14\%\) a year</strong> on unseen data with a Sharpe of \(1.50\) (\(t = 2.77\)) and a worst drawdown of just \(3.5\%\). It traded about \(7\) times a year instead of \(130\). But one number didn't fit: trades lasted <strong>\(8.9\) days</strong>, far shorter than the \(21\)-day half-life. Something was closing the gap faster than the market should.
+</div>
+{% endpsec %}
+
+{% psec 5, "Stage 4: Trying to Break My Best Result", "Was the Brent–WTI edge real, or a quirk of the data?", "Stage 4 · The roll" %}
+<p class="topic-intro">A futures contract is an agreement to buy oil in a specific month. Each month the nearest contract expires and traders move to the next one. Free price data glues these contracts end to end, so on the swap day the price can jump even though oil itself didn't move. WTI swaps around the 20th of each month; Brent swaps around the end of the month. For about ten days each month, the stitched gap between them is distorted, then corrects itself.</p>
+
+<div class="worked">
+  <div class="worked-title">An everyday version</div>
+  <div class="worked-body">You compare two shops' price for "a loaf of bread". One switches from a small loaf to a large one on the 20th; the other switches at the end of the month. For ten days the gap between their prices looks huge, then it "snaps back". Nothing about bread changed. A strategy trading that gap would look brilliant, and none of it would be real.</div>
+</div>
+
+<div class="sh">The fingerprint</div>
+<p class="np">To test it, I compared the futures with <strong>spot prices</strong>: the price of oil for delivery now, which never swaps contracts. If the roll is distorting the futures, their gap should jump around the swap dates while the spot gap stays calm.</p>
+<div class="chart-block">
+  <div class="chart-block-title">Daily Jump in the Brent–WTI Gap, by Day of the Month</div>
+  <div class="chart-wrap" style="height:300px"><canvas id="chartRoll"></canvas></div>
+  <div class="chart-controls">
+    <span class="cc-label">Each day's</span>
+    <div class="seg" role="group" aria-label="Measure">
+      <button type="button" class="mc-btn is-on" data-roll="typical">Typical day</button>
+      <button type="button" class="mc-btn" data-roll="average">Average day</button>
+    </div>
+  </div>
+</div>
+<p class="diagram-cap">\(1.0\) = a normal mid-month day for that source. The futures gap typically jumps \(2.4\) times as much on the 31st and \(3.8\) times on the 1st, when Brent swaps. The average view is pulled around by a few extreme days.</p>
+
+<div class="sh">Where the trades opened</div>
+<div class="chart-block">
+  <div class="chart-block-title">Share of Trades Opened in Each Part of the Month</div>
+  <div class="chart-wrap" style="height:260px"><canvas id="chartEntries"></canvas></div>
+</div>
+<p class="diagram-cap">If entries were random, each five-day slot would hold about \(16\%\) of trades. The futures strategy opened \(30\) of its \(86\) trades on days 1 to 5, right after Brent swaps. Spot trades are spread evenly.</p>
+
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Trades opened</th><th>Futures: trades</th><th>Futures: average profit</th><th>Spot: trades</th><th>Spot: average profit</th></tr>
+  <tr><td>Mid-month, days 6 to 15</td><td>\(12\)</td><td>\(-0.28\%\)</td><td>\(37\)</td><td>\(+0.54\%\)</td></tr>
+  <tr><td>Near a swap, days 16 to 5</td><td>\(74\)</td><td>\(+1.44\%\)</td><td>\(76\)</td><td>\(+1.48\%\)</td></tr>
+</table></div>
+<p class="np">At first this looked fatal: all the futures profit came from trades near the swaps, and the mid-month trades lost money. But \(12\) trades is too few to judge. The real test was to run the exact same strategy, same settings and same costs, on spot prices.</p>
+
+<div class="sh">The same strategy on spot prices</div>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Brent vs WTI</th><th>Sharpe</th><th>t-stat</th><th>Return a year</th><th>Worst drawdown</th><th>Trades a year</th></tr>
+  <tr><td>Futures, 2012 to 2022</td><td>\(0.60\)</td><td>\(1.89\)</td><td>\(5.0\%\)</td><td>\(-14.4\%\)</td><td>\(6.2\)</td></tr>
+  <tr><td>Futures, 2023 on (unseen)</td><td>\(1.38\)</td><td>\(2.66\)</td><td>\(12.4\%\)</td><td>\(-4.1\%\)</td><td>\(6.7\)</td></tr>
+  <tr><td>Spot, 2012 to 2022</td><td>\(1.24\)</td><td>\(3.87\)</td><td>\(9.5\%\)</td><td>\(-11.0\%\)</td><td>\(8.3\)</td></tr>
+  <tr class="hl"><td>Spot, 2023 on (unseen)</td><td>\(1.57\)</td><td>\(2.99\)</td><td>\(11.0\%\)</td><td>\(-4.8\%\)</td><td>\(9.1\)</td></tr>
+</table></div>
+
+<div class="chart-block">
+  <div class="chart-block-title">£1 in the Brent–WTI Pairs Strategy, After Costs</div>
+  <div class="chart-wrap" style="height:320px"><canvas id="chartEquity"></canvas></div>
+  <div class="chart-controls">
+    <span class="cc-label">Show</span>
+    <div class="seg" role="group" aria-label="Period">
+      <button type="button" class="mc-btn is-on" data-eq="full">2013 to 2026</button>
+      <button type="button" class="mc-btn" data-eq="test">Unseen years only</button>
+    </div>
+  </div>
+</div>
+
+<div class="sh">Stress tests on the unseen years</div>
+<div class="chart-block">
+  <div class="chart-block-title">Sharpe After Costs Under Each Stress Test, 2023 On</div>
+  <div class="chart-wrap" style="height:300px"><canvas id="chartStress"></canvas></div>
+</div>
+<p class="diagram-cap">Nearby entry levels agree, triple costs barely matter, and a one-day delay still leaves a Sharpe of \(0.92\) on spot.</p>
+
+<div class="insight">
+  <div class="insight-lbl">The verdict</div>
+  The edge <strong>survives without the roll</strong>. On spot prices, Brent vs WTI earned \(11\%\) a year on unseen data with a Sharpe of \(1.57\) (\(t = 2.99\)), and its trades are spread evenly across the month. The roll changed <em>when</em> the futures strategy traded, not <em>whether</em> there was an edge. Spot prices had a trap of their own: Brent is recorded in London and WTI in New York, which can create a gap that closes the next day by itself. Trading one day late removes that effect, and the Sharpe stayed at \(0.92\).
+</div>
+{% endpsec %}
+
+{% psec 6, "What I'd Check Before Trading It", "What could still be wrong?", "Limits and next steps" %}
+<p class="topic-intro">The result passed every test I set. These are the ones I'd still want to run before risking real money.</p>
+
+<div class="sh">1. Trade the real thing</div>
+<p class="np">You can't trade spot prices directly. A desk would trade Brent and WTI futures for the <strong>same delivery month</strong>, and swap both legs on the same day. That needs prices for each individual contract, which free data doesn't provide.</p>
+
+<div class="sh">2. A few trades carry a lot</div>
+<p class="np">The equity curve rises in steps. A handful of trades, such as those during the oil crash in early 2020, add a large share of the profit. I'd re-run it without the biggest five trades to see how much is left.</p>
+
+<div class="sh">3. I tested a lot of ideas</div>
+<p class="np">Four markets, three pairs and four stages. The more ideas you test, the more likely one looks good by luck, and Brent vs WTI was the best of three pairs. Rolling the training window forward year by year (walk-forward testing) would give more unseen years to judge it on.</p>
+
+<div class="sh">4. Part of the edge may be timing</div>
+<p class="np">Acting a day late cut the Sharpe from \(1.57\) to \(0.92\). Some of that loss may come from the London and New York recording times rather than real trading opportunities. Prices for both markets taken at the same moment would settle it.</p>
+
+<div class="sh">The core code</div>
+<div class="code">def positions_from_z(z, entry=2.0, exit_=0.5):
+    """+1 = long the gap (buy A, sell B), -1 = short the gap, 0 = flat."""
+    pos, state = np.zeros(len(z)), 0
+    for i, v in enumerate(z):
+        if np.isnan(v):
+            state = 0
+        else:
+            if (state == 1 and v > -exit_) or (state == -1 and v < exit_):
+                state = 0                      # gap is back to normal: close
+            if state == 0:
+                state = -1 if v > entry else (1 if v < -entry else 0)
+        pos[i] = state
+    return pos</div>
+
+<div class="qbox">
+  <div class="qbox-lbl">Skills used</div>
+  <p class="qbox-body">The most useful thing I built wasn't a strategy. It was the habit of attacking my own best result until it either broke or held.</p>
+  <span class="qtag">Backtesting</span><span class="qtag">Transaction costs</span><span class="qtag">Volatility scaling</span><span class="qtag">Out-of-sample testing</span><span class="qtag">Cointegration</span><span class="qtag">Half-life</span><span class="qtag">Pairs trading</span><span class="qtag">Futures rolls</span><span class="qtag">Python / pandas / NumPy</span>
+</div>
+{% endpsec %}
+<script src="/assets/js/projects/mean-reversion.js" defer></script>

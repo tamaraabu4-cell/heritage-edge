@@ -84,5 +84,26 @@
       "tech": "Python: NumPy, pandas and scikit-learn.",
       "result": "The curve misses by $0.16 on unseen months, against $0.57 for a simple forecast. Best storage trade: $732k. Expected loss lands within 0.6% of actual losses."
     }
+  },
+  {
+    "title": "Mean reversion in FX and commodities",
+    "date": "2026-10",
+    "topic": "quant",
+    "kind": "Backtest",
+    "status": "finished",
+    "markets": ["FX", "Gold", "Commodities"],
+    "tags": ["Mean reversion", "Pairs trading", "Futures"],
+    "tools": ["Python", "pandas", "NumPy", "matplotlib"],
+    "headline": "Tests whether prices undo yesterday's move in EURUSD, USDJPY, gold and oil, then whether the gap between linked markets does, and hunts for flaws in its own best result.",
+    "result": "Single markets fail after costs. The Brent–WTI spread survives on unseen data: Sharpe 1.57, and 0.92 trading a day late.",
+    "url": "/projects/fx-commodities-mean-reversion.html",
+    "cta": "View project",
+    "code": "",
+    "steps": {
+      "thesis": "A crypto tutorial showed prices undoing yesterday's move. Does that hold in FX, gold and oil, where I want to trade?",
+      "method": "Four stages: copy the rule with real costs, trade only big moves, trade the gap between linked markets, then try to break the best result.",
+      "tech": "Python and pandas: volatility-scaled sizing, cointegration tests, and blind tests on 2023–26 data.",
+      "result": "Single markets fail after costs. Brent vs WTI survives: Sharpe 1.57 on unseen data, 0.92 a day late, after removing a futures-roll artefact."
+    }
   }
 ]

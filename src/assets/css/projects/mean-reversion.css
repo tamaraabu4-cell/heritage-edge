@@ -1,0 +1,27 @@
+/* ==========================================================
+   Mean reversion in FX and commodities project:
+   the two-way switches under the roll and equity charts,
+   and the message shown if the chart data file is missing.
+   ========================================================== */
+.project-page {
+
+  /* Two-way switch (Typical / Average, Full / Unseen) */
+  .seg { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .seg .mc-btn.is-on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .seg .mc-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Shown in place of a chart if /assets/data/mean-reversion.json can't be loaded */
+  .chart-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--tx2);
+    border: 1px dashed var(--br2);
+    border-radius: var(--r);
+  }
+}

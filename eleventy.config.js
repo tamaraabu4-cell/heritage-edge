@@ -7,6 +7,7 @@ export default function (eleventyConfig) {
   // Copy these across exactly as they are
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/projects/*.py");
+  eleventyConfig.addPassthroughCopy("src/projects/*.ipynb");
   eleventyConfig.addPassthroughCopy("src/favicon.ico");
 
   // Dates for blog posts: "27 October 2026" on the page, "2026-10-27" inside the <time> tag
