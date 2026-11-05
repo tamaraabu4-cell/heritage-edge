@@ -1,4 +1,5 @@
 import { HtmlBasePlugin } from "@11ty/eleventy";
+import { readFileSync } from "node:fs";
 
 export default function (eleventyConfig) {
   // Fixes links so they work at tamaraabu4-cell.github.io/heritage-edge/
@@ -153,6 +154,73 @@ export default function (eleventyConfig) {
     };
   }
   eleventyConfig.addFilter("topicPath", buildPath);
+
+    // ==========================================================
+  // Glossary (_data/glossary.json)
+  //
+  // Each term:  term, short, topic (a slug from shelves.json),
+  //             added ("2026-11-05"), plain, desk
+  // Add new terms at the bottom of the file. Two terms added on the
+  // same day: the one lower down counts as newer.
+  //
+  // `glossaryBank` gives every term its topic name and colour, readable
+  // dates, an id to link to (/hub/glossary/#term-basis-point) and the
+  // notes that use it (found from the {% gl %} words in each note).
+  // Newest first.
+  // ==========================================================
+  const dayLabel = (iso, long) =>
+    iso
+      ? new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", {
+          day: "numeric", month: long ? "long" : "short", year: long ? "numeric" : undefined, timeZone: "UTC",
+        })
+      : "";
+
+  eleventyConfig.addFilter("glossaryBank", (glossary = [], notes = [], shelves = []) => {
+    // Which glossary words each note uses: { "compounding": [{ title, url }] }
+    const used = {};
+    const glWord = /{%-?\s*gl\s*(?:"([^"]*)"|'([^']*)')?\s*-?%}([\s\S]*?){%-?\s*endgl\s*-?%}/g;
+    notes.forEach((note) => {
+      let raw = "";
+      try { raw = readFileSync(note.inputPath, "utf8"); } catch (e) { return; }
+      for (const m of raw.matchAll(glWord)) {
+        const key = String(m[1] || m[2] || m[3]).trim().toLowerCase();
+        used[key] = used[key] || [];
+        if (!used[key].some((n) => n.url === note.url)) used[key].push({ title: note.data.title, url: note.url });
+      }
+    });
+
+    return glossary
+      .map((g, i) => {
+        const shelf = shelves.find((s) => s.slug === g.topic);
+        const usedIn = [];
+        [g.term, g.short].filter(Boolean).forEach((word) =>
+          (used[String(word).toLowerCase()] || []).forEach((n) => {
+            if (!usedIn.some((x) => x.url === n.url)) usedIn.push(n);
+          })
+        );
+        const added = g.added ? String(g.added).slice(0, 10) : "";
+        return {
+          ...g,
+          id: "term-" + slugify(g.term),
+          letter: String(g.term).charAt(0).toUpperCase(),
+          topicName: shelf ? shelf.name : "",
+          colour: shelf ? shelf.colour || "" : "",
+          added,
+          addedLabel: dayLabel(added, false),
+          addedLong: dayLabel(added, true),
+          order: i,
+          usedIn,
+        };
+      })
+      .sort((a, b) => b.added.localeCompare(a.added) || b.order - a.order);
+  });
+
+  // The topics that have glossary terms, in shelf order, with how many each has
+  eleventyConfig.addFilter("glossaryTopics", (bank = [], shelves = []) =>
+    shelves
+      .map((s) => ({ slug: s.slug, name: s.name, colour: s.colour || "", count: bank.filter((g) => g.topic === s.slug).length }))
+      .filter((t) => t.count > 0)
+  );
 
   // Everything a note page needs to know about where it sits:
   // its topic, its chapter, the chapter's notes in order, and what comes next.

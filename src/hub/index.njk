@@ -86,17 +86,26 @@ styles: [hub.css]
     </div>
   </section>
 
-  {# Glossary #}
-  <section class="hub-glossary" aria-label="Glossary">
-    <div class="hub-glossary-text">
-      <h2>Glossary</h2>
-      <p>Every term defined once, plain English first.</p>
+  {# Glossary: the four newest words in _data/glossary.json. The full list is at /hub/glossary/ #}
+  {% set bank = glossary | glossaryBank(collections.hubNote, shelves) %}
+  <section class="hub-glossary" aria-labelledby="hub-glossary-title">
+    <div class="hub-glossary-head">
+      <div class="hub-glossary-text">
+        <h2 id="hub-glossary-title">Glossary</h2>
+        <p>The newest words in the term bank, plain English first.</p>
+      </div>
+      <a class="hub-glossary-all" href="/hub/glossary/">See all {{ bank.length }} terms ›</a>
     </div>
-    <ul class="hub-glossary-terms">
-      {% for item in glossary | sort(false, false, "term") %}
-      <li title="{{ item.plain }}">{{ item.term }}</li>
+    <div class="hub-glossary-grid">
+      {% for item in bank.slice(0, 4) %}
+      <a class="gloss-card{% if item.colour %} tone-{{ item.colour }}{% endif %}" href="/hub/glossary/#{{ item.id }}">
+        {% if item.topicName %}<span class="gloss-topic">{{ item.topicName }}</span>{% endif %}
+        <span class="gloss-card-name">{{ item.term }}{% if item.short %} <span class="gloss-short">{{ item.short }}</span>{% endif %}</span>
+        <span class="gloss-card-plain">{{ item.plain }}</span>
+        <span class="gloss-added">Added {{ item.addedLabel }}</span>
+      </a>
       {% endfor %}
-    </ul>
+    </div>
   </section>
 
 </div>

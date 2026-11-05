@@ -155,7 +155,7 @@
 
   // One page → one result, linked to the part of the page where the words appear
   function toRow(p, section) {
-    var sub = (p.sub_results || []).filter(function (s) { return s.url && s.url.indexOf("#") !== -1; })[0];
+    var sub = bestPart(p.sub_results || [], current.query);
     var title = (p.meta && p.meta.title) || "Untitled";
     var topic = p.meta && p.meta.topic;
     var crumbs = [section.name];
@@ -168,6 +168,22 @@
       excerpt: sub ? sub.excerpt : p.excerpt,
       tone: TONES[topic] || ""
     };
+  }
+
+  // The part of a page to link to: a heading whose title is the word you
+  // searched (a glossary word, say) wins; otherwise the part with the most hits
+  function bestPart(subs, query) {
+    var q = String(query || "").toLowerCase();
+    var best = null, bestScore = -1;
+    subs.forEach(function (s) {
+      if (!s.url || s.url.indexOf("#") === -1) return;
+      var title = String(s.title || "").toLowerCase();
+      var score = (s.locations || []).length;
+      if (q && title.indexOf(q) === 0) score += 1000;
+      else if (q && title.indexOf(q) !== -1) score += 100;
+      if (score > bestScore) { best = s; bestScore = score; }
+    });
+    return best;
   }
 
   /* ---------- Showing the results ---------- */

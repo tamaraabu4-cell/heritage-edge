@@ -1,0 +1,122 @@
+---
+layout: layouts/base.njk
+title: Glossary
+permalink: /hub/glossary/
+styles: [hub.css, glossary.css]
+---
+{#
+  The glossary's own page, at /hub/glossary/.
+  Every word in _data/glossary.json, built by the `glossaryBank` filter in
+  eleventy.config.js. The page is built twice over (A–Z and newest first);
+  glossary.js switches between them and handles search and the topic filter.
+#}
+{% set bank = glossary | glossaryBank(collections.hubNote, shelves) %}
+{% set topics = bank | glossaryTopics(shelves) %}
+
+{% macro entry(item, linkable) %}
+<article class="gterm{% if item.colour %} tone-{{ item.colour }}{% endif %}" data-gterm data-topic="{{ item.topic }}" data-text="{{ (item.term + ' ' + (item.short or '') + ' ' + item.plain + ' ' + (item.desk or '')) | lower }}">
+  <div class="gterm-side">
+    {# The id sits on the heading so site search can link straight to the word #}
+    <h3 class="gterm-name"{% if linkable %} id="{{ item.id }}"{% endif %}>{{ item.term }}{% if item.short %} <span class="gloss-short">{{ item.short }}</span>{% endif %}</h3>
+    <div class="gterm-meta">
+      {% if item.topicName %}<a class="gterm-topic" href="/hub/{{ item.topic }}/">{{ item.topicName }}</a>{% endif %}
+      {% if item.addedLabel %}<span class="gloss-added">Added {{ item.addedLabel }}</span>{% endif %}
+    </div>
+  </div>
+  <div class="gterm-body">
+    <p class="gterm-plain">{{ item.plain }}</p>
+    {% if item.desk %}<p class="gterm-desk"><span>On the desk</span><q>{{ item.desk }}</q></p>{% endif %}
+    {% if item.usedIn.length %}
+    <p class="gterm-used">Used in: {% for n in item.usedIn %}<a href="{{ n.url }}">{{ n.title }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+    {% else %}
+    <p class="gterm-used">Not in a note yet</p>
+    {% endif %}
+  </div>
+</article>
+{% endmacro %}
+
+<div class="hub glossary-page" data-glossary>
+
+  {# Top line: where you are on the left, Lock on the right #}
+  <div class="hub-hello-top">
+    <nav class="topic-crumbs" aria-label="Breadcrumb">
+      <a href="/hub/">Knowledge hub</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Glossary</span>
+    </nav>
+    <a class="hub-lock" href="/api/lock" title="Lock the hub and sign out">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+      Lock
+    </a>
+  </div>
+
+  {# Header #}
+  <section class="gloss-hello">
+    <div class="gloss-hello-text">
+      <h1 class="hub-title">Glossary</h1>
+      <p class="hub-intro">Every word from the hub, defined once and plain English first.</p>
+    </div>
+    <p class="gloss-stats">
+      <span><strong>{{ bank.length }}</strong> terms</span>
+      <span><strong>{{ topics.length }}</strong> topics</span>
+      {% if bank.length and bank[0].addedLabel %}<span>Last added <strong>{{ bank[0].addedLabel }}</strong></span>{% endif %}
+    </p>
+  </section>
+
+  {# Search, sort and topic filter #}
+  <section class="gloss-tools" aria-label="Find a word">
+    <div class="gloss-tools-row">
+      <label class="gloss-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <span class="visually-hidden">Search the glossary</span>
+        <input type="search" id="gloss-search" placeholder="Search {{ bank.length }} terms" autocomplete="off">
+      </label>
+      <div class="gloss-sort" role="group" aria-label="Sort">
+        <button type="button" data-sort="az" aria-pressed="true">A–Z</button>
+        <button type="button" data-sort="new" aria-pressed="false">Newest first</button>
+      </div>
+    </div>
+    <div class="gloss-chips" role="group" aria-label="Filter by topic">
+      <button type="button" class="gloss-chip gloss-chip-all" data-topic-chip="all" aria-pressed="true">All topics <span>{{ bank.length }}</span></button>
+      {% for t in topics %}
+      <button type="button" class="gloss-chip{% if t.colour %} tone-{{ t.colour }}{% endif %}" data-topic-chip="{{ t.slug }}" aria-pressed="false">{{ t.name }} <span>{{ t.count }}</span></button>
+      {% endfor %}
+    </div>
+    <p class="gloss-showing" data-showing aria-live="polite">{{ bank.length }} terms</p>
+  </section>
+
+  <div class="gloss-list">
+    {# Jump to a letter (A–Z only) #}
+    {% set az = bank | sort(false, false, "term") | groupby("letter") %}
+    <nav class="gloss-letters" aria-label="Jump to a letter" data-letters>
+      {% for ch in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" | list %}
+        {% if az[ch] %}<a href="#letter-{{ ch }}" data-letter="{{ ch }}">{{ ch }}</a>{% else %}<span aria-hidden="true">{{ ch }}</span>{% endif %}
+      {% endfor %}
+    </nav>
+
+    <p class="gloss-empty" data-empty hidden><strong>No words match “<span data-q></span>”</strong>It might not be in the term bank yet. New words arrive with each note.</p>
+
+    {# A–Z #}
+    <div class="gloss-view" data-view="az">
+      {% for letter, items in az %}
+      <section class="gloss-group" id="letter-{{ letter }}" data-group>
+        <h2 class="gloss-group-head">{{ letter }}</h2>
+        {% for item in items %}{{ entry(item, true) }}{% endfor %}
+      </section>
+      {% endfor %}
+    </div>
+
+    {# Newest first, grouped by the day they were added #}
+    <div class="gloss-view" data-view="new" hidden data-pagefind-ignore>
+      {% for day, items in bank | groupby("added") %}
+      <section class="gloss-group" data-group>
+        <h2 class="gloss-group-head">{% if day %}Added {{ items[0].addedLong }}{% else %}No date{% endif %}</h2>
+        {% for item in items %}{{ entry(item, false) }}{% endfor %}
+      </section>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script src="/assets/js/glossary.js" defer></script>

@@ -195,21 +195,42 @@
 
 .shelf-open { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--hub-line); font-size: 15px; font-weight: 600; }
 
-/* 7. Glossary strip */
+/* 7. Glossary: the four newest words (the full page is styled in glossary.css) */
 .hub-glossary {
   background: var(--hub-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 28px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px 24px;
+  flex-direction: column;
+  gap: 22px;
 }
-.hub-glossary-text { flex: 1 1 240px; display: flex; flex-direction: column; gap: 4px; }
+.hub-glossary-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px 16px; flex-wrap: wrap; }
+.hub-glossary-text { display: flex; flex-direction: column; gap: 4px; }
 .hub-glossary-text p { font-size: 14px; color: var(--text-2); }
-.hub-glossary-terms { flex: 2 1 420px; list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.hub-glossary-terms li { font-size: 14px; background: var(--hub-inset); border-radius: 980px; padding: 8px 14px; cursor: help; }
+.hub-glossary-all { font-size: 15px; font-weight: 600; white-space: nowrap; }
+.hub-glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+
+.gloss-card {
+  background: var(--hub-inset);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--text);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.gloss-card:hover { color: var(--text); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); }
+.gloss-card-name { font-size: 19px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.gloss-card-plain { flex: 1; font-size: 14px; line-height: 1.5; color: var(--text-3); }
+@media (prefers-reduced-motion: reduce) { .gloss-card { transition: none; } .gloss-card:hover { transform: none; } }
+
+/* Shared with the glossary page */
+.gloss-topic { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tone); }
+.gloss-topic::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--tone); }
+.gloss-short { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--text-3); background: var(--hub-track); border-radius: 6px; padding: 2px 7px; vertical-align: 0.2em; white-space: nowrap; }
+.gloss-added { font-family: var(--mono); font-size: 12px; color: var(--text-2); }
 
 /* 8. Topic home (/hub/<topic>/) */
 .topic-crumbs { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); min-width: 0; }

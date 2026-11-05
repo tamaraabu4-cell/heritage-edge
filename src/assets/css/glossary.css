@@ -1,0 +1,140 @@
+/* ==========================================================
+   Heritage Edge — Glossary page (/hub/glossary/)
+   Loaded after hub.css. The topic colours (tone-…) are hub.css
+   section 9; .gloss-short and .gloss-added are hub.css section 7.
+   ========================================================== */
+
+/* Elements that switch between flex and hidden */
+.glossary-page [hidden] { display: none !important; }
+
+/* 1. Header */
+.gloss-hello { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; margin-top: -24px; }
+.gloss-hello-text { display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+.gloss-stats { display: flex; flex-wrap: wrap; gap: 8px 24px; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+.gloss-stats strong { color: var(--text); font-weight: 500; }
+
+/* 2. Search, sort and topic filter */
+.gloss-tools {
+  background: var(--hub-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.gloss-tools-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+.gloss-search {
+  flex: 1 1 280px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  background: var(--hub-inset);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+}
+.gloss-search:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+.gloss-search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;            /* 16px stops phones zooming in */
+  color: var(--text);
+  outline: none;
+}
+.gloss-search input::placeholder { color: var(--text-2); }
+
+.gloss-sort { display: flex; gap: 4px; padding: 4px; background: var(--hub-inset); border-radius: var(--radius-sm); }
+.gloss-sort button {
+  border: 0;
+  border-radius: 9px;
+  padding: 0 14px;
+  min-height: 38px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.gloss-sort button[aria-pressed="true"] { background: var(--hub-card); color: var(--text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); }
+
+.gloss-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.gloss-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 980px;
+  background: var(--tone-bg);
+  color: var(--tone);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.gloss-chip span { font-family: var(--mono); font-size: 12px; opacity: 0.8; }
+.gloss-chip[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); }
+.gloss-chip-all { --tone: var(--text); --tone-bg: var(--hub-inset); --on-tone: var(--bg); }
+
+.gloss-showing { font-size: 13px; color: var(--text-2); }
+
+/* 3. The list */
+.gloss-list { display: flex; flex-direction: column; gap: 32px; }
+
+.gloss-letters { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--mono); font-size: 13px; }
+.gloss-letters a,
+.gloss-letters span { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.gloss-letters a { background: var(--hub-card); border: 1px solid var(--border); color: var(--text); }
+.gloss-letters a:hover { border-color: var(--accent); color: var(--accent); }
+.gloss-letters span,
+.gloss-letters a.is-off { background: transparent; border-color: transparent; color: var(--hub-dash); pointer-events: none; }
+
+.gloss-view { display: flex; flex-direction: column; gap: 36px; }
+.gloss-group { display: flex; flex-direction: column; scroll-margin-top: 80px; }
+.glossary-page .gloss-group-head {
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--text);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+/* One word */
+.gterm { display: flex; flex-wrap: wrap; gap: 12px 32px; padding: 22px 0; border-bottom: 1px solid var(--border); }
+.gterm:has(.gterm-name:target) { background: var(--tone-bg); box-shadow: 0 0 0 12px var(--tone-bg); border-radius: 2px; }
+.gterm-name { scroll-margin-top: 120px; }
+.gterm-side { flex: 1 1 240px; display: flex; flex-direction: column; gap: 8px; }
+.gterm-name { font-size: 21px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.gterm-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.gterm-topic { font-size: 12px; font-weight: 600; border-radius: 980px; padding: 3px 10px; color: var(--tone); background: var(--tone-bg); }
+.gterm-topic:hover { color: var(--tone); text-decoration: underline; }
+
+.gterm-body { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.gterm-plain { font-size: 17px; line-height: 1.55; }
+.gterm-desk { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 14px; color: var(--text-3); }
+.gterm-desk span { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; }
+.gterm-desk q { font-family: var(--mono); quotes: "“" "”"; }
+.gterm-used { font-size: 14px; color: var(--text-2); }
+.gterm-used a { font-weight: 500; }
+
+/* Nothing matches */
+.gloss-empty {
+  background: var(--hub-card);
+  border: 1px dashed var(--hub-dash);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-2);
+}
+.gloss-empty strong { display: block; margin-bottom: 6px; font-size: 18px; color: var(--text); }
