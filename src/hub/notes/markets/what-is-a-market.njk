@@ -1,0 +1,225 @@
+---
+title: What Is a Market?
+shelf: markets
+chapter: what-markets-are
+subtopic: Why Markets Exist
+order: 1
+summary: Where buyers meet sellers, how a price gets found without anyone setting it, and why that price changes every day.
+lede: Where buyers meet sellers, how a price gets found without anyone setting it, and why that price changes every day.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/what-is-a-market.js]
+
+quiz:
+  - q: 'A big match is announced and more fans want tickets. Which line moves, and which way?'
+    opts: ['The buyers line moves right', 'The sellers line moves right', 'The buyers line moves left']
+    right: 0
+    why: 'More people want to buy at every price, so the whole buyers (demand) line shifts right. The crossing moves up, so the price rises.'
+  - q: 'At the current price, more people want to buy than sell. What happens next?'
+    opts: ['The price rises', 'The price falls', 'Nothing changes']
+    right: 0
+    why: 'Buyers who can''t find a seller start offering more, so the price gets pushed up until the two sides balance.'
+  - q: 'Demand is \(P = 110 - \tfrac{Q}{10}\) and supply is \(P = 10 + \tfrac{Q}{10}\). What is the market price?'
+    opts: ['\(\text{£}50\)', '\(\text{£}60\)', '\(\text{£}70\)']
+    right: 1
+    why: 'Set them equal: \(110 - \tfrac{Q}{10} = 10 + \tfrac{Q}{10}\), so \(Q = 500\) and \(P = 10 + 50 = \text{£}60\).'
+
+connected:
+  - { label: Builds on, title: Straight lines and simultaneous equations, where: Maths · Algebra and functions, url: /hub/maths/ }
+  - { label: Used in, title: Order books and liquidity, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: How FX trades, where: Markets · FX, url: /hub/markets/ }
+---
+
+{% sec 1, "What Is a Market?", "What is a market, in everyday words?" %}
+  <div class="prose">
+    <p>A {% gl "market" %}market{% endgl %} is any place where people who want to buy something meet people who want to sell it, and they agree a price.</p>
+    <p>You've used lots of them. A car boot sale is a market: someone has an old bike, someone else wants one, they haggle and settle on \(\text{£}40\). eBay is a market too, just bigger and online. The London Stock Exchange is a market. So is the giant network of banks swapping pounds, dollars and naira all day and all night. What's being bought changes, the size changes and the speed changes. The idea doesn't.</p>
+    <p>Every market has the same two sides:</p>
+    <ul>
+      <li><strong>Buyers</strong> want the thing and have money. Each one has a <em>most</em> they're willing to pay.</li>
+      <li><strong>Sellers</strong> have the thing and want money. Each one has a <em>least</em> they're willing to accept.</li>
+    </ul>
+    <p>A trade happens when a buyer's "most" is at or above a seller's "least". Everything else in this note comes from that one sentence.</p>
+    <h3>Who meets who</h3>
+    <p>The biggest markets exist because two groups need each other. People, pension funds and insurers have spare money they want to grow. Companies and governments need money to build factories, roads and schools. The market is where they meet.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who meets who</h3><p>Money flows one way. Proof that you own a piece of something, or that you're owed your money back, flows the other.</p></div>
+    <svg class="chart" id="chart-meet" viewBox="0 0 640 220" role="img" aria-label="Savers and investors meet firms and governments in the market. Money flows to the firms, and shares and bonds flow back to the savers."></svg>
+    <p class="look"><strong>Things to notice.</strong> The shares and bonds coming back are exactly the things that get traded afterwards. They're the first two asset classes, and the next note tours all of them.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A market is wherever buyers and sellers meet and agree a price. Nobody hands the price down. It comes out of everyone's wants meeting.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Four Jobs a Market Does", "Why do we need markets at all?", "Four jobs" %}
+  <div class="prose">
+    <p>Markets aren't just places to swap things. They do four jobs that the rest of the economy relies on.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>It finds prices.<span class="why">Thousands of people each bring what they know and what they want. The price is the one number that sums all of that up. Nobody has to work it out on their own. This job is called {% gl "price discovery" %}price discovery{% endgl %}, and section 3 shows how it works.</span></span></li>
+    <li><span class="n">2</span><span>It lets companies and governments raise money.<span class="why">A company sells new shares to get money to grow. A government sells bonds to borrow for roads and hospitals. That first sale is how money gets from savers to the people who need it. It's the subject of the "first sale vs resale" note in this chapter.</span></span></li>
+    <li><span class="n">3</span><span>It lets people pass risk on.<span class="why">An airline doesn't know what fuel will cost next year, so it can agree a price today with someone happy to take that risk. An importer paying a supplier in dollars can fix its exchange rate in advance. The risk doesn't vanish. It moves to someone who wants it, for a price. That's what derivatives are for.</span></span></li>
+    <li><span class="n">4</span><span>It lets you get out.<span class="why">Because there's always someone there, you can turn what you own back into cash when you need to. Selling a share takes seconds. Selling a house can take months. How easily you can get in and out without moving the price is called {% gl "liquidity" %}liquidity{% endgl %}.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 3, "How the Price Is Found", "If nobody sets the price, where does it come from?", "Finding the price" %}
+  <div class="prose">
+    <p>Take tickets for a big match. Some fans would pay a lot for one, some only a little. Some ticket holders would sell for not much, others would need a big offer before they'd give theirs up.</p>
+    <p>Now put everyone on one chart, with the price going up the side and the number of tickets along the bottom.</p>
+    <ul>
+      <li>The <strong>buyers line</strong> ({% gl "demand" %}demand{% endgl %}) slopes <em>down</em>. The cheaper the ticket, the more fans are happy to buy one.</li>
+      <li>The <strong>sellers line</strong> ({% gl "supply" %}supply{% endgl %}) slopes <em>up</em>. The higher the price, the more holders are tempted to sell.</li>
+    </ul>
+    <p>Where the two lines cross is the {% gl "market price" %}market price{% endgl %}. It's the only price where everyone who wants to trade finds someone to trade with.</p>
+    <p><strong>Below the crossing</strong>, more people want to buy than sell. Fans who can't get a ticket start offering more, and the price gets pushed up. <strong>Above the crossing</strong>, more people want to sell than buy. Holders who can't find a buyer start dropping their price, and it gets pushed down. Either way the price is pulled back to the crossing, without anybody being in charge.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Match tickets: move the news</h3><p>Press a piece of news and watch the crossing point move. The dashed lines show where the market was before the news.</p></div>
+    <div class="controls">
+      <div class="presets" aria-label="News that moves the market">
+        <button type="button" data-news="match" data-d="2" data-s="0">Big match announced</button>
+        <button type="button" data-news="injury" data-d="-2" data-s="0">Star player injured</button>
+        <button type="button" data-news="release" data-d="0" data-s="-2">Extra tickets released</button>
+        <button type="button" data-news="keep" data-d="0" data-s="2">Holders keep their tickets</button>
+        <button type="button" id="sd-reset">Reset</button>
+      </div>
+    </div>
+    <svg class="chart" id="chart-sd" viewBox="0 0 640 340" role="img" aria-label="Supply and demand chart for match tickets"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Buyers (demand)</span><span><i class="sw grey"></i>Sellers (supply)</span></div>
+    <div class="readout" id="sd-read"></div>
+    <p class="look" id="sd-story">Pick a piece of news. Nobody sets the price: it sits wherever the two lines cross.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The price sits where the buyers line and the sellers line cross. If it's anywhere else, someone is left wanting, and they push it back.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Why Prices Move Every Day", "If the price sits at the crossing, why does it keep changing?", "Why prices move" %}
+  <div class="prose">
+    <p>The price only moves when one of the lines moves. And the lines move because of news: anything that changes how many people want to buy, or how many want to sell, at every price.</p>
+    <p>In real markets that looks like this:</p>
+    <ul>
+      <li>A company announces bigger profits than anyone expected. More people want its shares, so the buyers line shifts right and the share price rises.</li>
+      <li>A war threatens the countries that pump oil. Less oil will be for sale, so the sellers line shifts left and the oil price rises.</li>
+      <li>People get scared about the economy. They want something that holds its value, so more of them buy gold and the gold price rises.</li>
+      <li>A central bank raises interest rates. Holding that country's currency now pays more, so more people want it and it gets stronger.</li>
+    </ul>
+    <h3>How the desk talks about it</h3>
+    <p>When lots of people are trying to buy at once, traders say there's {% gl "buying pressure" %}buying pressure{% endgl %}. When lots are trying to sell, there's selling pressure. Same chart: one line has shifted, and the price is on its way to the new crossing.</p>
+    <p>Here's the part that surprises people. By the time you read the news on your phone, the price has usually already moved. Thousands of traders saw it first and acted in seconds. Traders say the news is {% gl "priced in" %}priced in{% endgl %}.</p>
+    <p>That leads to a strange-sounding rule: <strong>markets move on surprises, not on news.</strong> If everyone expects a company to make \(\text{£}1\) billion and it makes \(\text{£}1\) billion, the share price may hardly move. The lines were already sitting where that result put them. If it makes \(\text{£}1.3\) billion, that's a surprise, and the buyers line jumps.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Prices move when the buyers line or the sellers line moves. Those lines move on news, but only on the part of the news nobody expected.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Key Words", "What do economists and the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Market</h3><span class="tag">Everyday</span></div><p>Anywhere buyers and sellers meet and agree a price. It can be a car boot sale, a website or a global network of banks.</p><p class="eg">The FX market has no building at all: it's banks and brokers trading with each other.</p></div>
+    <div class="term"><div class="term-top"><h3>Demand</h3><span class="tag">Economics</span></div><p>How much of something people want to buy at each price. Drawn as the buyers line, sloping down.</p><p class="eg">At \(\text{£}80\) only \(300\) fans want a ticket. At \(\text{£}40\), \(700\) do.</p></div>
+    <div class="term"><div class="term-top"><h3>Supply</h3><span class="tag">Economics</span></div><p>How much of something people are willing to sell at each price. Drawn as the sellers line, sloping up.</p><p class="eg">At \(\text{£}40\) only \(300\) holders will sell. At \(\text{£}80\), \(700\) will.</p></div>
+    <div class="term"><div class="term-top"><h3>Market price</h3><span class="tag">Economics</span></div><p>The price where the amount people want to buy equals the amount people want to sell. Economists also call it the equilibrium price.</p><p class="eg">In the ticket chart it starts at \(\text{£}60\), with \(500\) tickets changing hands.</p></div>
+    <div class="term"><div class="term-top"><h3>Price discovery</h3><span class="tag desk">Desk</span></div><p>The market finding the price by pulling buyers and sellers together, rather than anyone deciding it.</p><p class="eg">The first trades of the morning "discover" where a share should open after overnight news.</p></div>
+    <div class="term"><div class="term-top"><h3>Liquidity</h3><span class="tag desk">Desk</span></div><p>How easily you can buy or sell without moving the price much. Lots of buyers and sellers means liquid. Few means illiquid.</p><p class="eg">EUR/USD is very liquid. A house is very illiquid.</p></div>
+    <div class="term"><div class="term-top"><h3>Buying and selling pressure</h3><span class="tag desk">Desk</span></div><p>Lots of people trying to buy (or sell) at once, pushing the price towards a new crossing.</p><p class="eg">"Strong buying pressure in gold after the news."</p></div>
+    <div class="term"><div class="term-top"><h3>Priced in</h3><span class="tag desk">Desk</span></div><p>News the market already expected, so it's already reflected in the price. Only surprises move it.</p><p class="eg">"The rate cut was fully priced in, so the pound barely moved."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 6, "How does this link to Trading, Real Estate and Fintech?", "Where this chart turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: guessing which line moves next</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>FX is this chart running all day and night around the world. The price of the pound in dollars is wherever the people who want pounds meet the people who want to swap them for dollars. If UK interest rates rise, holding pounds pays more, more people want them, the buyers line shifts right, and the pound strengthens.</p>
+      <p>Gold works the same way, with one twist: people buy it when they're scared. A crisis shifts the buyers line right even though nothing about gold itself has changed.</p>
+      <p>Seen this way, a trader's job is simple to say and hard to do: <strong>work out which line is about to move, and which way, before it's priced in.</strong></p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same chart, much slower</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>House prices are set by the same two lines. Where few homes are for sale and lots of people want to live there, the sellers line sits far left and the buyers line far right, so prices are high. When mortgage rates rise, fewer people can afford to borrow, the buyers line shifts left, and prices cool.</p>
+      <p>The big difference is liquidity. A share can be sold in a second. A house can take months, and the price often has to drop to find a buyer quickly. That's why property is called an illiquid asset, and why it matters when planning how long money will be tied up.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the naira</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The naira's price in dollars is a market too. On one side are people who want naira: exporters turning their dollar earnings into naira, and foreign investors coming in. On the other are people who want dollars: importers paying overseas suppliers, and people saving in dollars to protect themselves. When far more people want dollars than naira, the naira weakens.</p>
+      <p>Section 3 also explains what happens when a price is held below the crossing by rule. More people want to buy than can, so there's a shortage. In currency markets that shows up as queues for dollars at the official rate, and a separate street rate where the "real" crossing price gets paid. Fixing that gap, and making it easy for people and businesses to get the currency they need, is a big part of what fintech in Nigeria works on.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 7, "The Maths Underneath", "How do you find the crossing point with algebra?" %}
+  <div class="prose">
+    <p>Both lines in the ticket chart are straight, so each one can be written as an equation. Call the price \(P\) (in pounds) and the number of tickets traded \(Q\).</p>
+  </div>
+  <div class="formula"><span class="lbl">The ticket market</span>\[ \text{Demand: } P = 110 - \frac{Q}{10} \qquad \text{Supply: } P = 10 + \frac{Q}{10} \]</div>
+  <div class="prose">
+    <h3>What each number means</h3>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The demand line has a negative gradient, \(-\tfrac{1}{10}\).<span class="why">Every extra \(10\) tickets sold needs the price to drop \(\text{£}1\) to tempt one more batch of fans in.</span></span></li>
+    <li><span class="n">2</span><span>The supply line has a positive gradient, \(+\tfrac{1}{10}\).<span class="why">Every extra \(10\) tickets needs the price to rise \(\text{£}1\) to tempt more holders to sell.</span></span></li>
+    <li><span class="n">3</span><span>The demand line starts at \(\text{£}110\).<span class="why">That's the most the keenest fan would pay. Above it, nobody buys.</span></span></li>
+    <li><span class="n">4</span><span>The supply line starts at \(\text{£}10\).<span class="why">That's the least the keenest seller would accept. Below it, nobody sells.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>At the market price, buyers and sellers agree, so both equations give the same \(P\). That means you can set them equal and solve. It's a pair of simultaneous equations.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Find the market price and the number of tickets traded.</h3>
+    <ol class="steps">
+      <li>Set the two equations equal: \(110 - \tfrac{Q}{10} = 10 + \tfrac{Q}{10}\).</li>
+      <li>Collect the \(Q\) terms: \(100 = \tfrac{2Q}{10}\), so \(Q = 500\).</li>
+      <li>Put \(Q = 500\) back into either line: \(P = 10 + \tfrac{500}{10} = \text{£}60\).</li>
+      <li>Check with the other line: \(110 - 50 = 60\). ✓</li>
+    </ol>
+    <p class="answer">\(500\) tickets change hands at \(\text{£}60\). That's the starting point of the chart in section 3.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A big match is announced. Every fan will now pay \(\text{£}20\) more than before. What happens?</h3>
+    <ol class="steps">
+      <li>The demand line moves up by \(20\): \(P = 130 - \tfrac{Q}{10}\). Supply doesn't change.</li>
+      <li>Set equal: \(130 - \tfrac{Q}{10} = 10 + \tfrac{Q}{10}\), so \(120 = \tfrac{2Q}{10}\) and \(Q = 600\).</li>
+      <li>\(P = 10 + 60 = \text{£}70\).</li>
+    </ol>
+    <p class="answer">The price rises from \(\text{£}60\) to \(\text{£}70\), and \(100\) more tickets change hands. Press "Big match announced" in section 3 and you'll see exactly this.</p>
+  </div>
+
+  <div class="prose">
+    <h3>The general version</h3>
+    <p>Any straight-line market can be written with four numbers, and the crossing always comes out the same way:</p>
+  </div>
+  <div class="formula"><span class="lbl">Market price for straight lines</span>\[ \text{Demand: } P = a - bQ \qquad \text{Supply: } P = c + dQ \qquad \Rightarrow \qquad Q^{*} = \frac{a - c}{b + d}, \quad P^{*} = a - bQ^{*} \]</div>
+  <div class="prose">
+    <p>The top line, \(a - c\), is the gap between what the keenest buyer would pay and what the keenest seller would accept. The bigger that gap, the more trades happen. If \(a\) is below \(c\), even the keenest buyer won't pay what the keenest seller wants, and nothing trades at all.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Demand is \(P = 90 - \tfrac{Q}{5}\) and supply is \(P = 20 + \tfrac{Q}{5}\). Find the market price and quantity.</span></p>
+      <details><summary>Show answer</summary><div><span>\(90 - \tfrac{Q}{5} = 20 + \tfrac{Q}{5}\), so \(70 = \tfrac{2Q}{5}\) and \(Q = 175\).</span><span>\(P = 20 + 35 = \text{£}55\). Check: \(90 - 35 = 55\). ✓</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>In question 1, a rule fixes the price at \(\text{£}40\). How many people want to buy, and how many want to sell?</span></p>
+      <details><summary>Show answer</summary><div><span>Buyers: \(40 = 90 - \tfrac{Q}{5}\), so \(Q = 250\). Sellers: \(40 = 20 + \tfrac{Q}{5}\), so \(Q = 100\).</span><span>Only \(100\) trades happen and \(150\) buyers are left with nothing. That's a shortage, the same thing that happens with currency queues at a fixed official rate.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Oil-producing countries agree to pump less. Which line moves, which way, and what happens to the price?</span></p>
+      <details><summary>Show answer</summary><div><span>Less oil is for sale at every price, so the sellers (supply) line shifts left. The crossing moves up: the price rises and less oil is traded.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A company reports profits exactly in line with what everyone expected. Why might its share price barely move?</span></p>
+      <details><summary>Show answer</summary><div><span>The result was already priced in. Traders had bought and sold based on what they expected, so the lines were already in place. Only a surprise would shift them.</span></div></details></div>
+  </div>
+{% endsec %}

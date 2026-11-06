@@ -65,18 +65,24 @@
         "subtopics": ["Free Cash Flow", "Discount Rates", "Terminal Value"] }
     ]
   },
-  {
+{
     "slug": "markets",
     "name": "Markets",
-    "icon": "markets", 
+    "icon": "markets",
     "colour": "rust",
     "open": true,
     "description": "What markets are and how they actually trade.",
     "chapters": [
-      { "title": "The Industry", "blurb": "Who does what in markets, and where the money is made.",
-        "subtopics": ["Who's Who?", "Life on a Desk"] },
-      { "title": "How Markets Work", "blurb": "Where trades happen and what sets the price.",
-        "subtopics": ["Where Trading Happens", "Order books and Liquidity", "Placing a Trade"] },
+      { "title": "What Markets Are", "blurb": "What a market is, what gets traded, and who's doing the trading.",
+        "subtopics": [
+          "Why Markets Exist",
+          { "name": "The Asset Classes", "planned": ["A Tour of the Aisles"] },
+          { "name": "Primary and Secondary Markets", "planned": ["First Sale vs Resale"] },
+          { "name": "Who's Who?", "planned": ["The Players"] },
+          "Life on a Desk"
+        ] },
+      { "title": "How Markets Work", "blurb": "Following one trade from start to finish: where it happens, how it's placed, how it's paid for and settled.",
+        "subtopics": ["Where Trading Happens", "Placing a Trade", "Borrowing to Trade", "After the Trade", "Rules and History"] },
       { "title": "FX", "blurb": "The biggest market in the world, and why currencies move.",
         "subtopics": ["How FX Trades", "Majors and Crosses", "Carry", "Emerging Market FX"] },
       { "title": "Rates and Bonds", "blurb": "Lending to governments and companies, and what it pays.",
@@ -86,9 +92,7 @@
       { "title": "Equities", "blurb": "Owning a slice of a company.",
         "subtopics": ["How Stocks Trade", "Earnings"] },
       { "title": "Derivatives", "blurb": "Contracts whose price comes from something else.",
-        "subtopics": ["Futures and Forwards", "Options", "Swaps"] },
-      { "title": "Crypto", "blurb": "Digital assets and how their markets work.",
-        "subtopics": ["How Crypto Trades", "Stablecoins"] }
+        "subtopics": ["Futures and Forwards", "Options", "Swaps"] }
     ]
   },
   {
