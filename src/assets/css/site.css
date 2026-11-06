@@ -328,6 +328,7 @@ h1, h2, h3, p { margin: 0; }
 .highlight-card.tone-graphite { --card-bg: #33322f; --card-accent: #d6d3d1; }
 .highlight-card.tone-burgundy { --card-bg: #4a1d24; --card-accent: #fda4af; }
 .highlight-card.tone-navy     { --card-bg: #1b2a44; --card-accent: #93c5fd; }
+.highlight-card.tone-steel    { --card-bg: #2f4858; --card-accent: #a5c8dc; }
 
 /* 9. Homepage — every project, four steps */
 .steps-section {

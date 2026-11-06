@@ -62,7 +62,9 @@
       { "title": "Relative Valuation", "blurb": "Pricing a company against its peers.",
         "subtopics": ["Ratios", "Multiples"] },
       { "title": "DCF", "blurb": "Valuing a company from the cash it will make.",
-        "subtopics": ["Free Cash Flow", "Discount Rates", "Terminal Value"] }
+        "subtopics": ["Free Cash Flow", "Discount Rates", "Terminal Value"] },
+      { "title": "Sectors", "blurb": "Why a bank, an oil company and a tech firm are valued differently.",
+        "subtopics": ["How Sectors Differ", "Sector Deep Dives"] }
     ]
   },
 {
@@ -84,7 +86,7 @@
       { "title": "How Markets Work", "blurb": "Following one trade from start to finish: where it happens, how it's placed, how it's paid for and settled.",
         "subtopics": ["Where Trading Happens", "Placing a Trade", "Borrowing to Trade", "After the Trade", "Rules and History"] },
       { "title": "FX", "blurb": "The biggest market in the world, and why currencies move.",
-        "subtopics": ["How FX Trades", "Majors and Crosses", "Carry", "Emerging Market FX"] },
+        "subtopics": ["How FX Trades", "Majors and Crosses", "Forwards and Swaps", "Carry", "Fixes and Flows", "Emerging Market FX"] },
       { "title": "Rates and Bonds", "blurb": "Lending to governments and companies, and what it pays.",
         "subtopics": ["Bond Basics", "Yields and the Curve", "Risk"] },
       { "title": "Commodities and Gold", "blurb": "Oil, metals and crops, and why gold behaves differently.",
@@ -92,7 +94,7 @@
       { "title": "Equities", "blurb": "Owning a slice of a company.",
         "subtopics": ["How Stocks Trade", "Earnings"] },
       { "title": "Derivatives", "blurb": "Contracts whose price comes from something else.",
-        "subtopics": ["Futures and Forwards", "Options", "Swaps"] }
+        "subtopics": ["Futures and Forwards", "Options", "Volatility", "Swaps"] }
     ]
   },
   {
@@ -141,6 +143,27 @@
     ]
   },
   {
+    "slug": "hedge-funds",
+    "name": "Hedge Funds",
+    "icon": "hedgefunds",
+    "colour": "steel",
+    "open": true,
+    "description": "How hedge funds are built, how they invest and how they manage risk.",
+    "projectsBlurb": "Ideas pitched and sized the way a fund would: a thesis, a portfolio, a risk budget.",
+    "chapters": [
+      { "title": "The Hedge Fund Business", "blurb": "Other people's money: who gives it, what they pay, and how funds are set up.",
+        "subtopics": ["What a Hedge Fund Is", "Fees and the High-Water Mark", "Raising Capital", "Single-Manager vs Multi-Manager"] },
+      { "title": "Strategies", "blurb": "The main ways hedge funds try to make money.",
+        "subtopics": ["Long/Short Equity", "Global Macro", "Trend Following (CTAs)", "Relative Value", "Event-Driven", "Quant Funds"] },
+      { "title": "The Investment Process", "blurb": "From an idea to a position the portfolio manager will back.",
+        "subtopics": ["Idea Generation", "Variant Perception", "The Investment Memo", "Pitching an Idea"] },
+      { "title": "Portfolio Construction and Risk", "blurb": "Many positions, one portfolio, and the team that keeps it alive.",
+        "subtopics": ["Gross and Net Exposure", "Position Sizing and Kelly", "Risk Metrics", "The Risk Team"] },
+      { "title": "Famous Funds and Blow-ups", "blurb": "The funds that changed the industry, and the ones that broke.",
+        "subtopics": ["LTCM", "Renaissance", "Bridgewater", "Archegos"] }
+    ]
+  },
+  {
     "slug": "quant",
     "name": "Quant",
     "icon": "quant", 
@@ -155,12 +178,14 @@
         "subtopics": ["Time-Series Momentum", "Cross-Sectional Momentum"] },
       { "title": "Mean Reversion and Pairs", "blurb": "Betting that stretched prices snap back.",
         "subtopics": ["Mean Reversion", "Pairs Trading", "Cointegration"] },
-      { "title": "Statistical Arbitrage", "blurb": "Many small edges, traded at scale.",
-        "subtopics": ["Factor Models", "Market Making"] },
+      { "title": "Factors and Neutrality", "blurb": "What really drives a portfolio's returns, and how to switch off the parts you don't want.",
+        "subtopics": ["Factor Models", "Beta and Dollar Neutrality", "Exposure Management"] },
       { "title": "Backtesting without Fooling Yourself", "blurb": "Testing a strategy honestly.",
         "subtopics": ["Backtest Design", "Overfitting", "Performance Metrics"] },
       { "title": "Pricing Models", "blurb": "Putting a fair price on options.",
         "subtopics": ["Black-Scholes", "The Greeks in Practice"] },
+      { "title": "Quant Trading Firms", "blurb": "Jane Street, XTX and the firms that trade only their own money.",
+        "subtopics": ["What a Trading Firm Is", "How Market Makers Earn", "Speed vs Prediction", "The Firms", "Interviews and Life Inside", "Case Studies"] },
       { "title": "Quant Development", "blurb": "The code and systems that run strategies.",
         "subtopics": ["Market Data", "Order Books", "Low Latency"] },
       { "title": "Interview Prep", "blurb": "Brainteasers, mental maths and probability puzzles.",
