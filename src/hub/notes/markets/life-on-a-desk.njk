@@ -1,0 +1,258 @@
+---
+title: Life on a Desk
+shelf: markets
+chapter: what-markets-are
+subtopic: Life on a Desk
+order: 1
+summary: Who does what inside a hedge fund and on a bank trading desk, how careers and pay work, and what interviewers are really testing.
+lede: Who does what inside a hedge fund and on a bank's trading floor, what a day actually looks like, how careers and pay work, and what interviewers are really testing for.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/life-on-a-desk.js]
+
+quiz:
+  - q: 'At a multi-strategy "pod shop", a portfolio manager''s book is down \(9\%\). What usually happens?'
+    opts: ['Nothing until the end of the year', 'The risk team forces big cuts, and the PM may lose their capital', 'The PM is given more money to win it back']
+    right: 1
+    why: 'Platforms set hard drawdown limits per PM. Past them, the risk team cuts the book, and the PM can lose their allocation or their seat.'
+  - q: 'What''s the difference between variant perception and just being contrarian?'
+    opts: ['There is no difference', 'Variant perception means agreeing with the market but faster', 'Variant perception has evidence and a catalyst; contrarian just disagrees']
+    right: 2
+    why: 'A contrarian disagrees with the crowd. Variant perception is a specific, evidence-backed view that differs from consensus, with a reason the market will come round to it.'
+  - q: 'A platform PM is paid \(20\%\) of profits with a high-water mark. They make \(\$60\text{m}\), then lose \(\$30\text{m}\), then make \(\$45\text{m}\). What''s their total payout?'
+    opts: ['\(\$15\text{m}\)', '\(\$21\text{m}\)', '\(\$12\text{m}\)']
+    right: 0
+    why: 'Year 1: \(20\% \times 60 = 12\). Year 2: nothing. Year 3: the first \(30\) only recovers the loss, so the payout is \(20\% \times 15 = 3\). Total \(\$15\text{m}\).'
+
+connected:
+  - { label: Builds on, title: The Players, where: Markets · What Markets Are, url: /hub/markets/the-players/ }
+  - { label: Used in, title: Algorithmic execution, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Position sizing and risk, where: Trading, url: /hub/trading/ }
+---
+
+{% sec 1, "Two Ways to Run a Fund", "How is a hedge fund organised inside?", "Two ways to run a fund" %}
+  <div class="prose">
+    <p>Every hedge fund has two halves. The <strong>front office</strong> makes the money: the people who find ideas, decide on trades and place them. The <strong>business side</strong> keeps everything safe and running: risk, operations, compliance, technology and the people who look after investors.</p>
+    <p>How the front office is arranged depends on which of two models the fund follows. Think of a restaurant with one famous head chef who decides every dish, compared with a food hall where dozens of independent stalls share one building, one kitchen supply and one set of rules.</p>
+    <ul>
+      <li>A {% gl "single-manager fund" %}single-manager fund{% endgl %} is the restaurant. One founder, the chief investment officer, makes the final call on every position. The team is small (often \(10\) to \(30\) people) and works closely together. Junior analysts describe it as an apprenticeship: you watch one experienced investor think, every day.</li>
+      <li>A {% gl "multi-strategy platform" %}multi-strategy platform{% endgl %}, nicknamed a "pod shop", is the food hall. The firm hands money to dozens or hundreds of independent {% gl "portfolio manager" %}portfolio managers{% endgl %}, each running their own small team (a pod). The firm provides the building: technology, data, risk, operations. Citadel and Millennium are the best-known examples.</li>
+    </ul>
+    <p>The defining rule of a pod shop is the stop-loss on each PM. If a PM's book falls by a set amount, often \(5\%\) to \(10\%\), the risk team cuts it down, and past a certain point the PM loses their money or their job. Because hundreds of pods are making different bets, the firm's overall returns come out much smoother than any single pod's.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The two shapes</h3><p>Left: one decision-maker. Right: many independent pods sharing one platform.</p></div>
+    <svg class="chart" id="chart-orgs" viewBox="0 0 640 300" role="img" aria-label="A single-manager fund with one chief investment officer above analysts and traders, next to a platform with a central risk team above many independent PM pods."></svg>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Single-manager funds give you a broad apprenticeship under one investor. Platforms give you a clear, numbers-driven route to running money, with much less job security.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Roles in a Fund", "Who does what inside a hedge fund?", "Roles in a fund" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Role</th><th>In one line</th><th>What they're judged on</th></tr></thead>
+      <tbody>
+        <tr><td>Analyst</td><td>Finds ideas where the market is wrong, and proves it</td><td>The quality of their ideas and research</td></tr>
+        <tr><td>Portfolio manager (PM)</td><td>Decides what goes in the portfolio, how big, and when to cut</td><td>The fund's overall profit and risk</td></tr>
+        <tr><td>Trader</td><td>Buys and sells for the PM as cheaply and quietly as possible, and reports what's happening in the market</td><td>Execution costs and the quality of their market information</td></tr>
+        <tr><td>Risk team</td><td>Watches every position independently and enforces the limits</td><td>Making sure nothing blows up the fund</td></tr>
+        <tr><td>Operations</td><td>Books, settles and reconciles every trade, and works out what the fund is worth</td><td>Accuracy: mistakes here cost real money</td></tr>
+        <tr><td>Compliance</td><td>Keeps the fund inside the law, especially on inside information</td><td>No breaches</td></tr>
+        <tr><td>Investor relations</td><td>Raises money and keeps investors informed</td><td>Money raised and kept</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The analyst: "find me where the market is wrong"</h3>
+    <p>An analyst's job comes down to one request from the PM: find ideas where the market is wrong, and prove it. Describing a great company isn't an idea. A real idea explains why the price is wrong, what will make it right (the {% gl "catalyst" %}catalyst{% endgl %}), how much could be made or lost, and what evidence would prove the idea wrong.</p>
+    <p>The best ideas rest on {% gl "variant perception" %}variant perception{% endgl %}: a specific view that differs from the consensus, backed by evidence, with a reason the market will come round to it. That's different from being contrarian, which is just disagreeing with the crowd.</p>
+    <h3>The PM: from "is this a good idea?" to "does it fit?"</h3>
+    <p>An analyst asks whether an idea is good. A PM asks how it fits with everything else they own, how big to make it, and when to cut it if it goes wrong. Many great analysts struggle as PMs, because the conviction that makes a good analyst can stop them cutting a losing position.</p>
+    <h3>The risk team: independent on purpose</h3>
+    <p>The people taking risk are the worst people to judge it, because everyone underestimates the risk in their own ideas. So at a well-run fund, the risk team reports to the top of the firm, not to the PMs, and can force cuts even when a PM disagrees. Most hedge fund disasters happened when that independence broke down.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Life on a Bank Trading Desk", "What does the job I'm aiming for actually look like?", "Life on a bank desk" %}
+  <div class="prose">
+    <p>Deltashark's lesson is about the buy side. An FX or commodities sales and trading job is on the sell side, in a bank's markets division, and it's a different life.</p>
+    <h3>Who sits on the desk</h3>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Role</th><th>What they do</th></tr></thead>
+      <tbody>
+        <tr><td>Sales</td><td>Look after clients (hedge funds, fund managers, companies, central banks), bring them trade ideas, and take their orders</td></tr>
+        <tr><td>Trader</td><td>Makes the prices clients trade on and manages the risk the desk is left holding. Judged on their own profit and loss.</td></tr>
+        <tr><td>Structurer</td><td>Designs tailored products for clients, like a currency hedge shaped to a company's exact payments</td></tr>
+        <tr><td>Strats (desk quants)</td><td>Build pricing models and the systems that quote prices automatically</td></tr>
+        <tr><td>Strategist / research</td><td>Write the bank's market views, which sales use with clients</td></tr>
+        <tr><td>Middle office and risk</td><td>Check the desk's positions, profit and loss and limits every day</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>A bank trader is different from a hedge fund trader. A hedge fund trader carries out someone else's decisions as cheaply as possible. A bank trader makes prices for clients and carries the risk of what's left over, so their own numbers are what they're judged on.</p>
+    <h3>A day on an FX desk</h3>
+    <p>FX never closes during the week, so banks pass their positions around the world: Asia hands the book to London in the morning, and London hands it to New York in the afternoon. London is the biggest FX trading centre in the world, so the London desk sits in the middle of the action.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Time (UK)</th><th>What's happening</th></tr></thead>
+      <tbody>
+        <tr><td>6:30</td><td>Read the Asia desk's handover notes: what moved overnight, what the book looks like</td></tr>
+        <tr><td>7:00</td><td>Morning meeting: the day's data releases, central bank events, client flows to expect</td></tr>
+        <tr><td>7:30–8:00</td><td>London opens and volumes jump. Quote prices, manage the risk</td></tr>
+        <tr><td>Morning</td><td>UK and European data releases. Sales call clients with ideas</td></tr>
+        <tr><td>13:30</td><td>The big US data (jobs, inflation) usually lands now. Often the busiest minutes of the day</td></tr>
+        <tr><td>16:00</td><td>The London "fix": a benchmark rate many funds trade at, so lots of orders arrive at once</td></tr>
+        <tr><td>Evening</td><td>Hand the book to New York, write up the day, read for tomorrow</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 4, "Careers and Pay", "How do careers progress, and how does pay work?", "Careers and pay" %}
+  <div class="prose">
+    <h3>The ladders</h3>
+    <ul>
+      <li><strong>At a bank:</strong> Analyst, then Associate, then Vice President (VP), then Director, then Managing Director (MD). Each step takes a few years.</li>
+      <li><strong>At a hedge fund:</strong> Junior analyst, then analyst, then senior analyst, then sector head or deputy PM, then portfolio manager. There's no fixed timetable: it depends almost entirely on how good your ideas turn out to be.</li>
+    </ul>
+    <p>People move between them all the time. Two years at a bank is a common stepping stone into private equity or a hedge fund. Bank traders often move to the buy side, and sell-side analysts often become buy-side analysts.</p>
+    <h3>How pay works</h3>
+    <p>Pay is a base salary plus a bonus, and the bonus is where the big differences are. At a bank it comes from the bank's overall results and your own reviews. At a hedge fund it's tied much more directly to profits, so it can be huge in a good year and close to nothing in a bad one. Rough US figures from the lesson: junior roles at most firms pay around \(\$150\text{k}\) to \(\$350\text{k}\) in total in the first years. A platform PM is paid \(15\%\) to \(25\%\) of the profit they make, which can be millions, or zero.</p>
+    <p>Two details matter more than they look:</p>
+    <ul>
+      <li><strong>{% gl "deferred compensation" %}Deferred bonus{% endgl %}.</strong> Many firms pay part of the bonus later, over two to four years, and you lose it if you leave early. These are called golden handcuffs.</li>
+      <li><strong>The {% gl "high-water mark" %}high-water mark{% endgl %}.</strong> After a losing year, a PM has to win the losses back before they get paid on profits again. Try it below.</li>
+    </ul>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>A PM's pay over three years</h3><p>A platform PM runs \(\$750\) million and is paid \(20\%\) of profits, with a high-water mark. Set the profit or loss for each year.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="y1">Year 1</label><input type="range" id="y1" min="-90" max="120" step="5" value="60"><output id="y1-out" for="y1">$60m</output></div>
+      <div class="ctrl"><label for="y2">Year 2</label><input type="range" id="y2" min="-90" max="120" step="5" value="-30"><output id="y2-out" for="y2">−$30m</output></div>
+      <div class="ctrl"><label for="y3">Year 3</label><input type="range" id="y3" min="-90" max="120" step="5" value="45"><output id="y3-out" for="y3">$45m</output></div>
+    </div>
+    <svg class="chart" id="chart-hwm" viewBox="0 0 640 300" role="img" aria-label="Bars of profit or loss each year and the PM's payout, with the losses still to win back"></svg>
+    <div class="legend"><span><i class="sw grey"></i>Profit or loss</span><span><i class="sw tone"></i>PM's payout</span></div>
+    <div class="readout" id="hwm-read"></div>
+    <p class="look" id="hwm-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "What Interviewers Look For", "What are they actually testing?", "What interviewers want" %}
+  <div class="prose">
+    <p>Intelligence is the entry ticket, not the differentiator. Across the industry, interviewers are testing for a handful of things:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>They want to see</th><th>How they test it</th></tr></thead>
+      <tbody>
+        <tr><td>You have real views</td><td>"Pitch me a trade." "What's the market getting wrong?"</td></tr>
+        <tr><td>You think about risk, not just reward</td><td>"What's the downside? What would make you change your mind? Where would you cut it?"</td></tr>
+        <tr><td>You know the markets you want to work in</td><td>"Where's EUR/USD? What moved it this week? What's the next big event?"</td></tr>
+        <tr><td>Numbers come easily to you</td><td>Mental maths, probability puzzles, quick estimates (especially for trading roles)</td></tr>
+        <tr><td>You communicate clearly under pressure</td><td>Live pushback on your pitch; explaining something complex simply</td></tr>
+        <tr><td>You're honest about mistakes</td><td>"Tell me about a time you were wrong."</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The analysts who get promoted fastest share five habits: they only pitch ideas with genuine variant perception, they do their own research rather than repeating others', they admit mistakes quickly, they stay precise under pressure, and they follow a repeatable process instead of waiting for inspiration. The same habits come across in an interview, and a hub like this one is evidence of the last one.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Portfolio manager</h3><span class="tag desk">Desk</span></div><p>The person who decides what goes in a portfolio, how big, and when to cut. Usually called the PM.</p><p class="eg">"Pitch it to the PM at the morning meeting."</p></div>
+    <div class="term"><div class="term-top"><h3>Single-manager fund</h3><span class="tag desk">Desk</span></div><p>A hedge fund where one founder makes the final call on every position.</p><p class="eg">Pershing Square, Lone Pine.</p></div>
+    <div class="term"><div class="term-top"><h3>Multi-strategy platform</h3><span class="tag desk">Desk</span></div><p>A firm that hands money to many independent PM teams (pods), with central risk limits. Nicknamed a pod shop.</p><p class="eg">Citadel, Millennium, Point72.</p></div>
+    <div class="term"><div class="term-top"><h3>Variant perception</h3><span class="tag desk">Desk</span></div><p>A specific, evidence-backed view that differs from the consensus, with a reason the market will come round to it.</p><p class="eg">"What's your variant perception here?"</p></div>
+    <div class="term"><div class="term-top"><h3>Catalyst</h3><span class="tag desk">Desk</span></div><p>The event that will make the market see what you see, and move the price.</p><p class="eg">Results day, a central bank meeting, a court ruling.</p></div>
+    <div class="term"><div class="term-top"><h3>Drawdown</h3><span class="tag desk">Desk</span></div><p>How far a portfolio has fallen from its highest point.</p><p class="eg">"He's in a \(6\%\) drawdown, so risk is cutting his gross."</p></div>
+    <div class="term"><div class="term-top"><h3>High-water mark</h3><span class="tag desk">Desk</span></div><p>The previous peak. After losses, a manager must get back above it before earning performance pay again.</p><p class="eg">"She's below her high-water mark, so no payout this year."</p></div>
+    <div class="term"><div class="term-top"><h3>Deferred compensation</h3><span class="tag desk">Desk</span></div><p>Part of a bonus paid over the next few years, lost if you leave early. The golden handcuffs.</p><p class="eg">"Half my bonus vests over three years."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where these roles turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: think like a PM, not just an analyst</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>The PM habits in this note are the ones that matter for any trader: decide in advance where you'll cut, size positions so one mistake can't sink you, and respect hard drawdown limits. Prop firm challenges use exactly the same idea as a pod shop's stop-loss: lose a set amount and the account is gone. The Trading topic goes deeper into position sizing and risk.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same roles, different assets</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A property fund has the same shape: analysts who find and check deals, a decision-maker who decides what to buy and how much to borrow, operations and investor relations. When it comes to partnering with a real estate specialist, knowing who does what on their side makes the conversation much easier.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: desks in Lagos</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian banks have treasury and markets desks too, trading naira, government bonds and money markets, with the same split of sales, trading and risk. A fintech that serves businesses' FX needs is, in effect, building a digital version of the sales desk: understanding what a client needs and getting them a fair price quickly.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do payouts, exposure and bet sizes work?" %}
+  <div class="prose">
+    <h3>Payout with a high-water mark</h3>
+    <p>Keep a running total of losses still to win back, \(D\) (start at \(0\)). Each year, with profit or loss \(P\) and payout rate \(p\):</p>
+  </div>
+  <div class="formula"><span class="lbl">One year's payout</span>\[ \text{payout} = p \times \max(0,\ P - D) \qquad D_{\text{next}} = \max(0,\ D - P) \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>\(20\%\) payout. Year 1: \(+\$60\text{m}\). Year 2: \(-\$30\text{m}\). Year 3: \(+\$45\text{m}\).</h3>
+    <ol class="steps">
+      <li>Year 1: \(D = 0\), payout \(= 0.2 \times 60 = \$12\text{m}\).</li>
+      <li>Year 2: a loss, so payout \(= 0\) and \(D\) becomes \(\$30\text{m}\).</li>
+      <li>Year 3: payout \(= 0.2 \times (45 - 30) = \$3\text{m}\), and \(D\) is back to \(0\).</li>
+    </ol>
+    <p class="answer">Total \(\$15\text{m}\). Without the high-water mark it would have been \(\$21\text{m}\). These are the starting settings of the chart in section 4.</p>
+  </div>
+
+  <div class="prose">
+    <h3>Gross and net exposure</h3>
+    <p>A fund that bets on some shares rising (longs) and others falling (shorts) measures its size two ways, as a percentage of its own money:</p>
+  </div>
+  <div class="formula"><span class="lbl">Exposure</span>\[ \text{Gross} = \frac{\text{longs} + \text{shorts}}{\text{fund size}} \qquad \text{Net} = \frac{\text{longs} - \text{shorts}}{\text{fund size}} \]</div>
+  <div class="prose">
+    <p>A fund with \(100\%\) long and \(50\%\) short has gross \(150\%\) (it's using borrowed money) and net \(50\%\) (it captures roughly half of a market move).</p>
+    <h3>How big to bet: the Kelly criterion</h3>
+    <p>For a bet that wins with probability \(q\) and pays \(b\) times your stake (losing your stake otherwise), the size that grows your money fastest over time is:</p>
+  </div>
+  <div class="formula"><span class="lbl">Kelly fraction</span>\[ f = \frac{q\,b - (1 - q)}{b} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>An idea wins \(60\%\) of the time and pays the same as it risks (\(b = 1\)).</h3>
+    <ol class="steps">
+      <li>\(f = \frac{0.6 \times 1 - 0.4}{1} = 0.2\), so Kelly says bet \(20\%\).</li>
+      <li>Real PMs use a fraction of Kelly, often a quarter to a half, because they never know the true probability: \(5\%\) to \(10\%\).</li>
+    </ol>
+    <p class="answer">Betting more than your real edge justifies is one of the fastest ways to lose money, even with good ideas.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A \(\$2\) billion fund has \(40\) positions. The biggest is \(8\%\), and the top \(10\) make up \(55\%\). The PM wants to add a new idea at \(6\%\). What should the risk team ask?</span></p>
+      <details><summary>Show answer</summary><div><span>The fund is already concentrated: over half its money is in ten names. Risk would ask whether the new idea is correlated with the big existing positions (same sector, same economic driver), how quickly a \(\$120\) million position could be sold in a crisis, what it does to sector and factor limits, and whether something else should be trimmed to make room.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Single-manager fund or platform for a first job? Make the case for each.</span></p>
+      <details><summary>Show answer</summary><div><span>Single-manager: you see the whole portfolio and learn how one great investor thinks, but your career depends on that person, and becoming a PM usually means leaving.</span><span>Platform: a clear, measurable route to running money and lots of resources, but you see a narrow slice and pods can be shut down quickly. Many people suggest starting where you'll learn most broadly, then moving.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Why must the risk team be independent of the people investing?</span></p>
+      <details><summary>Show answer</summary><div><span>People underestimate the risk in their own positions: they anchor on their thesis and hate admitting losses. An independent team with power to force cuts protects the fund from that. When risk teams were overruled or reported to the investors, losses were allowed to grow, as in the collapse of Long-Term Capital Management in 1998.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A PM has ideas at conviction levels low, moderate, high and highest. Roughly how big should each be, and what else limits the sizes?</span></p>
+      <details><summary>Show answer</summary><div><span>Roughly \(1\)–\(2\%\), \(2\)–\(4\%\), \(4\)–\(7\%\) and \(7\)–\(10\%\) of the fund. But the sizes also depend on how easily each can be sold (liquidity), whether the ideas move together (correlation), sector limits, and whether the downside is limited.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A fund is \(130\%\) long and \(70\%\) short. What are its gross and net exposure?</span></p>
+      <details><summary>Show answer</summary><div><span>Gross \(= 130 + 70 = 200\%\). Net \(= 130 - 70 = 60\%\).</span></div></details></div>
+  </div>
+{% endsec %}
