@@ -1,0 +1,223 @@
+---
+title: Following the Money
+shelf: markets
+chapter: what-markets-are
+subtopic: "Who's Who?"
+order: 2
+summary: How a single pound travels from a saver down through the financial system and back, who takes a fee on the way, and how information moves alongside it.
+lede: How a single pound travels from a saver through the financial system and back, who takes a slice on the way, which firms work behind the scenes, and how information and "edge" move alongside the money.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/following-the-money.js]
+
+quiz:
+  - q: 'A hedge fund charging \(2\%\) and \(20\%\) makes exactly the same return as a cheap index fund before fees. Who ends up with more?'
+    opts: ['The hedge fund''s investors', 'They end up the same', 'The index fund''s investors']
+    right: 2
+    why: 'Same return before fees, much bigger fees for the hedge fund. A hedge fund has to beat the market by a lot just to break even with a cheap index fund.'
+  - q: 'An analyst hears from a friend at a company that its results, out next week, are terrible. Can they trade on it?'
+    opts: ['No: it''s material non-public information', 'Yes, if they didn''t pay for it', 'Yes, as long as it''s a small trade']
+    right: 0
+    why: 'It''s important (material) and not yet public. Trading on it is insider dealing, a crime, however it was obtained.'
+  - q: 'Why do pension funds care so much about fees?'
+    opts: ['Because fees are charged only in bad years', 'Because fees compound against them every year for decades', 'Because regulators set their returns']
+    right: 1
+    why: 'A fee taken every year is lost growth every year after. Over 30 years, a few percent a year can eat more than half the final pot.'
+
+connected:
+  - { label: Builds on, title: The Players, where: Markets · What Markets Are, url: /hub/markets/the-players/ }
+  - { label: Builds on, title: Exponential Functions, where: Maths · Exponentials and logs, url: /hub/maths/exponential-functions/ }
+  - { label: Used in, title: Prime brokerage, where: Markets · How Markets Work, url: /hub/markets/ }
+---
+
+<style>
+  .route button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Follow One Pound", "Where does a saver's money actually go?", "Follow one pound" %}
+  <div class="prose">
+    <p>The last note was a map of who's who. This one follows the money across that map, the way you'd follow a parcel from the sender to the doorstep.</p>
+    <p>Take a teacher. Every month, part of her salary goes into her pension. Here's one realistic journey for that money:</p>
+  </div>
+  <ol class="steps">
+    <li><strong>The teacher</strong> pays into her pension fund every month.</li>
+    <li><strong>The pension fund</strong> (an asset owner) decides how to split its money: so much in shares, so much in bonds, a bit in hedge funds and private equity. It often pays consultants to help it decide.</li>
+    <li>It hands a slice to <strong>a hedge fund</strong> (an asset manager), becoming one of its limited partners.</li>
+    <li>The hedge fund opens an account with <strong>a prime broker</strong> (a bank), which lends it extra money so it can invest more than it was given.</li>
+    <li>A hedge fund analyst finds a company they like, helped by <strong>sell-side research</strong> and a meeting with the company's bosses that a broker arranged.</li>
+    <li>The fund buys the shares on <strong>a stock exchange</strong> through a broker, and the prime broker settles the trade and holds the shares safely.</li>
+    <li>Those shares only exist because, a few years earlier, <strong>an investment bank</strong> took the company public in an IPO.</li>
+  </ol>
+  <div class="prose">
+    <p>Then it goes back the other way. If the investment does well, the profit flows back up to the hedge fund, then to the pension fund, and eventually becomes the teacher's pension. So the system is a circle, not a one-way street.</p>
+    <p>Every firm on that journey does a real job, and every one of them takes a slice. Finance calls this {% gl "fee layering" %}fee layering{% endgl %}, and it's the reason big savers spend so much time arguing about costs.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Follow a pound: where the gain goes</h3><p>The teacher's \(\text{£}1{,}000\) goes into her pension for a year. Pick how the pension invests it, and how the market does. The bars show where each slice of the gain ends up. The fees are typical examples, not any real fund's.</p></div>
+    <div class="controls">
+      <div class="presets route" id="route" aria-label="How the pension invests"></div>
+      <div class="ctrl"><label for="mret">Market return</label><input type="range" id="mret" min="-20" max="30" step="1" value="10"><output id="mret-out" for="mret">10%</output></div>
+    </div>
+    <svg class="chart" id="chart-pound" viewBox="0 0 640 320" role="img" aria-label="Waterfall chart showing how fees and costs reduce the teacher's gain"></svg>
+    <div class="readout" id="pound-read"></div>
+    <p class="look" id="pound-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Money flows down through the layers and profits flow back up. Every layer takes a slice, so a fund has to earn its fee by doing better than the cheap option.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Who Does What for Whom", "How do all these firms actually work together?", "Who does what" %}
+  <div class="prose">
+    <p>The firms on the map aren't separate islands. They're tied together by ongoing relationships, and each relationship is a service flowing one way and money flowing the other.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>From</th><th>To</th><th>What flows</th></tr></thead>
+      <tbody>
+        <tr><td>Pension funds, endowments, sovereign funds</td><td>Hedge funds and private equity</td><td>Money to invest, in return for fees and (hopefully) good returns</td></tr>
+        <tr><td>Ordinary savers</td><td>Mutual funds and index funds</td><td>Small amounts pooled together so everyone gets access to markets</td></tr>
+        <tr><td>Banks (prime brokerage)</td><td>Hedge funds</td><td>Borrowed money, borrowed shares, safekeeping and trade settlement</td></tr>
+        <tr><td>Banks (investment banking)</td><td>Companies</td><td>Advice on deals and help raising money, for fees</td></tr>
+        <tr><td>Banks (research and sales)</td><td>Hedge funds and fund managers</td><td>Research, trade ideas and meetings with company bosses, in return for trading business</td></tr>
+        <tr><td>Market makers</td><td>Everyone</td><td>A price to trade at any moment, in return for the spread</td></tr>
+        <tr><td>Rating agencies</td><td>Bond investors</td><td>Grades on how safe a borrower is, which decide who can buy the bonds and at what rate</td></tr>
+        <tr><td>Private equity</td><td>Public markets, through banks</td><td>Companies sold back to the public in IPOs, creating new shares to trade</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Notice how often a bank appears, and that the same bank can be on several of these lines at once. The bank that took a company public may also be lending to the hedge fund that's betting against it, and writing research on it. That's why banks keep strict walls between their departments, and why conflicts of interest are a constant worry in this industry.</p>
+    <p>These relationships are also personal and long-running. A big hedge fund gets the bank's best people and first call on scarce shares to borrow. A tiny fund gets a junior contact. Who you know, and how much business you bring, decides the service you get.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Back Room", "Which firms work behind the scenes, and what do they provide?", "The back room" %}
+  <div class="prose">
+    <p>Around the banks and funds sits a layer of firms that never invest a penny themselves but that nobody could work without. Think of them as the kitchen suppliers, cleaners and accountants behind a busy restaurant.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Type</th><th>Examples</th><th>What they provide</th></tr></thead>
+      <tbody>
+        <tr><td>Market data terminals</td><td>Bloomberg, LSEG (Refinitiv), FactSet</td><td>Live prices, news, data, and the chat everyone uses. A Bloomberg terminal costs roughly \(\$25{,}000\)–\(\$30{,}000\) per person per year.</td></tr>
+        <tr><td>Trading platforms</td><td>Bloomberg FXGO, LSEG FXall, EBS</td><td>Screens where clients and banks trade FX electronically</td></tr>
+        <tr><td>Alternative data</td><td>Satellite images, card spending, web traffic providers</td><td>Unusual data that hints at results before they're announced</td></tr>
+        <tr><td>Research platforms</td><td>AlphaSense, Tegus</td><td>Search across company filings, call transcripts and broker research</td></tr>
+        <tr><td>Index providers</td><td>MSCI, S&amp;P Dow Jones, FTSE Russell</td><td>The benchmarks everyone is measured against, like the FTSE 100</td></tr>
+        <tr><td>Portfolio and order systems</td><td>BlackRock Aladdin, Charles River</td><td>Software to track positions, risk and orders</td></tr>
+        <tr><td>Fund administrators</td><td>Citco, State Street</td><td>Independent checks of what a fund is worth, so investors don't just take the manager's word for it</td></tr>
+        <tr><td>Auditors and lawyers</td><td>The Big Four accountants, specialist law firms</td><td>Yearly audits, setting up funds, contracts and regulatory filings</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Two reasons this layer is worth knowing. Interviewers expect you to know the tools (being comfortable on a Bloomberg terminal is close to essential on a trading desk). And these firms are big employers themselves, with real routes into the industry through data, product or sales roles.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Information and Edge", "How does information move, and what counts as an advantage?", "Information and edge" %}
+  <div class="prose">
+    <p>Money isn't the only thing flowing through the system. Information flows too, and in markets, information is what moves prices.</p>
+    <p>In theory, everything public is already in the price: it's priced in. In practice, information reaches people at different speeds, and people read it differently. Having {% gl "edge" %}edge{% endgl %} means you're right when the market isn't, because you saw something first, understood it better, or put the pieces together better.</p>
+    <h3>Where information comes from</h3>
+    <ul>
+      <li><strong>Company reports.</strong> Results and announcements that everyone gets at the same moment.</li>
+      <li><strong>Sell-side research.</strong> Banks' analysts publish forecasts. Averaged together they form the {% gl "consensus" %}consensus{% endgl %}: what the market expects, and the bar a company's results are judged against.</li>
+      <li><strong>Meetings with company bosses,</strong> often arranged by brokers. Companies must tell everyone the same important facts, but a sharper question can still get a more useful answer.</li>
+      <li><strong>People in the industry.</strong> Former employees, suppliers and customers. Lots of small, harmless clues can add up to a picture, which investors call the mosaic.</li>
+      <li><strong>{% gl "alternative data" %}Alternative data{% endgl %}.</strong> Counting cars in supermarket car parks from satellite photos, tracking card spending, app downloads or shipping traffic, to see results before they're announced. Hedge funds spend billions a year on it.</li>
+    </ul>
+    <h3>The line you can't cross</h3>
+    <p>If information is both important and not yet public, it's {% gl "mnpi" %}material non-public information{% endgl %}. Trading on it is insider dealing, a crime in the UK and the US, with prison sentences. Every fund and bank has compliance teams whose job is to stop it happening. The mosaic is allowed. A tip-off about next week's results is not.</p>
+    <h3>Information in FX and macro</h3>
+    <p>In currencies and bonds, there's much less secret information to find. Everyone sees the inflation figure or the central bank's decision at the same second. The edge is mostly in interpretation and speed: what the number means compared with what was expected, and what the central bank will do next. The other big source of edge is knowing the flows: who needs to buy or sell, and when.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Fee layering</h3><span class="tag desk">Desk</span></div><p>Each firm in the chain between a saver and the market taking its own fee, so the costs stack up.</p><p class="eg">Pension costs, then fund fees, then trading costs.</p></div>
+    <div class="term"><div class="term-top"><h3>Benchmark</h3><span class="tag desk">Desk</span></div><p>The index a fund is measured against.</p><p class="eg">"We beat the benchmark by \(2\%\) this year."</p></div>
+    <div class="term"><div class="term-top"><h3>Consensus</h3><span class="tag desk">Desk</span></div><p>The average forecast from analysts: what the market expects.</p><p class="eg">"Profits came in \(5\%\) above consensus."</p></div>
+    <div class="term"><div class="term-top"><h3>Edge</h3><span class="tag desk">Desk</span></div><p>A reason you'll be right when the market is wrong: better information, interpretation or speed.</p><p class="eg">"What's your edge on this trade?"</p></div>
+    <div class="term"><div class="term-top"><h3>Alternative data</h3><span class="tag desk">Desk</span></div><p>Unusual data (satellite images, card spending, web traffic) used to spot trends before official figures.</p><p class="eg">Car counts outside a retailer's stores.</p></div>
+    <div class="term"><div class="term-top"><h3>MNPI</h3><span class="tag desk">Desk</span></div><p>Material non-public information: important facts not yet public. Trading on it is a crime.</p><p class="eg">"You're wall-crossed, so you can't trade it."</p></div>
+    <div class="term"><div class="term-top"><h3>Fund administrator</h3><span class="tag desk">Desk</span></div><p>An independent firm that works out what a fund is worth and keeps its investor records.</p><p class="eg">Big investors won't use a fund without one.</p></div>
+    <div class="term"><div class="term-top"><h3>Rebalancing</h3><span class="tag desk">Desk</span></div><p>Buying and selling to get a portfolio back to its target mix after prices have moved.</p><p class="eg">"Month-end rebalancing flows hit the dollar."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 6, "How does this link to Trading, Real Estate and Fintech?", "Where following the money matters in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: flows you can see coming</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Because big asset owners invest by rules, some of their buying and selling is predictable. A pension fund with a target of, say, \(60\%\) shares will sell shares and buy bonds after a big rally to get back to its mix, and much of this happens at the end of the month. Funds holding foreign assets often trade the currencies they need around the London 4pm "fix", a benchmark exchange rate set each afternoon. FX traders watch for these month-end and fix flows, because predictable buying and selling can move prices.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the layers on a building</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Money going into property passes through the same kind of chain: a pension fund invests in a private equity property fund, which pays a manager, borrows from a bank, and pays agents and lawyers on every purchase. Each layer is a fee. That's part of why big owners increasingly buy buildings directly, and why cheaper routes like listed property companies exist.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: cutting out layers</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>For ordinary savers, every layer between them and the market is a cost and a barrier. A lot of fintech, in Nigeria and everywhere else, is about removing layers: letting people buy shares, government bonds or dollars from an app, cheaply, without a chain of middlemen. Phone and mobile-money records are also a kind of alternative data, used by lenders to judge whether someone can repay a loan when they have no credit history.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 7, "The Maths Underneath", "Why do small fees make such a big difference?" %}
+  <div class="prose">
+    <h3>Fees as a share of the gain</h3>
+    <p>A fee of \(2\%\) sounds small, but it's \(2\%\) of all the money, not \(2\%\) of the profit. If the market makes \(10\%\), a \(2\%\) fee takes a fifth of the gain. Then a \(20\%\) performance fee takes a slice of what's left.</p>
+    <h3>Fees compound too</h3>
+    <p>Fees are taken every year, and every pound taken out is a pound that never grows again. If a pot grows at \(r\) a year and fees cost \(f\) a year, after \(n\) years:</p>
+  </div>
+  <div class="formula"><span class="lbl">Growth after fees</span>\[ V_n = V_0 \times (1 + r - f)^{n} \]</div>
+  <div class="prose">
+    <p>This is the compounding formula from the exponentials note, with the growth factor shrunk by the fee.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>The teacher's \(\text{£}1{,}000\) goes through a hedge fund charging \(2\%\) and \(20\%\). The market makes \(10\%\). Trading and borrowing costs are \(0.5\%\), and the pension's own running costs are \(0.3\%\).</h3>
+    <ol class="steps">
+      <li>Gain from the market: \(\text{£}100\).</li>
+      <li>Trading and borrowing costs: \(0.5\% \times 1000 = \text{£}5\).</li>
+      <li>Management fee: \(2\% \times 1000 = \text{£}20\).</li>
+      <li>Performance fee: \(20\% \times (100 - 5 - 20) = \text{£}15\).</li>
+      <li>Pension running costs: \(0.3\% \times 1000 = \text{£}3\).</li>
+      <li>The teacher keeps \(100 - 5 - 20 - 15 - 3 = \text{£}57\).</li>
+    </ol>
+    <p class="answer">Of a \(\text{£}100\) gain, \(\text{£}43\) went in fees and costs. Through a \(0.1\%\) index fund she'd keep \(100 - 1 - 3 = \text{£}96\). The hedge fund would have to beat the market by about \(5\%\) a year to match that. These are the starting settings of the "follow a pound" chart.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>\(\text{£}10{,}000\) grows for \(30\) years at \(8\%\) a year before fees. Compare fees of \(0.1\%\) and \(3\%\) a year.</h3>
+    <ol class="steps">
+      <li>Low fees: \(10{,}000 \times 1.079^{30} \approx \text{£}97{,}900\).</li>
+      <li>High fees: \(10{,}000 \times 1.05^{30} \approx \text{£}43{,}200\).</li>
+    </ol>
+    <p class="answer">An extra \(2.9\%\) a year in fees costs more than half the final pot, about \(\text{£}54{,}700\). That's why pension funds negotiate so hard, and why so much money has moved into cheap index funds.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A university endowment gives \(\$1\) billion to a hedge fund that bets on some shares rising and others falling. Name the firms involved between the endowment's decision and the trades.</span></p>
+      <details><summary>Show answer</summary><div><span>Consultants may help the endowment choose the fund. The hedge fund invests it, with a prime broker lending it money and shares (shares to sell short) and holding its assets. Brokers execute its trades on exchanges, often against market makers. Sell-side analysts provide research and company meetings. A fund administrator independently values the fund, and auditors and lawyers check the books and paperwork.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>What was the "Yale model", and why didn't it work for everyone?</span></p>
+      <details><summary>Show answer</summary><div><span>Starting in 1985, Yale's endowment put most of its money into alternatives (private equity, venture capital, hedge funds, property) instead of mainly shares and bonds, and earned around \(13\%\) a year over two decades.</span><span>It worked because Yale was very good at picking managers and could lock money away for decades. The gap between the best and worst private funds is huge, so endowments that copied the mix without the manager-picking skill often did much worse.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>How did the EU rule MiFID II change the relationship between bank research and fund managers?</span></p>
+      <details><summary>Show answer</summary><div><span>Before 2018, research was effectively paid for through trading commissions. MiFID II made fund managers pay for research separately and openly.</span><span>The aim was to stop hidden costs and conflicts. The side effects: research budgets fell sharply, banks cut analysts, and smaller companies lost coverage. That makes them less watched, which can mean more chances for investors who do their own work.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Using the formula, how much does \(\text{£}5{,}000\) grow to over \(20\) years at \(6\%\) a year with fees of \(1\%\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(5000 \times 1.05^{20} \approx \text{£}13{,}266\). Without the fee it would be \(5000 \times 1.06^{20} \approx \text{£}16{,}036\).</span></div></details></div>
+  </div>
+{% endsec %}
