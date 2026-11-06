@@ -76,7 +76,7 @@
       { "title": "What Markets Are", "blurb": "What a market is, what gets traded, and who's doing the trading.",
         "subtopics": [
           "Why Markets Exist",
-          { "name": "The Asset Classes", "planned": ["A Tour of the Aisles"] },
+          "The Asset Classes", 
           { "name": "Primary and Secondary Markets", "planned": ["First Sale vs Resale"] },
           { "name": "Who's Who?", "planned": ["The Players"] },
           "Life on a Desk"

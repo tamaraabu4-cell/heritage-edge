@@ -1,0 +1,258 @@
+---
+title: A Tour of the Aisles
+shelf: markets
+chapter: what-markets-are
+subtopic: The Asset Classes
+order: 1
+summary: The main kinds of things you can buy in markets, what you're actually holding with each, and how bumpy each ride is.
+lede: The main kinds of things you can buy in markets, what you're actually holding with each one, how each makes you money, and how bumpy the ride is.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/a-tour-of-the-aisles.js]
+
+quiz:
+  - q: 'What are you actually holding when you own a bond?'
+    opts: ['A small slice of a company', 'An IOU that pays you interest', 'A contract whose price comes from something else']
+    right: 1
+    why: 'A bond is a loan. You get interest (the coupon) while you hold it, and your money back at the end.'
+  - q: 'Which of these pays you nothing while you hold it?'
+    opts: ['Shares', 'Government bonds', 'Gold']
+    right: 2
+    why: 'Shares can pay dividends and bonds pay coupons. Gold pays nothing: you only make money if the price rises.'
+  - q: 'You buy a share for \(\text{£}40\), get a \(\text{£}2\) dividend, and sell it for \(\text{£}44\). What is your total return?'
+    opts: ['\(10\%\)', '\(15\%\)', '\(5\%\)']
+    right: 1
+    why: '\(\frac{44 - 40 + 2}{40} = \frac{6}{40} = 15\%\). The dividend counts too, not just the price change.'
+
+connected:
+  - { label: Builds on, title: 'What Is a Market?', where: Markets · What Markets Are, url: /hub/markets/what-is-a-market/ }
+  - { label: Used in, title: Bond basics, where: Markets · Rates and Bonds, url: /hub/markets/ }
+  - { label: Used in, title: Standard deviation, where: Probability and Statistics, url: /hub/probability/ }
+---
+
+<style>
+  .flips { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 12px 0; }
+  .flip { perspective: 900px; height: 240px; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+  .flip .fi { display: block; position: relative; width: 100%; height: 100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flip.on .fi { transform: rotateY(180deg); }
+  .flip .side { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--tone-mid); background: var(--hub-card); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .flip .back { transform: rotateY(180deg); background: var(--tone-bg); }
+  .flip .kicker { font-size: 12px; color: var(--note-grey); }
+  .flip .big { display: block; font-weight: 600; font-size: 16px; line-height: 1.35; }
+  .flip .sm { display: block; font-size: 13.5px; line-height: 1.5; }
+  .flip .hint { margin-top: auto; font-size: 12px; color: var(--note-grey); }
+  .flip .mine { align-self: flex-start; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--tone); color: var(--on-tone); }
+  .ladder button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  @media (prefers-reduced-motion: reduce) { .flip .fi { transition: none; } }
+</style>
+
+{% sec 1, "What Is an Asset Class?", "What are the different kinds of things you can buy?" %}
+  <div class="prose">
+    <p>The last note was about what a market is: buyers and sellers meeting and agreeing a price. This note is about <em>what</em> gets bought.</p>
+    <p>Think of a supermarket. Everything is for sale, but it's sorted into aisles: fruit in one, bread in another, cleaning stuff in a third. Each aisle holds things that behave in a similar way. Fruit goes off quickly, tins last for years.</p>
+    <p>Financial markets are sorted the same way. Each aisle is called an {% gl "asset class" %}asset class{% endgl %}: a group of things you can buy that work in a similar way, react to the same kind of news, and make you money in the same kind of way.</p>
+    <p>There's one question that sorts every one of them into the right aisle:</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one question</span>
+    <p>What am I actually holding? A piece of something, a loan, another country's money, raw stuff, or a contract about something else?</p>
+  </div>
+  <div class="prose">
+    <p>Once you know what you're holding, you know how it can make you money and what kind of news will move it. The rest of this note goes down each aisle in turn.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Aisles", "What am I holding in each one, and how does it pay?" %}
+  <div class="lab">
+    <div class="lab-head"><h3>What am I holding?</h3><p>Each card shows the everyday version. Click it to flip it and see the real name and how it makes you money. The ones marked "My market" are the ones I'm focusing on.</p></div>
+    <div class="flips">
+      <button type="button" class="flip" aria-label="Flip card: equities">
+        <span class="fi">
+          <span class="side"><span class="kicker">Aisle 1</span><span class="big">A slice of the pizza shop</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="big">Equities (shares, stocks)</span><span class="sm">You own a small piece of a company. You make money if the share price rises, and from {% gl "dividend" %}dividends{% endgl %}: a share of the profits paid out to owners.</span></span>
+        </span>
+      </button>
+      <button type="button" class="flip" aria-label="Flip card: bonds">
+        <span class="fi">
+          <span class="side"><span class="kicker">Aisle 2</span><span class="big">Lending your friend \(\text{£}100\), and they pay you \(\text{£}5\) a year</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="mine">My market</span><span class="big">Fixed income (bonds)</span><span class="sm">You've lent to a government or company. You get interest, the {% gl "coupon" %}coupon{% endgl %}, and your money back at the end. The price moves when interest rates change.</span></span>
+        </span>
+      </button>
+      <button type="button" class="flip" aria-label="Flip card: FX">
+        <span class="fi">
+          <span class="side"><span class="kicker">Aisle 3</span><span class="big">Swapping pounds for naira before a trip to Lagos</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="mine">My market</span><span class="big">FX (currencies)</span><span class="sm">You hold another country's money. You make money if it gets stronger against yours, plus any interest that currency pays.</span></span>
+        </span>
+      </button>
+      <button type="button" class="flip" aria-label="Flip card: commodities">
+        <span class="fi">
+          <span class="side"><span class="kicker">Aisle 4</span><span class="big">The ingredients, not the finished meal</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="mine">My market: gold</span><span class="big">Commodities (gold, oil, wheat)</span><span class="sm">Raw stuff, usually held through futures contracts. No interest or dividends: you only make money if the price rises. Gold is what people buy when they're scared.</span></span>
+        </span>
+      </button>
+      <button type="button" class="flip" aria-label="Flip card: derivatives">
+        <span class="fi">
+          <span class="side"><span class="kicker">Aisle 5</span><span class="big">"I'll buy your coffee beans at \(\text{£}5\) in March, whatever happens"</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="big">Derivatives (futures, options, swaps)</span><span class="sm">A contract whose price comes from something else, the {% gl "underlying" %}underlying{% endgl %}. Used to fix a price now and pass on risk, or to bet on a move with less money up front.</span></span>
+        </span>
+      </button>
+      <button type="button" class="flip" aria-label="Flip card: crypto">
+        <span class="fi">
+          <span class="side"><span class="kicker">The newest aisle</span><span class="big">Arcade tokens that can be swapped anywhere in the world</span><span class="hint">Click to flip</span></span>
+          <span class="side back"><span class="big">Crypto</span><span class="sm">Digital tokens recorded on a blockchain. Most pay nothing: you make money only if someone later pays more. Trades all day, every day, and swings hard.</span></span>
+        </span>
+      </button>
+    </div>
+    <p class="look"><strong>Things to notice.</strong> Some aisles pay you just for holding them: shares pay dividends, bonds pay coupons, and a currency can pay interest. Commodities and most crypto pay nothing, so the price has to rise for you to make anything.</p>
+  </div>
+
+  <div class="prose">
+    <h3>Crypto: the newest aisle</h3>
+    <p>Crypto has only been around since 2009, which is why it gets a small section rather than its own chapter. It's different from the other aisles in three ways. It trades all day, every day, including weekends, with no closing time. Most of it pays no income at all, so its price rests entirely on what the next buyer will pay. And it swings far harder than anything else in this note, as section 3 shows.</p>
+    <p>One part of crypto behaves very differently: {% gl "stablecoin" %}stablecoins{% endgl %}, tokens designed to always be worth one dollar. They're less of a bet and more of a way to hold and send dollars over the internet, which is why they matter so much in places where getting real dollars is hard.</p>
+    <h3>Real estate: an aisle with its own shelf</h3>
+    <p>Property is an asset class too: you hold land and buildings, and you make money from rent and from the price rising. It has a whole topic of its own in this hub, so it's not covered here.</p>
+    <p><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></p>
+  </div>
+
+  <div class="lab">
+    <div class="lab-head"><h3>How big is each aisle?</h3><p>Roughly how much changes hands in an average day, in US dollars.</p></div>
+    <svg class="chart" id="chart-size" viewBox="0 0 640 230" role="img" aria-label="Bar chart of average daily trading: FX about 9.6 trillion dollars, US government bonds about 1 trillion, shares on all the world's exchanges about 0.7 trillion, gold about 0.36 trillion"></svg>
+    <p class="look"><strong>Things to notice.</strong> FX is by far the biggest market in the world: roughly nine times US government bonds and more than ten times every stock exchange on Earth put together. These are rough sizes from different sources and periods: FX from the BIS survey (April 2025), US government bonds from SIFMA (2025 average), shares from the World Federation of Exchanges (first half of 2025, divided into days) and gold from the World Gold Council (2025 average).</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How Bumpy Is the Ride?", "Which aisles are calm and which are wild?", "How bumpy is the ride?" %}
+  <div class="prose">
+    <p>Every aisle moves, but some move much more than others. How much a price jumps around is called {% gl "volatility" %}volatility{% endgl %}. A calm asset might end the year \(5\%\) up or down. A wild one might end it \(60\%\) up or down.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The risk ladder</h3><p>Pick an asset class to see a made-up year for \(\text{£}100\). Every path uses the same "news", so the only thing that changes is how hard it swings. The shaded band is where about \(2\) in \(3\) years end up. Press "New year" to roll a different one.</p></div>
+    <div class="controls">
+      <div class="presets ladder" id="ladder" aria-label="Asset classes from calm to wild"></div>
+    </div>
+    <svg class="chart" id="chart-ladder" viewBox="0 0 640 300" role="img" aria-label="A made-up one-year price path for 100 pounds in the chosen asset class"></svg>
+    <div class="readout" id="ladder-read"></div>
+    <p class="look" id="ladder-pay"></p>
+    <div class="controls"><div class="presets"><button type="button" id="ladder-new">New year</button></div></div>
+  </div>
+  <div class="prose">
+    <h3>More reward for more bumps, up to a point</h3>
+    <p>Why would anyone choose the bumpier ride? Because, over long periods, they've usually been paid for it. Going up the ladder from cash to bonds to shares, the extra bumps have come with extra return. People need paying to put up with the swings, so prices settle at a level where the bumpier asset is expected to pay more. That extra is called the {% gl "risk premium" %}risk premium{% endgl %}.</p>
+    <p>But the rule only holds for things that pay you for holding them. Oil and crypto are near the top of the ladder, yet nothing promises you extra for their bumps. They pay no income, so all you have is the hope that the price rises. Bumpy doesn't automatically mean rewarding.</p>
+    <p>The swing sizes in the chart are rough typical figures, there to show the shape, not exact numbers. Real volatility changes all the time, and jumps in a crisis.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Higher up the ladder means a bumpier ride. Assets that pay you for holding them have usually rewarded those bumps over time. Assets that pay nothing make no such promise.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Asset class</h3><span class="tag desk">Desk</span></div><p>A group of things you can buy that behave in a similar way and make money in a similar way.</p><p class="eg">Equities, fixed income, FX, commodities and derivatives.</p></div>
+    <div class="term"><div class="term-top"><h3>Equities</h3><span class="tag desk">Desk</span></div><p>Shares in companies. Owning one makes you a part-owner.</p><p class="eg">"I'm on the equities desk" means trading shares.</p></div>
+    <div class="term"><div class="term-top"><h3>Dividend</h3><span class="tag desk">Desk</span></div><p>Part of a company's profit paid out to its shareholders.</p><p class="eg">A \(\text{£}2\) dividend on a \(\text{£}50\) share is a \(4\%\) yield.</p></div>
+    <div class="term"><div class="term-top"><h3>Fixed income</h3><span class="tag desk">Desk</span></div><p>Bonds and other loans that pay a set amount of interest. Also called rates on many desks.</p><p class="eg">Government bonds are the biggest part of fixed income.</p></div>
+    <div class="term"><div class="term-top"><h3>Coupon</h3><span class="tag desk">Desk</span></div><p>The interest a bond pays each year, usually as a percentage of what you lent.</p><p class="eg">A \(5\%\) coupon on \(\text{£}100\) pays \(\text{£}5\) a year.</p></div>
+    <div class="term"><div class="term-top"><h3>Commodity</h3><span class="tag desk">Desk</span></div><p>A raw material that's the same whoever makes it: a barrel of oil is a barrel of oil.</p><p class="eg">Gold, oil, copper, wheat, coffee.</p></div>
+    <div class="term"><div class="term-top"><h3>Derivative</h3><span class="tag desk">Desk</span></div><p>A contract whose value comes from the price of something else.</p><p class="eg">A gold future's price follows the gold price.</p></div>
+    <div class="term"><div class="term-top"><h3>Underlying</h3><span class="tag desk">Desk</span></div><p>The thing a derivative's price comes from.</p><p class="eg">For an option on Apple shares, the underlying is Apple stock.</p></div>
+    <div class="term"><div class="term-top"><h3>Volatility</h3><span class="tag desk">Desk</span></div><p>How much a price jumps around, usually measured as the standard deviation of its returns.</p><p class="eg">Shares as a whole swing about \(\pm 17\%\) in a typical year.</p></div>
+    <div class="term"><div class="term-top"><h3>Risk premium</h3><span class="tag desk">Desk</span></div><p>The extra return investors expect for putting up with more risk.</p><p class="eg">Shares are expected to beat cash over time because of the equity risk premium.</p></div>
+  </div>
+{% endsec %}
+
+{% sec 5, "How does this link to Trading, Real Estate and Fintech?", "Where the aisles turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: my three aisles</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>My three markets come from three different aisles, and each one is moved by different news:</p>
+      <ul>
+        <li><strong>FX</strong> is the biggest market in the world, open around the clock from Monday morning in Asia to Friday evening in New York. Currencies mostly move on interest rates and on how each country's economy is doing.</li>
+        <li><strong>Gold</strong> sits in commodities but behaves like its own thing. It pays nothing, so it tends to do well when interest rates fall (you give up less by holding it) and when people are scared.</li>
+        <li><strong>Bonds</strong> are the calmest of the three, but they're where interest rates are actually set by the market. When bond prices fall, borrowing costs rise for everyone, which then moves FX and gold too.</li>
+      </ul>
+      <p>So the three are linked: a surprise from a central bank hits bonds first, and the shock spreads to currencies and gold. Seeing those links is a big part of trading them.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: an aisle that hides its bumps</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property pays you for holding it (rent) and can rise in price, a bit like shares and bonds combined. It often looks calmer than shares, but partly because houses are priced rarely. A share's price updates every second; a house's price is only really tested when it's sold. The bumps are still there, you just don't see them every day.</p>
+      <p>It's also the least liquid aisle in this note. That's why the plan is to build up capital in liquid markets first and move into property later, when money can be tied up for years.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: which aisle protects your savings?</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>With high inflation, cash in naira loses buying power quickly (the exponentials note shows how fast). So people look for other aisles to keep their savings in: dollars (FX), property, shares on the Nigerian Exchange, and crypto, especially dollar stablecoins. Nigeria has one of the highest rates of crypto use in the world, largely for this reason.</p>
+      <p>A lot of Nigerian fintech is about opening these aisles to ordinary people: apps for saving in dollars, buying Nigerian or US shares, or holding stablecoins, which used to be hard without a foreign bank account.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 6, "The Maths Underneath", "How do you work out what you made on any asset?" %}
+  <div class="prose">
+    <p>Every aisle can make you money in up to two ways: the price changes, and it may pay you something while you hold it. One formula covers them all. Call the price you paid \(P_0\), the price at the end \(P_1\), and the income you received along the way \(I\).</p>
+  </div>
+  <div class="formula"><span class="lbl">Total return</span>\[ R = \frac{P_1 - P_0 + I}{P_0} \]</div>
+  <div class="prose">
+    <p>The top is everything you gained (price change plus income). The bottom is what you put in. For gold or most crypto, \(I = 0\), so only the price counts.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Shares: bought at \(\text{£}50\), paid a \(\text{£}2\) dividend, sold at \(\text{£}55\).</h3>
+    <ol class="steps">
+      <li>\(P_0 = 50\), \(P_1 = 55\), \(I = 2\).</li>
+      <li>\(R = \frac{55 - 50 + 2}{50} = \frac{7}{50} = 0.14\).</li>
+    </ol>
+    <p class="answer">A \(14\%\) return: \(10\%\) from the price and \(4\%\) from the dividend.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A bond: bought at \(\text{£}100\), paid a \(\text{£}5\) coupon, but interest rates rose and its price fell to \(\text{£}97\).</h3>
+    <ol class="steps">
+      <li>\(P_0 = 100\), \(P_1 = 97\), \(I = 5\).</li>
+      <li>\(R = \frac{97 - 100 + 5}{100} = \frac{2}{100} = 0.02\).</li>
+    </ol>
+    <p class="answer">Still a \(2\%\) gain, because the coupon more than covered the price drop. Bonds lose money in a year only when the price falls by more than the coupon.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>FX: you swap \(\text{£}1{,}000\) into dollars at \(1.25\) dollars per pound, then swap back later at \(1.20\).</h3>
+    <ol class="steps">
+      <li>You get \(1000 \times 1.25 = \$1{,}250\).</li>
+      <li>Later, \(\$1{,}250 \div 1.20 = \text{£}1{,}041.67\).</li>
+      <li>\(R = \frac{1041.67 - 1000}{1000} \approx 4.2\%\).</li>
+    </ol>
+    <p class="answer">The pound got weaker (each pound buys fewer dollars), which is the same thing as the dollar getting stronger. Holding dollars made you about \(4.2\%\), before any interest.</p>
+  </div>
+
+  <div class="prose">
+    <h3>Putting a number on "bumpy"</h3>
+    <p>Volatility is measured as the standard deviation of returns, usually written \(\sigma\) (sigma). For a rough picture, about \(2\) in \(3\) years end up within one \(\sigma\) of the start. That's the shaded band in the risk ladder:</p>
+  </div>
+  <div class="formula"><span class="lbl">Where most years end up</span>\[ \text{£}100 \times (1 - \sigma) \quad \text{to} \quad \text{£}100 \times (1 + \sigma) \]</div>
+  <div class="prose">
+    <p>With shares at \(\sigma \approx 17\%\), that's roughly \(\text{£}83\) to \(\text{£}117\). With crypto at \(\sigma \approx 60\%\), it's \(\text{£}40\) to \(\text{£}160\), and one year in three ends up even further out. Where the "\(2\) in \(3\)" comes from belongs in the probability topic, under the normal distribution.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>You buy a bond for \(\text{£}98\). It pays a \(\text{£}4\) coupon and you sell it a year later for \(\text{£}101\). What's your total return?</span></p>
+      <details><summary>Show answer</summary><div><span>\(R = \frac{101 - 98 + 4}{98} = \frac{7}{98} \approx 7.1\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>You buy gold at \(\text{£}2{,}400\) an ounce and it falls to \(\text{£}2{,}280\). What's your return, and what income did you get?</span></p>
+      <details><summary>Show answer</summary><div><span>\(R = \frac{2280 - 2400 + 0}{2400} = -5\%\).</span><span>No income: gold pays nothing while you hold it, so there's nothing to soften the fall.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>You put \(\text{£}1{,}000\) in shares (\(\sigma \approx 17\%\)) and \(\text{£}1{,}000\) in crypto (\(\sigma \approx 60\%\)). Where does each end up in most years?</span></p>
+      <details><summary>Show answer</summary><div><span>Shares: \(\text{£}830\) to \(\text{£}1{,}170\). Crypto: \(\text{£}400\) to \(\text{£}1{,}600\).</span><span>Same money, very different rides.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Of my three markets (FX, gold and bonds), which pay income while you hold them?</span></p>
+      <details><summary>Show answer</summary><div><span>Bonds pay a coupon. A currency can pay interest (the gap between the two countries' interest rates, called carry). Gold pays nothing.</span></div></details></div>
+  </div>
+{% endsec %}
