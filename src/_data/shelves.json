@@ -77,7 +77,7 @@
         "subtopics": [
           "Why Markets Exist",
           "The Asset Classes", 
-          { "name": "Primary and Secondary Markets", "planned": ["First Sale vs Resale"] },
+          "Primary and Secondary Markets",
           { "name": "Who's Who?", "planned": ["The Players"] },
           "Life on a Desk"
         ] },

@@ -1,0 +1,201 @@
+---
+title: First Sale vs Resale
+shelf: markets
+chapter: what-markets-are
+subtopic: Primary and Secondary Markets
+order: 1
+summary: How companies and governments raise money by selling new shares and bonds, and why the trading that happens afterwards still matters to them.
+lede: How companies and governments raise money by selling brand-new shares and bonds, what happens on the first day, and why everyone trading afterwards still matters to them even though they get nothing from it.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/first-sale-vs-resale.js]
+
+quiz:
+  - q: 'A year after its IPO, a company''s share price has doubled. How much extra cash does the company get from that rise?'
+    opts: ['Nothing', 'Double what it raised', 'Half of the rise']
+    right: 0
+    why: 'The rise happened in the secondary market, between investors. The company only got money at the first sale.'
+  - q: 'Which of these is a primary market trade?'
+    opts: ['You buy shares on the London Stock Exchange from another investor', 'A fund sells its bonds to a bank', 'The UK government sells brand-new gilts at an auction']
+    right: 2
+    why: 'New gilts going from the government to investors for the first time is a first sale. The other two are resales between investors.'
+  - q: 'An IPO sells \(2\) million shares at \(\text{£}20\). They close the first day at \(\text{£}25\). How much money was left on the table?'
+    opts: ['\(\text{£}5\) million', '\(\text{£}10\) million', '\(\text{£}50\) million']
+    right: 1
+    why: '\((25 - 20) \times 2{,}000{,}000 = \text{£}10{,}000{,}000\). That''s the extra the company could have raised at the price buyers were really willing to pay.'
+
+connected:
+  - { label: Builds on, title: A Tour of the Aisles, where: Markets · What Markets Are, url: /hub/markets/a-tour-of-the-aisles/ }
+  - { label: Used in, title: Bond auctions, where: Markets · Rates and Bonds, url: /hub/markets/ }
+  - { label: Used in, title: Market structure and venues, where: Markets · How Markets Work, url: /hub/markets/ }
+---
+
+{% sec 1, "First Sale vs Resale", "What's the difference between selling something new and selling it on?" %}
+  <div class="prose">
+    <p>Think about concert tickets. When a band announces a tour, it sells the tickets itself. You pay \(\text{£}50\) on the official site and the \(\text{£}50\) goes to the band. That's the <strong>first sale</strong>.</p>
+    <p>A week later you find you can't go, so you sell your ticket to another fan on a resale site for \(\text{£}80\). That \(\text{£}80\) goes to <em>you</em>. The band gets nothing, even though it's their concert. That's the <strong>resale</strong>.</p>
+    <p>Shares and bonds work exactly the same way. A company or government creates them and sells them for the first time to raise money. That happens in the {% gl "primary market" %}primary market{% endgl %}, and whoever created them, the {% gl "issuer" %}issuer{% endgl %}, gets the cash. From then on, investors sell them to each other, over and over, in the {% gl "secondary market" %}secondary market{% endgl %}. The issuer gets nothing from those trades.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Where the money goes</h3><p>Top: the first sale. Bottom: every trade after it.</p></div>
+    <svg class="chart" id="chart-flow" viewBox="0 0 640 400" role="img" aria-label="In the primary market the company sells new shares through an investment bank and gets the money. In the secondary market investors trade with each other through an exchange and the company gets nothing."></svg>
+  </div>
+  <div class="prose">
+    <p>Almost everything you see on a trading screen is the secondary market. When the news says "shares in a company fell \(5\%\) today", that's investors trading with each other. The company's bank balance didn't move at all.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Primary market: the first sale, and the issuer gets the money. Secondary market: every sale after that, and the money just moves between investors.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "How a First Sale Works", "How do new shares and bonds actually get sold?", "How a first sale works" %}
+  <div class="prose">
+    <h3>Shares: the IPO</h3>
+    <p>When a company sells shares to the public for the first time, it's called an {% gl "ipo" %}IPO{% endgl %}, an initial public offering. It's also called "going public" or "listing", because afterwards its shares are listed on a stock exchange where anyone can buy them.</p>
+    <p>The company doesn't do this alone. It hires investment banks, called {% gl "underwriter" %}underwriters{% endgl %}, to run the sale. Roughly, it goes like this:</p>
+    <ol>
+      <li><strong>Get ready.</strong> The banks help the company write a long document explaining the business, its numbers and its risks, so buyers know what they're getting.</li>
+      <li><strong>Find the buyers.</strong> The banks take the company on a tour of big investors (pension funds, fund managers, hedge funds) and ask each one how many shares they'd want, and at what price. Collecting these orders is called {% gl "bookbuilding" %}bookbuilding{% endgl %}.</li>
+      <li><strong>Set the price.</strong> Using the orders in the book, the banks and the company agree a price, usually a little below what the book suggests, so the shares are easy to sell and buyers are happy.</li>
+      <li><strong>First day of trading.</strong> The shares start trading on the exchange. From this moment, it's the secondary market.</li>
+    </ol>
+    <p>If the price jumps on the first day, that's called a "pop". It feels like good news, but think about who it's good for. The investors who bought at the IPO price made a quick profit. The company sold its shares for less than people were willing to pay. The gap is called <strong>money left on the table</strong>.</p>
+    <p>Companies can also sell more new shares years later. That's called a follow-on offering, and it's still the primary market, because new shares are being created and the company gets the cash.</p>
+    <h3>Bonds: the auction</h3>
+    <p>Governments raise money by selling bonds, and most do it by {% gl "auction" %}auction{% endgl %}. In the UK, a government agency called the Debt Management Office announces how much it wants to borrow and for how long. Banks and big investors put in bids, and the bonds go to the best bids. UK government bonds are called {% gl "gilt" %}gilts{% endgl %}. Companies selling bonds usually go through banks instead, a bit like a smaller IPO.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Follow the money</h3><p>A company with \(4\) million shares, all owned by its founders, sells \(1\) million brand-new shares in an IPO. Set the IPO price, then move the share price in the resale market afterwards.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="ipo">IPO price</label><input type="range" id="ipo" min="5" max="15" step="1" value="10"><output id="ipo-out" for="ipo">£10</output></div>
+      <div class="ctrl"><label for="later">Price later</label><input type="range" id="later" min="2" max="25" step="1" value="13"><output id="later-out" for="later">£13</output></div>
+    </div>
+    <svg class="chart" id="chart-ipo" viewBox="0 0 640 220" role="img" aria-label="Bars comparing the cash the company raised with what the new shares are worth now"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Cash the company raised</span><span><i class="sw grey"></i>What the new shares are worth now</span></div>
+    <div class="readout" id="ipo-read"></div>
+    <p class="look" id="ipo-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Why the Resale Market Matters", "If the company gets nothing from it, why does it care?", "Why resale matters" %}
+  <div class="prose">
+    <p>If the company only gets money at the first sale, you might think it wouldn't care what happens afterwards. It cares a lot, for three reasons.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Nobody would buy at the first sale without a resale market.<span class="why">If you could never sell your shares, you'd be stuck with them forever. Knowing you can get out whenever you like ({% gl "liquidity" %}liquidity{% endgl %}) is what makes people willing to buy in the first place, and to pay a better price for it.</span></span></li>
+    <li><span class="n">2</span><span>The next first sale depends on it.<span class="why">When a company wants to raise more money later, it sells new shares at around the current price. If the price has risen, it raises more for every share it gives away. If it has fallen, raising the same money means giving away more of the company.</span></span></li>
+    <li><span class="n">3</span><span>The owners and bosses are usually paid in shares.<span class="why">Founders keep most of their shares after the IPO, and managers are often paid partly in shares. The resale price decides how wealthy they are.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The same is true for governments. If investors are selling its bonds in the secondary market, their prices fall and the interest rate they pay rises. The government has to offer that higher rate at its next auction, so borrowing gets more expensive for it too.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The issuer only gets money at the first sale, but the resale market sets the price of every sale that comes after.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Primary market</h3><span class="tag desk">Desk</span></div><p>Where brand-new shares or bonds are sold for the first time. The issuer gets the money.</p><p class="eg">An IPO or a government bond auction.</p></div>
+    <div class="term"><div class="term-top"><h3>Secondary market</h3><span class="tag desk">Desk</span></div><p>Where investors trade existing shares and bonds with each other. The issuer gets nothing.</p><p class="eg">Almost all trading on the London Stock Exchange.</p></div>
+    <div class="term"><div class="term-top"><h3>Issuer</h3><span class="tag desk">Desk</span></div><p>Whoever creates and first sells a share or bond: a company or a government.</p><p class="eg">The UK government is the issuer of gilts.</p></div>
+    <div class="term"><div class="term-top"><h3>IPO</h3><span class="tag desk">Desk</span></div><p>Initial public offering: a company's first sale of shares to the public, when it lists on an exchange.</p><p class="eg">"The IPO was ten times oversubscribed."</p></div>
+    <div class="term"><div class="term-top"><h3>Underwriter</h3><span class="tag desk">Desk</span></div><p>The investment bank that runs a new issue, finds buyers and helps set the price.</p><p class="eg">Banks usually take a fee of a few percent of what's raised.</p></div>
+    <div class="term"><div class="term-top"><h3>Bookbuilding</h3><span class="tag desk">Desk</span></div><p>Collecting orders from big investors (how many, at what price) to decide the price of a new issue.</p><p class="eg">"The book's covered" means there are enough orders to sell everything.</p></div>
+    <div class="term"><div class="term-top"><h3>Gilt</h3><span class="tag desk">Desk</span></div><p>A bond issued by the UK government. Sold at auctions run by the Debt Management Office.</p><p class="eg">"The 10-year gilt auction went well."</p></div>
+    <div class="term"><div class="term-top"><h3>Market capitalisation</h3><span class="tag desk">Desk</span></div><p>What the whole company is worth at today's share price: the price times the number of shares.</p><p class="eg">\(5\) million shares at \(\text{£}10\) is a \(\text{£}50\) million market cap.</p></div>
+  </div>
+{% endsec %}
+
+{% sec 5, "How does this link to Trading, Real Estate and Fintech?", "Where first sales and resales turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: my three markets</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <ul>
+        <li><strong>Bonds</strong> have a huge primary market, because governments borrow all the time. Auction days matter to traders: if an auction gets weak demand, the government has to accept a higher interest rate, and bond prices across the whole secondary market can drop with it.</li>
+        <li><strong>Gold</strong> has a tiny first sale: mines selling newly dug gold. Almost all the gold ever mined still exists, so nearly all gold trading is resale of bars that already exist.</li>
+        <li><strong>FX</strong> doesn't really have a first sale at all. Currencies are created by central banks and banks, not sold to investors in an IPO. Every FX trade is two people swapping money that already exists, so it's all secondary market.</li>
+      </ul>
+      <p>Most trading jobs, including FX and commodities sales and trading, sit in the secondary market. The primary market is mostly the job of capital markets teams inside investment banks.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: off-plan vs resale</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Buying a brand-new home from a developer, often before it's even built ("off-plan"), is the primary market: the developer gets the money. Buying a home from its last owner is the secondary market. Developers raise money for the next building by selling the current one, so a strong resale market for their homes makes their next project easier to fund, just like a company's share price.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: getting in at the first sale</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria's Debt Management Office sells government bonds at regular auctions, just like the UK's. It also sells savings bonds aimed at ordinary people, in much smaller amounts. Companies list on the Nigerian Exchange in Lagos.</p>
+      <p>Historically, first sales have mostly gone to banks and big investors, while ordinary savers only got in later, in the secondary market. A big opportunity for fintech is letting people take part in first sales straight from their phones, in small amounts.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 6, "The Maths Underneath", "How much does a first sale raise, and who gains when the price moves?" %}
+  <div class="prose">
+    <h3>How much is raised</h3>
+    <p>If \(N\) new shares are sold at price \(P\), and the banks take a fee of \(f\) (as a fraction), the company receives:</p>
+  </div>
+  <div class="formula"><span class="lbl">Money raised</span>\[ \text{Gross} = P \times N \qquad \text{Net} = P \times N \times (1 - f) \]</div>
+  <div class="prose">
+    <h3>What the whole company is worth</h3>
+    <p>After the IPO, there are the old shares plus the new ones. The market capitalisation is the share price times all of them. New shares also make the founders' slice smaller, which is called dilution.</p>
+  </div>
+  <div class="formula"><span class="lbl">Market cap and ownership</span>\[ \text{Market cap} = P \times (\text{old shares} + \text{new shares}) \qquad \text{Founders' share} = \frac{\text{old shares}}{\text{old shares} + \text{new shares}} \]</div>
+  <div class="prose">
+    <h3>Money left on the table</h3>
+    <p>If the shares close their first day at \(P_1\) after being sold at the IPO price \(P_0\):</p>
+  </div>
+  <div class="formula"><span class="lbl">The first-day pop</span>\[ \text{Money left on the table} = (P_1 - P_0) \times N \qquad \text{First-day pop} = \frac{P_1 - P_0}{P_0} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>A company sells \(1\) million new shares at \(\text{£}10\). The banks charge \(3\%\). How much does it get?</h3>
+    <ol class="steps">
+      <li>Gross: \(10 \times 1{,}000{,}000 = \text{£}10{,}000{,}000\).</li>
+      <li>Net: \(10{,}000{,}000 \times (1 - 0.03) = \text{£}9{,}700{,}000\).</li>
+    </ol>
+    <p class="answer">The company gets \(\text{£}9.7\) million. The \(\text{£}300{,}000\) fee goes to the banks. (The \(3\%\) is just an example.)</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>The founders owned all \(4\) million old shares. After the IPO, what's the company worth at \(\text{£}10\), and how much do the founders own?</h3>
+    <ol class="steps">
+      <li>Total shares: \(4\text{m} + 1\text{m} = 5\text{m}\).</li>
+      <li>Market cap: \(10 \times 5{,}000{,}000 = \text{£}50{,}000{,}000\).</li>
+      <li>Founders' share: \(\frac{4}{5} = 80\%\).</li>
+    </ol>
+    <p class="answer">The founders gave up \(20\%\) of the company in exchange for \(\text{£}10\) million of cash for the business.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>The shares close their first day at \(\text{£}13\). How much was left on the table?</h3>
+    <ol class="steps">
+      <li>\((13 - 10) \times 1{,}000{,}000 = \text{£}3{,}000{,}000\).</li>
+      <li>First-day pop: \(\frac{13 - 10}{10} = 30\%\).</li>
+    </ol>
+    <p class="answer">Buyers were willing to pay \(\text{£}13\) million for shares the company sold for \(\text{£}10\) million. That \(\text{£}3\) million went to the IPO investors instead of the company. It's exactly what the "follow the money" chart shows at its starting settings.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A company sells \(5\) million new shares at \(\text{£}8\) and pays its banks a \(4\%\) fee. How much does it receive?</span></p>
+      <details><summary>Show answer</summary><div><span>Gross: \(8 \times 5{,}000{,}000 = \text{£}40{,}000{,}000\).</span><span>Net: \(40{,}000{,}000 \times 0.96 = \text{£}38{,}400{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Founders own \(9\) million shares. The company sells \(3\) million new shares at \(\text{£}12\). What's the market cap, and what percentage do the founders now own?</span></p>
+      <details><summary>Show answer</summary><div><span>Market cap: \(12 \times 12{,}000{,}000 = \text{£}144{,}000{,}000\).</span><span>Founders: \(\frac{9}{12} = 75\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>An IPO sells \(4\) million shares at \(\text{£}15\). They close day one at \(\text{£}18\). How much was left on the table, and what was the first-day pop?</span></p>
+      <details><summary>Show answer</summary><div><span>\((18 - 15) \times 4{,}000{,}000 = \text{£}12{,}000{,}000\).</span><span>Pop: \(\frac{3}{15} = 20\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>You buy a new-build flat from a developer. Ten years later you sell it to a family. Which sale was primary and which was secondary?</span></p>
+      <details><summary>Show answer</summary><div><span>Buying from the developer was the primary market: the flat was being sold for the first time and the developer got the money. Selling to the family was the secondary market: the developer got nothing.</span></div></details></div>
+  </div>
+{% endsec %}
