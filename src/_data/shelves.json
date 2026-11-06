@@ -78,7 +78,8 @@
           "Why Markets Exist",
           "The Asset Classes", 
           "Primary and Secondary Markets",
-          { "name": "Who's Who?", "planned": ["The Players"] },
+          "The Players",
+          { "name": "Who's Who?", "planned": ["Following the Money"] },
           "Life on a Desk"
         ] },
       { "title": "How Markets Work", "blurb": "Following one trade from start to finish: where it happens, how it's placed, how it's paid for and settled.",

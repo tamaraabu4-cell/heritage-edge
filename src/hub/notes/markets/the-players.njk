@@ -1,0 +1,273 @@
+---
+title: The Players
+shelf: markets
+chapter: what-markets-are
+subtopic: "Who's Who?"
+order: 1
+summary: Who's who in finance - the buy side, the sell side, the asset owners behind them - and how each one makes its money.
+lede: Who's who in finance, how each type of firm makes its money, and where an FX or commodities trader sits on the map.
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/the-players.js]
+
+quiz:
+  - q: 'An investment bank underwrites an IPO. The shares fall \(30\%\) in the following year. What happens to the bank''s underwriting fee?'
+    opts: ['It has to pay it back', 'It keeps it: the fee was for the service, not the result', 'It falls by \(30\%\)']
+    right: 1
+    why: 'The sell side is paid for the service. The buy side investors who bought the shares are the ones who lose.'
+  - q: 'A pension fund gives \(\text{£}500\) million to a hedge fund to invest. Which one is the asset owner?'
+    opts: ['The pension fund', 'The hedge fund', 'The hedge fund''s prime broker']
+    right: 0
+    why: 'The pension fund owns the money and hires the hedge fund (an asset manager) to invest it. The pension fund is the limited partner.'
+  - q: 'How does a market maker mainly make its money?'
+    opts: ['By betting on which way prices will move', 'From the gap between the price it buys at and the price it sells at', 'From fees on mergers and acquisitions']
+    right: 1
+    why: 'It buys at the bid and sells at the ask, earning the bid-ask spread, and tries not to hold a big position either way.'
+
+connected:
+  - { label: Builds on, title: First Sale vs Resale, where: Markets · What Markets Are, url: /hub/markets/first-sale-vs-resale/ }
+  - { label: Used in, title: The order book, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: How FX trades, where: Markets · FX, url: /hub/markets/ }
+---
+
+<style>
+  .scen button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Two Sides of the Same Trade", "Who are all these firms, in everyday words?", "Two sides" %}
+  <div class="prose">
+    <p>Think about buying a house. There are two very different kinds of people involved.</p>
+    <ul>
+      <li><strong>The buyer.</strong> They put their own money in, and they're hoping the house goes up in value. If it falls, they lose.</li>
+      <li><strong>Everyone who helps the sale happen.</strong> The estate agent, the mortgage broker, the surveyor and the solicitor. They each get paid a fee for doing their job, whether the house turns out to be a good buy or not.</li>
+    </ul>
+    <p>Finance splits in exactly the same way:</p>
+    <ul>
+      <li>The {% gl "buy side" %}buy side{% endgl %} is the firms that invest money and live or die by whether those investments work. Hedge funds, pension funds and fund managers are all buy side.</li>
+      <li>The {% gl "sell side" %}sell side{% endgl %} is the firms that <em>sell services</em> to the buy side: running new issues, giving advice, executing trades, lending money and shares, writing research. They're paid fees and spreads for each job, mostly whatever happens to the investment afterwards. Investment banks, brokers and market makers are all sell side.</li>
+    </ul>
+    <p>There's one more split inside the buy side. Some firms <em>own</em> the money and others are <em>hired</em> to invest it. A teacher's pension fund has billions to invest but might hire a hedge fund to manage part of it, like hiring a personal shopper for your money. The owners are called {% gl "asset owner" %}asset owners{% endgl %} and the hired investors are {% gl "asset manager" %}asset managers{% endgl %}.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The map in four layers</h3><p>Money starts with the people who own it and flows down to the markets. Returns flow back up the same way.</p></div>
+    <svg class="chart" id="chart-layers" viewBox="0 0 640 440" role="img" aria-label="Four layers: asset owners, the buy side, the sell side, and the markets. Money flows down; returns flow back up."></svg>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The buy side is paid when its investments work. The sell side is paid for providing a service, mostly whatever the investment does afterwards.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Sell Side", "Who provides the services, and how does each make money?", "The sell side" %}
+  <div class="prose">
+    <p>The sell side is the plumbing of the financial system. Every big transaction goes through it: when a company goes public it hires a bank, when a hedge fund wants to bet against a share it borrows that share through a bank, and when a fund manager wants to understand an industry it often reads a bank's research.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Type</th><th>Examples</th><th>What they do</th><th>How they get paid</th></tr></thead>
+      <tbody>
+        <tr><td>Full-service investment bank</td><td>Goldman Sachs, J.P. Morgan, Morgan Stanley</td><td>Everything: advice on deals, new issues, sales and trading, research, prime brokerage</td><td>Fees, commissions and trading spreads</td></tr>
+        <tr><td>Boutique bank</td><td>Evercore, Lazard, Centerview</td><td>Advice on mergers and restructurings only</td><td>Advisory fees, with no trading or lending</td></tr>
+        <tr><td>Broker</td><td>Jefferies, Piper Sandler</td><td>Executes trades for clients, writes research</td><td>Commissions and spreads</td></tr>
+        <tr><td>Rating agency</td><td>S&amp;P, Moody's, Fitch</td><td>Grades how likely borrowers are to pay back</td><td>Paid by the borrower being rated (which is controversial)</td></tr>
+        <tr><td>Market maker</td><td>Citadel Securities, Jane Street, XTX Markets</td><td>Always ready to buy and sell, so others can trade any time</td><td>The gap between their buying and selling price</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Investment banking: advice and new issues</h3>
+    <p>The core of an investment bank does two jobs. It <strong>advises</strong> companies on buying, selling or merging with other companies, charging roughly \(0.5\%\) to \(1.5\%\) of the deal size on large deals. And it <strong>underwrites</strong> new shares and bonds, the first sales from the last note, taking a fee of roughly \(3\%\) to \(7\%\) of the money raised in an IPO and less on bonds.</p>
+    <p>Banks come in tiers. The biggest, global ones that do everything are called the {% gl "bulge bracket" %}bulge bracket{% endgl %}. Below them are mid-market banks focused on smaller companies, and elite boutiques that only give advice.</p>
+    <h3>Prime brokerage: the bank's service for hedge funds</h3>
+    <p>A {% gl "prime broker" %}prime broker{% endgl %} is the part of a bank that looks after hedge funds. It lends them money so they can invest more than they have, lends them shares so they can bet on prices falling, keeps their assets safe, and settles their trades. Chapter 2 has a whole note on it.</p>
+    <h3>Market makers: the always-open shop</h3>
+    <p>A {% gl "market maker" %}market maker{% endgl %} is like a shop that will always buy from you and always sell to you, at two slightly different prices. It might buy a share at \(\text{£}99.99\) and sell it at \(\text{£}100.01\). The gap is the {% gl "bid-ask spread" %}bid-ask spread{% endgl %}, and earning it over and over, millions of times a day, is the business.</p>
+    <p>The hard part is risk. Every time it buys, it's holding something that could fall in price before it sells again. So a market maker's real job is managing that stock (its inventory) so it doesn't build up a big bet either way. Most aim to finish the day roughly flat.</p>
+    <p>Since 2008, new rules made it much more expensive for banks to hold risk, and technology made speed matter more. Specialist electronic firms like Citadel Securities and Jane Street have taken over much of the market making in shares and options. Banks still lead in markets that need a big balance sheet and are less electronic, like bonds and many derivatives.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Buy Side", "Who invests the money, and what is each one trying to do?", "The buy side" %}
+  <div class="prose">
+    <p>The buy side controls the money. Estimates put professionally managed assets worldwide at over \(\$100\) trillion. But different buy-side firms want very different things, and that changes how they act.</p>
+    <h3>The asset owners</h3>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Type</th><th>Examples</th><th>Whose money</th><th>What they want</th></tr></thead>
+      <tbody>
+        <tr><td>Pension fund</td><td>CalPERS, Ontario Teachers', CPP Investments</td><td>Workers' retirement savings</td><td>Enough to pay pensions for decades. Very long-term.</td></tr>
+        <tr><td>Sovereign wealth fund</td><td>Norway's oil fund, Abu Dhabi's ADIA, Singapore's GIC</td><td>A country's savings, often from oil or trade</td><td>Grow national wealth over generations</td></tr>
+        <tr><td>Endowment</td><td>Yale, Harvard</td><td>A university's or charity's money</td><td>Fund the institution forever</td></tr>
+        <tr><td>Family office</td><td>Run for one very wealthy family</td><td>The family's fortune</td><td>Keep and grow wealth across generations</td></tr>
+        <tr><td>Insurer</td><td>Allianz, AXA</td><td>Customers' premiums</td><td>Safe returns to pay future claims</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The asset managers they hire</h3>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Type</th><th>Examples</th><th>What they do</th><th>Typical fees</th></tr></thead>
+      <tbody>
+        <tr><td>Long-only fund manager</td><td>Fidelity, Capital Group</td><td>Buy shares and bonds, trying to beat a benchmark like the S&amp;P 500</td><td>\(0.3\%\) to \(1\%\) a year</td></tr>
+        <tr><td>Passive fund</td><td>Vanguard, BlackRock's iShares</td><td>Simply copy an index, at very low cost</td><td>Often under \(0.05\%\) a year</td></tr>
+        <tr><td>Hedge fund</td><td>Citadel, Millennium, Bridgewater</td><td>Make money whichever way markets go. Can bet on prices falling and borrow to invest more.</td><td>\(1\)–\(2\%\) a year plus \(15\)–\(20\%\) of profits</td></tr>
+        <tr><td>Private equity</td><td>Blackstone, KKR</td><td>Buy whole companies, improve them, sell them after \(3\) to \(7\) years</td><td>About \(2\%\) a year plus \(20\%\) of profits</td></tr>
+        <tr><td>Venture capital</td><td>Sequoia, Andreessen Horowitz</td><td>Back young start-ups, expecting most to fail and a few to be huge</td><td>About \(2\%\) a year plus \(20\%\) of profits</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>When an asset owner gives money to a fund, it becomes a {% gl "limited partner" %}limited partner{% endgl %} (LP) in that fund. The fund manager is the general partner (GP) who makes the decisions.</p>
+    <h3>Hedge funds vs long-only funds</h3>
+    <p>Both buy shares, but they're playing different games:</p>
+    <ul>
+      <li><strong>The target.</strong> A {% gl "long-only" %}long-only{% endgl %} fund is judged against a benchmark. If the market falls \(10\%\) and it falls \(8\%\), it's had a good year. A {% gl "hedge fund" %}hedge fund{% endgl %} is judged on making money, full stop.</li>
+      <li><strong>Betting on falls.</strong> Hedge funds can short: bet that a price will fall. Long-only funds can't, so the most they can do with a stock they dislike is not own much of it.</li>
+      <li><strong>Borrowing.</strong> Hedge funds often borrow to invest more than they have. Long-only funds usually don't.</li>
+      <li><strong>Getting your money back.</strong> You can take money out of most ordinary funds any day. Hedge funds often lock it in for a year or more.</li>
+    </ul>
+    <p>Over the last twenty years, money has poured into cheap {% gl "passive investing" %}passive{% endgl %} funds at one end and into hedge funds and private equity at the other. Expensive funds that roughly follow the market anyway are being squeezed in the middle.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Who Wins When the Market Moves?", "What happens to each player's income in a boom, a crash, a wild week or a quiet one?", "Who wins?" %}
+  <div class="prose">
+    <p>The quickest way to see the difference between the two sides is to watch what happens to each one when markets do different things. Pick a scenario.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who wins when the market moves?</h3><p>Each bar shows roughly how that player's income or results change. These are rough illustrations, not real numbers.</p></div>
+    <div class="controls">
+      <div class="presets scen" id="scen" aria-label="Market scenarios"></div>
+    </div>
+    <svg class="chart" id="chart-wins" viewBox="0 0 640 330" role="img" aria-label="How each type of firm does in the chosen market scenario"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Sell side</span><span><i class="sw grey"></i>Buy side</span></div>
+    <p class="look" id="wins-story"></p>
+  </div>
+  <div class="prose">
+    <p>Two patterns stand out. The sell side cares most about <strong>how busy</strong> markets are: lots of deals and lots of trading is good, whichever direction prices go. The buy side cares about <strong>which way</strong> prices go, and whether it was positioned for it. Hedge funds are the exception within the buy side: because they can bet on falls as well as rises, a crash can be their best year or their worst.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Where an FX or Commodities Trader Sits", "Where on this map is the job I'm aiming for?", "Where I fit" %}
+  <div class="prose">
+    <p>Deltashark's map is drawn for people heading into equities at a hedge fund. An FX or commodities sales and trading job sits somewhere else: on the <strong>sell side</strong>, in a bank's markets division, usually on the {% gl "ficc" %}FICC{% endgl %} floor (fixed income, currencies and commodities).</p>
+    <h3>Who's on the desk</h3>
+    <ul>
+      <li><strong>Sales</strong> look after clients: hedge funds, fund managers, central banks, and companies that need to swap currencies or fix future prices, like an importer's treasury team paying overseas suppliers.</li>
+      <li><strong>Traders</strong> make the prices those clients trade on, then manage the risk the desk is left holding. In practice they're market makers for the bank's clients.</li>
+      <li><strong>Strats</strong> (the bank's quants) build the pricing models and the systems that quote prices electronically.</li>
+    </ul>
+    <h3>How the desk makes money</h3>
+    <p>Mostly the same way a market maker does: from the spread on client trades, plus how well the traders manage the position they're left with. Since 2008, banks in the US and Europe have been heavily restricted from simply betting their own money (proprietary trading), so the desk's job is serving client flow, not making big directional bets.</p>
+    <h3>Who the competition is</h3>
+    <ul>
+      <li><strong>In FX</strong>, a lot of trading in the simplest product (swapping one currency for another today) now happens on screens, where electronic market makers like XTX Markets compete head-on with banks. Banks still lead in longer-dated and more complex FX, and with company clients.</li>
+      <li><strong>In commodities</strong>, bank desks are smaller than they were. Big players include physical trading houses that actually move oil and metals around the world (Vitol, Trafigura, Glencore), and futures exchanges like CME and ICE where much of the trading happens.</li>
+    </ul>
+    <p>FX and commodities each get a full chapter later on. This section is just about where they sit on the map.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Sell side</h3><span class="tag desk">Desk</span></div><p>Firms that sell financial services (advice, new issues, trading, lending, research) and are paid fees and spreads.</p><p class="eg">Investment banks, brokers, market makers.</p></div>
+    <div class="term"><div class="term-top"><h3>Buy side</h3><span class="tag desk">Desk</span></div><p>Firms that invest money and are paid according to how their investments do.</p><p class="eg">Hedge funds, pension funds, fund managers.</p></div>
+    <div class="term"><div class="term-top"><h3>Asset owner</h3><span class="tag desk">Desk</span></div><p>Whoever actually owns the money: pension funds, sovereign funds, endowments, family offices.</p><p class="eg">They often hire asset managers to invest it.</p></div>
+    <div class="term"><div class="term-top"><h3>Asset manager</h3><span class="tag desk">Desk</span></div><p>A firm hired to invest someone else's money, for a fee.</p><p class="eg">Hedge funds, long-only funds, private equity.</p></div>
+    <div class="term"><div class="term-top"><h3>AUM</h3><span class="tag desk">Desk</span></div><p>Assets under management: how much money a fund manager looks after.</p><p class="eg">"A \(\$20\) billion AUM fund."</p></div>
+    <div class="term"><div class="term-top"><h3>Market maker</h3><span class="tag desk">Desk</span></div><p>A firm that always quotes a price to buy and a price to sell, earning the gap.</p><p class="eg">Citadel Securities, Jane Street, XTX Markets.</p></div>
+    <div class="term"><div class="term-top"><h3>Bid-ask spread</h3><span class="tag desk">Desk</span></div><p>The gap between the price a market maker buys at (bid) and sells at (ask).</p><p class="eg">Bid \(\text{£}99.99\), ask \(\text{£}100.01\): a \(2\)p spread.</p></div>
+    <div class="term"><div class="term-top"><h3>Prime broker</h3><span class="tag desk">Desk</span></div><p>The part of a bank that serves hedge funds: lending money and shares, holding assets, settling trades.</p><p class="eg">Big funds use two to four prime brokers.</p></div>
+    <div class="term"><div class="term-top"><h3>FICC</h3><span class="tag desk">Desk</span></div><p>Fixed income, currencies and commodities: the part of a bank's trading floor that isn't equities.</p><p class="eg">"She's on the FICC floor, on the FX desk."</p></div>
+    <div class="term"><div class="term-top"><h3>Limited partner</h3><span class="tag desk">Desk</span></div><p>An investor who puts money into a fund but doesn't run it. The fund manager is the general partner.</p><p class="eg">A pension fund is an LP in a private equity fund.</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where the map turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: knowing who's on the other side</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every trade has two sides, and knowing who's likely to be on the other one matters. A pension fund selling gilts at the end of the month may just be rebalancing, not saying anything about where rates are going. A hedge fund selling the same gilts may have a real view. A good trader asks not just "what is this worth?" but "who's buying, who's selling, and why?". That's the idea of flows, and it's a big part of how institutional traders think.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same map, for buildings</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has the same layers. Pension funds and sovereign funds are some of the biggest owners of buildings in the world, often through private equity firms; Blackstone is one of the largest property owners anywhere. Banks lend the money (the mortgage is a sell-side service), and agents earn fees on each sale. When it comes to partnering on villas or commercial property later, the partner will be one of these players.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the Nigerian map</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has every layer too:</p>
+      <ul>
+        <li><strong>Asset owners:</strong> workers' pension savings, held in personal retirement accounts and invested by pension fund administrators under the regulator PenCom, plus the Nigeria Sovereign Investment Authority, the country's sovereign wealth fund.</li>
+        <li><strong>Sell side:</strong> the big Nigerian banks and their investment banking and markets arms, and stockbrokers.</li>
+        <li><strong>Markets:</strong> the Nigerian Exchange for shares, government bond auctions run by the Debt Management Office, and the FX market overseen by the Central Bank of Nigeria.</li>
+        <li><strong>Rules:</strong> Nigeria's SEC for securities, and the central bank for banks.</li>
+      </ul>
+      <p>The gaps on that map, such as ordinary savers getting access to investments and businesses getting dollars when they need them, are exactly where fintech fits in.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How does each player's money actually add up?" %}
+  <div class="prose">
+    <h3>Hedge fund fees: "two and twenty"</h3>
+    <p>A classic hedge fund charges a management fee \(m\) on the money it looks after, and a performance fee \(p\) on the profit. If the fund earns a return \(r\) before fees, a simple version of what the investor keeps is:</p>
+  </div>
+  <div class="formula"><span class="lbl">Investor's return after fees</span>\[ r_{\text{net}} = (r - m) \times (1 - p) \qquad \text{when } r > m \]</div>
+  <div class="prose">
+    <p>Real funds vary in the details (some charge the performance fee before the management fee, and most only charge it on new profits above their previous best, the high-water mark), but this captures the idea.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>A pension fund puts \(\text{£}100\) million in a hedge fund charging \(2\%\) and \(20\%\). The fund makes \(10\%\) before fees.</h3>
+    <ol class="steps">
+      <li>Management fee: \(2\% \times 100\text{m} = \text{£}2\text{m}\).</li>
+      <li>Profit after that: \(10\text{m} - 2\text{m} = \text{£}8\text{m}\). Performance fee: \(20\% \times 8\text{m} = \text{£}1.6\text{m}\).</li>
+      <li>The pension fund keeps \(8\text{m} - 1.6\text{m} = \text{£}6.4\text{m}\), a \(6.4\%\) return.</li>
+    </ol>
+    <p class="answer">Check: \((0.10 - 0.02) \times (1 - 0.20) = 0.064\). ✓ The hedge fund took \(\text{£}3.6\) million of the \(\text{£}10\) million profit. A long-only fund charging \(0.75\%\) would have left \(9.25\%\), so the hedge fund has to beat it by a lot to be worth it.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A bank underwrites a \(\text{£}500\) million IPO and charges a \(4\%\) fee.</h3>
+    <ol class="steps">
+      <li>\(4\% \times 500\text{m} = \text{£}20\text{m}\).</li>
+    </ol>
+    <p class="answer">The bank earns \(\text{£}20\) million whatever the shares do afterwards. That's the sell-side model in one line.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>A market maker quotes a \(\$200\) share with a \(1\)-cent spread and trades \(5\) million shares in a round trip each day.</h3>
+    <ol class="steps">
+      <li>The spread as a share of the price: \(\frac{0.01}{200} = 0.00005\), which is \(0.5\) {% gl "basis point" %}basis points{% endgl %}.</li>
+      <li>Daily spread earned: \(0.01 \times 5{,}000{,}000 = \$50{,}000\).</li>
+    </ol>
+    <p class="answer">Tiny on each trade, large in total, as long as it doesn't lose more than that on the inventory it holds between trades.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>What's the fundamental difference between the sell side and the buy side? Why does a sell-side analyst write research differently from a buy-side analyst?</span></p>
+      <details><summary>Show answer</summary><div><span>The buy side invests money and is paid by results. The sell side provides services and is paid fees and spreads.</span><span>A sell-side analyst publishes research for many clients, partly to win their trading business, so it's broad and public. A buy-side analyst writes only for their own fund's portfolio manager, so it's private, focused on making money, and about where they disagree with the market.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Why do investment banks run prime brokerage, and why does it matter so much to hedge funds?</span></p>
+      <details><summary>Show answer</summary><div><span>For banks, it's steady income: interest on lending to hedge funds, fees for lending them shares, and the trading business that comes with it.</span><span>For hedge funds, it's essential: without borrowed money they can't use leverage, and without borrowed shares they can't short. After Lehman Brothers collapsed in 2008, many funds lost access overnight, which is why big funds now use several prime brokers.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>How is a family office different from a sovereign wealth fund?</span></p>
+      <details><summary>Show answer</summary><div><span>A family office manages one wealthy family's money, with whatever goals that family sets. A sovereign wealth fund manages a country's money, often from oil or trade surpluses, for future generations of citizens.</span><span>Both think very long-term, but a sovereign fund is far bigger and answers to a government.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why does a pension fund invest so differently from a hedge fund?</span></p>
+      <details><summary>Show answer</summary><div><span>A pension fund has to pay known pensions for decades, so it invests to match those future payments, with lots of bonds and steady assets, and can't afford big losses.</span><span>A hedge fund is trying to make the best return it can for its investors, so it takes concentrated bets, borrows, and shorts.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A hedge fund charges \(1.5\%\) and \(15\%\) and makes \(12\%\) before fees. What does its investor keep?</span></p>
+      <details><summary>Show answer</summary><div><span>\((0.12 - 0.015) \times (1 - 0.15) = 0.105 \times 0.85 \approx 0.089\), so about \(8.9\%\).</span></div></details></div>
+  </div>
+{% endsec %}
