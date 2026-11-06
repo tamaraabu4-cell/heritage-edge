@@ -140,4 +140,46 @@
 
     H.charts(draw);
   }
+  // ---------- Everyone for themselves vs one meeting place ----------
+  // Left: every possible pair joined (n(n-1)/2 lines). Right: everyone joined to one market (n lines).
+  if (has("chart-net")) {
+    const draw = () => {
+      const svg = $("chart-net");
+      svg.textContent = "";
+      const n = parseInt($("net-n").value, 10);
+      $("net-n-out").textContent = n;
+      const t = tone(), g = grey(), c = card();
+      const R = 92, cy = 150, r = n > 24 ? 3.5 : 5;
+      const ring = (cx) => Array.from({ length: n }, (_, i) => {
+        const a = -Math.PI / 2 + (2 * Math.PI * i) / n;
+        return [cx + R * Math.cos(a), cy + R * Math.sin(a)];
+      });
+
+      // Left: everyone with everyone
+      const L = ring(160);
+      const fade = Math.max(0.12, Math.min(0.7, 18 / n));
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+        el("line", { x1: L[i][0], y1: L[i][1], x2: L[j][0], y2: L[j][1], stroke: g, "stroke-width": 1, "stroke-opacity": fade }, svg);
+      }
+      L.forEach(([x, y]) => el("circle", { cx: x, cy: y, r, fill: c, stroke: g, "stroke-width": 1.5 }, svg));
+      el("text", { x: 160, y: 24, "text-anchor": "middle" }, svg).textContent = "Everyone for themselves";
+      el("text", { x: 160, y: 42, "text-anchor": "middle", style: "fill:" + g }, svg).textContent = (n * (n - 1) / 2).toLocaleString("en-GB") + " possible pairs";
+
+      // Right: one meeting place
+      const M = ring(480);
+      M.forEach(([x, y]) => el("line", { x1: 480, y1: cy, x2: x, y2: y, stroke: t, "stroke-width": 1.5, "stroke-opacity": 0.7 }, svg));
+      M.forEach(([x, y]) => el("circle", { cx: x, cy: y, r, fill: c, stroke: g, "stroke-width": 1.5 }, svg));
+      el("circle", { cx: 480, cy, r: 24, fill: t }, svg);
+      el("text", { x: 480, y: cy + 4, "text-anchor": "middle", style: "fill:" + colour("--on-tone") + ";font-size:11px" }, svg).textContent = "Market";
+      el("text", { x: 480, y: 24, "text-anchor": "middle", style: "fill:" + t }, svg).textContent = "One meeting place";
+      el("text", { x: 480, y: 42, "text-anchor": "middle", style: "fill:" + t }, svg).textContent = n + " connections";
+
+      const out = $("net-read"); out.textContent = "";
+      const a = document.createElement("span"), b = document.createElement("span"); out.append(a, b);
+      tex(a, "\\tfrac{n(n-1)}{2} = \\tfrac{" + n + " \\times " + (n - 1) + "}{2} = " + (n * (n - 1) / 2).toLocaleString("en-GB").replace(/,/g, "{,}") + " \\text{ pairs}");
+      tex(b, "\\text{One market: } " + n + " \\text{ connections}");
+    };
+    $("net-n").addEventListener("input", draw);
+    H.charts(draw);
+  }
 })();

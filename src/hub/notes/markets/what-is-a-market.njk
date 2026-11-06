@@ -26,7 +26,8 @@ quiz:
 
 connected:
   - { label: Builds on, title: Straight lines and simultaneous equations, where: Maths · Algebra and functions, url: /hub/maths/ }
-  - { label: Used in, title: Order books and liquidity, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Next, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Used in, title: The Market Maker's Job, where: Quant · Market Making, url: /hub/quant/ }
   - { label: Used in, title: How FX trades, where: Markets · FX, url: /hub/markets/ }
 ---
 
@@ -40,6 +41,10 @@ connected:
       <li><strong>Sellers</strong> have the thing and want money. Each one has a <em>least</em> they're willing to accept.</li>
     </ul>
     <p>A trade happens when a buyer's "most" is at or above a seller's "least". Everything else in this note comes from that one sentence.</p>
+    <h3>Why both sides walk away happier</h3>
+    <p>The same thing is worth different amounts to different people. Someone who has most of their savings in one company's shares values one more share less than a pension fund that owns a bit of everything. A farmer cares more about knowing next year's grain price than a food company does. That difference is why trades happen at all.</p>
+    <p>Economists call your "most" or "least" your {% gl "reservation price" %}reservation price{% endgl %}. Say a holder would sell a share for anything above \(\text{£}98\), and an investor would pay up to \(\text{£}103\). Any price between the two works for both of them. If they settle at \(\text{£}100\), the seller is \(\text{£}2\) better off than their minimum and the buyer is \(\text{£}3\) better off than their maximum. Between them, the trade has created \(\text{£}5\) of value out of thin air. That gain is called the {% gl "surplus" %}surplus{% endgl %}.</p>
+    <p>The price doesn't change how much surplus there is. It only decides who gets which share of it. What eats into it is the cost of trading: fees, the gap between buying and selling prices, and the price moving against you as you trade. A good market is one that lets as many of these trades happen as possible, with as little of the surplus lost along the way.</p>
     <h3>Who meets who</h3>
     <p>The biggest markets exist because two groups need each other. People, pension funds and insurers have spare money they want to grow. Companies and governments need money to build factories, roads and schools. The market is where they meet.</p>
   </div>
@@ -64,6 +69,25 @@ connected:
     <li><span class="n">3</span><span>It lets people pass risk on.<span class="why">An airline doesn't know what fuel will cost next year, so it can agree a price today with someone happy to take that risk. An importer paying a supplier in dollars can fix its exchange rate in advance. The risk doesn't vanish. It moves to someone who wants it, for a price. That's what derivatives are for.</span></span></li>
     <li><span class="n">4</span><span>It lets you get out.<span class="why">Because there's always someone there, you can turn what you own back into cash when you need to. Selling a share takes seconds. Selling a house can take months. How easily you can get in and out without moving the price is called {% gl "liquidity" %}liquidity{% endgl %}.</span></span></li>
   </ul>
+  <div class="prose">
+    <h3>Why everyone meets in one place</h3>
+    <p>Imagine there was no market, and every buyer had to find a seller on their own. You'd ring round, haggle with each person, have no idea what anyone else was paying, and just hope the other side actually paid up. With a handful of people that's annoying. With thousands it's impossible, because the number of possible pairs explodes.</p>
+    <p>Put everyone in one meeting place and the problem shrinks: each person needs one connection, to the market, instead of one to everybody else. There's a bonus too. When every trade happens in one place, everyone can see the prices people are actually paying. The market gives everyone a public price for free, just by existing.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Everyone for themselves vs one meeting place</h3><p>Add people and count the connections each way.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="net-n">People</label><input type="range" id="net-n" min="3" max="40" step="1" value="8"><output id="net-n-out" for="net-n">8</output></div>
+    </div>
+    <svg class="chart" id="chart-net" viewBox="0 0 640 270" role="img" aria-label="Left: everyone connected to everyone else. Right: everyone connected to one central market."></svg>
+    <div class="readout" id="net-read"></div>
+    <p class="look"><strong>Things to notice.</strong> Double the people and the tangle on the left roughly quadruples, while the right only doubles. At \(100\) people it's \(4{,}950\) possible pairs against \(100\) connections. The maths is in section 8.</p>
+  </div>
+  <div class="prose">
+    <h3>Liquidity is a service, and someone gets paid for it</h3>
+    <p>Even in one meeting place, buyers and sellers rarely turn up at the same moment wanting the same amount. A pension fund wants to sell a million shares at 10am. The buyers who'd take them might not arrive until the afternoon.</p>
+    <p>Someone has to bridge that gap in time: buy now from whoever's selling, hold it for a while, and sell later to whoever comes to buy. That's what a {% gl "market maker" %}market maker{% endgl %} does. Holding something you didn't really want is risky, so they're paid for it through the gap between the price they buy at and the price they sell at, the {% gl "bid-ask spread" %}bid-ask spread{% endgl %}. A lot of trading, and the whole Market Making chapter in Quant, is about that business.</p>
+  </div>
 {% endsec %}
 
 {% sec 3, "How the Price Is Found", "If nobody sets the price, where does it come from?", "Finding the price" %}
@@ -120,20 +144,61 @@ connected:
   </div>
 {% endsec %}
 
-{% sec 5, "Key Words", "What do economists and the desk call these things?" %}
+{% sec 5, "How Good Is the Market at Finding the Price?", "Does the price really capture everything people know?", "How good is the price?" %}
+  <div class="prose">
+    <p>Every trader acts on something: their research, a model, a company they need to protect themselves against, or just cash coming in or going out. When someone who thinks a share is too cheap buys it, their buying nudges the price up, towards what they think it's worth. Everyone watching sees the price move, even though they never see the reason. So the price at any moment isn't anyone's opinion. It's where all that buying and selling currently balances.</p>
+    <h3>Why the crowd is often right</h3>
+    <p>Ask five analysts what a share is worth and you'll get five answers: say \(\text{£}98\), \(\text{£}101\), \(\text{£}103\), \(\text{£}99\) and \(\text{£}104\). Each one is a bit off, but the ones guessing too high and the ones guessing too low partly cancel out. Their average, \(\text{£}101\), is usually closer to the truth than most of them on their own. A market does something like this all day, with thousands of people.</p>
+    <p>It goes wrong in ways you can spot:</p>
+    <ul>
+      <li><strong>Only one side knows.</strong> If a handful of people have information nobody else has, there's nothing for their errors to cancel against.</li>
+      <li><strong>Everyone copies everyone.</strong> The cancelling-out only works if people think for themselves. When they follow each other, the mistakes pile up in the same direction. That's how bubbles start.</li>
+      <li><strong>Trades that have nothing to do with value.</strong> A fund forced to sell because investors want their money back still pushes the price down, even though nothing about the company changed.</li>
+    </ul>
+    <h3>Two ways news gets into the price</h3>
+    <p><strong>1. Public news: the price jumps before anyone trades.</strong> When big economic figures come out, everyone sees them at the same instant. The people quoting prices don't wait to be traded with. They just move their prices straight away. In the lesson's example, a US share index future sits at \(5{,}000\) before a data release. The number is better than expected, and within a second the market is quoting \(5{,}010\), with only a few contracts actually traded on the way up. The trading comes afterwards, as people who read the news differently trade at the new level.</p>
+    <p><strong>2. Private information: the price drifts as people trade.</strong> Someone who knows more than everyone else has to trade to make money from it. Nobody sees who they are or why they're buying, but everyone sees the buying, and prices adjust. This channel is slower and noisier, and it's the biggest danger for a market maker. Getting traded against by someone who knows more is called {% gl "adverse selection" %}adverse selection{% endgl %}, and it has its own lesson in the Quant topic.</p>
+    <h3>So are markets "efficient"?</h3>
+    <p>The {% gl "efficient market hypothesis" %}efficient market hypothesis{% endgl %} says prices already reflect what's known. It comes in three strengths:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Version</th><th>What the price already reflects</th><th>So you can't make easy money from…</th></tr></thead>
+      <tbody>
+        <tr><td>Weak</td><td>Every past price</td><td>Patterns in the chart</td></tr>
+        <tr><td>Semi-strong</td><td>Everything that's public</td><td>News, accounts and reports</td></tr>
+        <tr><td>Strong</td><td>Everything, even private information</td><td>Anything at all, even inside knowledge</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The best way to use it is as a yardstick, not a verdict. Markets are efficient enough that easy money is rare, and inefficient enough that the people who fix wrong prices get paid for doing it. That isn't a contradiction: <strong>prices are good precisely because someone profits from making them good.</strong> It's the same conclusion I came to reading <a href="/blog/a-random-walk-down-wall-street.html">A Random Walk Down Wall Street</a>.</p>
+    <p>One more thing that's easy to get backwards: a price jumping a lot after real news is the market <em>working</em>. The warning signs are the opposite: prices moving a lot when there's no news, or news arriving and the price not moving at all, which usually means hardly anyone is trading and the last price is out of date.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The price is the market's best guess, pieced together from everyone's trades. It's usually good, because people get paid for correcting it, and it goes wrong when information is one-sided or everyone copies each other.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What do economists and the desk call these things?" %}
   <div class="terms">
     <div class="term"><div class="term-top"><h3>Market</h3><span class="tag">Everyday</span></div><p>Anywhere buyers and sellers meet and agree a price. It can be a car boot sale, a website or a global network of banks.</p><p class="eg">The FX market has no building at all: it's banks and brokers trading with each other.</p></div>
     <div class="term"><div class="term-top"><h3>Demand</h3><span class="tag">Economics</span></div><p>How much of something people want to buy at each price. Drawn as the buyers line, sloping down.</p><p class="eg">At \(\text{£}80\) only \(300\) fans want a ticket. At \(\text{£}40\), \(700\) do.</p></div>
     <div class="term"><div class="term-top"><h3>Supply</h3><span class="tag">Economics</span></div><p>How much of something people are willing to sell at each price. Drawn as the sellers line, sloping up.</p><p class="eg">At \(\text{£}40\) only \(300\) holders will sell. At \(\text{£}80\), \(700\) will.</p></div>
     <div class="term"><div class="term-top"><h3>Market price</h3><span class="tag">Economics</span></div><p>The price where the amount people want to buy equals the amount people want to sell. Economists also call it the equilibrium price.</p><p class="eg">In the ticket chart it starts at \(\text{£}60\), with \(500\) tickets changing hands.</p></div>
+    <div class="term"><div class="term-top"><h3>Reservation price</h3><span class="tag">Economics</span></div><p>The most a buyer would pay, or the least a seller would accept, before walking away.</p><p class="eg">A holder won't sell below \(\text{£}98\): that's their reservation price.</p></div>
+    <div class="term"><div class="term-top"><h3>Surplus</h3><span class="tag">Economics</span></div><p>The value a trade creates: the gap between the buyer's most and the seller's least. The price splits it between them.</p><p class="eg">\(\text{£}103 - \text{£}98 = \text{£}5\) of surplus, whatever price they agree.</p></div>
     <div class="term"><div class="term-top"><h3>Price discovery</h3><span class="tag desk">Desk</span></div><p>The market finding the price by pulling buyers and sellers together, rather than anyone deciding it.</p><p class="eg">The first trades of the morning "discover" where a share should open after overnight news.</p></div>
     <div class="term"><div class="term-top"><h3>Liquidity</h3><span class="tag desk">Desk</span></div><p>How easily you can buy or sell without moving the price much. Lots of buyers and sellers means liquid. Few means illiquid.</p><p class="eg">EUR/USD is very liquid. A house is very illiquid.</p></div>
     <div class="term"><div class="term-top"><h3>Buying and selling pressure</h3><span class="tag desk">Desk</span></div><p>Lots of people trying to buy (or sell) at once, pushing the price towards a new crossing.</p><p class="eg">"Strong buying pressure in gold after the news."</p></div>
     <div class="term"><div class="term-top"><h3>Priced in</h3><span class="tag desk">Desk</span></div><p>News the market already expected, so it's already reflected in the price. Only surprises move it.</p><p class="eg">"The rate cut was fully priced in, so the pound barely moved."</p></div>
+    <div class="term"><div class="term-top"><h3>Adverse selection</h3><span class="tag desk">Desk</span></div><p>Being traded against by someone who knows more than you. The trades you win are the ones you'd rather not have.</p><p class="eg">"Everything we bought this morning went down: classic adverse selection."</p></div>
+    <div class="term"><div class="term-top"><h3>Efficient market hypothesis</h3><span class="tag">Economics</span></div><p>The idea that prices already reflect available information, so beating the market consistently is hard. Comes in weak, semi-strong and strong versions.</p><p class="eg">"In a market this efficient, any edge has to come from somewhere others aren't looking."</p></div>
   </div>
 {% endsec %}
 
-{% sec 6, "How does this link to Trading, Real Estate and Fintech?", "Where this chart turns up in each part of the plan.", "How it links to the plan" %}
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where this chart turns up in each part of the plan.", "How it links to the plan" %}
   <div class="link-block">
     <div class="link-block-head"><h3>Trading: guessing which line moves next</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
     <div class="prose">
@@ -160,7 +225,7 @@ connected:
   </div>
 {% endsec %}
 
-{% sec 7, "The Maths Underneath", "How do you find the crossing point with algebra?" %}
+{% sec 8, "The Maths Underneath", "How do you find the crossing point with algebra?" %}
   <div class="prose">
     <p>Both lines in the ticket chart are straight, so each one can be written as an equation. Call the price \(P\) (in pounds) and the number of tickets traded \(Q\).</p>
   </div>
@@ -208,10 +273,32 @@ connected:
   <div class="formula"><span class="lbl">Market price for straight lines</span>\[ \text{Demand: } P = a - bQ \qquad \text{Supply: } P = c + dQ \qquad \Rightarrow \qquad Q^{*} = \frac{a - c}{b + d}, \quad P^{*} = a - bQ^{*} \]</div>
   <div class="prose">
     <p>The top line, \(a - c\), is the gap between what the keenest buyer would pay and what the keenest seller would accept. The bigger that gap, the more trades happen. If \(a\) is below \(c\), even the keenest buyer won't pay what the keenest seller wants, and nothing trades at all.</p>
+    <h3>Surplus: how a trade's value gets split</h3>
+    <p>Call the seller's least \(r_s\), the buyer's most \(r_b\) and the price they agree \(P\). A trade only happens if \(r_s \le P \le r_b\).</p>
+  </div>
+  <div class="formula"><span class="lbl">Surplus from one trade</span>\[ \text{seller's gain} = P - r_s \qquad \text{buyer's gain} = r_b - P \qquad \text{total} = r_b - r_s \]</div>
+  <div class="prose">
+    <p>Add the two gains and \(P\) cancels out. That's the algebra behind "the price only decides who gets which share".</p>
+    <h3>Counting the connections</h3>
+    <p>With \(n\) people and no market, how many different pairs could trade? Each person could pair with the \(n - 1\) others, which gives \(n(n - 1)\). But that counts every pair twice (Ade with Bola, and Bola with Ade), so halve it.</p>
+  </div>
+  <div class="formula"><span class="lbl">Pairs vs connections to one market</span>\[ \text{pairs} = \frac{n(n-1)}{2} \qquad \text{connections to one market} = n \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>How many pairs are there with \(100\) people?</h3>
+    <ol class="steps">
+      <li>\(\dfrac{100 \times 99}{2} = \dfrac{9{,}900}{2} = 4{,}950\) possible pairs.</li>
+      <li>With one market in the middle: \(100\) connections.</li>
+    </ol>
+    <p class="answer">Almost \(50\) times fewer. The pairs grow roughly like \(n^2\) (a quadratic), while the connections grow like \(n\) (a straight line). Central markets turn a quadratic problem into a linear one.</p>
+  </div>
+  <div class="prose">
+    <h3>Why averaging guesses helps</h3>
+    <p>The five analysts' average is \(\dfrac{98 + 101 + 103 + 99 + 104}{5} = \dfrac{505}{5} = \text{£}101\). If each guess is off by a random amount with the same typical size, and the guesses are independent, the average of \(n\) of them is typically off by only \(\tfrac{1}{\sqrt{n}}\) as much. With \(100\) independent guesses the typical error shrinks to a tenth. The catch is the word <em>independent</em>: if everyone copies the same source, the errors don't cancel at all. This idea gets its proper treatment in Probability and Statistics.</p>
   </div>
 {% endsec %}
 
-{% sec 8, "Practice", "Have a go, then open the answer." %}
+{% sec 9, "Practice", "Have a go, then open the answer." %}
   <div class="practice">
     <div class="pq"><p class="pq-text"><span class="n">1</span><span>Demand is \(P = 90 - \tfrac{Q}{5}\) and supply is \(P = 20 + \tfrac{Q}{5}\). Find the market price and quantity.</span></p>
       <details><summary>Show answer</summary><div><span>\(90 - \tfrac{Q}{5} = 20 + \tfrac{Q}{5}\), so \(70 = \tfrac{2Q}{5}\) and \(Q = 175\).</span><span>\(P = 20 + 35 = \text{£}55\). Check: \(90 - 35 = 55\). ✓</span></div></details></div>
@@ -221,5 +308,11 @@ connected:
       <details><summary>Show answer</summary><div><span>Less oil is for sale at every price, so the sellers (supply) line shifts left. The crossing moves up: the price rises and less oil is traded.</span></div></details></div>
     <div class="pq"><p class="pq-text"><span class="n">4</span><span>A company reports profits exactly in line with what everyone expected. Why might its share price barely move?</span></p>
       <details><summary>Show answer</summary><div><span>The result was already priced in. Traders had bought and sold based on what they expected, so the lines were already in place. Only a surprise would shift them.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>\(50\) people could each trade with any of the others directly. How many different pairs is that?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\dfrac{50 \times 49}{2} = \dfrac{2{,}450}{2} = 1{,}225\) pairs, against \(50\) connections to one market.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A seller's reservation price is \(\text{£}97\) and a buyer's is \(\text{£}105\). They trade at \(\text{£}100\). How much surplus does each side get?</span></p>
+      <details><summary>Show answer</summary><div><span>Buyer: \(105 - 100 = \text{£}5\). Seller: \(100 - 97 = \text{£}3\).</span><span>Total: \(105 - 97 = \text{£}8\), whatever the price.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>A share is quoted \(\text{£}50.00\) to buy from you and \(\text{£}50.10\) to sell to you. News comes out and, with almost no trading, the quotes jump to \(\text{£}52.00\) and \(\text{£}52.10\). How far did the middle price move, and what does the lack of trading tell you?</span></p>
+      <details><summary>Show answer</summary><div><span>The middle went from \(\tfrac{50.00 + 50.10}{2} = 50.05\) to \(\tfrac{52.00 + 52.10}{2} = 52.05\): up \(\text{£}2.00\).</span><span>It was public news. The people quoting prices simply moved them, so the price changed before the volume arrived.</span></div></details></div>
   </div>
 {% endsec %}

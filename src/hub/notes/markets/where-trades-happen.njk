@@ -1,0 +1,286 @@
+---
+title: Where Trades Happen
+shelf: markets
+chapter: how-markets-work
+subtopic: Where Trading Happens
+order: 1
+summary: Exchanges, over-the-counter dealers and everything in between - who you trade with, what everyone else gets to see, and why it matters for the price you get.
+lede: Every trade happens somewhere. Where it happens decides who you trade with, what everyone else gets to see, and how much the trade really costs you.
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/where-trades-happen.js]
+alsoIn: [quant/microstructure]
+
+quiz:
+  - q: 'Why do most bonds trade over the counter rather than on an exchange?'
+    opts: ['Exchanges are not allowed to list bonds', 'There are so many different bonds, each trading rarely, that one shared order book for each would sit almost empty', 'Bond traders prefer to use the phone']
+    right: 1
+    why: 'An exchange works by pooling everyone in one identical thing. One company can have dozens of different bonds, and most trade only now and then, so dealers who quote on request do the job better.'
+  - q: 'A client asks three dealers for a price in a bond. The offers come back at \(99.30\), \(99.28\) and \(99.32\). What does the client pay to buy?'
+    opts: ['\(99.30\), the first dealer''s price', '\(99.32\), the highest offer', '\(99.28\), the lowest offer']
+    right: 2
+    why: 'To buy, you take the cheapest offer. Asking several dealers makes them compete, which is exactly why the client asked three.'
+  - q: 'A fund wants to buy \(500{,}000\) shares without pushing the price up before it''s finished. Which venue is built for that?'
+    opts: ['A dark pool', 'The opening auction on a lit exchange', 'A market order on the exchange''s order book']
+    right: 0
+    why: 'A dark pool doesn''t show orders before they trade, so other traders can''t see a big buyer coming and push the price up ahead of it.'
+
+connected:
+  - { label: Builds on, title: "What Is a Market?", where: Markets · What Markets Are, url: /hub/markets/what-is-a-market/ }
+  - { label: Builds on, title: The Players, where: Markets · What Markets Are, url: /hub/markets/the-players/ }
+  - { label: Next, title: Market Data and Feeds, where: Markets · How Markets Work, url: /hub/markets/market-data-and-feeds/ }
+  - { label: Used in, title: How FX Trades, where: Markets · FX, url: /hub/markets/ }
+---
+
+<style>
+  .venue-picks button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Every Trade Happens Somewhere", "What does 'where' a trade happens even mean?", "Every trade happens somewhere" %}
+  <div class="prose">
+    <p>Think about two ways of buying something.</p>
+    <p>At a supermarket, every tin of beans is identical, the price is on the shelf for everyone to see, and the till rings up whoever's next. You don't know or care who stacked the shelf.</p>
+    <p>Buying a used car is different. Every car is a bit different, so there's no shelf price. You go to a few dealers, ask each one for a price, and haggle. Nobody else finds out what you paid.</p>
+    <p>Financial markets come in the same two flavours:</p>
+    <ul>
+      <li>An {% gl "exchange" %}exchange{% endgl %} is the supermarket. Identical things, prices on show, the same rules for everyone. Shares and futures mostly trade this way.</li>
+      <li>{% gl "over the counter" %}Over the counter{% endgl %} (OTC) is the car dealer. You ask dealers for a price and do a private deal with one of them. Most bonds, almost all currency trading and many derivatives trade this way.</li>
+    </ul>
+    <p>Where a trade happens changes four things: <strong>who can take part</strong>, <strong>how the price gets set</strong>, <strong>what everyone else gets to see</strong>, and <strong>who's on the hook if the other side doesn't pay</strong>. Keep those four in mind and every venue in this note makes sense.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Exchanges are supermarkets: identical things, public prices, same rules for all. Over-the-counter markets are car dealers: you ask for a price and do a private deal.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Exchanges", "How does an exchange work, and what do you get for using one?", "Exchanges" %}
+  <div class="prose">
+    <p>An exchange only works because everything traded on it is <strong>standardised</strong>. One share of a company is exactly the same as every other share. One gold futures contract is exactly the same as every other one. Because they're interchangeable, everyone who wants to buy or sell can pool into one list of orders, called the order book. You'll meet it properly in the next subtopic, Placing a Trade.</p>
+    <p>That pooling gives you a lot:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>All the buyers and sellers in one place.<span class="why">More people in the same queue means you're more likely to find someone to trade with straight away, at a fair price. That's liquidity, concentrated.</span></span></li>
+    <li><span class="n">2</span><span>Prices on show, before and after.<span class="why">Before a trade, anyone can see the best prices people are offering. After it, the price and size are published. Markets that show orders before they trade are called {% gl "lit market" %}lit{% endgl %}.</span></span></li>
+    <li><span class="n">3</span><span>Same rules for everyone, and you don't need to know who's on the other side.<span class="why">A small fund and a giant bank trade under the same rules, and neither sees the other's name.</span></span></li>
+    <li><span class="n">4</span><span>Nobody can walk away from the deal.<span class="why">A {% gl "clearing house" %}clearing house{% endgl %} steps in between the buyer and the seller and guarantees both sides. If the seller goes bust, you still get your shares. This gets its own note in After the Trade.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>The big ones</h3>
+    <p>In the UK, the London Stock Exchange is the best-known exchange for shares, but it isn't the only place British shares trade: Cboe Europe and Aquis compete for the same business. In the US, shares trade across more than a dozen exchanges, the best known being the New York Stock Exchange (NYSE) and Nasdaq. Futures and options mostly trade on CME in Chicago, ICE in London and New York, and Eurex in Germany.</p>
+    <h3>How exchanges make money</h3>
+    <p>Most US share exchanges use a {% gl "maker-taker" %}maker-taker{% endgl %} fee model. If you leave an order sitting in the book waiting to be traded with, you <em>make</em> liquidity, and the exchange pays you a small rebate. If you trade straight away against an order that's already sitting there, you <em>take</em> liquidity, and you pay a fee. The lesson's typical numbers: a rebate of \(\$0.002\) a share to the maker and a fee of \(\$0.003\) a share to the taker, so the exchange keeps \(\$0.001\) a share in the middle.</p>
+    <p>That sounds tiny, and it is, but it creates a real conflict. A broker sending your order somewhere might pick the venue that pays <em>it</em> the best rebate rather than the one that gets <em>you</em> the best price. Rules called {% gl "best execution" %}best execution{% endgl %} exist to stop that.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Over the Counter", "How do you trade when there's no exchange?", "Over the counter" %}
+  <div class="prose">
+    <p>Some things just don't fit the supermarket model. Take bonds. The UK government has dozens of different gilts in issue, each with its own maturity date and interest rate. A big company might have twenty different bonds. Most of them trade only now and then. Give each one its own order book and almost every book would sit empty.</p>
+    <p>So these markets run through <strong>dealers</strong>: banks and trading firms that will quote a price on request and trade with you themselves, as the other side of the deal. A {% gl "dealer" %}dealer{% endgl %} buying from you is putting the bond on its own books, and hoping to sell it on at a profit.</p>
+    <h3>Asking for a price</h3>
+    <p>The usual way to trade is a {% gl "request for quote" %}request for quote{% endgl %} (RFQ). You tell a few dealers what you want to trade and ask each for a two-way price: the price they'd buy at and the price they'd sell at. They reply, and you deal with whoever's best. Nobody outside that conversation sees any of it.</p>
+    <p>The lesson's example: a client asks three dealers for a price in a bond.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Dealer</th><th>Would buy from you at</th><th>Would sell to you at</th></tr></thead>
+      <tbody>
+        <tr><td>Dealer A</td><td>\(99.10\)</td><td>\(99.30\)</td></tr>
+        <tr><td>Dealer B</td><td>\(99.12\)</td><td>\(\mathbf{99.28}\)</td></tr>
+        <tr><td>Dealer C</td><td>\(99.05\)</td><td>\(99.32\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>To buy, the client takes the cheapest offer, \(99.28\). To sell, they'd take the highest bid, \(99.12\). Put the best of each together and the client faces a gap of \(0.16\), tighter than any single dealer's own gap. Making dealers compete is the whole point of asking more than one.</p>
+    <p>So why not ask twenty? Because every dealer you ask now knows you want to trade. If you're selling a big block, some of them may sell first, pushing the price down before you've finished. Asking more dealers gets you a better price, but tells more people what you're doing. Try it below.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Ask the dealers</h3><p>You want to buy a bond. Choose how many dealers to ask for a price.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="rfq-n">Dealers asked</label><input type="range" id="rfq-n" min="1" max="6" step="1" value="3"><output id="rfq-n-out" for="rfq-n">3</output></div>
+    </div>
+    <svg class="chart" id="chart-rfq" viewBox="0 0 640 300" role="img" aria-label="Each dealer's price to buy and to sell, with the best of them highlighted"></svg>
+    <div class="legend"><span><i class="sw grey"></i>A dealer's two-way price</span><span><i class="sw tone"></i>The best you can get</span></div>
+    <div class="readout" id="rfq-read"></div>
+    <p class="look" id="rfq-story"></p>
+  </div>
+  <div class="prose">
+    <h3>The trade-off</h3>
+    <p>OTC trading is flexible. You can trade odd sizes, and agree custom terms that no exchange would list. In return, the dealers end up holding a lot of risk and a lot of information, and there's no public price. After the 2008 crisis, when it turned out nobody knew who owed what to whom, regulators pushed much of the OTC world onto electronic platforms and through clearing houses. It's still OTC, but it's far more visible than it was.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Over the counter, you ask dealers for a price and deal with the best. Asking more dealers gets you a better price but tells more people what you're up to.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Everything in Between", "What are dark pools, and why does one share trade in so many places?", "Everything in between" %}
+  <div class="prose">
+    <p>Real markets aren't neatly one or the other. Between the pure exchange and the private phone call there's a whole range of venues, each built to solve a particular problem. Tap each one to see how it works.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The venue spectrum</h3><p>From fully public to fully private. Tap a venue.</p></div>
+    <div class="controls">
+      <div class="presets venue-picks" aria-label="Venues">
+        <button type="button" data-venue="0" aria-pressed="true">Exchange</button>
+        <button type="button" data-venue="1" aria-pressed="false">MTF / ECN</button>
+        <button type="button" data-venue="2" aria-pressed="false">Periodic auction</button>
+        <button type="button" data-venue="3" aria-pressed="false">Dark pool</button>
+        <button type="button" data-venue="4" aria-pressed="false">Dealer platform</button>
+        <button type="button" data-venue="5" aria-pressed="false">RFQ / voice</button>
+      </div>
+    </div>
+    <svg class="chart" id="chart-venues" viewBox="0 0 640 124" role="img" aria-label="A line from public to private with six venues along it"></svg>
+    <div class="table-wrap">
+      <table class="numbers">
+        <tbody id="venue-card"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="prose">
+    <h3>Dark pools: hiding a big order</h3>
+    <p>Imagine you run a fund and need to buy \(500{,}000\) shares. Put that order on a lit exchange and everyone sees a huge buyer arrive. Traders buy ahead of you, and by the time you've finished, you've pushed the price up against yourself.</p>
+    <p>A {% gl "dark pool" %}dark pool{% endgl %} solves that by not showing orders at all before they trade. Buyers and sellers are matched in private, usually at the midpoint of the public price, and the trade is only reported afterwards. Dark pools handle something like a sixth of US share trading.</p>
+    <p>They come in different kinds, and the kind matters:</p>
+    <ul>
+      <li><strong>Run by a bank or broker</strong>, matching its own clients' orders. Convenient, but the broker's own trading desk might be on the other side of your trade.</li>
+      <li><strong>Independent</strong>, built only to match big institutional orders with each other, with no trading desk of its own. Less risk of your order being spotted.</li>
+      <li><strong>Run by an exchange</strong>, as a hidden order type inside the normal exchange, under the exchange's rules.</li>
+    </ul>
+    <p>The catch is that every trade hidden in the dark is a trade that isn't helping set the public price. If too much moves into dark pools, the lit price that everyone relies on gets worse. Regulators argue about where that line is.</p>
+    <h3>Why one share trades in so many places</h3>
+    <p>A single US share can trade at the same moment on its main exchange, several rival exchanges and a dozen dark pools. This is called {% gl "fragmentation" %}fragmentation{% endgl %}. Competition between venues has pushed fees down, but it also means the buyers and sellers for one share are spread across lots of order books.</p>
+    <p>The fix is a computer: a {% gl "smart order router" %}smart order router{% endgl %} checks every venue's prices, fees and speed, and splits your order across them to get the best overall result. In the US, rules also force every trade to happen at or better than the best price showing on any exchange, which ties all the pieces back together. More on that in the next note.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Lit venues show you everything and help set the public price, but reveal what you're doing. Dark venues hide your order, but don't help set the price. Big orders usually use both.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Key Words", "What does the desk call all this?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Exchange</h3><span class="tag">Everyday</span></div><p>A central, regulated marketplace where standardised things trade under the same public rules for everyone.</p><p class="eg">The London Stock Exchange, NYSE, CME.</p></div>
+    <div class="term"><div class="term-top"><h3>Over the counter (OTC)</h3><span class="tag desk">Desk</span></div><p>Trading done directly between two parties, usually a client and a dealer, with no central order book.</p><p class="eg">"Most of the bond market is OTC."</p></div>
+    <div class="term"><div class="term-top"><h3>Dealer</h3><span class="tag desk">Desk</span></div><p>A firm that quotes prices and trades with clients using its own money, taking the other side of the deal.</p><p class="eg">"Three dealers came back on the RFQ."</p></div>
+    <div class="term"><div class="term-top"><h3>Request for quote (RFQ)</h3><span class="tag desk">Desk</span></div><p>Asking a few dealers for their price, then dealing with the best one.</p><p class="eg">"Put it out to five dealers on RFQ."</p></div>
+    <div class="term"><div class="term-top"><h3>Lit market</h3><span class="tag desk">Desk</span></div><p>A venue that shows orders to everyone before they trade.</p><p class="eg">"Small orders go lit, the block goes dark."</p></div>
+    <div class="term"><div class="term-top"><h3>Dark pool</h3><span class="tag desk">Desk</span></div><p>A venue that hides orders until after they've traded, so big orders don't move the price.</p><p class="eg">"We got half the order done in the dark."</p></div>
+    <div class="term"><div class="term-top"><h3>Fragmentation</h3><span class="tag desk">Desk</span></div><p>The same thing trading on lots of different venues at once, so its buyers and sellers are spread out.</p><p class="eg">"Liquidity's so fragmented you need a router just to find it."</p></div>
+    <div class="term"><div class="term-top"><h3>Smart order router</h3><span class="tag desk">Desk</span></div><p>Software that checks every venue and splits an order across them for the best overall price.</p><p class="eg">"The SOR sprayed it across six venues in a millisecond."</p></div>
+    <div class="term"><div class="term-top"><h3>Maker-taker</h3><span class="tag desk">Desk</span></div><p>A fee model that pays a rebate to orders that wait in the book and charges a fee to orders that trade straight away.</p><p class="eg">"Post passively and collect the rebate."</p></div>
+    <div class="term"><div class="term-top"><h3>Clearing house</h3><span class="tag desk">Desk</span></div><p>A firm that steps between buyer and seller and guarantees both sides of the trade. Also called a CCP.</p><p class="eg">"It's cleared, so we're not worried about the other side."</p></div>
+    <div class="term"><div class="term-top"><h3>Best execution</h3><span class="tag desk">Desk</span></div><p>A broker's duty to get its client the best overall result: price, cost, speed and likelihood of the trade going through.</p><p class="eg">"Compliance wants to see the best-ex report."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Where do the markets I care about actually trade?", "FX, gold and bonds" %}
+  <div class="prose">
+    <p>Most of this lesson is written around shares, which are the most exchange-based market there is. The markets I care about most are the opposite: they're mostly over the counter.</p>
+    <h3>FX: one giant dealer network</h3>
+    <p>There's no FX exchange. Currency trading is a worldwide network of banks and trading firms quoting each other and their clients, around the clock from Sunday night to Friday night. It splits roughly into layers:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Layer</th><th>Who trades there</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Dealer to dealer</td><td>Big banks and trading firms trading with each other on screens that work like an exchange</td><td>EBS, LSEG FX Matching</td></tr>
+        <tr><td>Multi-dealer platforms</td><td>Funds and companies sending RFQs to several banks at once</td><td>360T, FXall, Bloomberg FXGO</td></tr>
+        <tr><td>Single-dealer platforms</td><td>A bank streaming its own prices straight to its clients</td><td>Each big bank runs one</td></tr>
+        <tr><td>Phone and chat</td><td>Big, unusual or sensitive trades</td><td>A salesperson on the desk</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>One quirk: many FX dealers keep a "last look", a split second to accept or reject your trade after you've clicked their price. It's a small safety check, but it can be abused, and some newer firms have built their pitch around not abusing it.</p>
+    <h3>Gold: London, New York and Shanghai</h3>
+    <p>Physical gold mostly trades over the counter in London, between banks and dealers, in large standard bars held in London vaults. Alongside that, gold futures trade on exchanges: COMEX (part of CME) in New York, and the Shanghai Futures Exchange. Shanghai also has a separate exchange for physical gold. So gold is both OTC and exchange-traded, and traders watch all three centres.</p>
+    <h3>Bonds: dealers, RFQ and futures</h3>
+    <p>Government bonds trade OTC through dealers. In the UK, a group of banks called gilt-edged market makers agree to quote gilts at all times, and clients mostly trade with them by RFQ on platforms like Tradeweb, Bloomberg and MarketAxess. But bond <em>futures</em>, contracts on government bonds, trade on exchanges: gilt futures on ICE in London, US Treasury futures on CME. Plenty of traders express a view on bonds through futures, precisely because the exchange version is easier to trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Quant, Real Estate and Fintech?", "Where this turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: where your order goes is part of the trade</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>The lesson makes a point that's easy to miss: on a big order, the gap between good and bad execution can easily be \(0.2\%\) to \(0.5\%\) of the trade. On \(\text{£}10\) million, that's \(\text{£}20{,}000\) to \(\text{£}50{,}000\), on every trade, before the idea has even had a chance to work. Choosing where and how to trade is part of the trade, not admin after it.</p>
+      <p>On an FX desk, this is daily life: deciding when to show a client a price on your own platform, when to go to the dealer-to-dealer market, and how much a big client order will move the price.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Quant: speed between venues</h3><a class="theme-link tone-indigo" href="/hub/quant/">Quant</a></div>
+    <div class="prose">
+      <p>Fragmentation creates a game. The same share is on many venues at once, so the instant a price changes on one, the others are briefly out of date. Firms that see the change first and trade on the stale venues can profit. That race, and the firms built around it, are in Quant's Microstructure and Quant Trading Firms chapters.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the most over-the-counter market there is</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Every house is different, so property can't have an exchange. It trades the car-dealer way: estate agents act as brokers, buyers make private offers, and nobody sees the other bids. The asking price on a property website is like a dealer's quote: a starting point, not a trade. The real "trade prints" come later, when the sale is registered, and HM Land Registry publishes what each home actually sold for.</p>
+      <p>That's why property prices are slow to react and hard to read in real time, and why someone who knows the local market well has a real edge over someone who doesn't.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: from phone calls to a matching engine</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has all three kinds of venue. Shares trade on an exchange, the Nigerian Exchange (NGX). Government bonds and Treasury bills trade over the counter between dealers, on FMDQ's platforms.</p>
+      <p>The naira is the interesting one. In December 2024 the Central Bank of Nigeria launched the Electronic Foreign Exchange Matching System (EFEMS), on Bloomberg's matching platform, for banks trading naira against the dollar. Quotes are anonymous until matched, trades start at \(\$100{,}000\), and the CBN publishes the prices. In this note's terms, it moved the core of the naira market from private dealer-to-dealer deals towards something that works like an exchange: one book, rules for everyone, prices on show. That's exactly the kind of market-structure change fintech in Nigeria is about.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "What do the numbers in this note actually work out to?" %}
+  <div class="prose">
+    <h3>Spreads in basis points</h3>
+    <p>Prices are different sizes, so traders compare spreads as a fraction of the price, in {% gl "basis point" %}basis points{% endgl %}: hundredths of a percent.</p>
+  </div>
+  <div class="formula"><span class="lbl">Spread in basis points</span>\[ \text{spread (bp)} = \frac{\text{offer} - \text{bid}}{\text{mid}} \times 10{,}000, \qquad \text{mid} = \frac{\text{bid} + \text{offer}}{2} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>How wide is the best price from the three dealers, in basis points?</h3>
+    <ol class="steps">
+      <li>Best bid \(99.12\), best offer \(99.28\). The gap is \(0.16\).</li>
+      <li>Mid: \(\dfrac{99.12 + 99.28}{2} = 99.20\).</li>
+      <li>\(\dfrac{0.16}{99.20} \times 10{,}000 \approx 16.1\) bp.</li>
+    </ol>
+    <p class="answer">About \(16\) bp. Dealer A alone was \(0.20\) wide, about \(20\) bp: competition saved the client roughly a fifth of the cost.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>What does an exchange earn from maker-taker fees on \(1{,}000{,}000\) shares?</h3>
+    <ol class="steps">
+      <li>Each share that trades has one maker and one taker.</li>
+      <li>The taker pays \(\$0.003\) and the maker gets back \(\$0.002\), so the exchange keeps \(\$0.003 - \$0.002 = \$0.001\) a share.</li>
+      <li>\(1{,}000{,}000 \times \$0.001 = \$1{,}000\).</li>
+    </ol>
+    <p class="answer">\(\$1{,}000\). Tiny per share, which is why exchanges care so much about volume.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>A fund buys \(\text{£}10\) million of shares. Better execution saves \(20\) bp. How much is that?</h3>
+    <ol class="steps">
+      <li>\(20\) bp is \(\dfrac{20}{10{,}000} = 0.002\).</li>
+      <li>\(\text{£}10{,}000{,}000 \times 0.002 = \text{£}20{,}000\).</li>
+    </ol>
+    <p class="answer">\(\text{£}20{,}000\) on a single trade. Over a hundred trades a year, that's \(\text{£}2\) million, which is why funds measure their execution so carefully.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Three dealers quote offers of \(99.30\), \(99.28\) and \(99.32\) for the same bond. A client buying \(100\) bonds at the best offer pays what price per bond?</span></p>
+      <details><summary>Show answer</summary><div><span>\(99.28\): to buy, you take the cheapest offer.</span><span>Bond prices are quoted per \(100\) of face value, so on a bond with \(\text{£}1{,}000\) face value that's \(\text{£}992.80\) each, or \(\text{£}99{,}280\) for all \(100\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Using the composite best from those dealers (bid \(99.12\), offer \(99.28\)), what is the effective spread?</span></p>
+      <details><summary>Show answer</summary><div><span>\(99.28 - 99.12 = 0.16\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Give two reasons a fund might choose a dark pool over a lit exchange, and one reason it might not.</span></p>
+      <details><summary>Show answer</summary><div><span>For: other traders can't see a big order coming and trade ahead of it; trades usually happen at the midpoint, so you don't pay the full spread.</span><span>Against: your order might not fill, because you only trade if a matching order happens to be there, and in some pools the operator's own desk may be on the other side.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Interview-style: why does almost all FX trade over the counter, when shares trade on exchanges?</span></p>
+      <details><summary>Show answer</summary><div><span>FX grew up as banks dealing with each other and their clients, across every time zone, with no single country's exchange in charge. Big clients also want to trade large, custom amounts and dates, which dealers can quote but a standard exchange contract can't. Exchange-style screens exist for dealers trading with each other, and FX futures do trade on exchanges, but most client business stays OTC.</span></div></details></div>
+  </div>
+{% endsec %}

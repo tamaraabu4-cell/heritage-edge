@@ -1,0 +1,270 @@
+---
+title: Market Data and Feeds
+shelf: markets
+chapter: how-markets-work
+subtopic: Where Trading Happens
+order: 2
+summary: What market data is, how much of the order book you get to see, how prices from many venues become one, why speed matters, and why old prices need careful handling.
+lede: Every venue in the last note pumps out a stream of prices and trades. What you can see of that stream, how fast, and how clean it is shapes every decision a trader makes.
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/market-data-and-feeds.js]
+alsoIn: [quant/quant-development, code/python-for-finance]
+
+quiz:
+  - q: 'What does Level 2 market data show that Level 1 doesn''t?'
+    opts: ['The names of everyone placing orders', 'The prices and sizes waiting at every level of the order book, not just the best ones', 'Tomorrow''s opening price']
+    right: 1
+    why: 'Level 1 is just the best bid, best offer and last trade. Level 2 shows the depth: how much is waiting at each price behind the best ones. Names are never shown.'
+  - q: 'A share splits two-for-one, so the price halves overnight. On an unadjusted price chart, what does that look like?'
+    opts: ['A \(50\%\) crash that never really happened', 'Nothing at all', 'A \(100\%\) rise']
+    right: 0
+    why: 'Each share is now worth half as much, but you own twice as many. Nobody lost money, but the raw price falls by half. Adjusted data fixes this so backtests don''t see a fake crash.'
+  - q: 'Why do high-speed trading firms pay for direct feeds from each exchange instead of using the consolidated tape?'
+    opts: ['The consolidated tape is missing some exchanges', 'Direct feeds arrive a fraction of a second sooner, and being first is how they make money', 'Direct feeds are cheaper']
+    right: 1
+    why: 'The consolidated tape has to collect every venue''s data in one place and send it back out, which takes extra time. For firms racing to react first, those microseconds are the whole business.'
+
+connected:
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Next, title: Order types, where: Markets · Placing a Trade, url: /hub/markets/ }
+  - { label: Used in, title: Latency and Speed, where: Quant · Microstructure, url: /hub/quant/ }
+  - { label: Used in, title: Mean reversion in FX and commodities, where: Projects · Quant, url: /projects/fx-commodities-mean-reversion.html }
+---
+
+<style>
+  .lv-picks button[aria-pressed="true"], .route-picks button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "What Market Data Is", "What exactly is 'market data'?", "What market data is" %}
+  <div class="prose">
+    <p>Think of a football match. There's the live score in your app, ticking over as goals go in. There's the full live coverage, where you see every pass. And afterwards there are the stats and the replay, which you can study as long as you like.</p>
+    <p>{% gl "market data" %}Market data{% endgl %} is the same three things for a market:</p>
+    <ul>
+      <li><strong>Quotes</strong>: the prices people are currently willing to buy and sell at, and how much. Like seeing where every player is standing.</li>
+      <li><strong>Trades</strong>: what actually happened, at what price and size, and when. Like the goals.</li>
+      <li><strong>History</strong>: all of that, stored, so you can look back, measure things and test ideas.</li>
+    </ul>
+    <p>Every venue from the last note produces its own stream of quotes and trades, many times a second. Traders don't just need the data, they need to know <em>how much</em> of it they can see, <em>how fast</em> it reaches them, and <em>how clean</em> it is when they look back. That's this note.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Market data is quotes (what people would trade at), trades (what did trade) and history. What matters is how much you see, how fast, and how clean.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "How Much Can You See?", "What do the different 'levels' of data actually show?", "How much can you see?" %}
+  <div class="prose">
+    <p>Data comes in levels, and each one shows more of the order book. Press each level below to see what a trader with that level would see for the same share at the same moment.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Three ways to see the same order book</h3><p>A share trading around \(230\text{p}\). Pick a level.</p></div>
+    <div class="controls">
+      <div class="presets lv-picks" aria-label="Data level">
+        <button type="button" data-level="1" aria-pressed="true">Level 1</button>
+        <button type="button" data-level="2" aria-pressed="false">Level 2</button>
+        <button type="button" data-level="3" aria-pressed="false">Level 3</button>
+      </div>
+    </div>
+    <svg class="chart" id="chart-levels" viewBox="0 0 640 330" role="img" aria-label="An order book of prices to sell above and prices to buy below, showing more or less depending on the data level"></svg>
+    <p class="look" id="levels-story"></p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Level</th><th>What you see</th><th>Who needs it</th></tr></thead>
+      <tbody>
+        <tr><td>Level 1</td><td>The best price to buy and to sell, how much is there, and the last trade</td><td>Almost everyone. It's what a normal trading app shows, and it's cheap or free.</td></tr>
+        <tr><td>Level 2</td><td>Every price in the order book and how much is waiting at each one: the market's {% gl "market depth" %}depth{% endgl %}</td><td>Traders working out how much they can buy or sell before the price moves</td></tr>
+        <tr><td>Level 3</td><td>Everything in Level 2, plus the right to put your own quotes into the book</td><td>Registered market makers and brokers that are members of the exchange</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Notice what no level shows: <strong>who</strong> the orders belong to. Even with the full book in front of you, the other side is anonymous. You see that someone wants to sell \(12{,}500\) shares at \(230.9\text{p}\). You never see that it's a pension fund.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "One Price from Many Venues", "If a share trades in twenty places, what is 'the' price?", "One price from many venues" %}
+  <div class="prose">
+    <p>The last note ended with a problem: one share can trade on a dozen venues at once. So which price is the real one?</p>
+    <p>In the US, the answer is the {% gl "consolidated tape" %}consolidated tape{% endgl %}. Every exchange has to send its quotes and trades to a central processor, which stitches them into one feed of every trade in every share. From it comes the {% gl "NBBO" %}national best bid and offer{% endgl %} (NBBO): the best price to sell at and the best price to buy at, across all exchanges, at that moment. US rules say trades must happen at the NBBO or better, which is how all the separate venues stay tied together.</p>
+    <h3>The race to see it first</h3>
+    <p>There's a catch. Collecting data from every exchange, combining it and sending it back out takes time: a fraction of a millisecond. For a person, that's nothing. For a computer, it's long enough to read a price change on one exchange and trade on another before the official feed has caught up.</p>
+    <p>So the fastest firms skip the tape. They pay each exchange for a {% gl "direct feed" %}direct feed{% endgl %}, put their computers in the same buildings as the exchanges' computers, and run cables or even microwave towers between data centres in the straightest line they can. The delay between something happening and you finding out about it is called {% gl "latency" %}latency{% endgl %}, and for some firms, shaving it is the whole business.</p>
+    <p>The hard limit is the speed of light. Signals in glass fibre travel at about two-thirds of the speed of light, while signals through the air travel at almost the full speed of light. That's why firms build microwave links between Chicago and New Jersey, even though fibre carries far more data. Try some real distances:</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>How fast can news travel?</h3><p>The quickest a signal could possibly make each journey, in a perfectly straight line.</p></div>
+    <div class="controls">
+      <div class="presets route-picks" aria-label="Routes">
+        <button type="button" data-route="0" aria-pressed="false">London → Frankfurt</button>
+        <button type="button" data-route="1" aria-pressed="true">Chicago → New Jersey</button>
+        <button type="button" data-route="2" aria-pressed="false">London → Lagos</button>
+        <button type="button" data-route="3" aria-pressed="false">London → New York</button>
+      </div>
+    </div>
+    <svg class="chart" id="chart-race" viewBox="0 0 640 200" role="img" aria-label="Time for a signal to travel the route through fibre and through the air"></svg>
+    <div class="legend"><span><i class="sw grey"></i>Through glass fibre</span><span><i class="sw tone"></i>Through the air (microwave or radio)</span></div>
+    <div class="readout" id="race-read"></div>
+    <p class="look"><strong>Things to notice.</strong> Real cables wander, so actual times are longer than these. But the gap between fibre and air is always about a third, and on a busy route that gap is worth paying for.</p>
+  </div>
+  <div class="prose">
+    <h3>Outside the US</h3>
+    <p>Europe has never had one consolidated tape for shares, so prices are spread across many venues' own feeds, and building the full picture is a paid service in itself. That's changing slowly: in 2025 the EU picked a firm to run a consolidated tape for bonds, and the UK is building its own bond tape. Shares are next on the list.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The consolidated tape turns many venues into one official price, but it's a fraction of a millisecond behind the venues themselves. Firms that live on speed pay for direct feeds to get there first.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Looking Back: Historical Data", "Why can't you just download old prices and trust them?", "Historical data" %}
+  <div class="prose">
+    <p>Historical data comes in different levels of detail:</p>
+    <ul>
+      <li><strong>Bars</strong>: for each day, hour or minute, the price it opened at, the highest, the lowest, where it closed, and how much traded. Traders call this {% gl "OHLCV" %}OHLCV{% endgl %} (open, high, low, close, volume). It's what most charts are drawn from.</li>
+      <li><strong>{% gl "tick data" %}Tick data{% endgl %}</strong>: every single quote and trade, in order, with a timestamp. Far bigger, far more expensive, and what you need to study anything that happens within a day.</li>
+    </ul>
+    <h3>The trap: prices that lie</h3>
+    <p>Raw prices can show things that never happened. If a company splits each share into two, the share price halves overnight. Nobody lost anything: you own twice as many shares, each worth half as much. But an unadjusted chart shows a \(50\%\) crash. Dividends do something similar on a smaller scale: the price drops by the dividend on the day it's paid out, even though shareholders received the cash.</p>
+    <p>{% gl "adjusted price" %}Adjusted prices{% endgl %} fix this by rescaling all the history before each event, so the chart shows what an investor actually experienced. For working out returns or testing a strategy, adjusted data is the standard. Use raw data and your strategy might "discover" a pattern in crashes that never happened.</p>
+    <h3>I've hit this myself</h3>
+    <p>Futures have a version of the same trap. Each contract expires, so long price histories are made by gluing one contract onto the next. On the day of each swap, the glued-together price can jump even though nothing happened in the market. In my <a href="/projects/fx-commodities-mean-reversion.html">mean reversion project</a>, my best result, a Brent vs WTI oil trade, turned out to be partly catching those fake jumps. The fix was to re-test on prices that don't swap contracts. Knowing exactly how your data was built is part of the job.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Old prices aren't automatically true. Splits, dividends and futures rolls can all create moves that never happened, so always know how your data was built before you trust a result.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "New Kinds of Data, and What It All Costs", "What else do funds pay for, and how much?", "Alt data and costs" %}
+  <div class="prose">
+    <p>Prices and trades are only part of what a fund buys. There's also company data (accounts, forecasts, valuations) and, increasingly, {% gl "alternative data" %}alternative data{% endgl %}: satellite pictures of car parks and oil tanks, card-spending totals, website traffic, app downloads. The idea is to see a trend before it turns up in official figures.</p>
+    <p>Alternative data has a shelf life. The first funds to use a new dataset get the edge. Once everyone buys it, the signal is priced in and the edge fades.</p>
+    <h3>The bill</h3>
+    <p>Data is one of a fund's biggest running costs. Rough figures:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Item</th><th>Rough cost</th></tr></thead>
+      <tbody>
+        <tr><td>A Bloomberg Terminal, one person</td><td>About \(\$30{,}000\) a year</td></tr>
+        <tr><td>A live data feed from one exchange</td><td>\(\$1{,}000\) to \(\$10{,}000\) a month</td></tr>
+        <tr><td>Historical tick data</td><td>\(\$50{,}000\) or more a year</td></tr>
+        <tr><td>One alternative dataset</td><td>\(\$10{,}000\) to \(\$500{,}000\) or more a year</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The lesson reckons a ten-person fund can easily spend over \(\$1\) million a year on data. Choosing which data you actually need is a business decision, not just a research one.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call all this?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Market data</h3><span class="tag">Everyday</span></div><p>The stream of quotes and trades a market produces, plus its history.</p><p class="eg">"Our market data bill went up again."</p></div>
+    <div class="term"><div class="term-top"><h3>Market depth</h3><span class="tag desk">Desk</span></div><p>How much is waiting to be bought and sold at each price, beyond the best ones. Shown by Level 2 data.</p><p class="eg">"There's no depth: one big order and it'll gap."</p></div>
+    <div class="term"><div class="term-top"><h3>Consolidated tape</h3><span class="tag desk">Desk</span></div><p>One feed combining quotes and trades from every venue into a single official record.</p><p class="eg">"The print showed up on the tape a moment later."</p></div>
+    <div class="term"><div class="term-top"><h3>NBBO</h3><span class="tag desk">Desk</span></div><p>National best bid and offer: the best prices to sell and buy at across all US exchanges right now.</p><p class="eg">"We filled inside the NBBO."</p></div>
+    <div class="term"><div class="term-top"><h3>Direct feed</h3><span class="tag desk">Desk</span></div><p>Data bought straight from one exchange, arriving faster than the consolidated tape.</p><p class="eg">"The HFTs are all on the direct feeds."</p></div>
+    <div class="term"><div class="term-top"><h3>Latency</h3><span class="tag desk">Desk</span></div><p>The delay between something happening and you seeing it, or reacting to it.</p><p class="eg">"We cut our latency to under ten microseconds."</p></div>
+    <div class="term"><div class="term-top"><h3>OHLCV</h3><span class="tag desk">Desk</span></div><p>Open, high, low, close and volume for each time period. The data behind a candlestick chart.</p><p class="eg">"Just pull daily OHLCV for the last ten years."</p></div>
+    <div class="term"><div class="term-top"><h3>Tick data</h3><span class="tag desk">Desk</span></div><p>Every individual quote and trade, timestamped. The most detailed history there is.</p><p class="eg">"You'll need tick data to test anything intraday."</p></div>
+    <div class="term"><div class="term-top"><h3>Adjusted price</h3><span class="tag desk">Desk</span></div><p>Historical prices rescaled for splits and dividends, so returns aren't distorted by events that didn't change anyone's wealth.</p><p class="eg">"Always backtest on adjusted closes."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "What does data look like in the markets I care about?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: no tape at all</h3>
+    <p>Because FX is over the counter, there's no consolidated tape and no official best price. Each platform only sees its own slice of the market, and every bank sees its own clients' trades. That's why a bank's view of who is buying and selling which currency is valuable information in itself, and why FX desks talk so much about "flow".</p>
+    <p>Two things help fill the gap. The 4pm London fix, which you met in Following the Money, gives the market one agreed reference price a day for each major currency. And CLS, the system that settles a large share of the world's FX trades, publishes data on how much is being traded.</p>
+    <h3>Gold: a price set by auction</h3>
+    <p>The best-known gold price, the LBMA Gold Price, is set by an electronic auction twice a day in London, at 10:30 and 15:00. Banks and producers around the world use it as a benchmark for contracts. Between auctions, traders watch the London OTC price and COMEX futures.</p>
+    <h3>Bonds: catching up</h3>
+    <p>Bond data has always been patchy, because most bonds trade rarely and over the counter. In the US, FINRA's TRACE system publishes corporate bond trades after they happen. In Europe and the UK, the new bond tapes are meant to do the same job.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Quant, Real Estate and Fintech?", "Where this turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: knowing what you're looking at</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>For deciding <em>what</em> to trade, Level 1 data and good daily history are usually enough. For deciding <em>how</em> to trade a big order, you want depth: how much is there before the price moves. And for anything you test on old data, you need to know exactly how that data was built.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Quant: data is the raw material</h3><a class="theme-link tone-indigo" href="/hub/quant/">Quant</a></div>
+    <div class="prose">
+      <p>Every quant strategy starts with data, and every backtest is only as honest as its data. Market makers live on direct feeds and tick data; researchers spend much of their time cleaning history. Quant Development › Market Data covers how firms actually store and handle it.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: quotes vs prints</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has the same two kinds of data as any market. Asking prices on property websites are quotes: what sellers hope to get. Sold prices are the trades, and in England and Wales HM Land Registry publishes them, but only once each sale has been registered, which can be months later. So property data is like a market where you only see the tape with a long delay. Anyone with a fresher view, like a good local agent, has an edge.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: data as a gap to fill</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>In Nigeria, good market data is harder to come by than in London or New York, and that's an opportunity. The CBN publishing live prices from its FX matching system was a step forward for the naira market. Tools that collect, clean and explain Nigerian market data for businesses and investors are exactly the kind of fintech product the plan points towards.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How long does a signal really take?" %}
+  <div class="prose">
+    <h3>Time = distance ÷ speed</h3>
+    <p>The speed of light is about \(300{,}000\) km a second, which is \(300\) km per millisecond. In glass fibre it's about two-thirds of that, roughly \(200\) km per millisecond.</p>
+  </div>
+  <div class="formula"><span class="lbl">The fastest possible journey</span>\[ t = \frac{d}{v}, \qquad v_{\text{air}} \approx 300 \text{ km/ms}, \qquad v_{\text{fibre}} \approx 200 \text{ km/ms} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>How long does a signal take from London to New York, about \(5{,}570\) km?</h3>
+    <ol class="steps">
+      <li>Through fibre: \(\dfrac{5{,}570}{200} \approx 27.9\) ms.</li>
+      <li>Through the air: \(\dfrac{5{,}570}{300} \approx 18.6\) ms.</li>
+      <li>Difference: about \(9\) ms.</li>
+    </ol>
+    <p class="answer">At best about \(28\) ms by fibre, one way. Real undersea cables are longer than a straight line, so it's a bit more in practice.</p>
+  </div>
+  <div class="prose">
+    <h3>Units of time traders use</h3>
+  </div>
+  <div class="formula"><span class="lbl">Milliseconds and microseconds</span>\[ 1 \text{ s} = 1{,}000 \text{ ms} = 1{,}000{,}000\ \mu\text{s} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>The consolidated tape is, say, \(200\ \mu\text{s}\) behind a direct feed. How far does light in fibre travel in that time?</h3>
+    <ol class="steps">
+      <li>\(200\ \mu\text{s} = 0.2\) ms.</li>
+      <li>\(0.2 \times 200 = 40\) km.</li>
+    </ol>
+    <p class="answer">About \(40\) km. A firm with a direct feed could be told about a price change and send an order across a city before the official tape arrives.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example 3</span>
+    <h3>A share trades at \(\text{£}40\) and splits two-for-one. Adjust the old price.</h3>
+    <ol class="steps">
+      <li>After the split, each old share is two new shares, so each new share is worth \(\tfrac{40}{2} = \text{£}20\).</li>
+      <li>To compare like with like, divide every price before the split by \(2\): the old \(\text{£}40\) becomes \(\text{£}20\) on the adjusted chart.</li>
+    </ol>
+    <p class="answer">The adjusted chart shows a flat line where the raw chart showed a \(50\%\) "crash".</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>You want to buy \(20{,}000\) shares and need to know how far the price will move if you do it all at once. Which level of data do you need, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>Level 2. You need to see how many shares are waiting at each price above the best offer, so you can add them up and see how high you'd have to go to fill \(20{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>How long does a signal take from Chicago to New Jersey, about \(1{,}200\) km, through fibre and through the air?</span></p>
+      <details><summary>Show answer</summary><div><span>Fibre: \(\tfrac{1{,}200}{200} = 6\) ms. Air: \(\tfrac{1{,}200}{300} = 4\) ms. Two milliseconds is a lifetime for a high-speed firm, which is why microwave links were built on this route.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A stock paid a large special dividend last year. You're testing a strategy on raw, unadjusted prices. What might go wrong?</span></p>
+      <details><summary>Show answer</summary><div><span>The raw price drops by the dividend on the day it goes out, so the backtest sees a sudden fall that shareholders didn't actually suffer. A strategy might "learn" to sell before it, or count a fake loss. Use adjusted prices.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Interview-style: why is there no single "price" of EUR/USD in the way there is for a US share?</span></p>
+      <details><summary>Show answer</summary><div><span>FX trades over the counter across many platforms and banks, with no rule forcing everyone to report to one place. There's no consolidated tape, so each platform shows its own prices, which are very close but not identical. Benchmarks like the 4pm London fix give one agreed reference price once a day.</span></div></details></div>
+  </div>
+{% endsec %}
