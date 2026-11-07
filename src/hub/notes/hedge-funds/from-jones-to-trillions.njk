@@ -1,0 +1,257 @@
+---
+title: From Jones to $4.5 Trillion
+shelf: hedge-funds
+chapter: the-hedge-fund-business
+subtopic: What a Hedge Fund Is
+order: 2
+summary: How hedge funds grew from one man's hedged portfolio in 1949 to a $4.5 trillion industry - the first boom and bust, the macro era, the institutional money of the 2000s, the 2008 stress test, and today's four big shifts (lower fees, multi-strategy platforms, quants and alternative data).
+lede: "Hedge fund history repeats one story. Someone finds a disciplined edge, makes a fortune, and draws a crowd. The crowd copies the parts that make money in good times, drops the parts that protect it in bad times, and gets wiped out when the market turns. Knowing the story is the best defence against starring in it."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, macro, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/from-jones-to-trillions.js]
+alsoIn: [hedge-funds/famous-funds-and-blow-ups]
+
+quiz:
+  - q: 'What did most of the copycat hedge funds of the late 1960s leave out of Alfred Winslow Jones''s model?'
+    opts: ['The performance fee', 'The limited partnership structure', 'The short positions that hedged the market']
+    right: 2
+    why: 'They kept the partnership, the \(20\%\) fee and the leverage, but loaded up on fashionable growth shares instead of hedging. When the market fell in 1969–70 and 1973–74, nothing protected them.'
+  - q: 'What mainly drove hedge fund assets from about \(\$500\) billion in 2000 to \(\$1.9\) trillion by 2007?'
+    opts: ['Ordinary savers buying hedge funds through their banks', 'Pension funds, endowments and other institutions copying the Yale Model', 'Governments investing tax revenue']
+    right: 1
+    why: 'Yale''s endowment showed that a big allocation to alternatives, including hedge funds, could beat a plain stocks-and-bonds portfolio. Institutions followed, taking hedge funds from a niche for the rich to a standard part of big portfolios.'
+  - q: 'Roughly what share of hedge fund money sits with the biggest firms, those managing \(\$10\) billion or more?'
+    opts: ['More than half', 'About a third', 'About \(10\%\)']
+    right: 0
+    why: 'Around \(50\) to \(70\) firms manage roughly \(55\%\) of the industry''s money, while more than \(6{,}000\) small funds share about \(3\%\).'
+
+connected:
+  - { label: Builds on, title: What a Hedge Fund Is, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/what-a-hedge-fund-is/ }
+  - { label: Builds on, title: Crashes That Changed the Rules, where: Markets · How Markets Work, url: /hub/markets/crashes-that-changed-the-rules/ }
+  - { label: Used in, title: LTCM, where: Hedge Funds · Famous Funds and Blow-ups, url: /hub/hedge-funds/ }
+  - { label: Used in, title: Single-Manager vs Multi-Manager, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .hj-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "The First Hedge Fund", "Who invented the hedge fund, and what was the idea?", "The first hedge fund" %}
+  <div class="prose">
+    <p>Imagine betting on which runners in a race will beat the others, without caring whether it's a fast race or a slow one. You back the runners you think are strong and bet against the ones you think are weak. If a headwind slows everyone down, your "for" bets lose a bit and your "against" bets gain a bit; what's left is how good you were at picking runners.</p>
+    <p>That was Alfred Winslow Jones's idea in 1949. Jones was a sociologist and financial journalist writing for <em>Fortune</em> magazine, not a Wall Street insider. He bought shares he thought were cheap and {% gl "short selling" %}sold short{% endgl %} shares he thought were expensive. A fall in the whole market hurt his longs but helped his shorts, so his returns came mainly from his stock picking. He called it a "hedged fund", and the name stuck.</p>
+    <p>His fund had four features that every hedge fund since has borrowed:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Leverage.<span class="why">Because the shorts cut the market risk, Jones felt safe borrowing to make his best ideas bigger.</span></span></li>
+    <li><span class="n">2</span><span>A performance fee.<span class="why">He took \(20\%\) of the profits and no flat fee at all, so he only got paid when his investors made money. He reportedly took the idea from Phoenician merchants, who kept a fifth of the profit from each voyage.</span></span></li>
+    <li><span class="n">3</span><span>A private partnership.<span class="why">Set up for a small number of wealthy investors, it sat outside the 1940 law that limits mutual funds (the last note explains how).</span></span></li>
+    <li><span class="n">4</span><span>His own money in.<span class="why">Jones put almost everything he had into the fund alongside his investors: "eating your own cooking".</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>It worked. From 1955 to 1965 his fund returned \(670\%\), against \(358\%\) for the best-performing mutual fund. Almost nobody knew, until a <em>Fortune</em> article in 1966 revealed the record. Within two years, about \(140\) hedge funds were open.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Boom, Bust and the Missing Hedge", "What went wrong for the first wave of copycats?", "The first boom and bust" %}
+  <div class="prose">
+    <p>The new managers copied Jones's partnership, his \(20\%\) fee and his leverage. Most dropped the one thing that made it a <em>hedge</em> fund: the shorts. In the roaring late-1960s market, shorting looked like a waste. They borrowed to buy the fashionable growth companies of the day, the {% gl "Nifty Fifty" %}"Nifty Fifty"{% endgl %} such as Xerox, Polaroid, Avon and IBM, which traded at \(50\) to \(80\) times earnings on the belief their growth would never slow.</p>
+    <p>Then the market turned. In the 1969–70 bear market the S&amp;P 500 fell about \(36\%\) from peak to bottom, and borrowed, all-long portfolios were crushed; many funds that had boasted spectacular returns in 1967–68 were gone within eighteen months. The 1973–74 crash, driven by the oil embargo, high inflation and the collapse of the Nifty Fifty, finished the job: the S&amp;P 500 fell nearly \(50\%\), and the number of hedge funds shrank from about \(150\) to fewer than \(70\). The survivors, Jones among them, were mostly the ones that had kept hedging and kept their borrowing modest.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Jones vs the copycats, 1960–1975</h3><p>Grow \(\$100\) through the real yearly moves of the S&amp;P 500. "Your fund" holds \(160\%\) gross (longs plus shorts), with the net exposure you choose. "The copycat" is \(150\%\) long with no shorts. Both pick stocks equally well: each \(1\%\) of skill means longs beat the market and shorts lag it by \(1\%\) a year. Money borrowed to buy longs costs \(6\%\) a year. The shaded years are the two bear markets.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="hj-net">Net exposure</label><input type="range" id="hj-net" min="0" max="150" step="10" value="60"><output id="hj-net-out" for="hj-net">60%</output></div>
+      <div class="ctrl"><label for="hj-skill">Picking skill</label><input type="range" id="hj-skill" min="0" max="6" step="0.5" value="3"><output id="hj-skill-out" for="hj-skill">3%</output></div>
+    </div>
+    <svg class="chart" id="chart-jones" viewBox="0 0 640 280" role="img" aria-label="Growth of 100 dollars from 1960 to 1975 for the S&amp;P 500, a hedged fund and an unhedged leveraged copycat"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your fund</span><span><i class="sw grey"></i>S&amp;P 500</span><span><i class="sw grey" style="background:none;border-top:2px dashed var(--note-grey);height:0"></i>The copycat (\(150\%\) long)</span></div>
+    <div class="readout" id="hj-read"></div>
+    <p class="look" id="hj-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The pattern to remember</span>
+    <p>In bull markets, managers drop their risk discipline and borrow more, because it pays. When the market turns, the borrowing that multiplied the gains multiplies the losses, and there's no hedge to cushion them. Discipline dropped in greed, rediscovered in crisis: it's the story of every hedge fund boom since.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Macro Era", "Who brought hedge funds back in the 1980s and 1990s?", "The macro era" %}
+  <div class="prose">
+    <p>The revival came from a new style: {% gl "global macro" %}global macro{% endgl %}, betting on whole economies through currencies, interest rates, bonds and stock indices. It suited the times. The fixed exchange rates of the Bretton Woods system had broken down in the early 1970s, so currencies now floated and could move a lot. Big moves meant big opportunities.</p>
+    <ul>
+      <li><strong>George Soros</strong> ran the Quantum Fund from 1973, mixing economic analysis with his theory of {% gl "reflexivity" %}reflexivity{% endgl %}: prices don't just reflect the world, they change it, which can push markets far from fair value before they snap back. His most famous trade came on 16 September 1992, Black Wednesday. Britain was trying to hold the pound inside Europe's exchange rate system; Soros bet roughly \(\$10\) billion that it couldn't. The UK gave up and the pound fell, earning his fund a reported \(\$1\) billion or more almost overnight.</li>
+      <li><strong>Julian Robertson</strong> started Tiger Management in 1980 with \(\$8\) million and grew it to about \(\$22\) billion with deep research: long the best companies, short the worst. Tiger closed in 2000 after Robertson refused to chase the dot-com bubble. His bigger legacy is his people: the {% gl "Tiger Cub" %}"Tiger Cubs"{% endgl %}, analysts who left to start their own funds, including Chase Coleman (Tiger Global), Andreas Halvorsen (Viking Global) and Philippe Laffont (Coatue). Together they manage hundreds of billions.</li>
+      <li><strong>Michael Steinhardt</strong> and <strong>Paul Tudor Jones</strong> were the era's other stars. Tudor Jones became famous for making money in the October 1987 crash.</li>
+    </ul>
+    <p>The era ended with a warning. In 1998 Long-Term Capital Management, run by star bond traders with two Nobel-winning economists, lost \(\$4.6\) billion in weeks on about \(25\)-to-\(1\) leverage, and the New York Fed organised a \(\$3.6\) billion rescue by \(14\) banks. The Crashes That Changed the Rules note has the outline; the LTCM note in Famous Funds and Blow-ups tells it in full.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Institutions Arrive", "How did hedge funds go from a club for the rich to a trillion-dollar industry?", "The institutions arrive" %}
+  <div class="prose">
+    <p>Until the 1990s, hedge fund money came mostly from wealthy individuals. Then David Swensen, who ran Yale University's endowment, showed a different way to run a big pot of money. Instead of mainly owning shares and bonds, the {% gl "Yale Model" %}Yale Model{% endgl %} put a large share into "alternatives": hedge funds, private equity, property and natural resources. Yale's returns topped \(13\%\) a year over two decades, and other endowments, pension funds and sovereign wealth funds rushed to copy it. Big institutions went from almost nothing in hedge funds in the mid-1990s to \(5\) to \(20\%\) of their assets by the mid-2000s.</p>
+    <p>Industry assets grew from about \(\$500\) billion in 2000 to \(\$1.9\) trillion by 2007, and three things changed with the new money:</p>
+    <ul>
+      <li><strong>{% gl "fund of funds" %}Funds of funds{% endgl %}</strong> boomed. They pool money from smaller investors and spread it across many hedge funds, doing the research and checks a small pension couldn't do itself. At their peak they controlled about \(40\%\) of all hedge fund money.</li>
+      <li><strong>Funds had to grow up.</strong> Institutions demanded proper operations, compliance, technology and detailed reporting. Ten people in an office with a spreadsheet no longer passed the checks.</li>
+      <li><strong>Strategies multiplied.</strong> There was too much money for long/short equity and macro alone, and institutions wanted returns that didn't move with the stock market. Credit, event-driven, distressed debt, convertible arbitrage and statistical arbitrage funds all became categories of their own. The Strategies chapter covers each one.</li>
+    </ul>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The industry, year by year</h3><p>Industry assets from 1990 to 2024 (points are the data; the line joins them). Pick a moment to see what was happening.</p></div>
+    <div class="controls">
+      <div class="presets hj-pick" id="hj-event" aria-label="Moment in history"></div>
+    </div>
+    <svg class="chart" id="chart-growth" viewBox="0 0 640 260" role="img" aria-label="Hedge fund industry assets from about 40 billion dollars in 1990 to about 4.5 trillion dollars in 2024, with key events marked"></svg>
+    <div class="readout" id="hj-g-read"></div>
+    <p class="look" id="hj-g-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "2008: The Stress Test", "How did hedge funds do when everything fell at once?", "2008" %}
+  <div class="prose">
+    <p>2008 was the industry's biggest test. The S&amp;P 500 fell \(38.5\%\); the average hedge fund lost about \(19\%\). That's a heavy loss, but about half the market's, which suggested hedging still did something.</p>
+    <p>The average hid huge differences. John Paulson had already made one of the greatest trades in history: his Credit Opportunities fund returned about \(590\%\) in 2007 by betting against US subprime mortgage bonds with {% gl "credit default swap" %}credit default swaps{% endgl %}. At the other end, many long/short equity funds lost \(30\) to \(50\%\) as borrowing and crowded positions made the fall worse, and well-known funds such as Peloton Partners, Drake Management and Ospraie shut down.</p>
+    <p>The deeper lesson was about liquidity. Funds had promised investors quarterly exits while holding credit, structured products and small companies that couldn't be sold quickly. When investors rushed for the door, funds raised their gates, suspended withdrawals and side-pocketed their worst assets (the last note's Gated! interactive shows why). Then, in December 2008, the Madoff fraud came to light. Together they changed the relationship between funds and their investors:</p>
+    <ul>
+      <li>Investors pushed for shorter lock-ups, more transparency, managed accounts and much stricter operational due diligence.</li>
+      <li>The <strong>Dodd-Frank Act</strong> of 2010 made larger US managers register with the SEC and report their holdings and leverage to regulators.</li>
+      <li>Investors started asking hard questions about fees: if a hedge fund falls \(19\%\) in a crash, is it worth \(2\%\) a year plus \(20\%\) of the profits?</li>
+    </ul>
+  </div>
+{% endsec %}
+
+{% sec 6, "Today: Four Big Shifts", "What does the industry look like now?", "Today's four shifts" %}
+  <div class="prose">
+    <p>By 2024 the industry managed about \(\$4.5\) trillion across roughly \(9{,}500\) funds. Four shifts define it.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Fees came down.<span class="why">The old "2 and 20" (a \(2\%\) yearly fee plus \(20\%\) of profits) has slipped to an average of about \(1.4\%\) and \(17\%\), and the biggest investors negotiate less. Some multi-strategy platforms dropped the yearly fee and instead pass the fund's real running costs (sometimes \(5\) to \(7\%\) of assets a year) straight to investors, plus a performance fee. The Fees note works through what that means.</span></span></li>
+    <li><span class="n">2</span><span>Multi-strategy platforms took over.<span class="why">Citadel, Millennium, Point72 and Balyasny each run dozens to hundreds of portfolio managers in separate "pods", under one central risk team. Multi-strategy assets grew from under \(\$100\) billion in 2010 to over \(\$600\) billion. A pod PM might run \(\$500\) million to \(\$2\) billion, keep \(15\) to \(25\%\) of the profit they make, and be cut if they lose \(5\) to \(10\%\). The Single-Manager vs Multi-Manager note looks inside.</span></span></li>
+    <li><span class="n">3</span><span>Quants moved to the centre.<span class="why">Renaissance Technologies, Two Sigma, D.E. Shaw and Citadel showed that computer models fed with huge amounts of data can make steady returns that don't follow the market. Renaissance's Medallion Fund, open only to employees, has reportedly made more than \(60\%\) a year before fees since 1988. The biggest quant firms now employ thousands of engineers and researchers who could equally work at Google.</span></span></li>
+    <li><span class="n">4</span><span>Alternative data exploded.<span class="why">Funds spent an estimated \(\$3\) billion or more in 2023 on {% gl "alternative data" %}alternative data{% endgl %}: satellite photos of shop car parks, card spending, prices scraped from websites, app downloads, and computer reading of earnings calls and filings. It raised the bar for everyone: a stock analyst is now expected to use these signals as well as build models.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>The money is at the top</h3>
+    <p>One more shift ties these together: concentration. Big investors prefer large, established funds with long records and strong operations; technology, data and compliance get cheaper per dollar the bigger you are; and the best people follow the biggest pay. The result:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Fund size</th><th>Firms</th><th>Money managed</th><th>Share of industry</th></tr></thead>
+      <tbody>
+        <tr><td>Mega (\(\$10\) billion+)</td><td>about \(50\)–\(70\)</td><td>about \(\$2.5\) trillion</td><td>about \(55\%\)</td></tr>
+        <tr><td>Large (\(\$1\)–\(10\) billion)</td><td>about \(500\)–\(700\)</td><td>about \(\$1.5\) trillion</td><td>about \(33\%\)</td></tr>
+        <tr><td>Mid-size (\(\$250\) million–\(\$1\) billion)</td><td>about \(1{,}500\)–\(2{,}000\)</td><td>about \(\$400\) billion</td><td>about \(9\%\)</td></tr>
+        <tr><td>Small (under \(\$250\) million)</td><td>\(6{,}000\)+</td><td>about \(\$150\) billion</td><td>about \(3\%\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Supporters say the giants earned their place through better risk management and technology. Critics worry about what happens if a \(\$50\) billion fund has to cut its positions fast, whether such size can keep earning good returns, and whether the industry is losing the small, contrarian funds that used to find the best ideas. For a career, the practical point is simple: most hedge fund jobs are now at the big platforms, and launching your own fund is harder than it was a generation ago.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "AI, Data and the New Rules", "Where is the industry heading?", "AI, data and rules" %}
+  <div class="prose">
+    <h3>AI helps the analyst more than it replaces them</h3>
+    <p>Funds now use AI to read thousands of earnings calls, filings and news stories at once and flag changes in tone; to turn alternative data into early clues about a company's sales; and to screen thousands of companies so a small team knows where to look. But computers that make every decision alone have had mixed results outside very fast trading, where speed is everything. Markets adapt: once a model finds a pattern that pays, others find it too, and the edge fades. So AI-driven edges wear out faster than old-fashioned research and need constant rebuilding. For analysts, using these tools and working with data scientists is becoming a basic expectation, and the line between "fundamental" and "quant" investing is blurring.</p>
+    <h3>ESG and the rulebook</h3>
+    <p>Many European pension funds, sovereign wealth funds and US endowments now require a fund to show an environmental, social and governance (ESG) policy, and some exclude sectors like thermal coal, controversial weapons and tobacco altogether. Short sellers push back that their work, exposing overvalued, badly run or fraudulent companies, is good governance in itself. Rules keep tightening too: more detailed confidential reporting to regulators; proposals to publish short positions faster, which funds argue would let others trade against them; questions over whether some alternative data, such as scraped private information or expert calls, crosses into inside information; privacy laws like GDPR limiting what personal data funds can buy; and climate reporting rules such as the EU's SFDR.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "And in FX, Gold and Bonds?", "Where do my three markets show up in this history?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the trade that made macro famous</h3>
+    <p>Floating currencies created global macro, and Black Wednesday made it famous. The Bank of England raised interest rates from \(10\%\) to \(12\%\) in a single day and announced a rise to \(15\%\), trying to stop the selling; it didn't work, and Britain left the exchange rate system that evening. The lesson macro traders still quote: a central bank defending a currency level that its economy can't support is a trade with limited downside and big upside. The same pattern ran through the Asian crisis of 1997, and still shapes how traders look at managed currencies such as the naira.</p>
+    <h3>Gold: Paulson's second big bet</h3>
+    <p>After his subprime win, John Paulson bet heavily on gold as protection against money printing after 2008, and even offered a share class priced in gold. Gold rose to a record in 2011, then fell about \(28\%\) in 2013, and his gold fund lost more than half its value that year. The same manager, the same conviction: one trade became legend, the next a warning about staying with a thesis after the reason for it has passed.</p>
+    <h3>Bonds: where the blow-ups happen</h3>
+    <p>Bonds keep appearing at the turning points. In 1994, a surprise run of US rate rises hit macro funds hard; Steinhardt's fund lost about \(30\%\). LTCM's 1998 collapse was a bond trade on huge borrowing. And today's Treasury basis trade, borrowing \(20\) to \(50\) times to profit from tiny price gaps (the Prime Brokerage note explains it), is one of the industry's largest and most watched positions. In bonds, small price gaps need big leverage to be worth trading, and leverage is what turns a bad month into the end of a fund.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>2 and 20</h3><span class="tag desk">Desk</span></div><p>The classic fee: \(2\%\) of assets a year plus \(20\%\) of profits.</p><p class="eg">"Nobody gets 2 and 20 any more except the very best."</p></div>
+    <div class="term"><div class="term-top"><h3>Macro fund</h3><span class="tag desk">Desk</span></div><p>A fund betting on economies through currencies, rates and indices.</p><p class="eg">"The macro funds are all short the yen."</p></div>
+    <div class="term"><div class="term-top"><h3>Tiger Cub</h3><span class="tag desk">Desk</span></div><p>A manager who trained at Tiger Management and launched their own fund.</p><p class="eg">"He's a Tiger grandcub: trained at Viking."</p></div>
+    <div class="term"><div class="term-top"><h3>Multi-strat / platform</h3><span class="tag desk">Desk</span></div><p>A fund running many independent portfolio managers under one risk team.</p><p class="eg">"The platforms are all crowded in the same names."</p></div>
+    <div class="term"><div class="term-top"><h3>Pod</h3><span class="tag desk">Desk</span></div><p>One portfolio manager and their team inside a platform.</p><p class="eg">"Their energy pod got stopped out in March."</p></div>
+    <div class="term"><div class="term-top"><h3>FoF</h3><span class="tag desk">Desk</span></div><p>Fund of funds: a fund that invests in other hedge funds.</p><p class="eg">"A FoF redeemed from us after one bad quarter."</p></div>
+    <div class="term"><div class="term-top"><h3>Alt data</h3><span class="tag desk">Desk</span></div><p>Data beyond company reports and prices: satellite, card, web, app data.</p><p class="eg">"Alt data says sales are tracking ahead of consensus."</p></div>
+    <div class="term"><div class="term-top"><h3>Crowded</h3><span class="tag desk">Desk</span></div><p>A position many funds hold, which can all rush for the door at once.</p><p class="eg">"Careful, that long's crowded with the platforms."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 10, "How does this link to Trading, Real Estate and Fintech?", "Where the history turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your own boom and bust</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>The 1960s copycats' mistake is the most common one a trader makes: after a run of wins, size goes up and stops get looser, right before the market changes. Prop firm drawdown limits exist to stop exactly that. A written rule set before the good run, such as a maximum risk per trade that doesn't grow with confidence, is your own version of Jones's hedge. The Tiger Cub story matters for careers too: where you train shapes how you think, and who will back you later.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same cycle in bricks</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property follows the same pattern: easy credit in a boom, buyers borrowing more because prices only seem to rise, then a turn that hits the most borrowed first. That's what happened in 2007–08. And the Yale Model is part of why big investors own so much property today: "real assets" such as buildings, farmland and timber sit in the same alternatives bucket as hedge funds.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: alternative data at home</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>In markets where official numbers come late or don't tell the full story, alternative data matters even more. In Nigeria, mobile money and card transaction data, point-of-sale terminal activity, shipping and port data, and online prices could give investors a faster view of the economy than official statistics. Collecting and cleaning that data, within privacy rules, is the kind of business fintech is built for.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 11, "The Maths Underneath", "How do you compare growth over different periods?" %}
+  <div class="formula"><span class="lbl">Compound annual growth rate</span>\[ \text{CAGR} = \left(\frac{\text{end value}}{\text{start value}}\right)^{1/n} - 1 \]</div>
+  <div class="formula"><span class="lbl">A long/short book's return in a year</span>\[ r = N \times m + G \times s \]</div>
+  <div class="prose">
+    <p>Here \(N\) is net exposure, \(G\) gross exposure, \(m\) the market's return and \(s\) the stock-picking skill (how much the longs beat the market, and the shorts lag it). The market only reaches the fund through \(N\); skill is earned on every dollar in \(G\). That's Jones's whole idea in one line.</p>
+  </div>
+  <div class="formula"><span class="lbl">The gain needed to recover a loss</span>\[ \text{gain needed} = \frac{d}{1 - d} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Jones's fund returned \(670\%\) from 1955 to 1965; the best mutual fund returned \(358\%\). What's that a year?</h3>
+    <ol class="steps">
+      <li>A \(670\%\) return turns \(\$1\) into \(\$7.70\). Over \(10\) years: \(7.70^{1/10} - 1 \approx 22.6\%\) a year.</li>
+      <li>A \(358\%\) return turns \(\$1\) into \(\$4.58\): \(4.58^{1/10} - 1 \approx 16.4\%\) a year.</li>
+      <li>The gap is about \(6\) percentage points a year, every year, for a decade, with less market risk.</li>
+    </ol>
+    <p class="answer">Small yearly edges compound into huge differences. That's what the 1966 <em>Fortune</em> readers saw.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>In 1974 the market fell about \(30\%\). Compare a \(150\%\) long copycat with a fund at \(160\%\) gross and \(40\%\) net, both with \(3\%\) skill (ignoring borrowing costs).</h3>
+    <ol class="steps">
+      <li>Copycat: \(1.5 \times (-30\%) + 1.5 \times 3\% = -45\% + 4.5\% = -40.5\%\).</li>
+      <li>Hedged fund: \(0.4 \times (-30\%) + 1.6 \times 3\% = -12\% + 4.8\% = -7.2\%\).</li>
+      <li>To get back to even, the copycat needs \(0.405 \div 0.595 \approx 68\%\); the hedged fund needs about \(7.8\%\).</li>
+    </ol>
+    <p class="answer">Same skill, very different survival.</p>
+  </div>
+{% endsec %}
+
+{% sec 12, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Alfred Winslow Jones combined which two techniques to reduce market risk?</span></p>
+      <details><summary>Show answer</summary><div><span>Buying shares he thought were undervalued and short selling shares he thought were overvalued. The shorts hedged the market, so returns came mainly from his stock picking. (He also used leverage on top, because the hedge kept the market risk low.)</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>What's a Tiger Cub, and why does the lineage matter?</span></p>
+      <details><summary>Show answer</summary><div><span>A manager trained at Julian Robertson's Tiger Management who launched their own fund, such as Chase Coleman, Andreas Halvorsen or Philippe Laffont. Tiger Cubs (and the "grandcubs" they trained) manage hundreds of billions, making it one of the most important talent networks in the industry.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Explain what happened to LTCM in 1998 in three sentences.</span></p>
+      <details><summary>Show answer</summary><div><span>LTCM used about \(25\)-to-\(1\) leverage on bond relative-value trades, holding about \(\$125\) billion of assets on \(\$4.7\) billion of capital. When Russia defaulted in August 1998, investors fled to safety, correlations jumped, and LTCM's positions all moved against it at once. The lessons: leverage turns survivable losses into fatal ones, correlations rise in a crisis, and you can be right but forced out before you're proved right.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Industry assets grew from about \(\$40\) billion in 1990 to about \(\$4.5\) trillion in 2024. What's the CAGR?</span></p>
+      <details><summary>Show answer</summary><div><span>\(4{,}500 \div 40 = 112.5\) times over \(34\) years. \(112.5^{1/34} - 1 \approx 14.9\%\) a year.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A fund runs \(130\%\) long and \(70\%\) short. The market rises \(10\%\) and the fund has \(2\%\) picking skill. What's its return?</span></p>
+      <details><summary>Show answer</summary><div><span>Net \(= 60\%\), gross \(= 200\%\). Return \(= 0.6 \times 10\% + 2.0 \times 2\% = 6\% + 4\% = 10\%\), the same as the market but with only \(60\%\) of its exposure.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Give three reasons the money has concentrated in the biggest hedge funds.</span></p>
+      <details><summary>Show answer</summary><div><span>Big investors prefer large funds with long track records and strong operations; technology, data and compliance costs favour scale; and the best analysts and PMs go where the pay and infrastructure are best, which strengthens the big firms further.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: what's the one lesson that repeats through hedge fund history?</span></p>
+      <details><summary>Show answer</summary><div><span>Discipline gets dropped in good times and rediscovered in crises. In bull markets managers stop hedging and borrow more because it pays; when conditions turn, leverage magnifies the losses and there's no hedge. The 1969–74 copycats, LTCM in 1998 and the leveraged funds of 2008 all followed it. A good answer adds what you'd do about it: limits on leverage and net exposure set in advance, and stress tests that assume correlations rise in a crisis.</span></div></details></div>
+  </div>
+{% endsec %}
