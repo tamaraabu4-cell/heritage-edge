@@ -1,0 +1,263 @@
+---
+title: Clearing and Settlement
+shelf: markets
+chapter: how-markets-work
+subtopic: After the Trade
+order: 1
+summary: What happens between agreeing a trade and actually owning it - brokers and dealers, the clearing house in the middle, netting, settlement cycles like T+1, failed trades, and why margin turns credit risk into a cash problem.
+lede: Clicking "buy" isn't the end of a trade; it's the start of a short journey. For a day or two, money and shares are still on their way, and a chain of firms makes sure both actually arrive. When that chain works, nobody notices it. When it breaks, it can turn one firm's problem into everyone's.
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/clearing-and-settlement.js]
+alsoIn: [hedge-funds/the-hedge-fund-business]
+
+quiz:
+  - q: 'A firm buys \(12{,}000\) shares from one counterparty and sells \(9{,}000\) to another, in the same cleared stock. What does it settle with the clearing house?'
+    opts: ['It delivers \(3{,}000\) shares', 'It receives \(3{,}000\) shares', 'It receives \(21{,}000\) shares']
+    right: 1
+    why: 'Net \(= +12{,}000 - 9{,}000 = +3{,}000\). Positive means receive: one delivery of \(3{,}000\) shares instead of two separate settlements.'
+  - q: 'You buy US shares on a Thursday. US shares settle T+1. When do you actually own them?'
+    opts: ['Friday', 'Thursday', 'Monday']
+    right: 0
+    why: 'T+1 is one business day after the trade date: Thursday plus one business day is Friday. A trade on Friday would settle on Monday, because weekends don''t count.'
+  - q: 'Why can a firm with profitable positions still fail because of a clearing house?'
+    opts: ['The clearing house can cancel its trades', 'Margin calls must be paid in cash on time, and it may not have the cash that day', 'Clearing houses charge fees that eat its profits']
+    right: 1
+    why: 'Margin turns the risk of the other side not paying (credit risk) into the risk of not having cash when it''s demanded (liquidity risk). Being right overall doesn''t help if you can''t pay today.'
+
+connected:
+  - { label: Builds on, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/prime-brokerage/ }
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Next, title: Corporate Actions, where: Markets · How Markets Work, url: /hub/markets/corporate-actions/ }
+  - { label: Used in, title: How FX Trades, where: Markets · FX, url: /hub/markets/ }
+---
+
+<style>
+  .cs-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "From Handshake to Done", "If I've bought something, why don't I own it yet?", "From handshake to done" %}
+  <div class="prose">
+    <p>Think about buying a house in England. First you agree a price and "exchange contracts": from that moment the deal is legally fixed. But you don't get the keys that day. A few weeks later comes "completion", when your money goes to the seller and the house becomes yours. In between, solicitors check everything, and both sides are exposed: what if the buyer's money doesn't arrive, or the seller can't hand over the house?</p>
+    <p>Every trade has the same two moments:</p>
+    <ul>
+      <li>The <strong>trade date</strong> (T): buyer and seller agree the price and quantity. The deal is fixed.</li>
+      <li>The <strong>settlement date</strong>: the shares and the cash actually change hands. Only now do you own them.</li>
+    </ul>
+    <p>Two words cover what happens in between. {% gl "clearing" %}Clearing{% endgl %} is checking the trade details, working out who owes what, and managing the risk until it's done. {% gl "settlement" %}Settlement{% endgl %} is the final swap of securities for cash.</p>
+    <p>The gap is written as "T plus" a number of business days. US shares settle {% gl "T+1" %}T+1{% endgl %}: buy on Tuesday, own them on Wednesday. Weekends and holidays don't count. That gap is a window of risk: if one side goes bust in the middle, the other may not get what it was promised. Shortening the gap shrinks the risk, which is why markets keep moving to faster cycles.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Agreeing a trade and finishing it are two different moments. Everything in this note exists to make sure the gap between them can't hurt anyone.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Brokers, Dealers and Custodians", "Who sits between me and the market?", "Brokers, dealers and custodians" %}
+  <div class="prose">
+    <p>Between your decision and a settled position there's a chain of firms. Each one carries a different thing: some do the <em>work</em>, some take the <em>risk</em>, and some provide the <em>trust</em>.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>{% gl "broker" %}Broker{% endgl %} (agent)</th><th>{% gl "dealer" %}Dealer{% endgl %} (principal)</th></tr></thead>
+      <tbody>
+        <tr><td>Everyday version</td><td>An estate agent: finds you a seller, takes a fee</td><td>A car dealership: buys and sells cars from its own stock</td></tr>
+        <tr><td>What it does</td><td>Sends your order to the market and works it for you</td><td>Trades <em>with</em> you, from its own book</td></tr>
+        <tr><td>How it's paid</td><td>A commission you can see</td><td>The spread, built into the price</td></tr>
+        <tr><td>Who holds the risk</td><td>You do; the broker owes you best execution</td><td>The dealer, once it takes your position onto its books</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The difference is the type of deal, not the firm. Big banks run both businesses side by side, with information barriers between them. That's where regulators pay attention: a firm advising you as your agent while also trading against you as a dealer has a conflict, which is what {% gl "best execution" %}best execution{% endgl %} rules and disclosure exist to police.</p>
+    <h3>Who holds the shares</h3>
+    <p>Shares today are entries in a computer, not certificates in a drawer. A {% gl "central securities depository" %}central securities depository{% endgl %} (CSD) keeps the official record of who owns what: DTC in the US, Euroclear UK (CREST) in the UK, and the CSCS in Nigeria. {% gl "custody" %}Custodians{% endgl %} hold investors' assets in accounts kept separate from their own money, so that if a broker or bank fails, its clients' shares aren't swallowed up with it (you saw what happens when that goes wrong in Prime Brokerage).</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Clearing House in the Middle", "How can I trade with strangers without worrying they'll go bust?", "The clearing house" %}
+  <div class="prose">
+    <p>Imagine a school bake sale where every child pays the teacher, and the teacher pays every baker. Nobody needs to trust anybody except the teacher. A {% gl "clearing house" %}clearing house{% endgl %}, or central counterparty (CCP), is that teacher.</p>
+    <p>Once a trade is cleared, the CCP replaces the original link between buyer and seller with two new ones: it becomes the buyer to every seller and the seller to every buyer. This is called {% gl "novation" %}novation{% endgl %}. Instead of checking hundreds of trading partners, each firm only has to trust one: the CCP.</p>
+    <h3>How the CCP protects itself</h3>
+    <p>The CCP only works if it can't fail, so it builds layers of protection, used in this order if a member goes bust (the "default waterfall"):</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The failed member's initial margin.<span class="why">A deposit every member posts against its positions before it trades.</span></span></li>
+    <li><span class="n">2</span><span>Variation margin, every day.<span class="why">Gains and losses are paid in cash daily (or during the day), so losses can't pile up quietly. This is {% gl "variation margin" %}variation margin{% endgl %}.</span></span></li>
+    <li><span class="n">3</span><span>The default fund.<span class="why">A pot every member pays into. If one member's margin isn't enough, the {% gl "default fund" %}default fund{% endgl %} covers the rest, so the risk is shared.</span></span></li>
+    <li><span class="n">4</span><span>The CCP's own capital.<span class="why">The clearing house's own money is the last line.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>Netting: settle the difference, not every trade</h3>
+    <p>Because everyone faces the same CCP, all of a firm's trades in a stock can be added up into one figure. That's {% gl "netting" %}netting{% endgl %}. A firm that buys \(10{,}000\) shares from A, sells \(8{,}000\) to B and sells \(5{,}000\) to C doesn't make three deliveries totalling \(23{,}000\) shares. It makes one: \(+10{,}000 - 8{,}000 - 5{,}000 = -3{,}000\), so it delivers \(3{,}000\) shares and settles one net cash amount.</p>
+    <p>Across a whole market the saving is enormous. The US clearing house (DTCC, through its NSCC arm) handles about \(\$2.4\) trillion of trades a day, and netting cuts what actually has to move by about \(98\%\). Without it, settling every trade one by one simply wouldn't be possible.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Netting through the clearing house</h3><p>Four firms trade the same share today. Settle every trade separately, or put them all through the clearing house and settle one net amount each. Arrows show shares moving.</p></div>
+    <div class="controls">
+      <div class="presets cs-pick" id="net-day" aria-label="Which day"></div>
+      <div class="presets cs-pick" id="net-mode" aria-label="How to settle"></div>
+    </div>
+    <svg class="chart" id="chart-net" viewBox="0 0 640 380" role="img" aria-label="Four firms and the deliveries of shares between them, either trade by trade or netted through a clearing house"></svg>
+    <div class="readout" id="net-read"></div>
+    <p class="look" id="net-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Settlement Timeline", "What actually happens between T and T+1?", "The settlement timeline" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Step</th><th>What happens</th><th>What can go wrong</th></tr></thead>
+      <tbody>
+        <tr><td>1. Execution (T)</td><td>Buyer and seller agree price and quantity, on an exchange or over the counter</td><td>Nothing yet: the deal is fixed</td></tr>
+        <tr><td>2. Matching</td><td>Both sides confirm the details agree</td><td>A "break": wrong quantity, price or settlement date. It must be fixed before settlement</td></tr>
+        <tr><td>3. Novation</td><td>The clearing house becomes the other side of each trade</td><td>From here, the CCP carries the risk of either side failing</td></tr>
+        <tr><td>4. Netting</td><td>All of a firm's trades are added up into one obligation per stock</td><td>About \(98\%\) of the movement disappears</td></tr>
+        <tr><td>5. Settlement</td><td>Shares and cash swap at the same moment: {% gl "delivery versus payment" %}delivery versus payment{% endgl %} (DVP)</td><td>If shares aren't there, the trade fails (section 5)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>DVP is the key safety rule: the shares only move if the cash moves, at the same moment. Neither side can end up having handed over its half and received nothing.</p>
+    <h3>How long it takes, market by market</h3>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Market</th><th>Cycle</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>US shares, Treasuries, corporate bonds, options</td><td>T+1</td><td>Moved from T+2 in May 2024</td></tr>
+        <tr><td>UK and EU shares</td><td>T+2</td><td>Moving to T+1 on 11 October 2027, together with Switzerland</td></tr>
+        <tr><td>UK government bonds (gilts)</td><td>T+1</td><td>Settle through CREST</td></tr>
+        <tr><td>Nigerian shares (NGX)</td><td>T+2</td><td>Moved from T+3 on 28 November 2025</td></tr>
+        <tr><td>FX spot</td><td>T+2</td><td>A few pairs, like USD/CAD, settle T+1</td></tr>
+        <tr><td>Futures</td><td>Daily</td><td>Gains and losses paid in cash every day; final settlement at expiry</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The US move to T+1 roughly halved the risk window and cut the margin clearing houses must hold. But it squeezed everything else into a day. Trade breaks must be fixed overnight, stock lenders must process recalls faster, and foreign investors hit a timing problem: their US shares settle T+1, but the FX trade to buy the dollars still settles T+2. They have to find the dollars a day early.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>When do you actually own it?</h3><p>Pick a market and the day you trade. Weekends don't count (bank holidays are ignored here). The last option is a UK investor buying US shares with pounds.</p></div>
+    <div class="controls">
+      <div class="presets cs-pick" id="cal-mkt" aria-label="Market"></div>
+      <div class="presets cs-pick" id="cal-day" aria-label="Trade day"></div>
+    </div>
+    <svg class="chart" id="chart-cal" viewBox="0 0 640 200" role="img" aria-label="A two-week calendar showing the trade date and the settlement date for the chosen market"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Trade date and settlement date</span><span><i class="sw grey"></i>Weekend (doesn't count)</span></div>
+    <p class="look" id="cal-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "When Settlement Fails", "What if the shares don't turn up?", "When settlement fails" %}
+  <div class="prose">
+    <p>A {% gl "settlement fail" %}settlement fail{% endgl %} is when one side can't deliver on the settlement date. The usual reasons:</p>
+    <ul>
+      <li><strong>A trade break</strong> that wasn't fixed in time: the two sides' records don't match.</li>
+      <li><strong>A short seller can't deliver</strong>: the borrow fell through, or the lender recalled the shares.</li>
+      <li><strong>Shares stuck elsewhere</strong>: still on their way from another trade, or in the wrong account or country.</li>
+    </ul>
+    <p>Fails cost money. In the EU, the settlement rules (CSDR) charge daily cash penalties on failing trades. Persistent fails can lead to a <strong>buy-in</strong>: the shares are bought in the market and the failing side pays any difference. In the US, Regulation SHO forces brokers to close out fails on short sales. That's why the Short Selling note said a recall at the wrong moment can force you out of a position.</p>
+    <h3>Why hedge funds care</h3>
+    <ul>
+      <li><strong>Short selling:</strong> a failed delivery can force a buy-in.</li>
+      <li><strong>Dividends and votes:</strong> who gets them depends on who owns the shares on the record date, which depends on settlement (next note).</li>
+      <li><strong>Cash:</strong> with T+1, sale proceeds arrive the next day, so the fund can't spend them today.</li>
+      <li><strong>Foreign markets:</strong> different cycles in different countries create FX timing gaps.</li>
+    </ul>
+    <p>Keeping all this running is the operations team's job: trade booking, settlement, fails, cash and margin, every day. Investors check it carefully before they invest (operational due diligence), and plenty of funds have failed it.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Cash Today, Not Profit Later", "How can a clearing house make a firm fail?", "Liquidity, not solvency" %}
+  <div class="prose">
+    <p>Clearing houses make the system much safer, but they don't make risk disappear. They change its shape. Without a CCP, the danger is that the other side doesn't pay you: <strong>credit risk</strong>. With a CCP, the danger becomes having to pay cash, today, the moment prices move against you: <strong>liquidity risk</strong>.</p>
+    <p>If a cleared position loses \(40{,}000\) in value today, you post \(40{,}000\) of cash as variation margin today, even if you're sure it will bounce back tomorrow. A firm can be <em>solvent</em> (worth more than it owes) and still fail because it can't find the cash in time. Think of a shop with lots of stock and loyal customers that still goes bust because it can't pay this week's rent.</p>
+    <p>A famous example: on 28 January 2021, at the height of the GameStop squeeze, the US clearing house asked the trading app Robinhood for about \(\$3\) billion of extra deposit, because its customers' trades had become so large and so risky. Robinhood didn't have that much cash ready, so it stopped its customers from buying GameStop while it raised money. Its customers were furious, but the trigger was a clearing-house margin call, not a choice about the share.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How do my three markets settle?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the risk has a name</h3>
+    <p>An FX trade is two payments: you send one currency and receive another. If the two payments don't happen at the same moment, one side can pay and then not get paid. This is {% gl "settlement risk" %}settlement risk{% endgl %}, and the market calls it Herstatt risk after what happened on 26 June 1974. German regulators shut a small bank, Bankhaus Herstatt, at the end of the German business day. Banks had already paid it Deutsche marks in Frankfurt, but the dollars it owed them in New York were never paid.</p>
+    <p>The fix took decades. Since 2002, most big FX trades settle through {% gl "CLS" %}CLS{% endgl %}, a specialist bank that releases both currencies only when both have arrived: payment versus payment, the FX version of DVP. FX spot settles T+2. Some currencies, like the naira for foreign investors, often trade as {% gl "non-deliverable forward" %}non-deliverable forwards{% endgl %} (NDFs): no naira ever changes hands, and the difference is simply paid in dollars at the end.</p>
+    <h3>Gold: settled in London's vaults</h3>
+    <p>Most gold trading is "loco London unallocated": promises to deliver gold in London, settled as entries between the big bullion banks through London Precious Metals Clearing Limited. Only a small share ever becomes physical bars moving between vaults. COMEX gold futures clear through CME's clearing house, with variation margin paid every day like any future.</p>
+    <h3>Bonds: CSDs and ICSDs</h3>
+    <p>Gilts settle T+1 through CREST. Eurobonds (bonds sold to international investors, often in dollars, including Nigeria's) settle through the two international CSDs, Euroclear in Brussels and Clearstream in Luxembourg. US Treasuries settle T+1 through the Federal Reserve's own system.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>T+1, T+2</h3><span class="tag desk">Desk</span></div><p>How many business days after the trade it settles.</p><p class="eg">"It's T+1 now, so the cash is in tomorrow."</p></div>
+    <div class="term"><div class="term-top"><h3>Cleared / bilateral</h3><span class="tag desk">Desk</span></div><p>Through a clearing house, or directly between the two firms.</p><p class="eg">"Is this cleared or bilateral?"</p></div>
+    <div class="term"><div class="term-top"><h3>Break</h3><span class="tag desk">Desk</span></div><p>A trade where the two sides' records don't match.</p><p class="eg">"We've got a break on the quantity, ops is on it."</p></div>
+    <div class="term"><div class="term-top"><h3>Fail</h3><span class="tag desk">Desk</span></div><p>A trade that didn't settle on time.</p><p class="eg">"Our short failed, we're getting bought in."</p></div>
+    <div class="term"><div class="term-top"><h3>VM / IM</h3><span class="tag desk">Desk</span></div><p>Variation margin (daily gains and losses in cash) and initial margin (the up-front deposit).</p><p class="eg">"VM call's big today, check the cash."</p></div>
+    <div class="term"><div class="term-top"><h3>DVP</h3><span class="tag desk">Desk</span></div><p>Delivery versus payment: shares and cash swap at the same moment.</p><p class="eg">"It settles DVP, so there's no free delivery."</p></div>
+    <div class="term"><div class="term-top"><h3>Agency / principal</h3><span class="tag desk">Desk</span></div><p>Trading for a client as a broker, or against them as a dealer.</p><p class="eg">"Do you want it agency or on risk?"</p></div>
+    <div class="term"><div class="term-top"><h3>Value date</h3><span class="tag desk">Desk</span></div><p>In FX, the day the currencies actually change hands.</p><p class="eg">"Spot value's Wednesday."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where settlement turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: know when your cash is real</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>When you sell shares, the money isn't really yours to withdraw until settlement. Brokers often let you trade with it straight away, which hides the gap until something goes wrong. CFDs and spot FX on a trading platform never settle at all: they're just rolled forward each night, which is why there's a swap charge instead. For your own FX and gold trading, the value date and the overnight rollover are where settlement shows up.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the slowest settlement there is</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Buying property is clearing and settlement in slow motion. Exchange of contracts is the trade date, completion is settlement, the solicitors' client accounts act as custodians, the deposit (often \(10\%\)) works like margin, and the Land Registry is the central record of who owns what. Weeks of gap mean more can go wrong: chains collapse, buyers lose their mortgage. In Nigeria, the title record is often the weak link, which is why land titles get their own note in Real Estate.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: T+2, and faster money elsewhere</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The NGX moved from T+3 to T+2 on 28 November 2025, with the CSCS as its central depository, and there's talk of going further. Meanwhile, Nigerian bank transfers through NIBSS are already instant, so cash moves faster than shares do. That gap is where fintech ideas live: share settlement in minutes on shared ledgers ("tokenisation") is one being tested around the world. Any product that lets Nigerians trade foreign shares also has to manage the FX timing gaps from section 4.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on clearing and settlement?" %}
+  <div class="formula"><span class="lbl">Net position through a CCP (buys positive, sells negative)</span>\[ \text{net} = \sum_i q_i \qquad \text{net} &gt; 0 \Rightarrow \text{receive}, \quad \text{net} &lt; 0 \Rightarrow \text{deliver} \]</div>
+  <div class="formula"><span class="lbl">How much netting saves</span>\[ \text{saving} = 1 - \frac{\sum_{\text{firms}} |\text{net}|}{\sum_{\text{trades}} |q|} \]</div>
+  <div class="formula"><span class="lbl">Variation margin today</span>\[ \text{VM} = \text{change in the position's value today} \]</div>
+  <div class="formula"><span class="lbl">Settlement date</span>\[ \text{settlement date} = T + n \text{ business days} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A firm buys \(10{,}000\) shares from A, sells \(8{,}000\) to B and sells \(5{,}000\) to C, all cleared.</h3>
+    <ol class="steps">
+      <li>Trade by trade: three deliveries, \(10{,}000 + 8{,}000 + 5{,}000 = 23{,}000\) shares moving.</li>
+      <li>Net: \(+10{,}000 - 8{,}000 - 5{,}000 = -3{,}000\).</li>
+      <li>Saving for this firm: \(1 - \frac{3{,}000}{23{,}000} \approx 87\%\).</li>
+    </ol>
+    <p class="answer">One delivery of \(3{,}000\) shares, against one net cash amount.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A firm buys \(12{,}000\) shares from one counterparty and sells \(9{,}000\) to another in the same cleared stock. What is its net settlement obligation in shares (positive = receive)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(+3{,}000\): it receives \(3{,}000\) shares.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A cleared position loses \(40{,}000\) in value today. Variation margin settles daily in cash. How much cash must be posted today?</span></p>
+      <details><summary>Show answer</summary><div><span>\(40{,}000\), in cash, today, whatever you expect tomorrow.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>You sell UK shares on a Thursday. They settle T+2. When does the cash arrive?</span></p>
+      <details><summary>Show answer</summary><div><span>The following Monday: Thursday plus two business days skips Saturday and Sunday.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A UK investor buys US shares on a Monday and pays for them by buying dollars with pounds. When are the shares due, and when do the dollars arrive?</span></p>
+      <details><summary>Show answer</summary><div><span>The shares settle Tuesday (T+1); the FX settles Wednesday (T+2). The investor must find the dollars a day early, by pre-funding or borrowing.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>What is the difference between a broker and a dealer, for the client?</span></p>
+      <details><summary>Show answer</summary><div><span>A broker acts as your agent: you pay a visible commission and keep the market risk. A dealer trades with you as principal: the cost is hidden in the spread, and the risk passes to the dealer straight away.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: what is Herstatt risk, and how is it handled today?</span></p>
+      <details><summary>Show answer</summary><div><span>The risk that one side of an FX trade pays its currency but never receives the other, because the payments happen at different times in different countries. Named after Bankhaus Herstatt, closed in 1974 after receiving Deutsche marks but before paying dollars. Today CLS settles most big FX trades payment versus payment, releasing both currencies only when both have arrived.</span></div></details></div>
+  </div>
+{% endsec %}

@@ -1,0 +1,220 @@
+---
+title: Crashes That Changed the Rules
+shelf: markets
+chapter: how-markets-work
+subtopic: Rules and History
+order: 2
+summary: The crashes behind today's market rules - from 1929 to the 2022 gilt crisis - what they have in common (leverage, crowding and vanishing liquidity), the rule each one left behind, and the lessons that keep repeating.
+lede: "Almost every rule in this chapter was written after something went badly wrong. Markets don't repeat exactly, but they rhyme: the shock is always different, but the way a small shock grows into a crash is nearly always the same. Learn that pattern and you can spot when a market is fragile before the crash, not after."
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/crashes-that-changed-the-rules.js]
+alsoIn: [hedge-funds/famous-funds-and-blow-ups, trading/risk-and-position-sizing/Drawdowns]
+
+quiz:
+  - q: 'Which three things decide how far a shock turns into a crash?'
+    opts: ['Interest rates, inflation and growth', 'How much leverage there is, how crowded the positions are, and how much liquidity is left to absorb the selling', 'The size of the shock, the time of day, and the number of exchanges']
+    right: 1
+    why: 'Leverage creates forced sellers, crowding means they all sell the same thing at once, and thin liquidity means each sale moves the price further. Together they turn a small shock into a spiral.'
+  - q: 'What rule came out of the 1987 crash and the 2010 Flash Crash?'
+    opts: ['Circuit breakers and trading pauses', 'The Volcker Rule', 'T+1 settlement']
+    right: 0
+    why: 'Black Monday led to market-wide circuit breakers; the Flash Crash led to single-stock pauses and Limit Up-Limit Down bands. Both give the market time to breathe when prices move too fast.'
+  - q: 'Ten assets each have \(20\%\) volatility. Why does owning all ten protect you much less in a crisis?'
+    opts: ['Volatility always falls in a crisis', 'Correlations rise towards \(1\), so the assets fall together and diversification stops working', 'Crises only affect one asset at a time']
+    right: 1
+    why: 'At a correlation of \(0.2\) the portfolio''s volatility is about \(10.6\%\); at \(0.9\) it''s about \(19.1\%\), almost the same as holding one asset. "In a crisis, all correlations go to one."'
+
+connected:
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Next, title: How FX Trades, where: Markets · FX, url: /hub/markets/ }
+  - { label: Used in, title: LTCM, where: Hedge Funds · Famous Funds and Blow-ups, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .cr-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  #chart-time .dot { cursor: pointer; }
+</style>
+
+{% sec 1, "Markets Rhyme", "Why study old crashes?", "Markets rhyme" %}
+  <div class="prose">
+    <p>Picture a row of dominoes. The first one can be knocked by anything: a gust of wind, a cat, a sneeze. You can't predict which. But you <em>can</em> see how close together the dominoes are standing. If they're tightly packed, any small push knocks them all over; if they're spaced out, one falls and the rest stand.</p>
+    <p>Crashes work the same way. The trigger is always different: a war, a default, a software bug, a surprise from a central bank. But almost every crash grows the same way:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>A shock.<span class="why">Something surprises the market and prices drop.</span></span></li>
+    <li><span class="n">2</span><span>Leveraged holders are forced to sell.<span class="why">Margin calls, stop-losses and risk limits trigger: the cascade from Margin and Leverage.</span></span></li>
+    <li><span class="n">3</span><span>The selling pushes prices further from fair value.<span class="why">Forced sellers don't care about price, and buyers step back.</span></span></li>
+    <li><span class="n">4</span><span>Lower prices force the next group to sell.<span class="why">The spiral feeds itself until the leverage is gone, or someone steps in: often a central bank acting as {% gl "lender of last resort" %}lender of last resort{% endgl %}.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>How bad it gets depends on three things, the spacing of the dominoes:</p>
+    <ul>
+      <li><strong>Leverage:</strong> more borrowing means more forced sellers.</li>
+      <li><strong>Crowding:</strong> if everyone holds the same trade, everyone runs for the same door, and trouble in one place spreads to others ({% gl "contagion" %}contagion{% endgl %}).</li>
+      <li><strong>Liquidity:</strong> how much buying is there to absorb the selling? It tends to vanish exactly when it's needed, because market makers widen spreads and step back when things get wild.</li>
+    </ul>
+    <p>None of those three is a secret. Margin debt, short interest, credit spreads and the price of options all show how fragile a market is <em>before</em> anything happens. You can't predict the trigger, but you can measure the fragility.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The shock is random; the crash isn't. Leverage, crowding and thin liquidity turn a small push into a fall.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Build a Crash", "How does a 12% shock become a 40% fall?", "Build a crash" %}
+  <div class="prose">
+    <p>Try it yourself. A market gets one piece of bad news. Some of the holders are leveraged, each with a different point at which they're forced to sell. Set the three amplifiers and watch what the same shock does.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Same shock, different crash</h3><p>Choose how much leverage the forced sellers use, how much of the market they hold, and how deep the market is. Higher leverage means they're forced out by smaller falls; thinner liquidity means each sale moves the price more.</p></div>
+    <div class="controls">
+      <div class="presets cr-pick" id="cx-lev" aria-label="Leverage"></div>
+      <div class="presets cr-pick" id="cx-liq" aria-label="Liquidity"></div>
+      <div class="ctrl"><label for="cx-crowd">Crowding</label><input type="range" id="cx-crowd" min="0" max="40" step="5" value="20"><output id="cx-crowd-out" for="cx-crowd">20%</output></div>
+      <div class="ctrl"><label for="cx-shock">Shock</label><input type="range" id="cx-shock" min="2" max="15" step="1" value="12"><output id="cx-shock-out" for="cx-shock">−12%</output></div>
+    </div>
+    <svg class="chart" id="chart-crash" viewBox="0 0 640 300" role="img" aria-label="Market price over 20 days after a shock, with and without forced selling by leveraged holders"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Price with forced selling</span><span><i class="sw grey"></i>Price from the shock alone (bars: forced selling)</span></div>
+    <div class="readout" id="cx-read"></div>
+    <p class="look" id="cx-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "A Century of Crashes", "Which crashes made the rules, and what did each one leave behind?", "A century of crashes" %}
+  <div class="prose">
+    <p>Each crash below left a rule, a habit or an institution that still shapes markets. Click through them in order.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Crashes and the rules they left</h3><p>Click a dot, or use the buttons, to step through a century of crashes.</p></div>
+    <div class="controls">
+      <div class="presets cr-pick" id="tl-nav" aria-label="Step through the timeline"></div>
+    </div>
+    <svg class="chart" id="chart-time" viewBox="0 0 640 150" role="img" aria-label="Timeline of major market crashes from 1929 to 2022"></svg>
+    <div class="look" id="tl-detail"></div>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Crash</th><th>Main amplifier</th><th>What it left behind</th></tr></thead>
+      <tbody>
+        <tr><td>Wall Street Crash, 1929</td><td>Shares bought on \(10\%\) margin</td><td>The SEC, disclosure laws, margin rules</td></tr>
+        <tr><td>Black Monday, 1987</td><td>"Portfolio insurance" selling into falls</td><td>Market-wide {% gl "circuit breaker" %}circuit breakers{% endgl %}</td></tr>
+        <tr><td>LTCM, 1998</td><td>\(25\times\) leverage in crowded trades</td><td>Fed-organised rescue; "correlations go to one"</td></tr>
+        <tr><td>Enron, 2001</td><td>Accounting fraud</td><td>Sarbanes-Oxley (2002): executives sign off the accounts</td></tr>
+        <tr><td>Global financial crisis, 2008</td><td>Leverage everywhere, hidden in mortgage securities</td><td>Dodd-Frank, Volcker, Basel III, central clearing, UK ring-fencing</td></tr>
+        <tr><td>Nigeria's margin-loan crash, 2008–09</td><td>Bank loans to buy shares</td><td>CBN removed bank bosses; AMCON (2010)</td></tr>
+        <tr><td>Flash Crash, 2010</td><td>Algorithms withdrawing liquidity in minutes</td><td>{% gl "limit up-limit down" %}Limit Up-Limit Down{% endgl %}, single-stock pauses</td></tr>
+        <tr><td>Knight Capital, 2012</td><td>A software release error</td><td>{% gl "kill switch" %}Kill switches{% endgl %} and stricter testing</td></tr>
+        <tr><td>Swiss franc shock, 2015</td><td>Retail FX on high leverage</td><td>Retail leverage caps, negative balance protection</td></tr>
+        <tr><td>Covid "dash for cash", 2020</td><td>Everyone selling Treasuries for cash at once</td><td>Fed buying; central clearing for Treasuries</td></tr>
+        <tr><td>GameStop and Archegos, 2021</td><td>Crowded shorts; hidden swaps</td><td>T+1 settlement; pressure for swap disclosure</td></tr>
+        <tr><td>UK gilt crisis, 2022</td><td>Leveraged pension (LDI) funds</td><td>LDI funds must hold bigger buffers</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 4, "Five Lessons That Keep Repeating", "What should I take from all this as a trader?", "Five lessons" %}
+  <ul class="facts">
+    <li><span class="n">1</span><span>Leverage makes losses bigger than the fundamentals would.<span class="why">The asset falls \(20\%\); the leveraged holder loses everything. Every crash on the list has borrowing at its centre.</span></span></li>
+    <li><span class="n">2</span><span>In a crisis, correlations go to one.<span class="why">Assets that move independently in calm markets fall together when everyone sells whatever they can. Diversification fails exactly when you need it (section 8 shows the maths).</span></span></li>
+    <li><span class="n">3</span><span>Liquidity disappears when it's most needed.<span class="why">You can't sell what nobody wants to buy. A stop-loss is a request to sell, not a guarantee of a price.</span></span></li>
+    <li><span class="n">4</span><span>"Once in a century" happens every decade.<span class="why">Models built on the normal distribution say huge moves are almost impossible. Real markets have {% gl "fat tails" %}fat tails{% endgl %}: Black Monday was a move of roughly \(20\) standard deviations, which a normal model says should never happen in the lifetime of the universe.</span></span></li>
+    <li><span class="n">5</span><span>People react the same way every time.<span class="why">Denial, then hope, then panic, then giving up ({% gl "capitulation" %}capitulation{% endgl %}). Recognising the stage you're in is half the battle.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>For the blog's Reading list series, Deltashark's picks here are <em>When Genius Failed</em> by Roger Lowenstein (LTCM), <em>Flash Boys</em> by Michael Lewis (high-frequency trading), <em>Dark Pools</em> by Scott Patterson, Larry Harris's textbook <em>Trading and Exchanges</em>, Ed Thorp's <em>A Man for All Markets</em>, and Gregory Zuckerman's <em>The Man Who Solved the Market</em> (Renaissance).</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "What were the big crashes in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: when a currency peg breaks</h3>
+    <p>FX crises usually start when a country tries to hold its currency at a fixed level and the market decides it can't. On <strong>Black Wednesday</strong>, 16 September 1992, the UK spent billions of pounds and raised interest rates to defend sterling's place in Europe's exchange rate mechanism, then gave up the same day; George Soros's fund was famously on the other side. The 1997 Asian crisis followed the same script across Thailand, Indonesia and South Korea. In 2015 the Swiss central bank did the opposite, suddenly dropping a cap on its currency, and the franc jumped about \(30\%\) in minutes (Prime Brokerage covers what that did to FX brokers). The lesson for an FX trader: a currency held still by a central bank isn't low-risk; it's a big move waiting to happen.</p>
+    <h3>Gold and silver: squeezes and margin rises</h3>
+    <p>In 1979–80 the Hunt brothers tried to corner the silver market, pushing the price up roughly eightfold with borrowed money. COMEX changed its rules to allow only selling, margins rose, and on "Silver Thursday", 27 March 1980, the price collapsed. Silver did it again in 2011, when five margin rises in about nine days helped knock a quarter off the price in a week. On 15 April 2013, gold fell around \(9\%\) in a day, its biggest drop in about 30 years, as heavy selling of futures hit a crowded long market.</p>
+    <h3>Bonds: the "safe" market that keeps breaking</h3>
+    <p>In the 1994 "bond massacre", surprise US rate rises sent yields sharply higher and losses hit leveraged bond holders worldwide, including Orange County in California, which went bankrupt. In March 2020, even US Treasuries, the world's safest asset, stopped trading smoothly as everyone sold them for cash at once, until the Fed bought them in huge amounts. And in September 2022, UK gilts fell so fast after the mini-budget that leveraged pension funds faced a wave of collateral calls (Margin and Leverage tells the story). Since then, LDI funds have had to hold enough buffer to survive yields rising about \(2.5\) percentage points.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Circuit breaker</h3><span class="tag desk">Desk</span></div><p>An automatic pause in trading when prices fall too far, too fast.</p><p class="eg">"We hit the 7% circuit breaker, trading's halted."</p></div>
+    <div class="term"><div class="term-top"><h3>LULD</h3><span class="tag desk">Desk</span></div><p>Limit Up-Limit Down: price bands that pause a single US stock that moves too quickly.</p><p class="eg">"It's in a LULD halt, wait five minutes."</p></div>
+    <div class="term"><div class="term-top"><h3>Kill switch</h3><span class="tag desk">Desk</span></div><p>A button or automatic limit that stops all of a firm's trading at once.</p><p class="eg">"Hit the kill switch, the algo's gone wild."</p></div>
+    <div class="term"><div class="term-top"><h3>Contagion</h3><span class="tag desk">Desk</span></div><p>A problem in one market or firm spreading to others.</p><p class="eg">"The worry is contagion into the other banks."</p></div>
+    <div class="term"><div class="term-top"><h3>Fire sale</h3><span class="tag desk">Desk</span></div><p>Forced selling at whatever price is available.</p><p class="eg">"Someone's having a fire sale in credit."</p></div>
+    <div class="term"><div class="term-top"><h3>Tail risk</h3><span class="tag desk">Desk</span></div><p>The risk of rare, extreme moves that normal models say are almost impossible.</p><p class="eg">"Buy some puts against the tail risk."</p></div>
+    <div class="term"><div class="term-top"><h3>Capitulation</h3><span class="tag desk">Desk</span></div><p>The moment holders give up and sell at any price, often near the bottom.</p><p class="eg">"Volume's huge, that looks like capitulation."</p></div>
+    <div class="term"><div class="term-top"><h3>Lender of last resort</h3><span class="tag desk">Desk</span></div><p>A central bank lending or buying when nobody else will, to stop a panic.</p><p class="eg">"The Fed's back as lender of last resort."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where the crash lessons turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: build your own circuit breakers</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every lesson here applies to one trader. Keep leverage low enough to survive a move far bigger than you expect. Don't crowd into the same trade everyone's talking about. Remember that a stop can gap straight past its level when liquidity vanishes. And set your own kill switch: a daily loss limit that ends the day, no arguing. Prop firms enforce exactly this, which is why their rules look like a regulator's.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: most big crashes start or end in property</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>The 2008 crisis started with US mortgages; the UK's early-1990s crash left a generation in negative equity; China's Evergrande, the world's most indebted developer, defaulted in 2021 after years of borrowing to build. Property is slow, leveraged and hard to sell quickly: the three crash amplifiers in one asset. For a development business, that means modest borrowing, enough cash to survive a year with no sales, and lenders who won't panic (the Prime Brokerage lesson again).</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: crashes that reshaped the system</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>After the 2008–09 margin-loan crash, the CBN removed the bosses of eight banks in 2009 and AMCON was created in 2010 to buy their bad loans. The FX crises of 2016 and 2022–23, when dollars were scarce and foreign investors' money was stuck, ended with the CBN unifying the official exchange rates in June 2023 and the naira falling sharply. Each crisis rewrote the rules, and each rewrite opened space for new products: better FX access, transparent pricing, tools that help people manage leverage and currency risk.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you put numbers on a crash?" %}
+  <div class="formula"><span class="lbl">Volatility of an equal-weight portfolio of \(n\) assets (each volatility \(\sigma\), correlation \(\rho\))</span>\[ \sigma_p = \sigma \sqrt{\frac{1}{n} + \left(1 - \frac{1}{n}\right)\rho} \]</div>
+  <div class="formula"><span class="lbl">Gain needed to recover from a drawdown \(d\)</span>\[ \text{gain} = \frac{d}{1 - d} \qquad 50\% \text{ fall} \to 100\% \text{ gain needed} \]</div>
+  <div class="formula"><span class="lbl">How many standard deviations a move is</span>\[ z = \frac{\text{move}}{\text{daily volatility}} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Ten assets, each with \(20\%\) volatility. What happens to diversification as correlation rises?</h3>
+    <ol class="steps">
+      <li>Calm, \(\rho = 0.2\): \(\sigma_p = 20\% \times \sqrt{0.1 + 0.9 \times 0.2} = 20\% \times \sqrt{0.28} \approx 10.6\%\).</li>
+      <li>Crisis, \(\rho = 0.9\): \(\sigma_p = 20\% \times \sqrt{0.1 + 0.9 \times 0.9} = 20\% \times \sqrt{0.91} \approx 19.1\%\).</li>
+    </ol>
+    <p class="answer">Diversification halved the risk in calm markets, but barely helps in a crisis.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>On Black Monday the Dow fell \(22.6\%\). Its typical daily move was about \(1\%\).</h3>
+    <ol class="steps">
+      <li>\(z \approx \frac{22.6\%}{1\%} \approx 22\) standard deviations.</li>
+      <li>Under a normal distribution, even a \(5\)-standard-deviation day should happen about once in \(14{,}000\) years.</li>
+    </ol>
+    <p class="answer">Market returns have much fatter tails than the normal distribution. The Probability topic's Fat Tails note picks this up.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Describe, in four steps, how a small shock becomes a crash.</span></p>
+      <details><summary>Show answer</summary><div><span>A shock drops prices; leveraged holders hit margin calls and limits and are forced to sell; their selling pushes prices further; lower prices force the next group to sell, and the spiral continues until the leverage is gone or someone steps in.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Five assets each have \(30\%\) volatility. What's the portfolio volatility at a correlation of \(0\), and at \(1\)?</span></p>
+      <details><summary>Show answer</summary><div><span>At \(\rho = 0\): \(30\% \times \sqrt{0.2} \approx 13.4\%\). At \(\rho = 1\): \(30\%\), no diversification at all.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A fund falls \(40\%\). What gain does it need to get back to where it started?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\frac{0.4}{0.6} \approx 66.7\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Match the crash to the rule: Black Monday 1987, Flash Crash 2010, the 2008 crisis, GameStop 2021.</span></p>
+      <details><summary>Show answer</summary><div><span>Black Monday: market-wide circuit breakers. Flash Crash: Limit Up-Limit Down and single-stock pauses. 2008: Dodd-Frank, the Volcker Rule, Basel III, central clearing. GameStop: part of the push for T+1 settlement.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>What lesson did Knight Capital teach every trading firm?</span></p>
+      <details><summary>Show answer</summary><div><span>That operational risk can be as deadly as market risk. A faulty software release made Knight's algorithms send millions of wrong orders, losing \(\$440\) million in about 45 minutes. Firms now rely on careful release procedures, pre-trade risk limits and kill switches.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: which signs would tell you a market is fragile before it crashes?</span></p>
+      <details><summary>Show answer</summary><div><span>High and rising leverage (margin debt, repo borrowing), crowded positioning (short interest, everyone in the same trade), thin liquidity (wide spreads, shallow order books) and stretched valuations, plus warning lights such as widening credit spreads and options prices showing demand for crash protection. You can't predict the trigger, but you can see the fragility.</span></div></details></div>
+  </div>
+{% endsec %}

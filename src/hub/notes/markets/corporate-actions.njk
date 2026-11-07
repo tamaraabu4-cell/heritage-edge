@@ -1,0 +1,255 @@
+---
+title: Corporate Actions
+shelf: markets
+chapter: how-markets-work
+subtopic: After the Trade
+order: 2
+summary: When a company changes its own shares - dividends and the ex-date, splits, rights issues, spin-offs, mergers and buybacks - why none of them create free money, and why some create opportunities for event-driven funds.
+lede: "Sometimes the company itself changes what a share is: it pays some of its cash out, cuts each share into smaller pieces, asks shareholders for more money, or splits off part of its business. These are corporate actions. Get one wrong and your P&L, your charts and your shorts all break; understand them well and some become trades."
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/corporate-actions.js]
+alsoIn: [hedge-funds/strategies/Event-Driven, markets/equities]
+
+quiz:
+  - q: 'A share trades at \(180\) and does a \(2\)-for-\(1\) split. You held \(100\) shares. What do you hold afterwards?'
+    opts: ['\(100\) shares at \(180\)', '\(50\) shares at \(360\)', '\(200\) shares at \(90\)']
+    right: 2
+    why: 'Each share becomes two, and each new share is worth half: \(200 \times 90 = 18{,}000\), exactly the same as \(100 \times 180\). A split changes the slices, not the cake.'
+  - q: 'A share closes at \(50.00\) the day before it goes ex-dividend. The dividend is \(1.00\). Roughly where should it open on the ex-date, if nothing else changes?'
+    opts: ['\(49.00\)', '\(50.00\)', '\(51.00\)']
+    right: 0
+    why: 'Buyers from the ex-date no longer get the \(1.00\), so they pay \(1.00\) less. The price drops by about the dividend; holders are no better or worse off.'
+  - q: 'A company is being bought for \(40.00\) a share in cash. Its shares trade at \(38.00\). What is the merger arbitrage spread?'
+    opts: ['\(2\%\)', '\(5.3\%\)', '\(40\%\)']
+    right: 1
+    why: '\(\frac{40.00 - 38.00}{38.00} = 5.3\%\). The gap is what the market charges for the risk that the deal falls apart.'
+
+connected:
+  - { label: Builds on, title: Clearing and Settlement, where: Markets · How Markets Work, url: /hub/markets/clearing-and-settlement/ }
+  - { label: Builds on, title: Market Data and Feeds, where: Markets · How Markets Work, url: /hub/markets/market-data-and-feeds/ }
+  - { label: Builds on, title: First Sale vs Resale, where: Markets · What Markets Are, url: /hub/markets/first-sale-vs-resale/ }
+  - { label: Next, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Used in, title: Event-Driven, where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .ca-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "When the Company Changes the Shares", "What is a corporate action, and why should I care?", "What corporate actions are" %}
+  <div class="prose">
+    <p>A pizza cut into eight slices instead of four is still the same pizza. Taking one slice out and handing it to a friend leaves a smaller pizza. That's most of this note: when a company changes its shares, the question is always <em>did the pizza change, or just the slices?</em></p>
+    <p>A {% gl "corporate action" %}corporate action{% endgl %} is anything the company does that changes its securities: paying a dividend, splitting its shares, raising money from shareholders, spinning off a business, or being bought. They matter for two reasons:</p>
+    <ul>
+      <li><strong>Getting the numbers right.</strong> Every corporate action has to be reflected in your positions, your P&L and your price history. A missed split makes a chart look like a \(50\%\) crash; a missed dividend on a short leaves you owing the lender money.</li>
+      <li><strong>Finding opportunities.</strong> Some corporate actions push investors to buy or sell for reasons that have nothing to do with value. Event-driven hedge funds specialise in exactly these situations.</li>
+    </ul>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A corporate action changes the slices, not the size of the company. Value only appears when someone is forced to buy or sell at the wrong price.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Dividends and the Ex-Date", "If I buy just before a dividend, do I get free money?", "Dividends" %}
+  <div class="prose">
+    <p>A {% gl "dividend" %}dividend{% endgl %} is cash a company pays to its shareholders out of its profits. Four dates matter:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Date</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>Declaration date</td><td>The company announces the dividend, the amount and the dates</td></tr>
+        <tr><td>{% gl "ex-dividend date" %}Ex-dividend date{% endgl %} (ex-date)</td><td>Buy on or after this day and you <em>don't</em> get this dividend. The price usually drops by about the dividend at the open</td></tr>
+        <tr><td>{% gl "record date" %}Record date{% endgl %}</td><td>The company checks its register: whoever is listed as owner gets paid</td></tr>
+        <tr><td>Payment date</td><td>The cash arrives, often a few weeks later</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Why is the ex-date before the record date? Because of settlement, from the last note. To be on the register on the record date, your purchase has to have <em>settled</em> by then. In the UK, shares settle T+2, so the ex-date is one business day before the record date. In the US, since the move to T+1 in May 2024, the ex-date and the record date are the same day.</p>
+    <h3>No free money</h3>
+    <p>Buying the day before the ex-date gets you the dividend, but you pay a price that still includes it. On the ex-date, the share drops by roughly the dividend, so you've swapped some share value for cash. Before tax, you're no better off; after tax, often worse, because dividends are usually taxed.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who gets the dividend?</h3><p>A share at \(50.00\) pays a \(1.00\) dividend. Choose the day you buy \(1{,}000\) shares and the market's settlement cycle, and see what you end up with once the dividend is paid.</p></div>
+    <div class="controls">
+      <div class="presets ca-pick" id="div-mkt" aria-label="Market"></div>
+      <div class="presets ca-pick" id="div-day" aria-label="Day you buy"></div>
+    </div>
+    <svg class="chart" id="chart-div" viewBox="0 0 640 280" role="img" aria-label="The share price around the ex-dividend date, with the day you buy, the ex-date, the record date and whether you receive the dividend"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Share price and the day you buy</span><span><i class="sw grey"></i>Ex-date and record date</span></div>
+    <div class="readout" id="div-read"></div>
+    <p class="look" id="div-story"></p>
+  </div>
+  <div class="prose">
+    <p>Companies can also return cash through <strong>share buybacks</strong>, buying their own shares in the market. Fewer shares are left, so each remaining share owns a bigger slice of the company. Like a dividend, a buyback doesn't create value on its own: the cash leaves the company either way.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Splits and Reverse Splits", "Why would a company double its number of shares?", "Splits" %}
+  <div class="prose">
+    <p>In a {% gl "stock split" %}stock split{% endgl %}, every share becomes several. In a \(2\)-for-\(1\) split at \(180\), \(100\) shares become \(200\) shares at \(90\). The company is worth exactly the same; you just own more, smaller slices. Apple split \(4\)-for-\(1\) in August 2020 and Nvidia \(10\)-for-\(1\) in June 2024. Companies split to make each share cheaper, which can help small investors and options traders, though it doesn't change the value.</p>
+    <p>A <strong>reverse split</strong> goes the other way: \(10\) shares become \(1\), and the price goes up \(10\) times. This is usually a warning sign. Companies often do it because their price has fallen so low they risk being removed from the exchange (US exchanges typically require at least \(\$1\) a share). The problems that pushed the price down are still there.</p>
+    <h3>Adjusted prices</h3>
+    <p>A chart that ignores a \(2\)-for-\(1\) split shows the price falling by half overnight, which never really happened. Data providers fix this by <strong>adjusting</strong> past prices: every price before the split is divided by \(2\), so the chart is smooth and returns are correct. Dividends are adjusted for too, in "total return" data. You met adjusted prices in Market Data and Feeds; a backtest on unadjusted data will find "crashes" that are really splits.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Rights Issues", "What if the company asks me for more money?", "Rights issues" %}
+  <div class="prose">
+    <p>Sometimes a company needs new money. One way is a {% gl "rights issue" %}rights issue{% endgl %}: it offers existing shareholders the right to buy new shares, in proportion to what they already own, at a discount to today's price. A "\(1\)-for-\(4\)" rights issue means one new share for every four you hold.</p>
+    <p>The discount looks like a gift, but it isn't. Selling lots of new shares cheaply lowers the value of every share. After the issue, the price should settle around the <strong>theoretical ex-rights price</strong> (TERP), a blend of the old price and the cheap new shares. The discount only protects you if you do something about it.</p>
+    <p>You have three choices:</p>
+    <ul>
+      <li><strong>Take up your rights:</strong> pay for the new shares and keep the same share of the company.</li>
+      <li><strong>Sell your rights:</strong> rights can be traded, so someone else pays you for the chance to buy cheap shares.</li>
+      <li><strong>Do nothing:</strong> your shares are worth less, and you get nothing for it. (In the UK, lapsed rights are often sold for you and any extra paid out, which softens this.)</li>
+    </ul>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Take up, sell, or do nothing?</h3><p>You hold \(1{,}000\) shares at \(100.00\), worth \(100{,}000\). Choose the terms and the discount, and compare what you're worth afterwards, counting any cash you paid in or received. The dashed line is the \(100{,}000\) you started with.</p></div>
+    <div class="controls">
+      <div class="presets ca-pick" id="rts-terms" aria-label="Terms"></div>
+      <div class="ctrl"><label for="rts-disc">Discount</label><input type="range" id="rts-disc" min="10" max="60" step="5" value="30"><output id="rts-disc-out" for="rts-disc">30%</output></div>
+    </div>
+    <svg class="chart" id="chart-rights" viewBox="0 0 640 280" role="img" aria-label="Your wealth after a rights issue if you take up, sell or ignore your rights, compared with your starting wealth"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Value of your shares</span><span><i class="sw grey"></i>Cash received (or paid in, shown below the line)</span></div>
+    <div class="readout" id="rts-read"></div>
+    <p class="look" id="rts-story"></p>
+  </div>
+  <div class="prose">
+    <p>Why the company's reason matters: a rights issue to fix a weak balance sheet (UK banks did several in 2008–09) is defensive, and the share price often falls on the news. One to fund a profitable expansion can be good for shareholders. Either way, the maths of the discount is the same.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Spin-offs, Mergers and Tender Offers", "Where do event-driven funds find their trades?", "Spin-offs and mergers" %}
+  <div class="prose">
+    <h3>Spin-offs: forced sellers</h3>
+    <p>In a {% gl "spin-off" %}spin-off{% endgl %}, a company turns part of its business into a separate listed company and hands its shares to existing shareholders. General Electric did this twice, spinning off GE HealthCare in 2023 and GE Vernova in 2024, leaving GE Aerospace.</p>
+    <p>The interesting part is who sells. An index fund that holds the parent may not be allowed to hold the new company (it's too small, or in the wrong index), so it sells, whatever the price. Many other holders never chose to own it and sell too. That selling has nothing to do with value, and research made famous by investor Joel Greenblatt found spin-offs beating the market by around \(10\%\) a year in their first year or two. Analysts also take time to start covering the new company, so it's less watched.</p>
+    <h3>Mergers and merger arbitrage</h3>
+    <p>When one company agrees to buy another, the target's shares jump towards the offer price, but usually not all the way. Suppose the offer is \(40.00\) in cash and the shares trade at \(38.00\). The \(2.00\) gap is the {% gl "merger arbitrage" %}merger arbitrage{% endgl %} spread: the price the market charges for the risk that the deal fails (regulators block it, financing falls through, shareholders vote no). If it fails, the shares often fall back to where they were before.</p>
+    <p>Merger arbitrage funds buy the target and earn the spread if the deal closes. It's like selling insurance: small, steady gains, with an occasional big loss when a deal collapses. The spread also tells you what the market thinks the odds are (section 9).</p>
+    <h3>Tender offers</h3>
+    <p>A tender offer is an offer to buy shares straight from shareholders at a set price, usually above the market, either from the company itself (a buyback) or from a buyer. Each shareholder chooses whether to sell. If more shares are offered than the buyer wants, everyone sells only part of what they offered.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Action</th><th>What happens</th><th>What to watch</th></tr></thead>
+      <tbody>
+        <tr><td>Cash dividend</td><td>Cash paid per share; price drops by about the dividend on the ex-date</td><td>Shorts owe the dividend to the lender</td></tr>
+        <tr><td>Split</td><td>More shares, lower price, same value</td><td>Adjust share counts, price history and targets</td></tr>
+        <tr><td>Reverse split</td><td>Fewer shares, higher price, same value</td><td>Usually a red flag</td></tr>
+        <tr><td>Rights issue</td><td>Right to buy new shares at a discount</td><td>Do nothing and you're diluted. Why is the company raising money?</td></tr>
+        <tr><td>Spin-off</td><td>New company's shares handed to shareholders</td><td>Forced selling can push the new shares too low</td></tr>
+        <tr><td>Merger / acquisition</td><td>Target bought for cash, shares or both</td><td>Spread to the offer price = deal risk</td></tr>
+        <tr><td>Tender offer / buyback</td><td>Offer to buy shares at a set price</td><td>Deadlines; partial acceptance if oversubscribed</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 6, "Shorts, Operations and the Small Print", "Why are corporate actions harder when you're short?", "Shorts and operations" %}
+  <div class="prose">
+    <p>A short seller has to give the lender everything the lender would have received from the shares: every dividend, every spin-off share, every right. If you're short a company that spins off a subsidiary, you owe the lender the new shares too, so you must find and borrow them. Miss one and you can face a buy-in or a penalty.</p>
+    <p>Some corporate actions need a <em>decision</em> by a deadline: take up rights or not, accept a tender offer, choose cash or shares in a merger. A missed election is a real loss, not a paperwork slip. This is why prime brokers have whole corporate actions teams, and why a hedge fund's operations team checks every event every day. It sounds dull until the day it costs \(\$1\) million.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "Do my three markets have corporate actions?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the interest rate is the dividend</h3>
+    <p>Currencies don't have corporate actions, but they have something like a dividend: interest. Holding a high-rate currency earns you more than holding a low-rate one. And just like a share dropping on the ex-date, the market prices it in: the forward exchange rate is set so that, before costs, you can't lock in the interest difference for free. Same lesson as the dividend, different market: the FX chapter's Carry and Forwards notes pick it up.</p>
+    <p>The closest thing to a currency "split" is a redenomination: Turkey knocked six zeros off the lira in 2005, and Ghana four off the cedi in 2007. Prices and balances were all divided by the same number; nobody became richer or poorer.</p>
+    <h3>Gold: the ETF's slowly shrinking ounce</h3>
+    <p>Gold pays no dividend. A gold ETF pays its fees by selling a little of its gold, so each share is backed by slightly less gold every year. It's a small, steady corporate action that happens without any announcement.</p>
+    <h3>Bonds: coupons, calls and exchange offers</h3>
+    <p>Bonds have their own corporate actions. Coupons have ex-dates too: UK gilts go "ex-dividend" seven business days before each coupon is paid. Many corporate bonds can be <strong>called</strong> (repaid early by the company, usually when rates have fallen). Companies and countries also buy back their bonds or swap them for new ones in "exchange offers", and in a default, a debt restructuring is the biggest corporate action of all.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Goes ex / ex-div</h3><span class="tag desk">Desk</span></div><p>The day a share starts trading without its next dividend.</p><p class="eg">"It goes ex tomorrow, so it'll open down 50p."</p></div>
+    <div class="term"><div class="term-top"><h3>Corp actions / CA</h3><span class="tag desk">Desk</span></div><p>Corporate actions, and the team that processes them.</p><p class="eg">"Check with corp actions before you cover."</p></div>
+    <div class="term"><div class="term-top"><h3>Election</h3><span class="tag desk">Desk</span></div><p>A choice a holder must make by a deadline: take up rights, tender, cash or shares.</p><p class="eg">"The election deadline is Friday noon."</p></div>
+    <div class="term"><div class="term-top"><h3>Arb spread</h3><span class="tag desk">Desk</span></div><p>The gap between a target's share price and the offer price.</p><p class="eg">"The arb spread blew out on the antitrust news."</p></div>
+    <div class="term"><div class="term-top"><h3>Dilution</h3><span class="tag desk">Desk</span></div><p>Your slice of the company shrinking because new shares were issued.</p><p class="eg">"Don't take up the rights and you're diluted."</p></div>
+    <div class="term"><div class="term-top"><h3>Special situations</h3><span class="tag desk">Desk</span></div><p>Trades built around a corporate event rather than the company's normal business.</p><p class="eg">"It's a special sit, the spin-off's mispriced."</p></div>
+    <div class="term"><div class="term-top"><h3>Manufactured dividend</h3><span class="tag desk">Desk</span></div><p>The dividend a short seller pays to the lender.</p><p class="eg">"We owe a manufactured div on the short."</p></div>
+    <div class="term"><div class="term-top"><h3>Adjusted close</h3><span class="tag desk">Desk</span></div><p>A past price corrected for splits and dividends.</p><p class="eg">"Backtest on adjusted closes or the splits look like crashes."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where corporate actions turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: check the calendar before you trade</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Before entering a share or index position, check for ex-dates, results and other events in the days ahead. On CFDs, a long position is credited the dividend on the ex-date and a short is charged it, so a short over an ex-date costs money. A sudden drop on an ex-date isn't a sell signal, and a chart without adjusted prices can fool a backtest.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: REITs and their rights issues</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Real estate investment trusts (REITs) must pay out most of their profits as dividends (at least \(90\%\) of property rental profits in the UK, and of taxable income in the US), so they can't keep much cash to grow. When they want to buy more property, or when falling property values strain their borrowing, they often raise money through rights issues and share placings. Reading a REIT means reading its dividends and its capital raises.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the great bank recapitalisation</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>In March 2024, the Central Bank of Nigeria told banks to raise their minimum capital (to ₦500 billion for banks with international licences) within two years. The result was a wave of rights issues and public offers on the NGX: by the March 2026 deadline, 33 banks had raised about ₦4.65 trillion. Access Bank's ₦351 billion rights issue, 17.77 billion new shares at ₦19.75 each, was the first to clear the bar and was run fully online through the NGX's e-offer platform. In Nigeria the record date is often called the "qualification date", and the register "closes" for a few days after it.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on corporate actions?" %}
+  <div class="formula"><span class="lbl">Ex-dividend price</span>\[ P_{\text{ex}} \approx P_{\text{before}} - D \]</div>
+  <div class="formula"><span class="lbl">Split \(k\)-for-\(1\)</span>\[ \text{shares} \times k, \qquad \text{price} \div k, \qquad \text{value unchanged} \]</div>
+  <div class="formula"><span class="lbl">Theoretical ex-rights price (\(1\) new for every \(N\) held, at subscription price \(S\))</span>\[ \text{TERP} = \frac{N \times P + S}{N + 1} \qquad \text{value of one right} = \text{TERP} - S \]</div>
+  <div class="formula"><span class="lbl">Merger arbitrage</span>\[ \text{spread} = \frac{\text{offer} - P}{P} \qquad p_{\text{deal closes}} \approx \frac{P - P_{\text{fail}}}{\text{offer} - P_{\text{fail}}} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>You hold \(1{,}000\) shares at \(100.00\). The company announces a \(1\)-for-\(4\) rights issue at \(70.00\).</h3>
+    <ol class="steps">
+      <li>TERP \(= \frac{4 \times 100 + 70}{5} = 94.00\).</li>
+      <li>You get \(250\) rights, each worth \(94.00 - 70.00 = 24.00\).</li>
+      <li>Take up: pay \(17{,}500\), own \(1{,}250\) shares \(\times 94 = 117{,}500\). Minus what you paid: \(100{,}000\).</li>
+      <li>Sell the rights: \(1{,}000 \times 94 = 94{,}000\) plus \(250 \times 24 = 6{,}000\) cash \(= 100{,}000\).</li>
+      <li>Do nothing: \(1{,}000 \times 94 = 94{,}000\).</li>
+    </ol>
+    <p class="answer">Taking up or selling keeps you whole; doing nothing costs \(6{,}000\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A target trades at \(38.00\) after a \(40.00\) cash offer. Before the offer it was at \(28.00\).</h3>
+    <ol class="steps">
+      <li>Spread: \(\frac{40 - 38}{38} = 5.3\%\).</li>
+      <li>If the deal fails, assume the share falls back to about \(28.00\).</li>
+      <li>Implied chance of closing: \(\frac{38 - 28}{40 - 28} = \frac{10}{12} \approx 83\%\).</li>
+    </ol>
+    <p class="answer">The market thinks the deal has roughly a five-in-six chance of closing.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A share at \(240\) does a \(3\)-for-\(1\) split. You held \(50\) shares. What do you hold now, and what's it worth?</span></p>
+      <details><summary>Show answer</summary><div><span>\(150\) shares at \(80\), worth \(12{,}000\), the same as before.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>US shares settle T+1. A company's record date is Thursday. What is the ex-date, and what's the last day you can buy and still get the dividend?</span></p>
+      <details><summary>Show answer</summary><div><span>The ex-date is also Thursday. Buy on Wednesday at the latest: it settles Thursday, so you're on the register.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A \(1\)-for-\(2\) rights issue at \(60\) when the share is at \(90\). What is the TERP, and what is one right worth?</span></p>
+      <details><summary>Show answer</summary><div><span>TERP \(= \frac{2 \times 90 + 60}{3} = 80\). One right is worth \(80 - 60 = 20\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A target trades at \(47.00\) against a \(50.00\) cash offer, and would fall to \(35.00\) if the deal broke. What's the spread and the implied chance of the deal closing?</span></p>
+      <details><summary>Show answer</summary><div><span>Spread \(= \frac{3}{47} \approx 6.4\%\). Implied chance \(= \frac{47 - 35}{50 - 35} = 80\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>You're short \(10{,}000\) shares and the company pays a \(0.40\) dividend. What do you owe, and to whom?</span></p>
+      <details><summary>Show answer</summary><div><span>\(4{,}000\), paid to the lender of the shares as a manufactured dividend.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why do spin-offs often do well in their first year or two?</span></p>
+      <details><summary>Show answer</summary><div><span>Forced and uninterested selling: index funds may have to sell because the new company doesn't fit their index, and many holders never chose to own it. That pushes the price below fair value. Few analysts cover it at first, so the mispricing can last. Managers of the new company also often get shares, so their incentives improve.</span></div></details></div>
+  </div>
+{% endsec %}

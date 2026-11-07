@@ -1,0 +1,244 @@
+---
+title: Regulation
+shelf: markets
+chapter: how-markets-work
+subtopic: Rules and History
+order: 1
+summary: Who makes the rules for markets and why - the regulators in the US, UK, EU and Nigeria, why a hedge fund and a mutual fund live under such different rulebooks, the trading rules that shape market structure, market abuse, and the big rewrite after 2008.
+lede: "Markets only work if people trust them: that the price is real, that nobody is cheating with secret information, and that one firm failing won't drag down everyone else. Regulators exist to protect that trust. Their rules also quietly shape how markets work, which firms can do what, and where the opportunities are."
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/regulation.js]
+alsoIn: [hedge-funds/the-hedge-fund-business, fintech/regulation]
+
+quiz:
+  - q: 'What is the main idea behind US securities law since 1933?'
+    opts: ['The government decides which companies are good investments', 'Companies must disclose what they''re doing, and investors decide', 'Only banks may buy shares']
+    right: 1
+    why: 'The 1933 and 1934 Acts were built on disclosure: rather than approving or banning investments, the law makes companies tell investors the truth, and punishes fraud.'
+  - q: 'Why is a hedge fund much more lightly regulated than a mutual fund?'
+    opts: ['Hedge funds are smaller', 'Hedge funds don''t trade shares', 'Hedge funds only take money from professional and wealthy investors, who are expected to understand the risks']
+    right: 2
+    why: 'Mutual funds take money from ordinary savers, so they must offer daily withdrawals, limit leverage and publish holdings. Hedge funds are restricted to sophisticated investors, so they''re allowed far more freedom.'
+  - q: 'Which rule banned big US banks from betting their own money on market moves after 2008?'
+    opts: ['The Volcker Rule', 'Regulation T', 'MiFID II']
+    right: 0
+    why: 'The Volcker Rule, part of the Dodd-Frank Act, banned proprietary trading at banks. Much of that risk-taking moved to hedge funds and other non-banks.'
+
+connected:
+  - { label: Builds on, title: Following the Money, where: Markets · What Markets Are, url: /hub/markets/following-the-money/ }
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: Clearing and Settlement, where: Markets · How Markets Work, url: /hub/markets/clearing-and-settlement/ }
+  - { label: Next, title: Crashes That Changed the Rules, where: Markets · How Markets Work, url: /hub/markets/crashes-that-changed-the-rules/ }
+  - { label: Used in, title: SEC Nigeria, where: Fintech and Nigeria · Regulation, url: /hub/fintech/ }
+---
+
+<style>
+  .rg-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .rg-grid td.on { background: var(--tone-bg); font-weight: 600; }
+  .rg-grid td.mark { text-align: center; white-space: nowrap; font-size: 1.1em; }
+</style>
+
+{% sec 1, "Why Markets Need Referees", "Why can't markets just run themselves?", "Why markets need referees" %}
+  <div class="prose">
+    <p>Think of a football match. Without a referee, the stronger team could foul whenever it liked, nobody would agree on the score, and fans would stop paying to watch. The referee doesn't play, and doesn't decide who wins. The job is to make sure the game is fair enough that everyone keeps turning up.</p>
+    <p>Market {% gl "regulator" %}regulators{% endgl %} are the referees. They have three big jobs:</p>
+    <ol>
+      <li><strong>Protect investors</strong>, especially ordinary savers, from being lied to or cheated.</li>
+      <li><strong>Keep markets fair and orderly</strong>, so prices are real and nobody trades on secret information.</li>
+      <li><strong>Stop one failure becoming everyone's failure</strong>, the "systemic risk" behind most of this chapter.</li>
+    </ol>
+    <h3>Tell, don't control</h3>
+    <p>Modern US securities law was written after the 1929 crash and the Great Depression. The Securities Act of 1933 and the Securities Exchange Act of 1934 set its core idea, and created the SEC to enforce it: the government doesn't decide which companies are good investments. Instead, companies must <strong>disclose</strong> the truth about what they're doing, fraud is punished hard, and investors make up their own minds. Every annual report (a 10-K), every quarterly report (10-Q) and every insider trading filing you'll read as an analyst exists because of this idea. The UK and most other markets work the same way.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Regulation isn't only a list of things you can't do. It shapes how markets are built, and so it creates some opportunities and destroys others.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Who's Who: The Regulators", "Who makes the rules where I'll be working?", "The regulators" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Regulator</th><th>Where</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>SEC (Securities and Exchange Commission)</td><td>US</td><td>Securities markets, company disclosure, fund managers; enforces insider trading and fraud law</td></tr>
+        <tr><td>FINRA</td><td>US</td><td>An industry body that supervises brokers and licenses the people who work at them (the "Series 7" exams)</td></tr>
+        <tr><td>CFTC (Commodity Futures Trading Commission)</td><td>US</td><td>Futures and most derivatives, including COMEX gold</td></tr>
+        <tr><td>Federal Reserve</td><td>US</td><td>The central bank: sets interest rates and supervises the biggest banks</td></tr>
+        <tr><td>FCA (Financial Conduct Authority)</td><td>UK</td><td>How financial firms behave, market integrity and consumer protection. Authorises most firms in the City</td></tr>
+        <tr><td>PRA (Prudential Regulation Authority)</td><td>UK</td><td>Part of the Bank of England: makes sure banks and insurers hold enough capital to stay safe</td></tr>
+        <tr><td>ESMA</td><td>EU</td><td>Coordinates securities rules across the EU, such as MiFID II and AIFMD</td></tr>
+        <tr><td>SEC Nigeria</td><td>Nigeria</td><td>Capital markets, the NGX, fund managers and, since 2025, crypto exchanges</td></tr>
+        <tr><td>CBN (Central Bank of Nigeria)</td><td>Nigeria</td><td>Monetary policy, banks, payments and the FX market</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Two kinds of regulation run side by side. <strong>Conduct</strong> regulation (the FCA, the SEC) is about behaviour: treating clients fairly, not cheating, telling the truth. <strong>Prudential</strong> regulation (the PRA, the Fed) is about safety: holding enough capital and cash that a firm can survive a bad year. The UK splits them between two bodies, which is why a London bank answers to both the FCA and the PRA.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Different Firms, Different Rulebooks", "Why can a hedge fund do things a pension fund can't?", "Different rulebooks" %}
+  <div class="prose">
+    <p>Regulation follows one simple rule: <strong>the more ordinary people could get hurt, the tighter the rules</strong>. A fund for savers is tightly controlled; a fund only for professionals and the very wealthy is left freer, because its investors are expected to understand what they're signing up for.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Same idea, different rulebook</h3><p>Pick a type of firm to see what it's allowed to do, and why. ✓ yes · ✗ no · ◐ limited · — doesn't apply.</p></div>
+    <div class="controls">
+      <div class="presets rg-pick" id="rule-firm" aria-label="Type of firm"></div>
+    </div>
+    <div class="table-wrap">
+      <table class="numbers rg-grid" id="rule-grid"></table>
+    </div>
+    <div class="look" id="rule-story"></div>
+  </div>
+  <div class="prose">
+    <h3>What hedge funds do have to report</h3>
+    <ul>
+      <li><strong>SEC registration</strong> once a US manager runs more than \(\$150\) million.</li>
+      <li><strong>Form 13F</strong> every quarter, listing US share holdings, for managers with over \(\$100\) million. Only the longs: shorts don't appear. Analysts read other funds' 13Fs closely, even though they're up to 45 days out of date.</li>
+      <li><strong>13D or 13G</strong> within days of owning more than \(5\%\) of a company. A 13D means the fund may push for change: the signature move of activist investors.</li>
+      <li><strong>Form PF</strong>, a confidential report to regulators on size, leverage and risk.</li>
+      <li><strong>Short positions</strong> above set levels: reported to the FCA from \(0.2\%\) in the UK (the Short Selling note has more).</li>
+    </ul>
+    <p>In the UK and EU, hedge fund managers are authorised by the regulator under the AIFMD rules, and anyone working in a regulated role at a firm is personally answerable under the UK's Senior Managers and Certification Regime.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Rules That Shape Trading", "Which rules change how I'll actually trade?", "Rules that shape trading" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Rule</th><th>What it says</th><th>What it did to markets</th></tr></thead>
+      <tbody>
+        <tr><td>Reg NMS (US, 2005)</td><td>Trades must happen at the best displayed price across <em>all</em> exchanges (the NBBO); caps on exchange access fees; no quoting in fractions of a cent above \(\$1\)</td><td>Created today's market with many competing exchanges, and with it the high-frequency traders who link them</td></tr>
+        <tr><td>Reg SHO (US, 2005)</td><td>Locate before shorting; fails must be closed out; a short-sale price test after a \(10\%\) fall in a day (added 2010)</td><td>Limits naked shorting; the reason fails lead to buy-ins</td></tr>
+        <tr><td>Reg T (US)</td><td>\(50\%\) initial margin on share purchases</td><td>Unchanged since 1974; portfolio margin is the risk-based alternative</td></tr>
+        <tr><td>Reg ATS (US, 1998)</td><td>Rules for trading venues that aren't exchanges</td><td>Allowed dark pools to grow, under supervision</td></tr>
+        <tr><td>Rule 10b-5 (US)</td><td>Bans fraud in buying or selling any security</td><td>The basis of US insider trading and manipulation cases</td></tr>
+        <tr><td>MAR (EU and UK)</td><td>Bans insider dealing and market manipulation; disclosure of large short positions</td><td>Tougher disclosure than the US</td></tr>
+        <tr><td>MiFID II (EU, 2018)</td><td>Banks must charge for research separately from trading; more trade transparency; best execution reports. The UK relaxed the research rule again in 2024</td><td>Changed the economics of research (see below)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Regulation as an investment risk, and an opportunity</h3>
+    <p>Rules change the game. Reg NMS split US share trading across many venues, which made high-frequency trading profitable. MiFID II made fund managers pay for research directly instead of hiding it in trading commissions; many cut what they bought, and banks stopped covering lots of smaller companies. Fewer analysts means more mispriced small companies for the funds that do their own research. A short-selling ban can force a fund to close its hedges overnight. Any strategy that depends on how a market is built carries the risk that a regulator rebuilds it.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Insider Trading and Market Abuse", "Where's the line between good research and cheating?", "Market abuse" %}
+  <div class="prose">
+    <p>{% gl "insider dealing" %}Insider dealing{% endgl %} means trading on <strong>material non-public information</strong> (MNPI): something important that the market doesn't know yet, like next week's results or a secret takeover bid. You met MNPI in Following the Money. It's a crime in the UK and US, and it has ended more hedge fund careers than bad trades have.</p>
+    <p>The line can be thin. Analysts are paid to dig: talk to suppliers, customers and former employees, count cars in car parks. All fine, as long as nobody passes on confidential information. The safe rule: when in doubt, stop and call compliance. A false alarm costs nothing; a breach can cost your career and your freedom.</p>
+    <h3>Market manipulation</h3>
+    <p>Other kinds of {% gl "market abuse" %}market abuse{% endgl %} don't need inside information:</p>
+    <ul>
+      <li>{% gl "spoofing" %}<strong>Spoofing</strong>{% endgl %}: placing large orders you never mean to fill, to trick others about supply and demand, then cancelling them. A London trader was convicted in the US for spoofing linked to the 2010 Flash Crash.</li>
+      <li><strong>Front-running</strong>: trading ahead of a client's big order because you know it's coming.</li>
+      <li><strong>Ramping, or "pump and dump"</strong>: pushing a price up with false hype, then selling to the people who believed it.</li>
+      <li><strong>Benchmark rigging</strong>: banks were fined billions for colluding to move LIBOR and the 4pm FX fix (Order Types covers the fix scandal).</li>
+    </ul>
+    <p>Firms run surveillance systems that flag suspicious patterns, and keep information barriers, restricted lists and personal trading rules for staff. You'll sign up to all of them on your first day at any trading firm.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "After 2008: The Big Rewrite", "What changed after the financial crisis, and where did the risk go?", "After 2008" %}
+  <div class="prose">
+    <p>The 2008 crisis rewrote bank regulation. The four biggest changes:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The Volcker Rule (US).<span class="why">Part of the Dodd-Frank Act of 2010. Big banks can no longer bet their own money on market moves ("proprietary trading"). They can still make markets for clients and hedge. The UK went another way: since 2019, big banks must <strong>ring-fence</strong> their everyday retail banking from riskier investment banking.</span></span></li>
+    <li><span class="n">2</span><span>Central clearing for derivatives.<span class="why">Most standard derivatives, like interest rate swaps, must now go through a clearing house, with margin, instead of being private deals between banks. That's the CCP from the Clearing and Settlement note, applied to derivatives.</span></span></li>
+    <li><span class="n">3</span><span>More capital (Basel III).<span class="why">Banks must hold far more of their own money against their risks, plus enough cash-like assets to survive a month of stress. This cut how much banks can borrow.</span></span></li>
+    <li><span class="n">4</span><span>Stress tests and systemic risk watchers.<span class="why">Regulators now test every year whether big banks would survive a severe crash, and new bodies (the US FSOC, the Bank of England's Financial Policy Committee) watch the system as a whole.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>Where did the risk go?</h3>
+    <p>When banks were pushed out of risky trading, the trading didn't disappear. Much of it moved to hedge funds, proprietary trading firms like Jane Street and Citadel Securities, and private credit funds, which now do a lot of the lending banks used to do. Regulators call this the "non-bank" or "shadow banking" sector, and it's where much of their attention is now: the 2020 Treasury basis trade and the 2022 UK pension fund crisis both happened outside the banks.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "Who regulates my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the market with no single regulator</h3>
+    <p>Surprisingly, the spot FX market itself has no single regulator anywhere. Spot FX isn't treated as a "financial instrument" under MiFID II, though FX forwards, options and swaps are. Banks are regulated as firms, and their FX desks are covered by market abuse rules and conduct rules, but the market runs on its own code. After the fix scandal, central banks and the industry wrote the <strong>FX Global Code</strong> (2017), a voluntary set of principles on fair trading, last look and handling client orders that banks sign up to. Retail FX and CFD platforms in the UK are tightly regulated by the FCA, with the leverage limits you met in Margin and Leverage.</p>
+    <h3>Gold: London's rules and the CFTC</h3>
+    <p>The London gold market is overseen through the LBMA, which sets the "Good Delivery" standards for bars and rules on responsible sourcing, while the banks trading it are regulated by the FCA and PRA. COMEX gold futures fall under the CFTC.</p>
+    <h3>Bonds: dealers, reporting and the debt office</h3>
+    <p>Government bond markets are run alongside the state that issues the bonds: the UK Debt Management Office sells gilts through its primary dealers (the GEMMs). In the US, corporate bond trades must be reported to FINRA's TRACE system, which you met in Market Data and Feeds. In Nigeria, the FMDQ exchange acts as a self-regulator for bonds, treasury bills and the FX market.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Compliance</h3><span class="tag desk">Desk</span></div><p>The team that makes sure the firm follows the rules. Your first call when unsure.</p><p class="eg">"Run it past compliance before you speak to them."</p></div>
+    <div class="term"><div class="term-top"><h3>MNPI / wall-crossed</h3><span class="tag desk">Desk</span></div><p>Inside information, and being formally told some, which means you can't trade.</p><p class="eg">"I've been wall-crossed, I can't trade the name."</p></div>
+    <div class="term"><div class="term-top"><h3>Restricted list</h3><span class="tag desk">Desk</span></div><p>Companies the firm can't trade, usually because it holds inside information on them.</p><p class="eg">"It's on the restricted list till the deal's announced."</p></div>
+    <div class="term"><div class="term-top"><h3>Chinese wall</h3><span class="tag desk">Desk</span></div><p>An information barrier between parts of a firm, such as advisory and trading.</p><p class="eg">"The deal team's behind the wall."</p></div>
+    <div class="term"><div class="term-top"><h3>13F</h3><span class="tag desk">Desk</span></div><p>The quarterly US filing of a fund's long holdings.</p><p class="eg">"Their 13F shows they doubled the position."</p></div>
+    <div class="term"><div class="term-top"><h3>Prop trading</h3><span class="tag desk">Desk</span></div><p>Trading the firm's own money for profit, rather than for clients.</p><p class="eg">"Banks can't do prop any more, it went to the hedge funds."</p></div>
+    <div class="term"><div class="term-top"><h3>Spoofing</h3><span class="tag desk">Desk</span></div><p>Placing orders you mean to cancel, to fool the market. Illegal.</p><p class="eg">"Surveillance flagged it as possible spoofing."</p></div>
+    <div class="term"><div class="term-top"><h3>Ring-fence</h3><span class="tag desk">Desk</span></div><p>The UK rule separating big banks' retail banking from their investment banking.</p><p class="eg">"That's the ring-fenced bank, it can't trade like that."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where regulation turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: check who's regulating your broker</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Before using any broker, check it's on the FCA register; the FCA also publishes a warning list of firms it knows are unauthorised. Many prop firms aren't regulated as brokers at all, because you trade a simulated account, so their rules are whatever their contract says. And the market abuse rules apply to you too: sharing a "tip" from a friend at a listed company is exactly how people end up in court.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: rules that move property markets</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property is regulated too, and rules can change a market overnight. Estate agents and property lawyers must check where buyers' money comes from under anti-money laundering rules. For European villas, the "golden visa" rules mattered: Portugal stopped giving residency for property purchases in 2023, and Spain ended its scheme completely on 3 April 2025, both to cool housing prices. A buyer pool that relied on those visas disappeared. Regulatory risk is part of any property plan.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the new rulebook</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria's Investments and Securities Act 2025 replaced the 2007 law and, for the first time, treats crypto and other digital assets as securities under the SEC. Crypto exchanges now need SEC registration and a local presence. Payments and banking sit with the CBN, which licenses fintechs (payment service banks, mobile money operators and others), while the SEC runs a regulatory incubation programme for new capital-market ideas. For any fintech idea, the first question is: which regulator, which licence, and how long does it take?</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "Where do numbers show up in regulation?" %}
+  <div class="formula"><span class="lbl">Bank capital ratio (Basel III)</span>\[ \text{CET1 ratio} = \frac{\text{common equity}}{\text{risk-weighted assets}} \ \ge\ 4.5\% + 2.5\% \text{ buffer} = 7\% \text{ (more for big banks)} \]</div>
+  <div class="formula"><span class="lbl">Bank leverage ratio</span>\[ \text{leverage ratio} = \frac{\text{Tier 1 capital}}{\text{total exposure}} \ \ge\ 3\% \]</div>
+  <div class="formula"><span class="lbl">Ownership disclosure</span>\[ \frac{\text{shares you own}}{\text{shares in issue}} &gt; 5\% \ \Rightarrow \ \text{13D or 13G filing (US)} \]</div>
+  <div class="prose">
+    <p>"Risk-weighted" means riskier loans count for more: a mortgage might count at a fraction of its size, a risky corporate loan at its full size or more. A \(3\%\) leverage ratio is a cap of roughly \(33\times\) on how much a bank can lend and invest against its capital, the same \(1/L\) idea as in Margin and Leverage.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A bank has £12 billion of common equity, £150 billion of risk-weighted assets and £380 billion of total exposure.</h3>
+    <ol class="steps">
+      <li>CET1 ratio: \(\frac{12}{150} = 8\%\). Above the \(7\%\) minimum with buffer.</li>
+      <li>Leverage ratio (taking Tier 1 as the same £12 billion): \(\frac{12}{380} \approx 3.2\%\). Just above \(3\%\).</li>
+      <li>A loss of about £0.6 billion would push the leverage ratio below \(3\%\): \(\frac{11.4}{380} = 3.0\%\).</li>
+    </ol>
+    <p class="answer">The leverage ratio, not the risk-based ratio, is the one that bites here.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name the three main goals of market regulation.</span></p>
+      <details><summary>Show answer</summary><div><span>Protect investors, keep markets fair and orderly, and reduce systemic risk.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>What's the difference between the FCA and the PRA?</span></p>
+      <details><summary>Show answer</summary><div><span>The FCA regulates conduct: how firms behave towards clients and markets. The PRA, part of the Bank of England, regulates safety: whether banks and insurers hold enough capital and liquidity.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A US fund holds \(\$300\) million of shares long and \(\$200\) million short. Which of these show up on its 13F?</span></p>
+      <details><summary>Show answer</summary><div><span>Only the long US share holdings. 13F doesn't show shorts, so it can make a hedged fund look like a simple long fund.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>How did MiFID II create an opportunity for some buy-side firms?</span></p>
+      <details><summary>Show answer</summary><div><span>By forcing research to be paid for separately, it cut the number of bank analysts covering smaller companies. Less coverage means more mispricing for funds willing to do their own research.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A bank has £9 billion of Tier 1 capital and £320 billion of total exposure. Does it meet a \(3\%\) leverage ratio?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\frac{9}{320} \approx 2.8\%\). No: it needs about £9.6 billion, or must shrink its exposure to £300 billion.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: after 2008, where did the risk go?</span></p>
+      <details><summary>Show answer</summary><div><span>Out of banks and into non-banks. The Volcker Rule, Basel III capital rules and ring-fencing pushed proprietary trading and some lending out of banks, into hedge funds, prop trading firms and private credit funds. Regulators now focus on these "non-bank" risks: the 2020 Treasury basis trade unwind and the 2022 UK pension fund crisis both happened outside the banks.</span></div></details></div>
+  </div>
+{% endsec %}

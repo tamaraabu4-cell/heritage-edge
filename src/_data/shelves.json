@@ -118,8 +118,8 @@
           "Where Trading Happens",
           "Placing a Trade",
           "Borrowing to Trade",
-          { "name": "After the Trade", "planned": ["Clearing and Settlement", "Corporate Actions"] },
-          { "name": "Rules and History", "planned": ["Regulation", "Crashes That Changed the Rules"] }
+          "After the Trade",
+          "Rules and History"
         ] },
       { "title": "FX", "blurb": "The biggest market in the world, and why currencies move.",
         "subtopics": ["How FX Trades", "Majors and Crosses", "Forwards and Swaps", "Carry", "Fixes and Flows", "Emerging Market FX"] },
