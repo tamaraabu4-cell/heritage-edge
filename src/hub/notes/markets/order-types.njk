@@ -1,0 +1,270 @@
+---
+title: Order Types
+shelf: markets
+chapter: how-markets-work
+subtopic: Placing a Trade
+order: 1
+summary: Market, limit, stop and the rest - how an order tells the market what you want, and the trade-off every order makes between getting filled and getting your price.
+lede: An order is an instruction to the market. Every type makes the same trade-off - certainty that you'll be filled against certainty about the price - and choosing the right one can save money on every single trade.
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/order-types.js]
+alsoIn: [trading/execution, trading/risk-and-position-sizing/Stops]
+
+quiz:
+  - q: 'The market is \(50.00\) / \(50.05\). You send a marketable limit order to buy \(500\) shares at \(50.05\), and \(2{,}000\) shares are offered at \(50.05\). What price do you pay?'
+    opts: ['\(50.025\), the midpoint', '\(50.05\)', '\(50.00\), the bid']
+    right: 1
+    why: 'There are more than enough shares offered at \(50.05\), so all \(500\) fill there straight away. The limit would only bite if you needed shares at a higher price.'
+  - q: 'You have a sell stop at \(48.00\). Bad news hits and the next trade is at \(47.70\). Where does your order fill?'
+    opts: ['At about \(47.70\) or lower: a stop becomes a market order', 'Exactly \(48.00\): that''s what the stop is for', 'It doesn''t fill, because the price skipped \(48.00\)']
+    right: 0
+    why: 'A stop only promises to act once the price is reached. It then becomes a market order and takes the next available price, \(0.30\) worse here. A stop-limit is the version that might not fill.'
+  - q: 'An index fund needs to trade at the official closing price. Which order fits?'
+    opts: ['A good-till-cancelled limit order', 'An iceberg order', 'A market-on-close order']
+    right: 2
+    why: 'A market-on-close order joins the closing auction and trades at the closing price, the exact benchmark the fund is measured against.'
+
+connected:
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Builds on, title: Market Data and Feeds, where: Markets · How Markets Work, url: /hub/markets/market-data-and-feeds/ }
+  - { label: Next, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Stops, where: Trading · Risk and Position Sizing, url: /hub/trading/ }
+---
+
+<style>
+  .ot-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "The Two Basic Orders", "What are you actually telling the market when you trade?", "The two basic orders" %}
+  <div class="prose">
+    <p>Imagine you're at a car boot sale and you want a bike. There are two ways to ask for it.</p>
+    <ul>
+      <li><strong>"I'll take it, whatever the price."</strong> You definitely walk away with a bike, but you might pay more than you'd like.</li>
+      <li><strong>"I'll pay \(\text{£}40\), not a penny more."</strong> You definitely won't overpay, but you might go home with nothing.</li>
+    </ul>
+    <p>Those are the two basic orders in every market:</p>
+    <ul>
+      <li>A {% gl "market order" %}market order{% endgl %} says "buy (or sell) this amount now, at the best price available". You're certain to be filled, as long as there's someone to trade with. The price is whatever the market gives you.</li>
+      <li>A {% gl "limit order" %}limit order{% endgl %} says "buy at this price or better" (no higher), or "sell at this price or better" (no lower). The price is guaranteed. Being filled is not: if nobody comes to your price, the order just waits.</li>
+    </ul>
+    <p>Every other order type is a variation on these two, adding conditions about price, time or how much of your order other people can see.</p>
+    <h3>Paying the spread, or earning it</h3>
+    <p>Say a share is quoted at \(50.00\) to buy and \(50.05\) to sell. A market order to buy pays \(50.05\): you cross the {% gl "bid-ask spread" %}spread{% endgl %} and pay for getting your shares immediately. A limit order to buy at \(50.00\) sits at the bid and waits for a seller to come to you. If it fills, you've saved the \(0.05\). But it might never fill, and it tends to fill at the worst moment: exactly when prices are falling through your level, because a seller who knows something is happy to hit it.</p>
+    <p>There's a useful middle option. A {% gl "marketable limit order" %}marketable limit order{% endgl %} is a limit order priced so it can trade straight away, like a buy at \(50.05\). It fills immediately like a market order, but it has a safety rail: it can never pay more than \(50.05\).</p>
+    <h3>Market orders eat through the queue</h3>
+    <p>A market order doesn't just take one price. If you want more shares than are offered at the best price, your order takes all of those, then moves up to the next price, and the next, until it's done. Traders call this walking the book. The more you want, and the thinner the market, the worse your average price gets. Try it below.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>One plan, four orders</h3><p>The market is \(50.00\) to buy, \(50.05\) to sell. You want to buy. Pick an order type and a size, and watch what happens in the order book. Shares people want to sell are above the middle; shares people want to buy are below.</p></div>
+    <div class="controls">
+      <div class="presets ot-pick" id="ot-type" aria-label="Order type"></div>
+      <div class="ctrl"><label for="ot-size">Shares to buy</label><input type="range" id="ot-size" min="100" max="5000" step="100" value="1000"><output id="ot-size-out" for="ot-size">1,000</output></div>
+    </div>
+    <svg class="chart" id="chart-walk" viewBox="0 0 640 345" role="img" aria-label="An order book showing which offers your order takes, and where any resting order waits"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Taken by your order</span><span><i class="sw grey"></i>Other people's orders</span></div>
+    <div class="readout" id="walk-read"></div>
+    <p class="look" id="walk-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Every order trades certainty of being filled against certainty of price. No order gives you both.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Stops: Turning a Price into an Action", "How do stop orders work, and where do they go wrong?", "Stops" %}
+  <div class="prose">
+    <p>A {% gl "stop order" %}stop order{% endgl %} sleeps until the price reaches a level you choose, called the trigger. Then it wakes up and becomes a normal order. The classic use is a stop-loss: you own a share at \(50\), and you tell your broker "if it falls to \(48\), sell". It means you don't have to watch the screen all day to stick to your plan.</p>
+    <p>There are two kinds:</p>
+    <ul>
+      <li>A plain <strong>stop</strong> becomes a <em>market</em> order when triggered. It will get you out, but at whatever price is available.</li>
+      <li>A {% gl "stop-limit order" %}stop-limit{% endgl %} becomes a <em>limit</em> order when triggered. It won't sell below your limit, but if the price falls straight through, it may not sell at all.</li>
+    </ul>
+    <h3>Where stops go wrong</h3>
+    <p>Stops have a weakness built in. They turn into market orders at exactly the moment market orders work worst: when prices are falling fast and few people want to buy. If bad news comes out overnight and a share opens \(5\%\) lower, a stop at \(48\) doesn't sell at \(48\). It sells at whatever the first available price is.</p>
+    <p>Stops can also set each other off. Lots of traders put stops at the same obvious levels, like round numbers. When the price reaches one, all those stops turn into sell orders at once, which pushes the price down to the next cluster of stops, and so on. In the Flash Crash of 6 May 2010, US shares fell sharply in minutes, stop orders were filled far below where they'd been set, and a few shares briefly traded for a penny.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Where does your stop actually fill?</h3><p>You own a share bought at \(50.00\) and want to sell if it falls. Set your stop, pick the kind of stop, and pick the kind of market. The stop-limit's limit is set \(0.10\) below the stop.</p></div>
+    <div class="controls">
+      <div class="presets ot-pick" id="st-kind" aria-label="Kind of stop"></div>
+      <div class="presets ot-pick" id="st-path" aria-label="Kind of market"></div>
+      <div class="ctrl"><label for="st-level">Stop price</label><input type="range" id="st-level" min="47.5" max="49.5" step="0.1" value="48"><output id="st-level-out" for="st-level">48.00</output></div>
+    </div>
+    <svg class="chart" id="chart-stop" viewBox="0 0 640 300" role="img" aria-label="A falling share price, the stop level, where the stop is triggered and where it fills"></svg>
+    <div class="readout" id="stop-read"></div>
+    <p class="look" id="stop-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A stop controls what you do, not how much you lose. It guarantees action at a price level, not the price you get.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How Long and How Visible", "What other instructions can you attach to an order?", "Time and visibility" %}
+  <div class="prose">
+    <h3>How long the order lasts</h3>
+    <p>Every order also says how long it should stay alive. This is its {% gl "time in force" %}time in force{% endgl %}:</p>
+    <ul>
+      <li><strong>Day:</strong> cancelled automatically at the close if it hasn't filled. The usual default.</li>
+      <li>{% gl "gtc" %}<strong>Good-till-cancelled (GTC)</strong>{% endgl %}: stays in the market until it fills or you cancel it, often up to about \(90\) days. Handy for a price you're waiting for, but easy to forget about after the situation has changed.</li>
+      <li>{% gl "ioc" %}<strong>Immediate-or-cancel (IOC)</strong>{% endgl %}: fill whatever you can right now and cancel the rest. It grabs the shares that are available without leaving an order sitting there for everyone to see.</li>
+      <li>{% gl "fok" %}<strong>Fill-or-kill (FOK)</strong>{% endgl %}: fill the whole order right now, or none of it. Used when half a trade would be worse than no trade, like hedging an exact amount.</li>
+    </ul>
+    <h3>How much other people see</h3>
+    <p>A big order showing in the order book tells everyone a big buyer is around, and they'll push the price up ahead of it. So there are ways to hide:</p>
+    <ul>
+      <li>An {% gl "iceberg order" %}iceberg order{% endgl %} shows only a small slice, say \(500\) shares of a \(50{,}000\) order. When the slice fills, another one appears. The catch: the hidden part loses its place in the queue to people who showed their orders.</li>
+      <li>A <strong>hidden order</strong> shows nothing at all, where the venue allows it.</li>
+      <li>A {% gl "peg order" %}peg order{% endgl %} moves its own price automatically to follow a reference point. A midpoint peg always sits exactly halfway between the best bid and best offer.</li>
+    </ul>
+    <h3>Trading in the auctions</h3>
+    <p>Exchanges open and close the day with auctions: for a few minutes, orders are collected, and then everything trades at one single price. The closing auction is the busiest moment of the day. In US shares it's roughly \(7\%\) to \(10\%\) of all the day's trading, and on the London Stock Exchange it runs from \(16{:}30\) to \(16{:}35\).</p>
+    <ul>
+      <li>{% gl "moc" %}<strong>Market-on-close (MOC)</strong>{% endgl %}: trade at the closing auction price, whatever it is. Index funds use this, because the closing price is exactly what they're measured against.</li>
+      <li><strong>Limit-on-close (LOC):</strong> trade in the closing auction only if the price is at your limit or better.</li>
+      <li><strong>Market-on-open (MOO):</strong> the same idea for the opening auction.</li>
+    </ul>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Order</th><th>What it does</th><th>Guarantees</th><th>The risk</th></tr></thead>
+      <tbody>
+        <tr><td>Market</td><td>Trades now at the best price available</td><td>Being filled</td><td>A bad price in a thin or fast market</td></tr>
+        <tr><td>Limit</td><td>Trades at your price or better</td><td>The price</td><td>Never being filled</td></tr>
+        <tr><td>Marketable limit</td><td>Trades now, up to your limit</td><td>A price cap</td><td>Only part filled if the book is thin</td></tr>
+        <tr><td>Stop</td><td>Becomes a market order at the trigger</td><td>Acting at a level</td><td>Filling far from the trigger</td></tr>
+        <tr><td>Stop-limit</td><td>Becomes a limit order at the trigger</td><td>A price floor</td><td>Not getting out at all</td></tr>
+        <tr><td>Iceberg</td><td>Shows only a slice of the order</td><td>Hiding your size</td><td>Losing queue position</td></tr>
+        <tr><td>Peg</td><td>Follows the bid, offer or midpoint</td><td>Staying near the market</td><td>Filling when the market moves against you</td></tr>
+        <tr><td>IOC / FOK</td><td>Fill now (all or some), then cancel</td><td>Nothing left showing</td><td>Little or nothing filled</td></tr>
+        <tr><td>MOC / LOC</td><td>Trade in the closing auction</td><td>The official closing price</td><td>Can't react to the auction price (MOC)</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 4, "Choosing the Right Order", "How do professionals decide which order to use?", "Choosing the right order" %}
+  <div class="prose">
+    <p>Professionals pick the order that matches what they actually need. The order type is how urgent you are, written as an instruction.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>If you need…</th><th>Use…</th></tr></thead>
+      <tbody>
+        <tr><td>Price control, most of the time</td><td>A limit order. The default for professional traders.</td></tr>
+        <tr><td>To get in or out right now, and the market is busy</td><td>A marketable limit order, which acts like a market order with a cap</td></tr>
+        <tr><td>To get out whatever happens</td><td>A market order, accepting the cost</td></tr>
+        <tr><td>To trade a large amount without being noticed</td><td>An iceberg or a peg, or an algorithm (later in this chapter)</td></tr>
+        <tr><td>The official closing price</td><td>A market-on-close or limit-on-close order</td></tr>
+        <tr><td>A plan to cut losses</td><td>A stop, knowing it won't guarantee the price</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The wrong order type costs a few basis points here and there, and over hundreds of trades a year that adds up to real money. That's why trading desks measure the cost of every execution.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "How do orders work in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>On the electronic FX platforms, the same basic orders exist: market, limit, stop, IOC and FOK. Two things are different:</p>
+    <ul>
+      <li><strong>Orders left with a bank.</strong> Clients can leave orders with a bank's FX desk: "buy euros if EUR/USD drops to \(1.0800\)", or "sell at the 4pm fix". The bank watches the level for them, around the clock.</li>
+      <li><strong>Stops cluster at round numbers.</strong> Lots of stops sit just beyond levels like \(1.1000\). Traders know this, which is why a price can whip through a round number and snap back once the stops have been triggered.</li>
+    </ul>
+    <p>Fix orders come with history. In 2013 it came out that traders at several banks had shared information about their clients' fix orders to move the 4pm rate. Banks were fined billions of dollars, and fix trading has been tightly controlled since.</p>
+    <h3>Gold</h3>
+    <p>Gold futures on COMEX take all the standard order types. In the London market, which trades over the counter, clients can ask a bank to deal at the LBMA Gold Price, set by auction twice a day, much like an order at the closing auction.</p>
+    <h3>Bonds</h3>
+    <p>Most bonds trade by asking dealers for a price, so the choice of order type matters much less. You ask, they quote, you accept or walk away. Order types matter more in bond futures, which trade on exchanges like shares do.</p>
+    <h3>Trading accounts</h3>
+    <p>On trading platforms for FX and CFDs, stops can slip in exactly the way the chart shows, especially over weekends and around big news. Some brokers sell a "guaranteed stop" for a fee: the broker takes the gap risk instead of you. On a prop firm account, with hard daily loss limits, knowing how far a stop can slip is part of sizing a position.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Market order</h3><span class="tag desk">Desk</span></div><p>Buy or sell now at the best price available. Filling is certain; the price isn't.</p><p class="eg">"Just pay the offer" means use a market order.</p></div>
+    <div class="term"><div class="term-top"><h3>Limit order</h3><span class="tag desk">Desk</span></div><p>Buy at your price or lower, or sell at your price or higher. The price is certain; filling isn't.</p><p class="eg">"Leave a bid at \(50.00\)."</p></div>
+    <div class="term"><div class="term-top"><h3>Marketable limit</h3><span class="tag desk">Desk</span></div><p>A limit order priced to trade straight away, so it fills now but can't go past its limit.</p><p class="eg">Buy at \(50.05\) when the offer is \(50.05\).</p></div>
+    <div class="term"><div class="term-top"><h3>Stop order</h3><span class="tag desk">Desk</span></div><p>Waits until a trigger price, then becomes a market order (or a limit order, for a stop-limit).</p><p class="eg">"Sell stop at \(48\)."</p></div>
+    <div class="term"><div class="term-top"><h3>Slippage</h3><span class="tag desk">Desk</span></div><p>The gap between the price you expected and the price you got.</p><p class="eg">Stop at \(48.00\), filled at \(47.70\): \(0.30\) of slippage.</p></div>
+    <div class="term"><div class="term-top"><h3>Time in force</h3><span class="tag desk">Desk</span></div><p>How long an order stays live: day, good-till-cancelled, immediate-or-cancel, fill-or-kill.</p><p class="eg">"Make it IOC so nothing's left showing."</p></div>
+    <div class="term"><div class="term-top"><h3>Iceberg order</h3><span class="tag desk">Desk</span></div><p>An order that shows only a small slice of its size and refills as the slice trades.</p><p class="eg">Showing \(500\) of a \(50{,}000\) order.</p></div>
+    <div class="term"><div class="term-top"><h3>Market-on-close</h3><span class="tag desk">Desk</span></div><p>An order to trade at the official closing auction price.</p><p class="eg">Index funds rebalance with MOC orders.</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where order types turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: the order is part of the plan</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A trade idea isn't finished until it says how you'll get in and out: a limit to enter at a level you like, a stop where the idea is proven wrong, and a target. Deciding the order types in advance, and allowing for how far a stop can slip, is part of position sizing, not an afterthought. The Trading topic's Stops note picks this up.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: offers are limit orders</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>An offer on a house is a limit order: "I'll pay up to this much". "Offers over \(\text{£}400{,}000\)" is the seller's limit. Sealed bids are a one-off auction. There's no market order for property, and that's part of why it's illiquid: there's never a crowd of buyers you can sell to instantly.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: giving people proper orders</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Many simple investing apps only offer market orders, which is easy for beginners but expensive in thin markets, where walking the book costs the most. Many Nigerian shares trade only a little each day, so a market order can move the price a lot. Offering limit orders, and explaining them simply, protects ordinary investors. The same goes for currency: an app that lets a business say "change my naira when the rate reaches this level" is offering a limit order.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you work out what an order really costs?" %}
+  <div class="prose">
+    <h3>The average price when you walk the book</h3>
+    <p>If your order takes \(q_1\) shares at price \(p_1\), \(q_2\) at \(p_2\), and so on, your average price is each price weighted by how many shares you got there:</p>
+  </div>
+  <div class="formula"><span class="lbl">Average fill price</span>\[ \bar{p} = \frac{q_1 p_1 + q_2 p_2 + \dots + q_k p_k}{q_1 + q_2 + \dots + q_k} \]</div>
+  <div class="prose">
+    <h3>Slippage in basis points</h3>
+    <p>Desks measure the cost against a reference price, usually the midpoint when the order was sent, in {% gl "basis point" %}basis points{% endgl %} (hundredths of a percent):</p>
+  </div>
+  <div class="formula"><span class="lbl">Cost against the midpoint</span>\[ \text{cost (bp)} = \frac{\bar{p} - \text{mid}}{\text{mid}} \times 10{,}000 \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Buy \(1{,}000\) shares with a market order. Offered: \(600\) at \(50.05\), then \(800\) at \(50.06\).</h3>
+    <ol class="steps">
+      <li>Take all \(600\) at \(50.05\), then the remaining \(400\) at \(50.06\).</li>
+      <li>\(\bar{p} = \frac{600 \times 50.05 + 400 \times 50.06}{1000} = \frac{30{,}030 + 20{,}024}{1000} = 50.054\).</li>
+      <li>The midpoint is \(50.025\), so the cost is \(\frac{50.054 - 50.025}{50.025} \times 10{,}000 \approx 5.8\) bp.</li>
+    </ol>
+    <p class="answer">That's about \(\text{£}29\) on a \(\text{£}50{,}000\) trade, compared with the midpoint. These are the starting settings of the order book chart.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A sell stop at \(48.00\) triggers in a fast market and fills at \(47.70\). You hold \(2{,}000\) shares.</h3>
+    <ol class="steps">
+      <li>Slippage: \(48.00 - 47.70 = 0.30\) a share.</li>
+      <li>In money: \(0.30 \times 2{,}000 = \text{£}600\) more lost than planned.</li>
+    </ol>
+    <p class="answer">If you sized the trade expecting to lose \(2.00\) a share (from \(50\) to \(48\)), you actually lost \(2.30\), which is \(15\%\) more than planned.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>The market is \(50.00\) / \(50.05\) with \(2{,}000\) shares offered at \(50.05\). You send a marketable limit buy for \(500\) at \(50.05\). What price do you pay?</span></p>
+      <details><summary>Show answer</summary><div><span>\(50.05\). There are more than enough shares at that price, so all \(500\) fill there.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A sell stop at \(48.00\) triggers in a fast market and fills at \(47.70\). By how much did it miss?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.30\). A stop guarantees the action, not the price.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>You buy \(1{,}500\) shares with a market order. Offered: \(600\) at \(50.05\), \(800\) at \(50.06\), \(500\) at \(50.07\). What's your average price?</span></p>
+      <details><summary>Show answer</summary><div><span>\(600\) at \(50.05\), \(800\) at \(50.06\), \(100\) at \(50.07\).</span><span>\(\bar{p} = \frac{30{,}030 + 40{,}048 + 5{,}007}{1{,}500} = \frac{75{,}085}{1{,}500} \approx 50.057\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>You want to hedge exactly \(\$5\) million of euros, and half a hedge would leave you exposed in an awkward way. Which time in force would you choose?</span></p>
+      <details><summary>Show answer</summary><div><span>Fill-or-kill: all \(\$5\) million trades at once or nothing does, so you're never left half-hedged.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why might a fund use an iceberg order to buy \(200{,}000\) shares rather than one big limit order?</span></p>
+      <details><summary>Show answer</summary><div><span>A \(200{,}000\)-share bid showing in the book tells everyone a large buyer is there, and they'd raise their prices or buy ahead of it. An iceberg shows only a small slice at a time, at the cost of losing queue priority on the hidden part.</span></div></details></div>
+  </div>
+{% endsec %}
