@@ -1,0 +1,276 @@
+---
+title: Fees and the High-Water Mark
+shelf: hedge-funds
+chapter: the-hedge-fund-business
+subtopic: Fees and the High-Water Mark
+order: 1
+summary: How hedge funds charge - the management fee, the performance fee, high-water marks, hard and soft hurdles, crystallisation and clawbacks - what that leaves investors, how much a fund needs to manage to pay its bills, and the debate over 2 and 20, the AUM trap and pass-through fees.
+lede: "A hedge fund charges twice: a fee for turning up, and a share of the profits for doing well. The small print around that second fee (high-water marks, hurdles, when it's locked in) decides how much of a good year the investor actually keeps, and whether the manager is being paid for skill or just for size."
+goals: [trading, realestate, fintech]
+themes: [trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/fees-and-the-high-water-mark.js]
+
+quiz:
+  - q: 'A fund''s NAV was \(\$120\) at its peak, fell to \(\$96\), and is now \(\$130\). With a \(20\%\) performance fee and a high-water mark, what fee is due per share?'
+    opts: ['\(\$2\)', '\(\$6.80\)', '\(\$0\)']
+    right: 0
+    why: 'The fee only applies above the old peak of \(\$120\): \(20\% \times (\$130 - \$120) = \$2\). The climb back from \(\$96\) to \(\$120\) earns nothing.'
+  - q: 'A fund has a \(5\%\) hurdle and returns \(15\%\). How does a soft hurdle differ from a hard hurdle?'
+    opts: ['A soft hurdle charges the fee only on the \(10\%\) above the hurdle', 'There''s no difference once the hurdle is beaten', 'A soft hurdle charges the fee on the whole \(15\%\), because the hurdle was beaten']
+    right: 2
+    why: 'Hard: the fee is on returns above the hurdle (\(10\%\)). Soft: the hurdle is just a gate; once it''s cleared, the fee is on everything from zero (\(15\%\)). Soft is better for the manager.'
+  - q: 'A new fund''s running costs are \(\$3\) million a year and it charges a \(1.5\%\) management fee. What''s its breakeven size?'
+    opts: ['\(\$45\) million', '\(\$200\) million', '\(\$2\) billion']
+    right: 1
+    why: '\(\$3\text{m} \div 0.015 = \$200\) million. In practice funds aim higher, \(\$250\) to \(\$500\) million, to pay good people and build reserves for lean years.'
+
+connected:
+  - { label: Builds on, title: What a Hedge Fund Is, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/what-a-hedge-fund-is/ }
+  - { label: Builds on, title: Life on a Desk, where: Markets · What Markets Are, url: /hub/markets/life-on-a-desk/ }
+  - { label: Used in, title: Single-Manager vs Multi-Manager, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .fee-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .fee-group { display: flex; flex-direction: column; gap: 6px; }
+  .fee-group > span { font: 500 12px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); }
+</style>
+
+{% sec 1, "Two Ways to Get Paid", "What does a hedge fund actually charge?", "Two fees" %}
+  <div class="prose">
+    <p>Think of a personal trainer who charges you two ways: a monthly fee whether or not you get fitter, and a bonus if you hit your target. The monthly fee keeps the gym open. The bonus is meant to make them care about results.</p>
+    <p>A hedge fund charges the same two ways:</p>
+    <ul>
+      <li>The <strong>{% gl "management fee" %}management fee{% endgl %}</strong> is a percentage of the money in the fund, charged every year whatever happens. It's usually worked out monthly or quarterly. A \(\$1\) billion fund charging \(1.5\%\) earns \(\$15\) million a year before it makes a single trade. It's meant to pay for salaries, offices, technology, data, lawyers and compliance.</li>
+      <li>The <strong>{% gl "performance fee" %}performance fee{% endgl %}</strong> is a share of the profits, usually \(15\) to \(20\%\). It's what's supposed to line the manager's interests up with the investors'. In a partnership it's normally written as an "allocation" of the fund's income rather than a fee, which can give the manager better tax treatment on long-term gains.</li>
+    </ul>
+    <p>The classic deal is <strong>{% gl "2 and 20" %}"2 and 20"{% endgl %}</strong>: \(2\%\) a year plus \(20\%\) of the profits. Alfred Winslow Jones, who started it all, actually charged only the \(20\%\), with no management fee. Today the average is about \(1.4\%\) and \(17\%\), and the biggest investors negotiate less.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Part</th><th>Typical</th><th>Charged on</th><th>A \(\$500\) million fund returning \(15\%\)</th></tr></thead>
+      <tbody>
+        <tr><td>Management fee</td><td>\(1.5\)–\(2\%\)</td><td>The money in the fund, every year</td><td>\(2\% \times \$500\text{m} = \$10\text{m}\)</td></tr>
+        <tr><td>Performance fee</td><td>\(15\)–\(20\%\)</td><td>Profits above the high-water mark</td><td>\(20\% \times (\$75\text{m} - \$10\text{m}) = \$13\text{m}\)</td></tr>
+        <tr><td>Hurdle</td><td>\(0\)–\(8\%\)</td><td>A return the fund must beat first</td><td>With a \(6\%\) hard hurdle: \(20\% \times (\$65\text{m} - \$30\text{m}) = \$7\text{m}\)</td></tr>
+        <tr><td>High-water mark</td><td>Almost always</td><td>No fee until the fund is back above its old peak</td><td>Nothing extra here: the fund is at a new peak</td></tr>
+        <tr><td>Crystallisation</td><td>Yearly, sometimes quarterly</td><td>When the performance fee is locked in</td><td>Usually worked out on 31 December</td></tr>
+        <tr><td>Clawback</td><td>Rare</td><td>Paying back earlier fees after later losses</td><td>Hard to enforce in practice</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Here the performance fee is worked out on the profit after the management fee, which is the usual way. Some documents calculate it before; it's one of the details investors check.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The High-Water Mark", "Why can't a manager get paid twice for the same gains?", "The high-water mark" %}
+  <div class="prose">
+    <p>Imagine paying a salesperson a bonus every time the shop's monthly sales go up. In a bad month sales fall to half; the next month they recover to normal. Should you pay a bonus for "growth"? You've just got back where you were.</p>
+    <p>The {% gl "high-water mark" %}high-water mark{% endgl %} (HWM) stops that. It's the highest value the fund has ever reached after fees. It moves up every time the fund hits a new peak, and never moves down. The manager only earns a performance fee on gains above it.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">How it works</span>
+    <h3>A fund's NAV peaks at \(\$120\) a share, falls to \(\$96\), then recovers.</h3>
+    <ol class="steps">
+      <li>Back to \(\$115\): no performance fee. The fund is still below its \(\$120\) mark.</li>
+      <li>Up to \(\$130\): the fee is only on the \(\$10\) above \(\$120\). At \(20\%\), that's \(\$2\) a share.</li>
+      <li>The new high-water mark is \(\$128\) (the \(\$130\) less the \(\$2\) fee).</li>
+    </ol>
+    <p class="answer">The \(\$24\) climb from \(\$96\) back to \(\$120\) earns the manager nothing: that's the protection.</p>
+  </div>
+  <div class="prose">
+    <h3>Life under water</h3>
+    <p>A fund that's far below its high-water mark is called "under water", and it's a hard place to be. The manager has to make back the whole loss before earning any performance fee, and lives on the management fee alone until then. A fund that falls \(30\%\) needs a \(43\%\) gain just to get back to its mark. That causes problems:</p>
+    <ul>
+      <li><strong>Talent leaves.</strong> Analysts paid from performance fees can earn more at a fund that isn't under water.</li>
+      <li><strong>Funds close and relaunch.</strong> Some managers shut the fund and start a new one with a fresh mark rather than work for years for free. Investors notice.</li>
+      <li><strong>Incentives bend.</strong> An under-water manager may take big risks to get back quickly, since a loss costs them little more; or turn very cautious to protect the management fee.</li>
+    </ul>
+    <p>The same rule applies to a portfolio manager's own pay on a multi-manager platform. Life on a Desk has an interactive showing how it works over three years.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Hurdles, Crystallisation and Clawbacks", "What else decides how much of a good year the manager takes?", "Hurdles and the fine print" %}
+  <div class="prose">
+    <h3>Hurdles: beat cash first</h3>
+    <p>A {% gl "hurdle rate" %}hurdle{% endgl %} is a return the fund must beat before any performance fee is earned. The argument: an investor could earn interest in cash for free, so why pay \(20\%\) of a return they'd have got anyway? Hurdles are often set at the cash rate (for example SOFR) or a fixed \(4\) to \(8\%\). They come in two kinds:</p>
+    <ul>
+      <li>A <strong>hard hurdle</strong> charges the fee only on returns <em>above</em> it. Hurdle \(5\%\), return \(15\%\): fee on \(10\%\).</li>
+      <li>A <strong>soft hurdle</strong> is just a gate. Once the fund beats it, the fee is on the <em>whole</em> return from zero. Hurdle \(5\%\), return \(15\%\): fee on \(15\%\). Better for the manager.</li>
+    </ul>
+    <h3>Crystallisation: when the fee is locked in</h3>
+    <p>During the year, the administrator accrues the performance fee as the fund rises and falls, but it's only {% gl "crystallisation" %}crystallised{% endgl %} (made final and paid) at set dates, usually 31 December. The more often it crystallises, the better for the manager. Picture a fund up \(15\%\) by June that ends the year flat: with yearly crystallisation there's no fee; with quarterly crystallisation, the manager has already banked fees on the first-half gains, and the high-water mark has moved up past where the fund ends.</p>
+    <h3>Clawbacks: rare in hedge funds</h3>
+    <p>A {% gl "clawback" %}clawback{% endgl %} makes the manager pay back past performance fees if later losses wipe out the gains. It sounds fair, but it's rare in hedge funds and hard to enforce: the fees have long since been paid out as bonuses. It's more common in private equity and property funds, where the big payments come at the end.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who gets paid?</h3><p>\(\$100\) million goes into a fund for five years. Pick the fund's returns before fees, and the fee terms. Each year shows what the investor gained or lost after fees, next to what the manager collected.</p></div>
+    <div class="controls">
+      <div class="fee-group"><span>The fund's returns</span><div class="presets fee-pick" id="fee-path" aria-label="The fund's returns before fees"></div></div>
+      <div class="fee-group"><span>Fee terms</span><div class="presets fee-pick" id="fee-terms" aria-label="Fee terms"></div></div>
+      <div class="fee-group"><span>High-water mark</span><div class="presets fee-pick" id="fee-hwm" aria-label="High-water mark"></div></div>
+      <div class="fee-group"><span>Hurdle type</span><div class="presets fee-pick" id="fee-htype" aria-label="Hurdle type"></div></div>
+      <div class="ctrl"><label for="fee-h">Hurdle</label><input type="range" id="fee-h" min="0" max="8" step="1" value="0"><output id="fee-h-out" for="fee-h">0%</output></div>
+    </div>
+    <svg class="chart" id="chart-fees" viewBox="0 0 640 280" role="img" aria-label="For each of five years, the investor's gain or loss after fees beside the fees the manager collected"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Investor's gain or loss after fees</span><span><i class="sw grey"></i>Fees to the manager</span></div>
+    <div class="readout" id="fee-read"></div>
+    <p class="look" id="fee-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "What It Costs to Run a Fund", "How big does a fund need to be to pay its bills?", "Fund economics" %}
+  <div class="prose">
+    <p>Performance fees are uncertain: some years there aren't any. So the first question for anyone starting a fund is how much money it needs to manage for the management fee alone to cover the costs. That's the <strong>breakeven size</strong>:</p>
+  </div>
+  <div class="formula"><span class="lbl">Breakeven assets under management</span>\[ \text{breakeven AUM} = \frac{\text{yearly running costs}}{\text{management fee rate}} \]</div>
+  <div class="prose">
+    <p>With \(\$3\) million of costs and a \(1.5\%\) fee, that's \(\$200\) million. But breakeven isn't enough: the fee also has to pay the founders, attract good analysts, and build a reserve for years with no performance fee. In practice, most people in the industry think a new fund needs \(\$250\) to \(\$500\) million to be viable, and the bar keeps rising as technology, data, compliance and people get more expensive. Getting there usually means a <strong>seeder</strong> (a firm that puts in \(\$50\) to \(\$200\) million in return for a share of the fund's revenue or ownership), an <strong>anchor investor</strong> (a big first investor who gets lower fees in return), or years of building from the founders' own money and wealthy contacts. The Raising Capital note covers how.</p>
+    <h3>The magic of scale</h3>
+    <p>Once a fund is past breakeven, it gets very profitable very fast. Managing \(\$1\) billion doesn't cost five times as much as managing \(\$200\) million: it's mostly the same team, systems and office. But it brings in five times the management fee. That's {% gl "operating leverage" %}operating leverage{% endgl %}, and it's why successful hedge funds are such good businesses, and why the first few years are so hard.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Yearly costs</th><th>Small (\(\$250\) million)</th><th>Mid-size (\(\$1\) billion)</th><th>Large (\(\$5\) billion+)</th></tr></thead>
+      <tbody>
+        <tr><td>Pay for everyone</td><td>\(\$2\)–\(4\)m</td><td>\(\$10\)–\(20\)m</td><td>\(\$50\)–\(150\)m+</td></tr>
+        <tr><td>Office and technology</td><td>\(\$0.3\)–\(0.6\)m</td><td>\(\$1\)–\(3\)m</td><td>\(\$5\)–\(15\)m</td></tr>
+        <tr><td>Data and research</td><td>\(\$0.2\)–\(0.5\)m</td><td>\(\$1\)–\(5\)m</td><td>\(\$10\)–\(30\)m</td></tr>
+        <tr><td>Legal and compliance</td><td>\(\$0.2\)–\(0.4\)m</td><td>\(\$0.5\)–\(2\)m</td><td>\(\$3\)–\(10\)m</td></tr>
+        <tr><td>Travel and entertainment</td><td>\(\$0.1\)–\(0.2\)m</td><td>\(\$0.3\)–\(1\)m</td><td>\(\$1\)–\(5\)m</td></tr>
+        <tr><td><strong>Management fee (\(1.5\%\))</strong></td><td>\(\$3.75\)m</td><td>\(\$15\)m</td><td>\(\$75\)m+</td></tr>
+        <tr><td><strong>Performance fee (\(15\%\) year)</strong></td><td>about \(\$7.5\)m</td><td>about \(\$30\)m</td><td>about \(\$150\)m+</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>When does a fund start making money?</h3><p>The management company's yearly profit from the management fee alone, as the fund grows. Costs are a fixed amount plus a little extra for every \(\$1\) billion managed (\(\$2\) million here). Choose the fixed costs and the fee.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="be-c">Fixed costs</label><input type="range" id="be-c" min="1" max="10" step="0.5" value="3"><output id="be-c-out" for="be-c">$3m</output></div>
+      <div class="ctrl"><label for="be-f">Fee</label><input type="range" id="be-f" min="0.5" max="2" step="0.25" value="1.5"><output id="be-f-out" for="be-f">1.5%</output></div>
+    </div>
+    <svg class="chart" id="chart-be" viewBox="0 0 640 260" role="img" aria-label="Management fee revenue and running costs as the fund grows from zero to two billion dollars, with the breakeven size marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Management fee revenue</span><span><i class="sw grey"></i>Running costs</span></div>
+    <div class="readout" id="be-read"></div>
+    <p class="look" id="be-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Fee Debate", "Are hedge funds worth what they charge?", "The fee debate" %}
+  <div class="prose">
+    <h3>The AUM trap</h3>
+    <p>A \(\$10\) billion fund charging \(1.5\%\) earns \(\$150\) million a year before making any decision at all. At that size, the safest way to keep earning is to keep the money: avoid big losses, grow assets, and drift towards owning what the market owns. Critics call this "closet indexing": charging hedge fund fees for something close to the market. It's one reason many of the industry's best returns come from smaller, hungrier funds.</p>
+    <h3>Fees came down</h3>
+    <p>After 2008, investors asked whether a fund that fell \(19\%\) in a crash was worth \(2\%\) a year and \(20\%\) of the profits, while a cheap index fund cost a fraction of a percent. Fees have been squeezed ever since, to about \(1.4\%\) and \(17\%\) on average. New ideas appeared:</p>
+    <ul>
+      <li><strong>Founders' share classes:</strong> lower fees for investors who back a fund early, when it's riskiest.</li>
+      <li><strong>Lower fees for bigger or longer commitments:</strong> a pension that locks in for three years pays less.</li>
+      <li><strong>"1 or 30":</strong> proposed in 2016 by the Teacher Retirement System of Texas with the consultant Albourne. The manager gets a \(1\%\) management fee or \(30\%\) of the returns above a market benchmark, whichever is bigger, so the big money only comes from beating what an investor could get cheaply elsewhere.</li>
+    </ul>
+    <h3>Pass-through fees: lower headline, higher bill</h3>
+    <p>The biggest multi-strategy platforms went the other way. Instead of a management fee, they pass the fund's actual running costs (people, technology, data, offices) straight through to investors, sometimes \(5\) to \(7\%\) of assets a year, and then take a performance fee of \(20\%\) or more. It aligns costs with what the fund really spends, but it can make the total bill higher than the old 2 and 20 ever was. Investors put up with it because the best platforms have delivered steady returns after all of it. The Single-Manager vs Multi-Manager note looks at why.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Fees are a certain cost against an uncertain return. A manager has to beat the market by enough to cover the fees just to break even with an index fund, so the only question that matters is the return after fees.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How do fees work in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX and macro: hurdles that move with interest rates</h3>
+    <p>Market-neutral and macro funds often set their hurdle at the cash rate, such as SOFR or SONIA. When rates were near zero, from 2009 to 2021, those hurdles cost managers almost nothing. With cash paying \(4\) to \(5\%\), they bite: a fund has to beat what an investor would earn in a savings account before taking a performance fee. It's the same logic as carry in FX: cash isn't free any more, so every strategy has to earn more than cash to be worth it.</p>
+    <h3>Gold and futures: the interest belongs to investors</h3>
+    <p>A trend-following CTA trading gold, oil and currency futures only needs a small part of its money as margin. The rest, often \(80\) to \(90\%\), sits in Treasury bills earning interest. That interest belongs to the investors, and when rates rose in 2022 and 2023 it became a meaningful part of CTA returns. It's a fair question whether a manager should take \(20\%\) of returns that come from T-bill interest rather than skill, which is exactly what a cash-rate hurdle answers.</p>
+    <h3>Bonds and credit: longer horizons, private equity-style fees</h3>
+    <p>Credit funds that buy loans or distressed debt hold things for years, so their fees often look more like private equity: a hurdle (a "preferred return", often \(6\) to \(8\%\)), fees paid when investments are sold rather than each year, and clawbacks. Ordinary bond funds, which mostly earn interest, struggle to charge high performance fees at all, because most of their return is the interest an investor could get more cheaply.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>2 and 20</h3><span class="tag desk">Desk</span></div><p>A \(2\%\) management fee plus a \(20\%\) performance fee.</p><p class="eg">"They're still charging 2 and 20 on the flagship."</p></div>
+    <div class="term"><div class="term-top"><h3>Management fee</h3><span class="tag desk">Desk</span></div><p>The yearly charge on assets, paid whatever happens.</p><p class="eg">"The management fee covers the lights and the team."</p></div>
+    <div class="term"><div class="term-top"><h3>Incentive / perf fee</h3><span class="tag desk">Desk</span></div><p>The share of profits the manager takes.</p><p class="eg">"No perf fee this year, we're below the mark."</p></div>
+    <div class="term"><div class="term-top"><h3>Under water</h3><span class="tag desk">Desk</span></div><p>Below the high-water mark, so no performance fee until losses are made back.</p><p class="eg">"They're 15% under water: expect people to leave."</p></div>
+    <div class="term"><div class="term-top"><h3>Hurdle</h3><span class="tag desk">Desk</span></div><p>The return a fund must beat before charging a performance fee.</p><p class="eg">"The hurdle's SOFR, so cash has to be beaten first."</p></div>
+    <div class="term"><div class="term-top"><h3>Crystallise</h3><span class="tag desk">Desk</span></div><p>To lock in the performance fee at its set date.</p><p class="eg">"Fees crystallise at year-end, so December matters."</p></div>
+    <div class="term"><div class="term-top"><h3>Pass-through</h3><span class="tag desk">Desk</span></div><p>Charging investors the fund's actual costs instead of a management fee.</p><p class="eg">"Pass-through was over 6% last year at that platform."</p></div>
+    <div class="term"><div class="term-top"><h3>Founders' class</h3><span class="tag desk">Desk</span></div><p>A cheaper share class for a fund's first investors.</p><p class="eg">"Get into the founders' class before it closes."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the fee ideas turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: a prop firm is a fee deal turned round</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A prop firm flips the hedge fund deal. You pay a fee up front (the challenge), the firm provides the capital, and you keep a share of the profits, often \(80\) to \(90\%\), while the firm keeps the rest. When you record your own track record, record it after costs, the way an investor would see it: a strategy that makes \(10\%\) before fees and costs but \(5\%\) after is a \(5\%\) strategy.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the preferred return and the carry</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property and private equity funds use the same two-part deal with different names. The manager (GP) charges a yearly fee on the money committed, and takes {% gl "carried interest" %}carried interest{% endgl %}, usually \(20\%\) of profits, but only after investors have had their money back plus a <strong>preferred return</strong>, typically \(8\%\) a year: a hurdle. A "catch-up" then often lets the GP take a larger share until it has \(20\%\) of all profits, which works like a soft hurdle. Because the profits come when buildings are sold, clawbacks are common. If you ever run a villa project with outside investors, this "waterfall" is the deal you'd negotiate.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: making fees visible</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Most Nigerian savers invest through mutual funds and money market funds, increasingly through savings and investment apps. Fees there are flat percentages, but they still compound: a \(1\%\) yearly fee takes more than a quarter of the gains over \(30\) years at ordinary returns. Showing people clearly what they pay, and what they'd have after fees, is a simple fintech feature with a real effect, and the same tool a hedge fund investor uses when comparing net returns.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you turn the fee terms into numbers?" %}
+  <div class="formula"><span class="lbl">Management fee</span>\[ \text{fee}_M = m \times \text{AUM} \]</div>
+  <div class="formula"><span class="lbl">Performance fee with a high-water mark and a hard hurdle</span>\[ \text{fee}_P = p \times \max\!\big(0,\ V - \max(\text{HWM},\ V_0(1 + h))\big) \]</div>
+  <div class="prose">
+    <p>Here \(V\) is the fund's value after the management fee, \(V_0\) its value at the start of the year, \(h\) the hurdle, \(p\) the performance fee rate and \(m\) the management fee rate. With a soft hurdle, the fee is \(p \times (V - \text{HWM})\) whenever \(V\) beats the hurdle, and zero otherwise.</p>
+  </div>
+  <div class="formula"><span class="lbl">From gross to net, above the high-water mark with no hurdle</span>\[ r_{\text{net}} \approx (r_{\text{gross}} - m)(1 - p) \]</div>
+  <div class="formula"><span class="lbl">Gain needed to get back to the high-water mark</span>\[ \text{gain needed} = \frac{d}{1 - d} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A fund returns \(10\%\) before fees and charges 2 and 20. What does the investor keep?</h3>
+    <ol class="steps">
+      <li>After the management fee: \(10\% - 2\% = 8\%\).</li>
+      <li>Performance fee: \(20\% \times 8\% = 1.6\%\).</li>
+      <li>Net return: \(8\% - 1.6\% = 6.4\%\). In formula form: \((10\% - 2\%) \times 0.8 = 6.4\%\).</li>
+    </ol>
+    <p class="answer">The manager takes \(3.6\%\) of the \(10\%\): over a third of the profit. At \(5\%\) gross, it's \(2.6\%\) of \(5\%\): over half.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$500\) million fund makes \(15\%\) (\(\$75\) million) before fees, with a \(2\%\) management fee and a \(20\%\) performance fee. Compare no hurdle, a \(6\%\) hard hurdle and a \(6\%\) soft hurdle.</h3>
+    <ol class="steps">
+      <li>Management fee: \(\$10\) million, leaving \(\$65\) million of profit.</li>
+      <li>No hurdle: \(20\% \times \$65\text{m} = \$13\) million.</li>
+      <li>Hard hurdle: the first \(6\% \times \$500\text{m} = \$30\) million is fee-free, so \(20\% \times \$35\text{m} = \$7\) million.</li>
+      <li>Soft hurdle: \(\$65\) million beats \(\$30\) million, so the fee is on all of it: \(\$13\) million.</li>
+    </ol>
+    <p class="answer">The hard hurdle saves investors \(\$6\) million this year; the soft hurdle saves nothing unless the fund has a weak year.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Explain the difference between a hard and a soft hurdle. Which is better for the manager?</span></p>
+      <details><summary>Show answer</summary><div><span>A hard hurdle charges the performance fee only on returns above the hurdle (hurdle \(5\%\), return \(15\%\): fee on \(10\%\)). A soft hurdle charges it on all returns from zero once the hurdle is beaten (fee on \(15\%\)). The soft hurdle is better for the manager.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A fund's high-water mark is \(\$120\). It falls to \(\$96\), then rises to \(\$130\). On how much per share does the manager earn a \(20\%\) fee?</span></p>
+      <details><summary>Show answer</summary><div><span>Only on the \(\$10\) above \(\$120\): a fee of \(\$2\) a share. The recovery from \(\$96\) to \(\$120\) earns nothing.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A fund has \(\$2.5\) million of yearly costs and a \(1.5\%\) management fee. What's its breakeven size, and why should it aim higher?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\$2.5\text{m} \div 0.015 = \$166.7\) million. It should aim higher, around \(\$300\) to \(\$500\) million, to pay competitive salaries and build reserves for years without performance fees.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A fund returns \(8\%\) before fees and charges \(1.5\%\) and \(20\%\). What's the investor's net return?</span></p>
+      <details><summary>Show answer</summary><div><span>\((8\% - 1.5\%) \times 0.8 = 5.2\%\). The manager takes \(2.8\%\) of the \(8\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A fund is \(25\%\) below its high-water mark. What return does it need before it can charge a performance fee again?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.25 \div 0.75 \approx 33.3\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why might a manager prefer quarterly crystallisation to yearly?</span></p>
+      <details><summary>Show answer</summary><div><span>Fees on gains made early in the year are locked in, even if the fund gives the gains back later. With yearly crystallisation, a fund that rises then falls back to flat earns no performance fee.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: is 2 and 20 fair?</span></p>
+      <details><summary>Show answer</summary><div><span>It depends on what the investor gets after fees. A good answer covers both sides. For: the performance fee rewards skill, high-water marks and hurdles protect investors, and returns that don't follow the market are worth paying for. Against: the management fee rewards size rather than skill (the AUM trap), fees take a large share of gross returns in ordinary years, and much of the industry hasn't beaten cheap alternatives after fees. Then mention how terms have changed: fees down to about \(1.4\%\) and \(17\%\), hurdles, founders' classes, "1 or 30", and the pass-through model at the platforms.</span></div></details></div>
+  </div>
+{% endsec %}
