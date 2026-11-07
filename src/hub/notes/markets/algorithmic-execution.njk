@@ -1,0 +1,282 @@
+---
+title: Algorithmic Execution
+shelf: markets
+chapter: how-markets-work
+subtopic: Placing a Trade
+order: 3
+summary: How big orders get done without moving the price too much - market impact, the fast-or-slow dilemma, the standard algorithms (TWAP, VWAP, POV, IS) and how desks score the result.
+lede: A big order is never sent in one go. It's cut into small pieces and fed into the market over minutes, hours or days. Choosing how fast to go is a trade-off between moving the price yourself and letting the market move away from you.
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/algorithmic-execution.js]
+alsoIn: [trading/execution, quant/microstructure]
+
+quiz:
+  - q: 'A fund decides to buy with the mid at \(80.00\). Its order fills at an average of \(80.12\). What is the implementation shortfall?'
+    opts: ['\(12\) bp', '\(1.5\) bp', '\(15\) bp']
+    right: 2
+    why: '\(\frac{80.12 - 80.00}{80.00} \times 10{,}000 = 15\) bp. Shortfall is always measured against the price when the decision was made.'
+  - q: 'An order four times bigger has roughly how much more impact per share, under the square-root law?'
+    opts: ['Twice as much', 'Four times as much', 'The same']
+    right: 0
+    why: 'Impact grows with the square root of size: \(\sqrt{4} = 2\). Per-share impact doubles, so the total cost (impact × shares) goes up about eight times.'
+  - q: 'A fund has just seen strong results and expects the share to rise today. Which algorithm fits best?'
+    opts: ['VWAP over the whole day', 'Implementation shortfall, front-loaded', 'A dark pool aggregator with no time limit']
+    right: 1
+    why: 'When the price is expected to run away, waiting is the bigger cost. An IS algo trades more at the start, accepting more impact to avoid chasing the price.'
+
+connected:
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: Order Types, where: Markets · How Markets Work, url: /hub/markets/order-types/ }
+  - { label: Next, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Costs and Slippage, where: Trading · Execution, url: /hub/trading/ }
+---
+
+<style>
+  .ae-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "The Big Order Problem", "Why can't a fund just press buy?", "The big order problem" %}
+  <div class="prose">
+    <p>Imagine you need \(300\) loaves of bread for a party. If you walk into one bakery and ask for all \(300\) at once, they don't have that many on the shelf. They'll sell you what they have, then the price of the rest goes up, and everyone in the queue behind you notices you're buying a lot and starts buying too.</p>
+    <p>The smart way is to buy a few loaves at a time, from different bakeries, across the week. You pay closer to the normal price. But it takes longer, and if bread prices rise during the week, you pay more for the later loaves.</p>
+    <p>That's the whole problem of execution. A fund that wants \(500{,}000\) shares can't just press buy: the book from the last note might only show a few thousand shares near the best price. So the big order (the {% gl "parent order" %}parent order{% endgl %}) is cut into hundreds of small {% gl "child order" %}child orders{% endgl %} and fed into the market by a computer program: an execution algorithm, or "algo".</p>
+    <h3>How big is big?</h3>
+    <p>The spread tells you the cost of a small trade. For a big trade, what matters is your size compared with how much normally trades. Traders measure this against {% gl "average daily volume" %}average daily volume (ADV){% endgl %}:</p>
+    <ul>
+      <li>An order of \(2\%\) of ADV is routine. It hides inside the normal flow.</li>
+      <li>An order of \(30\%\) of ADV is an event. For that day, your order <em>is</em> the market.</li>
+    </ul>
+    <p>Two shares can show the same spread and be completely different to trade. Share A shows \(50{,}000\) at the best price and trades \(200\) million a day. Share B shows \(2{,}000\) and trades \(5\) million. For \(1{,}000\) shares, they cost the same. For \(100{,}000\) shares, A barely notices, while in B the order is \(2\%\) of the whole day and \(50\) times what's on show.</p>
+    <h3>Three sides of liquidity</h3>
+    <p>So "liquid" really means three things: <strong>tight</strong> (a narrow spread), <strong>deep</strong> (lots of size near the price) and <strong>resilient</strong> (the book refills quickly after someone uses it). The trap is that all three look great on a calm day and disappear in a panic, which is exactly when you most need to sell. A position sized to average liquidity can be impossible to exit in stressed liquidity.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>For small trades, the spread is the cost. For big trades, the cost is how much you move the price yourself.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Market Impact", "How much does your own buying push the price up?", "Market impact" %}
+  <div class="prose">
+    <p>Buying pushes prices up and selling pushes them down, even when you know nothing. The move your own trading causes is called {% gl "market impact" %}market impact{% endgl %}. It comes in two parts:</p>
+    <ul>
+      <li><strong>Temporary impact</strong> is the price you pushed by using up the book. Once you stop, the book refills and the price drifts back.</li>
+      <li><strong>Permanent impact</strong> stays. Other traders saw the steady buying, guessed that someone knows something, and changed their view of what the share is worth.</li>
+    </ul>
+    <p>A worked case. A fund decides to buy \(500{,}000\) shares with the mid at \(40.00\). It works the order over two hours and pays an average of \(40.10\). Afterwards the price settles at \(40.06\). Of the \(10\) cents extra it paid, about \(6\) were permanent (the price stayed at \(40.06\)) and \(4\) were temporary (the drift back from \(40.10\)). On \(500{,}000\) shares, those \(10\) cents cost \(50{,}000\). For big funds, trading costs are research-sized numbers.</p>
+    <h3>The square-root law</h3>
+    <p>Impact grows with size, but more slowly than size. Across many markets, researchers find that impact per share grows roughly with the <em>square root</em> of the order's share of daily volume. Four times the size means about twice the impact per share, not four times. It also grows with volatility: jumpy shares punish size hardest.</p>
+    <p>That has a big consequence. Because the total cost is impact per share times the number of shares, it grows faster than the order. At some size, the cost of getting in and out eats the whole profit a strategy expected to make. That size is the strategy's {% gl "capacity" %}capacity{% endgl %}, and it's why a brilliant small-company strategy can't simply be scaled up to billions.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>How much does size cost?</h3><p>Set the order's size as a share of average daily volume, and how jumpy the share is. The model is impact \(\approx \sigma \sqrt{Q/V}\), with the constant set to \(1\) to keep it simple; real desks fit their own.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="imp-q">Share of ADV</label><input type="range" id="imp-q" min="1" max="50" step="1" value="10"><output id="imp-q-out" for="imp-q">10%</output></div>
+      <div class="ctrl"><label for="imp-s">Daily volatility</label><input type="range" id="imp-s" min="1" max="4" step="0.5" value="2"><output id="imp-s-out" for="imp-s">2%</output></div>
+    </div>
+    <svg class="chart" id="chart-impact" viewBox="0 0 640 290" role="img" aria-label="Market impact per share rising with the square root of order size, compared with a straight line"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Square-root law</span><span><i class="sw grey"></i>If impact grew in a straight line</span></div>
+    <div class="readout" id="imp-read"></div>
+    <p class="look" id="imp-story"></p>
+  </div>
+  <div class="prose">
+    <p>Impact also fools backtests. A strategy tested at mid prices, with no impact, can show profits that are really just the price moves its own trading would have caused. The bigger the size assumed, the bigger the illusion. An honest backtest always includes a cost model.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Fast or Slow?", "Should you trade quickly or patiently?", "Fast or slow" %}
+  <div class="prose">
+    <p>Here's the dilemma at the heart of execution:</p>
+    <ul>
+      <li><strong>Trade fast</strong> and you use up the book quickly: lots of impact. But the price has little time to wander off before you're done.</li>
+      <li><strong>Trade slowly</strong> and the book has time to refill between your slices: less impact. But you're exposed for longer to the market moving away, and the longer you're in the market, the more chance others spot your pattern. That second cost is {% gl "timing risk" %}timing risk{% endgl %}.</li>
+    </ul>
+    <p>The right speed depends on <em>why</em> you're trading. A pension fund rebalancing at month-end has no view: nothing says the price will run away, so patience is cheap. A fund buying because it expects good news has a view that's about to become everyone's view: every hour of waiting costs money. Urgent trades can justify impact that a routine rebalance should never pay.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Fast or slow?</h3><p>You need to buy a big order. Pick why you're trading, then choose how many hours to spread it over. Impact falls the slower you go; the cost of waiting rises if the price is drifting away from you.</p></div>
+    <div class="controls">
+      <div class="presets ae-pick" id="fs-why" aria-label="Why are you trading?"></div>
+      <div class="ctrl"><label for="fs-t">Hours to finish</label><input type="range" id="fs-t" min="0.5" max="6.5" step="0.25" value="2"><output id="fs-t-out" for="fs-t">2 h</output></div>
+    </div>
+    <svg class="chart" id="chart-speed" viewBox="0 0 640 300" role="img" aria-label="Expected cost of an order against how long it takes to finish, split into impact and the cost of waiting"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Total expected cost</span><span><i class="sw grey"></i>Impact (dashed) and cost of waiting (dotted)</span></div>
+    <div class="readout" id="fs-read"></div>
+    <p class="look" id="fs-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Algorithms", "What do TWAP, VWAP, POV and IS actually do?", "The algorithms" %}
+  <div class="prose">
+    <p>There are only a handful of standard algos, and each is defined by the {% gl "benchmark" %}benchmark{% endgl %} it tries to match. Think of eating a large meal over a day:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Algo</th><th>Like eating…</th><th>How it trades</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "TWAP" %}TWAP{% endgl %} (time-weighted)</td><td>the same amount every hour</td><td>Equal slices at regular times</td><td>Shares or markets where volume is hard to predict; shorter windows</td></tr>
+        <tr><td>{% gl "VWAP" %}VWAP{% endgl %} (volume-weighted)</td><td>more at mealtimes, when the kitchen is busiest</td><td>Slices sized to the usual volume pattern: more at the open and close</td><td>Routine orders that can take all day; rebalancing</td></tr>
+        <tr><td>{% gl "POV" %}POV{% endgl %} (percentage of volume)</td><td>one bite for every ten anyone else takes</td><td>A fixed share (often \(5\)–\(20\%\)) of whatever actually trades</td><td>Large orders where volume could surprise; finish time is uncertain</td></tr>
+        <tr><td>{% gl "implementation shortfall" %}Implementation shortfall{% endgl %} (IS)</td><td>quickly, before it goes cold</td><td>Front-loads trading, then slows down</td><td>Urgent orders, a strong view, news, volatile markets</td></tr>
+        <tr><td>Close</td><td>everything at dinner</td><td>Trades in the last part of the day and the closing auction</td><td>Index funds and anyone valued at the closing price</td></tr>
+        <tr><td>Dark / liquidity seeking</td><td>whenever someone offers you a big plate</td><td>Rests quietly in dark pools; pounces on lit venues when size appears</td><td>Big blocks where secrecy matters most; speed doesn't</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>VWAP needs one more explanation, because it's the benchmark you'll hear most. The VWAP of a period is the average price of <em>every</em> trade in it, with bigger trades counting more. If the market traded \(10{,}000\) shares at \(50.00\), \(20{,}000\) at \(50.10\) and \(10{,}000\) at \(50.20\), the VWAP is \(50.10\). An order filled below VWAP (for a buy) did better than the average share traded that day.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>One order, four schedules</h3><p>Buy \(120{,}000\) shares over six hours. The market usually trades \(1.2\) million in that time, busiest at the open and close. Pick an algo, then see what happens if the afternoon turns out quiet. Watch your share of each hour's volume: a high share is easy for others to spot.</p></div>
+    <div class="controls">
+      <div class="presets ae-pick" id="sch-algo" aria-label="Algorithm"></div>
+      <div class="presets ae-pick" id="sch-day" aria-label="How the day turns out"></div>
+    </div>
+    <svg class="chart" id="chart-schedule" viewBox="0 0 640 310" role="img" aria-label="Market volume in each hour and the shares each algorithm buys in that hour"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your shares</span><span><i class="sw grey"></i>Whole market's volume</span></div>
+    <div class="readout" id="sch-read"></div>
+    <p class="look" id="sch-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Tactics inside each slice</h3>
+    <p>The schedule says <em>how much</em> to trade each hour. Inside each slice, the algo still decides <em>how</em>: resting a limit order at the bid to earn the spread when it's ahead of schedule, crossing the spread when it falls behind, splitting across exchanges and dark pools, and randomising sizes and timing.</p>
+    <p>This is the "maker tactics, taker intent" idea from the last note: the fund wants a position (taker), but it collects the spread where it can (maker). If a limit order doesn't fill in time, the algo gives up and takes.</p>
+    <p>The randomising matters because execution is a game against other traders. If your pattern is recognisable (\(20{,}000\) shares at the top of every hour), others can buy ahead of your next slice and sell to you higher. Market makers run models to classify flow, and when they spot a fund building a position, they widen spreads and show less size. That's {% gl "information leakage" %}information leakage{% endgl %}, and it turns your own predictability into extra cost.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Scoring the Result", "How do you know if an execution was good?", "Scoring the result" %}
+  <div class="prose">
+    <p>Desks check every order afterwards with {% gl "transaction cost analysis" %}transaction cost analysis (TCA){% endgl %}. Over time, that builds a record of which algo, broker and venue work best in which conditions. The main scores:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Measure</th><th>Compares your price with…</th><th>Good for</th></tr></thead>
+      <tbody>
+        <tr><td>Implementation shortfall</td><td>The price when the decision to trade was made</td><td>The full, honest cost. The gold standard.</td></tr>
+        <tr><td>{% gl "arrival price" %}Arrival price{% endgl %} slippage</td><td>The price when the order reached the trader</td><td>How well the trader and algo worked, ignoring delays before</td></tr>
+        <tr><td>VWAP slippage</td><td>The day's VWAP</td><td>Patient orders that took all day</td></tr>
+        <tr><td>Spread capture</td><td>The mid</td><td>Passive orders: positive means you earned some of the spread</td></tr>
+        <tr><td>Fill rate</td><td>The shares you wanted</td><td>Passive and dark orders that might not complete</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Implementation shortfall: the whole bill</h3>
+    <p>Implementation shortfall (an idea set out by André Perold in 1988) compares what you actually paid with the price at the moment you decided to trade. It catches four costs at once:</p>
+    <ol>
+      <li><strong>Spread cost:</strong> the half-spread paid when taking.</li>
+      <li><strong>Impact:</strong> how far your own trading pushed the price.</li>
+      <li><strong>Timing cost:</strong> how far the price moved on its own while you were trading.</li>
+      <li><strong>Opportunity cost:</strong> the profit missed on shares you never managed to buy, because the price ran away.</li>
+    </ol>
+    <h3>The VWAP trap</h3>
+    <p>Matching VWAP doesn't mean you traded cheaply. If a share rises all day and your VWAP algo buys all day, you'll match VWAP almost exactly while paying far more than the price when you decided to buy. The benchmark rose with the market. Only implementation shortfall ties the cost back to the decision.</p>
+    <h3>Why funds care: execution alpha</h3>
+    <p>Every basis point lost in trading comes straight out of returns. A fund whose research makes \(400\) bp a year but whose trading costs \(120\) bp keeps only \(280\). Saving \(30\) bp of trading costs is worth exactly as much as finding \(30\) bp of new ideas, and is often easier. For a fund that trades \(\$1\) billion a year, \(5\) bp better execution is \(\$500{,}000\) a year. Top execution teams aim for total shortfall of around \(20\)–\(40\) bp in big, liquid shares, and \(80\)–\(150\) bp in small ones.</p>
+    <h3>Who does this job?</h3>
+    <p>At a hedge fund, the execution trader turns the portfolio manager's decision into a filled order. They pick the algo, decide when a human should work the order by hand (high touch) instead of a machine (low touch), arrange block trades with brokers, and tell the PM what they're seeing: who's buying, and how much could really be traded. On the other side, banks run electronic execution desks that build these algos and sell them to clients. The Life on a Desk note has more on the roles.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How do big orders get done in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: risk price or algo?</h3>
+    <p>A company or fund that needs to buy \(\$200\) million against sterling has two choices with its bank:</p>
+    <ul>
+      <li><strong>A risk price:</strong> the bank quotes one price for the whole amount and takes it on immediately. The client is done in a second, with no timing risk, but pays a wider spread because the bank now has to offload the risk.</li>
+      <li><strong>An algo:</strong> the bank works the order over time for the client, usually for a small fee. Cheaper on average, but the client keeps the risk of the rate moving while it's worked.</li>
+    </ul>
+    <p>That's the fast-or-slow dilemma, sold as two products. FX algos lean on TWAP-style schedules because FX has no consolidated tape, so there's no reliable "volume so far" to follow. And the closest thing FX has to a closing price is the WM/Reuters 4pm London fix: many funds are valued at it, so banks offer fix orders and algos that target it.</p>
+    <h3>Gold</h3>
+    <p>Gold futures on COMEX are traded with the same equity-style algos. Large physical orders in London often go through the twice-daily LBMA Gold Price auction, which works like a closing auction: one price, lots of size, no impact from working the order yourself.</p>
+    <h3>Bonds</h3>
+    <p>Most bonds are still traded by asking dealers for prices. A growing alternative is <strong>portfolio trading</strong>: the client sends a whole basket of bonds, and a dealer prices the entire basket in one go. Government bond futures and the most traded Treasuries have exchange-style books, and algos are used on those.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Parent / child order</h3><span class="tag desk">Desk</span></div><p>The full order a fund wants, and the small pieces it's cut into.</p><p class="eg">"The parent's 500k, the algo's sending children of 300 to 2,000."</p></div>
+    <div class="term"><div class="term-top"><h3>Market impact</h3><span class="tag desk">Desk</span></div><p>How far your own trading moves the price against you.</p><p class="eg">"That's 30% of ADV, the impact will kill it."</p></div>
+    <div class="term"><div class="term-top"><h3>ADV</h3><span class="tag desk">Desk</span></div><p>Average daily volume: how much normally trades in a day.</p><p class="eg">"We're 5% of ADV, so it's a day's work."</p></div>
+    <div class="term"><div class="term-top"><h3>VWAP / TWAP / POV</h3><span class="tag desk">Desk</span></div><p>Algos that follow the volume pattern, follow the clock, or take a fixed share of what trades.</p><p class="eg">"Put it on a 10% POV."</p></div>
+    <div class="term"><div class="term-top"><h3>Implementation shortfall</h3><span class="tag desk">Desk</span></div><p>The full cost of an order compared with the price when the decision was made. Also the name of the front-loaded algo.</p><p class="eg">"We beat VWAP but the IS was terrible."</p></div>
+    <div class="term"><div class="term-top"><h3>TCA</h3><span class="tag desk">Desk</span></div><p>Transaction cost analysis: scoring every order after it's done.</p><p class="eg">"Pull the TCA on that broker."</p></div>
+    <div class="term"><div class="term-top"><h3>High touch / low touch</h3><span class="tag desk">Desk</span></div><p>An order worked by a human trader, or one handed to an algo.</p><p class="eg">"It's illiquid, keep it high touch."</p></div>
+    <div class="term"><div class="term-top"><h3>Risk price</h3><span class="tag desk">Desk</span></div><p>A dealer's price for the whole amount at once, taking on all the risk.</p><p class="eg">"Show me a risk price on 200 cable."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where execution turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: costs decide whether an edge is real</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>At small size, the spread is the whole cost, so check it before every trade. As size grows, impact takes over. Any backtest should subtract a realistic cost per trade; an edge of a few basis points per trade can vanish entirely once costs are included. And the fast-or-slow question applies to every trade: is there a reason the price will run away, or can you be patient with a limit order?</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: selling a portfolio</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>An owner selling \(40\) flats faces the same dilemma. Sell them all at once to one investor and it's quick and certain, but the buyer demands a discount for taking the lot: that's a risk price. Sell them one by one over two years and you get closer to full price, but you carry the risk of the market falling while you wait.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: thin markets and naira flows</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>On the NGX, many shares trade so little that a fund building a position might be \(30\%\) or more of the day's volume, so big orders are worked over days or weeks. An importer buying dollars a little every week is running its own home-made TWAP: it can't move the official rate, but it does spread its timing risk. And a TWAP or VWAP scheduler, tested against real trade data, is a good small coding project that shows you understand execution.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on execution?" %}
+  <div class="formula"><span class="lbl">VWAP</span>\[ \text{VWAP} = \frac{\sum_i P_i V_i}{\sum_i V_i} \]</div>
+  <div class="formula"><span class="lbl">Implementation shortfall (a buy)</span>\[ \text{IS (bp)} = \frac{\bar{p}_{\text{fill}} - P_{\text{decision}}}{P_{\text{decision}}} \times 10{,}000 \qquad \text{(sign flipped for a sell)} \]</div>
+  <div class="formula"><span class="lbl">Square-root law</span>\[ \text{impact per share} \approx c\,\sigma \sqrt{\frac{Q}{V}} \qquad \text{total cost} \propto Q^{3/2} \]</div>
+  <div class="prose">
+    <p>Here \(Q\) is the order size, \(V\) the daily volume, \(\sigma\) the daily volatility and \(c\) a constant each desk estimates. Quadruple \(Q\) and per-share impact doubles, because \(\sqrt{4} = 2\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Buy \(500{,}000\) shares. Decision price \(40.00\), average fill \(40.10\), price afterwards \(40.06\).</h3>
+    <ol class="steps">
+      <li>Shortfall \(= \frac{40.10 - 40.00}{40.00} \times 10{,}000 = 25\) bp.</li>
+      <li>Permanent part: \(40.06 - 40.00 = 0.06\). Temporary part: \(40.10 - 40.06 = 0.04\).</li>
+      <li>In money: \(0.10 \times 500{,}000 = 50{,}000\).</li>
+    </ol>
+    <p class="answer">\(25\) bp, or \(50{,}000\), of which about \(60\%\) was permanent.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>Buy \(120{,}000\) over six hours. Usual volume share by hour: \(30\), \(15\), \(10\), \(10\), \(15\), \(20\%\).</h3>
+    <ol class="steps">
+      <li>TWAP: \(120{,}000 / 6 = 20{,}000\) every hour.</li>
+      <li>VWAP: \(120{,}000 \times\) each share \(= 36{,}000,\ 18{,}000,\ 12{,}000,\ 12{,}000,\ 18{,}000,\ 24{,}000\).</li>
+    </ol>
+    <p class="answer">VWAP buys most when the market is deepest. TWAP stands out in the quiet middle of the day.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A trade prints at \(50.06\) while the market is \(50.00\) / \(50.08\). What is the effective spread?</span></p>
+      <details><summary>Show answer</summary><div><span>Mid \(= 50.04\). Effective spread \(= 2 \times |50.06 - 50.04| = 0.04\), half the quoted \(0.08\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A share trades \(40\) million a day. An order for \(800{,}000\) is what share of ADV?</span></p>
+      <details><summary>Show answer</summary><div><span>\(800{,}000 / 40{,}000{,}000 = 0.02\), so \(2\%\): routine.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A buy starts with the mid at \(80.00\) and fills at an average of \(80.12\). What's the implementation shortfall?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\frac{0.12}{80.00} \times 10{,}000 = 15\) bp.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>The market trades \(10{,}000\) at \(50.00\), \(20{,}000\) at \(50.10\) and \(10{,}000\) at \(50.20\). What's the VWAP?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\frac{500{,}000 + 1{,}002{,}000 + 502{,}000}{40{,}000} = 50.10\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A POV algo targets \(10\%\). The market trades \(400{,}000\) shares in the first hour. How many does the algo buy?</span></p>
+      <details><summary>Show answer</summary><div><span>\(40{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>An index fund must rebalance at month-end with no view on the shares. Which algo, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>VWAP, or a close algo if it's valued at the closing price. With no reason to expect the price to run away, patience is cheap, so minimise impact.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Why can a fund "beat VWAP" and still have executed badly?</span></p>
+      <details><summary>Show answer</summary><div><span>If the price trended up all day, VWAP rose too. Matching it only shows average participation; the shortfall against the decision price can still be large.</span></div></details></div>
+  </div>
+{% endsec %}

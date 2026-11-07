@@ -116,7 +116,7 @@
       { "title": "How Markets Work", "blurb": "Following one trade from start to finish: where it happens, how it's placed, how it's paid for and settled.",
         "subtopics": [
           "Where Trading Happens",
-          { "name": "Placing a Trade", "planned": ["The Order Book", "Algorithmic Execution"] },
+          "Placing a Trade",
           { "name": "Borrowing to Trade", "planned": ["Short Selling and Securities Lending", "Margin and Leverage", "Prime Brokerage"] },
           { "name": "After the Trade", "planned": ["Clearing and Settlement", "Corporate Actions"] },
           { "name": "Rules and History", "planned": ["Regulation", "Crashes That Changed the Rules"] }

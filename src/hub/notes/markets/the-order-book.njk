@@ -1,0 +1,282 @@
+---
+title: The Order Book
+shelf: markets
+chapter: how-markets-work
+subtopic: Placing a Trade
+order: 2
+summary: The queue of buy and sell orders behind every price - how to read it, how trades get matched, who's on the other side of your trade, and why the spread is the price of a service.
+lede: Behind every price on a screen is a queue of people waiting to buy and sell. Learning to read that queue tells you what a trade will really cost, who you're probably trading with, and why the spread is as wide as it is.
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/the-order-book.js]
+alsoIn: [quant/microstructure, quant/market-making, trading/execution]
+
+quiz:
+  - q: 'A share is quoted \(82.40\) / \(82.48\). What is the mid price, and roughly how wide is the spread in basis points?'
+    opts: ['Mid \(82.44\), spread about \(10\) bp', 'Mid \(82.48\), spread about \(8\) bp', 'Mid \(82.40\), spread about \(1\) bp']
+    right: 0
+    why: 'Mid \(= (82.40 + 82.48)/2 = 82.44\). Spread \(= 0.08\), and \(0.08 / 82.44 \times 10{,}000 \approx 9.7\), so about \(10\) bp.'
+  - q: 'You join the best bid behind \(4{,}000\) shares already waiting. Sell orders for \(2{,}500\) shares arrive. How many of your shares fill?'
+    opts: ['\(2{,}500\)', 'None', 'Half of them']
+    right: 1
+    why: 'Price-time priority: the \(4{,}000\) shares ahead of you fill first. Only \(2{,}500\) arrive, so the queue never reaches you.'
+  - q: 'A buy limit order at \(25.11\) meets a sell order resting at \(25.10\). At what price does the trade happen?'
+    opts: ['\(25.11\), the buyer''s limit', '\(25.105\), halfway', '\(25.10\), the resting order''s price']
+    right: 2
+    why: 'Trades happen at the price of the order that was already waiting. The buyer''s limit is only a ceiling, so they get the better price.'
+
+connected:
+  - { label: Builds on, title: Order Types, where: Markets · How Markets Work, url: /hub/markets/order-types/ }
+  - { label: Builds on, title: "What Is a Market?", where: Markets · What Markets Are, url: /hub/markets/what-is-a-market/ }
+  - { label: Next, title: Algorithmic Execution, where: Markets · How Markets Work, url: /hub/markets/algorithmic-execution/ }
+  - { label: Used in, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/ }
+---
+
+{% sec 1, "Reading the Quote", "What do the two prices on a screen actually mean?", "Reading the quote" %}
+  <div class="prose">
+    <p>Think of a currency exchange booth at the airport. Its board shows two prices for euros: the price it will <em>buy</em> euros from you, and a higher price it will <em>sell</em> euros to you. The booth doesn't care whether the euro goes up or down. It makes money on the gap, from customer after customer.</p>
+    <p>Every market quote works the same way, and it always comes as a pair:</p>
+    <ul>
+      <li>The {% gl "bid" %}bid{% endgl %} is the best price someone is waiting to <strong>buy</strong> at. If you want to sell right now, that's what you get.</li>
+      <li>The {% gl "ask" %}ask{% endgl %} (also called the offer) is the best price someone is waiting to <strong>sell</strong> at. If you want to buy right now, that's what you pay.</li>
+    </ul>
+    <p>A quote of \(100.10\) / \(100.20\) means someone will buy from you at \(100.10\) and someone will sell to you at \(100.20\). The halfway point, \(100.15\), is the {% gl "mid price" %}mid price{% endgl %}, the usual reference for "the price" between trades. The gap of \(0.10\) is the {% gl "bid-ask spread" %}spread{% endgl %}: the cost of trading immediately.</p>
+    <h3>The spread is a round-trip cost</h3>
+    <p>If you buy at the ask and immediately sell at the bid, with nothing else changing, you lose exactly the spread. A share quoted \(45.60\) / \(45.64\): buying \(1{,}000\) costs \(45{,}640\), selling them straight back returns \(45{,}600\). The \(40\) went to whoever was quoting the two prices.</p>
+    <p>To compare spreads on things with very different prices, traders use {% gl "basis point" %}basis points{% endgl %}. A \(0.10\) spread is \(1\) bp on a \(1{,}000\) share but \(10\) bp on a \(100\) share. Big, busy shares trade with spreads of a few basis points; small shares can be tens of basis points. The spread is the first number to check before trading anything.</p>
+    <h3>Who sets the two prices?</h3>
+    <p>Both prices are limit orders resting in the market, put there by people willing to wait: market makers quoting both sides as a business, and ordinary investors waiting patiently to buy or sell. The spread they offer isn't random. It's a price for a service, and competition between quoters squeezes it down towards what the service costs to provide. Section 4 breaks that cost down.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Buy at the ask, sell at the bid. The mid is only a reference: nobody has to trade with you there.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Queue Behind the Price", "What's waiting behind the best bid and offer, and who gets filled first?", "The queue" %}
+  <div class="prose">
+    <p>The best bid and offer are just the front of two queues. The {% gl "limit order book" %}order book{% endgl %} lists every buy and sell order waiting at every price, with the amount at each. That amount is the {% gl "market depth" %}depth{% endgl %}. If someone sends a large market order, it eats through those levels one by one, which is exactly the walking the book from the Order Types note.</p>
+    <p>An order book is also the supply and demand chart from the very first note, made real. The bids are the buyers line: lots of people would buy if the price were a bit lower. The offers are the sellers line. The spread sits where the two lines nearly meet.</p>
+    <h3>Who gets filled first: price-time priority</h3>
+    <p>Most exchanges use {% gl "price-time priority" %}price-time priority{% endgl %}. A better price always goes first. Among orders at the same price, whoever arrived first goes first, like a queue at a bakery. So where you stand in the queue really matters. An order at the front of the best bid is very likely to fill on the next sell order and earn the spread. The same order at the back might wait a long time, and fill only if sellers keep coming.</p>
+    <p>That last part hides a trap. If you're at the back of the queue and you <em>do</em> get filled, it's often because a wave of selling has cleared the whole level, which is exactly when the price is about to fall further. Being filled at the back of the queue is not always good news.</p>
+    <p>Some futures markets use {% gl "pro-rata matching" %}pro-rata matching{% endgl %} instead: incoming orders are shared out in proportion to how much each person has waiting. That rewards showing big size rather than arriving early, so those books tend to look bigger than the real interest behind them.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Your place in the queue</h3><p>You want to buy \(1{,}000\) shares and put a limit order at the best bid. Set how many shares are already waiting ahead of you, and how much selling arrives.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="q-ahead">Ahead of you</label><input type="range" id="q-ahead" min="0" max="6000" step="250" value="4000"><output id="q-ahead-out" for="q-ahead">4,000</output></div>
+      <div class="ctrl"><label for="q-sells">Selling arrives</label><input type="range" id="q-sells" min="0" max="8000" step="250" value="2500"><output id="q-sells-out" for="q-sells">2,500</output></div>
+    </div>
+    <svg class="chart" id="chart-queue" viewBox="0 0 640 190" role="img" aria-label="A queue of buy orders at one price, showing how far the incoming selling reaches and whether your order fills"></svg>
+    <div class="readout" id="queue-read"></div>
+    <p class="look" id="queue-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Depth you can't always trust</h3>
+    <p>The book you see is an advert, not a promise. It can <em>understate</em> what's really there, because icebergs and hidden orders don't show their full size. And it can <em>overstate</em> it, because orders can be cancelled in milliseconds. Well over nine in ten orders placed are cancelled before they ever trade, and market makers pull their quotes the moment a big order arrives or the market turns. Traders call this {% gl "fleeting liquidity" %}fleeting liquidity{% endgl %}: depth that disappears exactly when you try to use it.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How a Trade Is Matched", "What actually happens when an order reaches the exchange?", "How a trade is matched" %}
+  <div class="prose">
+    <p>Every exchange runs a {% gl "matching engine" %}matching engine{% endgl %}: a computer that takes orders one at a time, in the order they arrive, and checks each against the book.</p>
+    <ol>
+      <li>An incoming buy is compared with the offers, starting from the cheapest.</li>
+      <li>If its price reaches them, it trades, level by level, until it's filled or its limit stops it.</li>
+      <li>Whatever is left either rests in the book as a new bid at its limit price, or is cancelled, depending on its instructions.</li>
+      <li>Every trade is reported straight away: price, size and time. Every market data feed is a record of exactly this process.</li>
+    </ol>
+    <p>One rule surprises people: <strong>a trade happens at the resting order's price</strong>, not the incoming order's limit. If you send a buy limit at \(25.11\) and there's an offer at \(25.10\), you pay \(25.10\). Your limit is a ceiling, not the price. Getting this wrong makes backtests look worse (or better) than reality.</p>
+    <p>A worked sweep: offers of \(800\) at \(25.10\) and \(1{,}200\) at \(25.11\). A buy limit for \(2{,}500\) at \(25.11\) arrives. It takes all \(800\) at \(25.10\), then all \(1{,}200\) at \(25.11\). It can't go to \(25.12\), so the other \(500\) rest as a new best bid at \(25.11\).</p>
+    <h3>Auctions: one price for everyone</h3>
+    <p>At the open and close, exchanges stop matching one order at a time. Instead they collect orders for a few minutes, then trade them all at once, at <strong>one</strong> price: the price where the most shares can change hands. That's the supply and demand crossing from the first note, worked out with real orders. Because everyone trades at the same price, a huge amount can trade with no spread to pay, which is why the closing auction is the busiest moment of the day.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Find the auction price</h3><p>These are the orders collected for a closing auction, including some market-on-close orders that will trade at any price. Slide the price and see how many shares could trade there: the smaller of the buying and selling available.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="auc-p">Try a price</label><input type="range" id="auc-p" min="0" max="4" step="1" value="1"><output id="auc-p-out" for="auc-p">99.95</output></div>
+    </div>
+    <svg class="chart" id="chart-auction" viewBox="0 0 640 300" role="img" aria-label="Buying and selling interest at each price in a closing auction, and the price where the most shares trade"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Buyers willing at this price or higher</span><span><i class="sw grey"></i>Sellers willing at this price or lower</span></div>
+    <div class="readout" id="auc-read"></div>
+    <p class="look" id="auc-story"></p>
+  </div>
+  <div class="prose">
+    <p>After the match, the trade is a promise, not yet a finished swap. It goes to a clearing house and settles a day or two later, when the shares and cash actually move. That's the subject of the After the Trade notes later in this chapter.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Makers and Takers", "Who provides the prices, who uses them, and what's in the spread?", "Makers and takers" %}
+  <div class="prose">
+    <p>Every trade has two sides, and they're always different kinds:</p>
+    <ul>
+      <li>A {% gl "maker" %}maker{% endgl %} put a limit order in the book and waited. They provided the price. They earn the spread (and often a small rebate from the exchange).</li>
+      <li>A {% gl "taker" %}taker{% endgl %} arrived and traded against that waiting order. They used up the price. They pay the spread (and often an exchange fee) for getting their trade done now.</li>
+    </ul>
+    <p>Market makers are almost always makers. Hedge funds, pension funds and anyone else with a view are mostly takers: they've decided to buy, and they need someone on the other side. The line can blur. A fund buying slowly with limit orders is <em>making</em> in how it trades, but it's still a taker in intent, because it wants a position.</p>
+    <h3>What the spread pays for</h3>
+    <p>The spread a market maker charges has to cover three costs, plus a little profit. Research on shares breaks it down roughly like this (the shares vary a lot by stock and by day):</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Part of the spread</th><th>Roughly</th><th>What it pays for</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "adverse selection" %}Adverse selection{% endgl %}</td><td>\(40\)–\(50\%\)</td><td>Losses from trading with people who know more</td></tr>
+        <tr><td>{% gl "inventory risk" %}Inventory risk{% endgl %}</td><td>\(20\)–\(30\%\)</td><td>Holding shares that might move before they can be passed on</td></tr>
+        <tr><td>Running costs</td><td>\(10\)–\(20\%\)</td><td>Technology, connections, exchange fees, staff</td></tr>
+        <tr><td>Profit</td><td>\(10\)–\(15\%\)</td><td>What's left</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The biggest slice is the cost of the occasional counterparty who knows something. That's why spreads widen before results announcements, at the open, and whenever news is about to land: the chance that the next trader knows more goes up. Section 5 explains how that works.</p>
+    <p>The spread you see quoted isn't always the spread you pay. The {% gl "effective spread" %}effective spread{% endgl %} measures what you actually paid against the mid: smaller if a broker improved your price, bigger if your order was large and walked the book.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Who's on the Other Side?", "Who are you trading with, and does it matter?", "Who's on the other side" %}
+  <div class="prose">
+    <p>A market is like an ecosystem: different kinds of traders, each there for a different reason, each needing the others.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Who</th><th>Why they trade</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Naturals</td><td>They have a real business reason: raising money, investing savings, paying for things</td><td>Companies, pension funds, index funds</td></tr>
+        <tr><td>{% gl "hedger" %}Hedgers{% endgl %}</td><td>To reduce a risk they already have, not to make a trading profit</td><td>An exporter selling dollars forward; an airline fixing fuel prices</td></tr>
+        <tr><td>Market makers</td><td>To earn the spread by always quoting both sides</td><td>Citadel Securities, Jane Street, bank trading desks</td></tr>
+        <tr><td>{% gl "arbitrageur" %}Arbitrageurs{% endgl %}</td><td>To profit when two related prices drift apart, keeping them in line</td><td>Buying the cheap version and selling the dear one</td></tr>
+        <tr><td>Speculators</td><td>A view on where the price is going</td><td>Hedge funds, trend followers, individual traders</td></tr>
+        <tr><td>Brokers</td><td>To execute for clients, without taking positions themselves</td><td>Paid in commission</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Each type creates the conditions for the others. Naturals bring the steady volume that makes market making a business. Market makers give naturals someone to trade with whenever they need. Arbitrageurs keep related prices consistent. Speculators take on risks nobody else wants.</p>
+    <h3>Flows are not opinions</h3>
+    <p>A pension fund sells \(100{,}000\) shares to rebalance. It has no view on the company at all, but its selling still pushes the price down. A market maker buys \(20{,}000\) at a small discount, an arbitrageur who sees the share has got cheap compared with similar companies buys \(30{,}000\), and a momentum fund sells alongside. Much of professional trading is telling the difference between a flow (someone who has to trade) and an opinion (someone who knows something).</p>
+    <h3>Informed and uninformed flow</h3>
+    <p>That difference has a name. {% gl "informed flow" %}Informed flow{% endgl %} comes from traders whose orders predict where the price is going: they've done the research, built the model, or reacted to news first. Uninformed flow comes from traders whose reasons have nothing to do with the next price move, like the rebalancing pension fund or someone buying with their monthly salary. "Uninformed" isn't an insult: they're doing exactly what they should.</p>
+    <p>To a market maker, uninformed flow is profitable: half the time the price goes up after, half the time down, and the spread is kept. Informed flow loses money: the price keeps moving against them after the trade. The spread has to be wide enough that profits from the uninformed cover losses to the informed. In other words, <strong>ordinary investors pay a little extra so the market can survive the traders who know more</strong>. Try the arithmetic.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Can the market maker afford to quote?</h3><p>On each trade the market maker earns half the spread. When the trader on the other side is informed, the price then moves against it by \(10\) ticks on average. Set the half-spread and the share of informed traders.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="mm-h">Half-spread (ticks)</label><input type="range" id="mm-h" min="1" max="5" step="0.5" value="2"><output id="mm-h-out" for="mm-h">2</output></div>
+      <div class="ctrl"><label for="mm-q">Informed share</label><input type="range" id="mm-q" min="0" max="50" step="1" value="10"><output id="mm-q-out" for="mm-q">10%</output></div>
+    </div>
+    <svg class="chart" id="chart-mm" viewBox="0 0 640 280" role="img" aria-label="Expected profit per trade for a market maker as the share of informed traders rises"></svg>
+    <div class="readout" id="mm-read"></div>
+    <p class="look" id="mm-story"></p>
+  </div>
+  <div class="prose">
+    <p>This is why retail orders are so valuable to market makers: a person buying \(100\) shares on their phone is very rarely informed about the next few minutes. In the US, wholesalers like Citadel Securities pay brokers for the right to fill those orders, which is how "commission-free" apps make money. It's called payment for order flow, and it's banned in the UK.</p>
+    <p>You can't see who's informed, so traders judge from behaviour. Informed flow tends to keep coming in the same direction, its price impact doesn't fade, and it bunches around news. Uninformed flow follows the calendar (month-ends, index changes), and the price drifts back once it's done.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Do my three markets have order books?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>Yes, but only at the centre. Banks trade spot FX with each other on two big order books, EBS and LSEG FX Matching, quoted in fractions of a {% gl "pip" %}pip{% endgl %} (for EUR/USD, a pip is \(0.0001\)). Most clients never see those books: they ask banks and electronic market makers for prices, as in the Where Trades Happen note. Spreads are tightest when London and New York are both open, and widest around \(10\)pm UK time, when New York closes and the day rolls over.</p>
+    <p>FX also has last look: some liquidity providers get a brief moment after you hit their price to accept or reject the trade. It protects them from being picked off by faster traders, but it means a quote isn't quite a firm promise.</p>
+    <h3>Gold</h3>
+    <p>Gold futures on COMEX have a normal exchange order book with price-time priority. In London, gold trades between dealers, who quote prices to clients, more like a dealer market than a book.</p>
+    <h3>Bonds</h3>
+    <p>Dealers trade the most recently issued US government bonds with each other on electronic order books (BrokerTec is the biggest). Gilt and Treasury futures trade on exchange books. Almost everything else in bonds is dealer quotes. Older bonds, or ones that trade rarely, can have wide spreads and almost no depth.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Bid</h3><span class="tag desk">Desk</span></div><p>The best price someone is waiting to buy at: what you get if you sell now.</p><p class="eg">"Hit the bid" means sell at it.</p></div>
+    <div class="term"><div class="term-top"><h3>Ask (offer)</h3><span class="tag desk">Desk</span></div><p>The best price someone is waiting to sell at: what you pay if you buy now.</p><p class="eg">"Lift the offer" means buy at it.</p></div>
+    <div class="term"><div class="term-top"><h3>Mid price</h3><span class="tag desk">Desk</span></div><p>Halfway between the bid and the ask. A reference, not a price you can trade at.</p><p class="eg">\(45.60\) / \(45.64\) has a mid of \(45.62\).</p></div>
+    <div class="term"><div class="term-top"><h3>Price-time priority</h3><span class="tag desk">Desk</span></div><p>Better prices fill first; at the same price, whoever arrived first fills first.</p><p class="eg">"We're at the back of the queue at that level."</p></div>
+    <div class="term"><div class="term-top"><h3>Matching engine</h3><span class="tag desk">Desk</span></div><p>The exchange's computer that matches incoming orders against the book, one at a time.</p><p class="eg">Market makers put their servers next to it.</p></div>
+    <div class="term"><div class="term-top"><h3>Maker / taker</h3><span class="tag desk">Desk</span></div><p>The maker's order was waiting in the book; the taker's order traded against it.</p><p class="eg">Makers earn the spread; takers pay it.</p></div>
+    <div class="term"><div class="term-top"><h3>Informed flow</h3><span class="tag desk">Desk</span></div><p>Orders from traders who know (or work out) where the price is going next. Also called toxic flow.</p><p class="eg">"That client's flow is toxic, widen them out."</p></div>
+    <div class="term"><div class="term-top"><h3>Fleeting liquidity</h3><span class="tag desk">Desk</span></div><p>Orders in the book that vanish as soon as someone tries to trade against them.</p><p class="eg">"The bid looked deep, then it all got pulled."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the order book turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: check the book before you trade</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Before any trade: how wide is the spread, and how much size sits near the best price? A limit order at a crowded level may never fill, and when it does, ask why. Stops bunched at round numbers are a queue of market orders waiting to be set off. And if you're trading at times when informed traders are most active, like the first minutes after data, expect wider spreads and worse fills.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: a market with no book</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has no order book. Asking prices are like offers you can see, but nobody can see the bids: buyers' maximum prices stay in their heads. The estate agent is a bit like a dealer, matching one buyer and one seller at a time. That's why property prices are discovered slowly and why spreads (the gap between what sellers ask and what buyers pay) are large.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: thin books and building one</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Many Nigerian shares have thin books: wide spreads and little depth, so even small market orders move the price. Nigeria's official FX market moved onto an electronic matching system in December 2024, putting bids and offers in one place. And building an order book is a classic engineering project: a matching engine with price-time priority is the planned Rust order book project, which turns this note into code.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on the book?" %}
+  <div class="formula"><span class="lbl">Mid and spread</span>\[ \text{mid} = \frac{\text{bid} + \text{ask}}{2} \qquad \text{spread (bp)} = \frac{\text{ask} - \text{bid}}{\text{mid}} \times 10{,}000 \]</div>
+  <div class="prose">
+    <h3>How much of a queue order fills</h3>
+    <p>If \(Q\) shares are ahead of you, your order is \(S\), and \(V\) shares of selling arrive at your price:</p>
+  </div>
+  <div class="formula"><span class="lbl">Shares you get</span>\[ \text{filled} = \min\!\big(S,\ \max(0,\ V - Q)\big) \]</div>
+  <div class="prose">
+    <h3>The auction price</h3>
+    <p>At each possible price \(P\), only the smaller of the buying and the selling can trade. The auction picks the price where that is biggest:</p>
+  </div>
+  <div class="formula"><span class="lbl">Auction clearing price</span>\[ P^{*} = \arg\max_{P}\ \min\big(\text{buying at } P \text{ or above},\ \text{selling at } P \text{ or below}\big) \]</div>
+  <div class="prose">
+    <h3>The market maker's arithmetic</h3>
+    <p>With half-spread \(h\), a share \(q\) of informed traders, and an average loss \(L\) when trading with one:</p>
+  </div>
+  <div class="formula"><span class="lbl">Expected profit per trade</span>\[ \mathbb{E}[\pi] = h - q\,L \qquad \text{breaks even at } q^{*} = \frac{h}{L} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Offers: \(1{,}500\) at \(100.00\), then \(2{,}500\) at \(100.01\). A market buy for \(3{,}000\) arrives.</h3>
+    <ol class="steps">
+      <li>\(1{,}500\) fill at \(100.00\), and the remaining \(1{,}500\) at \(100.01\).</li>
+      <li>\(\bar{p} = \frac{1500 \times 100.00 + 1500 \times 100.01}{3000} = 100.005\).</li>
+    </ol>
+    <p class="answer">Against offers of \(10{,}000\) per level, the same order would all have filled at \(100.00\). Depth is the first estimate of what size will cost.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>A market maker earns \(2\) ticks per trade. Informed traders cost it \(10\) ticks. What share of informed traders can it survive?</h3>
+    <ol class="steps">
+      <li>\(\mathbb{E}[\pi] = 2 - 10q\).</li>
+      <li>At \(q = 0.1\): \(2 - 1 = 1\) tick of profit per trade.</li>
+      <li>Breakeven: \(2 - 10q = 0 \Rightarrow q^{*} = 0.2\).</li>
+    </ol>
+    <p class="answer">If more than \(20\%\) of traders are informed, every quote loses money at this spread, so the market maker must widen it, show less size, or stop quoting.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A share is quoted \(82.40\) / \(82.48\). What are the mid and the spread in basis points?</span></p>
+      <details><summary>Show answer</summary><div><span>Mid \(= 82.44\). Spread \(= \frac{0.08}{82.44} \times 10{,}000 \approx 9.7\), so about \(10\) bp.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Offers: \(800\) at \(25.10\) and \(1{,}200\) at \(25.11\). A buy limit for \(2{,}500\) at \(25.11\) arrives. How many shares rest as a new bid, and what's the average price of the shares that filled?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2{,}000\) fill, so \(500\) rest as a bid at \(25.11\).</span><span>\(\bar{p} = \frac{800 \times 25.10 + 1200 \times 25.11}{2000} = 25.106\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A market maker buys \(20{,}000\) shares at \(49.90\) from an urgent seller and sells them during the day at an average of \(50.00\). What's its profit before fees?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.10 \times 20{,}000 = 2{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>An arbitrageur buys at \(99.80\) and sells an identical instrument at \(100.00\), paying \(0.05\) in fees. What's the locked-in profit per unit?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.20 - 0.05 = 0.15\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why do market makers widen their spreads just before a company announces its results?</span></p>
+      <details><summary>Show answer</summary><div><span>The chance that the next trader knows something (adverse selection) jumps. A wider spread covers the bigger expected losses to informed traders, and showing less size limits how much they can lose.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why is retail order flow so valuable to market makers?</span></p>
+      <details><summary>Show answer</summary><div><span>It's overwhelmingly uninformed about the next few minutes, so the market maker keeps the spread on almost every trade. That's why US wholesalers pay brokers for it.</span></div></details></div>
+  </div>
+{% endsec %}
