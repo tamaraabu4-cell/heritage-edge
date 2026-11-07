@@ -1,0 +1,345 @@
+---
+title: Short Selling and Securities Lending
+shelf: markets
+chapter: how-markets-work
+subtopic: Borrowing to Trade
+order: 1
+summary: How you can sell something you don't own - borrowing shares, what it costs, why shorting isn't just buying backwards, short squeezes, and the lending market that makes it all possible.
+lede: To bet that a price will fall, you borrow the thing, sell it now and buy it back later. The borrowing is what makes shorting different. It has a fee, it can be taken away from you, and it turns a mistake into a loss that keeps growing.
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/short-selling-and-securities-lending.js]
+alsoIn: [hedge-funds/strategies, quant/mean-reversion-and-pairs/Pairs Trading]
+
+quiz:
+  - q: 'You short \(3{,}000\) shares at \(24.00\) and buy them back at \(27.00\), ignoring fees. What is your P&L?'
+    opts: ['\(+9{,}000\)', '\(-9{,}000\)', '\(-3{,}000\)']
+    right: 1
+    why: 'P&L \(= q \times (P_{\text{now}} - P_{\text{entry}}) = -3{,}000 \times (27.00 - 24.00) = -9{,}000\). The price rose, so the short lost money.'
+  - q: 'A stock has \(9\) million shares sold short and trades \(1.5\) million shares a day. How many days to cover?'
+    opts: ['\(0.17\) days', '\(13.5\) days', '\(6\) days']
+    right: 2
+    why: 'Days to cover \(= 9{,}000{,}000 / 1{,}500{,}000 = 6\). Above \(5\) days, a short is usually called crowded.'
+  - q: 'You short \(\text{£}200{,}000\) of a stock with a \(9\%\) yearly borrow fee and hold it for \(4\) months. Roughly what does the borrow cost?'
+    opts: ['\(\text{£}6{,}000\)', '\(\text{£}18{,}000\)', '\(\text{£}1{,}500\)']
+    right: 0
+    why: '\(200{,}000 \times 9\% \times \frac{4}{12} = 6{,}000\). The fee is quoted per year, so you pay the fraction of the year you hold it.'
+
+connected:
+  - { label: Builds on, title: The Players, where: Markets · What Markets Are, url: /hub/markets/the-players/ }
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Next, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Long/Short Equity, where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+  - { label: Used in, title: Pairs Trading, where: Quant · Mean Reversion and Pairs, url: /hub/quant/ }
+---
+
+<style>
+  .ss-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Selling What You Don't Own", "How can you sell something you haven't got?", "Selling what you don't own" %}
+  <div class="prose">
+    <p>Your friend has a concert ticket. Tickets for that show are selling for \(\text{£}100\) today, but you're sure the price will drop once the band adds more dates. So you ask to borrow her ticket for a couple of weeks, and you sell it straight away for \(\text{£}100\).</p>
+    <p>The extra dates are announced and tickets fall to \(\text{£}60\). You buy one, give it back to your friend, and keep the \(\text{£}40\) difference, minus a small "thank you" for lending it. If tickets had gone <em>up</em> to \(\text{£}150\) instead, you'd still have had to buy one to give back, and you'd have lost \(\text{£}50\).</p>
+    <p>That's {% gl "short selling" %}short selling{% endgl %}: borrow something, sell it now, buy it back later and return it. You make money if the price falls. Buying something because you think it will rise is being <strong>long</strong>.</p>
+    <h3>One formula for both directions</h3>
+    <p>Traders write a position as a quantity with a sign: \(+2{,}000\) shares is long, \(-2{,}000\) is short. Then one formula works for both:</p>
+  </div>
+  <div class="formula"><span class="lbl">Profit or loss on a position</span>\[ \text{P\&L} = q \times (P_{\text{now}} - P_{\text{entry}}) \]</div>
+  <div class="prose">
+    <p>A trader is short \(2{,}000\) shares from \(45.00\) and the price is now \(42.30\). P&L \(= -2{,}000 \times (42.30 - 45.00) = -2{,}000 \times (-2.70) = +5{,}400\). Two minuses make a plus: a falling price is good news for a short.</p>
+    <h3>Why shorting exists at all</h3>
+    <p>Most shorting isn't a bet that a company is doomed. It does four everyday jobs:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Hedging.<span class="why">A fund that owns \(\$100\) million of shares and shorts \(\$50\) million of other shares is only \(\$50\) million exposed to the whole market going up or down. What's left is the bet on its stock picks being better than the shares it shorted. The Hedge Funds topic goes into this.</span></span></li>
+    <li><span class="n">2</span><span>Pairs and relative value.<span class="why">Long the strong company, short its weak competitor in the same industry. If the whole industry falls, the short makes up for the long. You only need the strong one to do <em>better</em> than the weak one, not to go up.</span></span></li>
+    <li><span class="n">3</span><span>Market makers staying flat.<span class="why">When a client buys shares the market maker doesn't have, it sells them short and buys them back later in the day. A huge share of all short sales are this kind of plumbing, not opinions.</span></span></li>
+    <li><span class="n">4</span><span>Keeping prices honest.<span class="why">Short sellers are the people paid to find overpriced shares, accounting tricks and fraud. Without them, a price only reflects the people optimistic enough to buy. Studies find that heavily shorted shares do worse on average, which suggests short sellers as a group know what they're doing.</span></span></li>
+  </ul>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A short is a position you have to borrow to hold. Everything that makes shorting different comes from that loan.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Life of a Short", "What actually happens, step by step?", "The life of a short" %}
+  <div class="prose">
+    <p>Behind the ticket story there are three parties: the <strong>lender</strong> who owns the shares, <strong>you</strong> (the short seller), and a <strong>buyer</strong> in the market who ends up owning the shares you sold. Step through it:</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who holds what?</h3><p>Short \(1{,}000\) shares at \(60.00\) and buy them back at \(51.00\). Press each step to see what moves and who's left holding what.</p></div>
+    <div class="controls">
+      <div class="presets ss-pick" id="loop-step" aria-label="Step"></div>
+    </div>
+    <svg class="chart" id="chart-loop" viewBox="0 0 640 150" role="img" aria-label="Diagram of shares and cash moving between the lender, the short seller and the market at each step of a short sale"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Shares moving</span><span><i class="sw grey"></i>Cash moving</span></div>
+    <div class="table-wrap">
+      <table class="numbers">
+        <thead><tr><th>Lender</th><th>You</th><th>The market</th></tr></thead>
+        <tbody><tr id="loop-hold"></tr></tbody>
+      </table>
+    </div>
+    <p class="look" id="loop-story"></p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Step</th><th>What happens</th><th>Watch out for</th></tr></thead>
+      <tbody>
+        <tr><td>1. {% gl "locate" %}Locate{% endgl %}</td><td>Before selling, your broker confirms there are shares you can borrow</td><td>Required by the rules in most share markets. Some shares have almost none to lend</td></tr>
+        <tr><td>2. Borrow</td><td>Shares come from a lender: a pension fund, mutual fund, ETF or the prime broker's own stock</td><td>You start paying a yearly {% gl "borrow fee" %}borrow fee{% endgl %}</td></tr>
+        <tr><td>3. Sell</td><td>The borrowed shares are sold in the market like any other sale</td><td>The cash is held as collateral; you put up extra margin on top</td></tr>
+        <tr><td>4. Margin</td><td>Your position is valued every day. If the price rises, you post more collateral</td><td>On a short, there's no limit to how much you might have to post</td></tr>
+        <tr><td>5. Monitor</td><td>Check the borrow is still there and what it costs, every day</td><td>The lender can {% gl "recall" %}recall{% endgl %} the shares at any time</td></tr>
+        <tr><td>6. {% gl "buy to cover" %}Buy to cover{% endgl %}</td><td>Buy the shares in the market and return them</td><td>Profit \(=\) sale price \(-\) buy-back price \(-\) borrow fees</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The locate</h3>
+    <p>Selling shares without first arranging to borrow them is {% gl "naked short selling" %}naked short selling{% endgl %}, and it's banned or tightly restricted almost everywhere (in the US, Regulation SHO requires a locate before a short sale). At a hedge fund, getting the locate is the execution trader's job. They ask the prime broker's stock-loan desk what's available, negotiate the rate, watch it every day and manage the risk of shares being called back. For popular shorts this is genuinely hard, and a trade idea can die simply because nobody will lend the shares.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Securities Lending: The Market Behind It", "Who lends the shares, and what do they get?", "Securities lending" %}
+  <div class="prose">
+    <p>Every short needs a lender, and lending shares is a big, quiet business called {% gl "securities lending" %}securities lending{% endgl %}. Over \(\$2.5\) trillion of securities are on loan around the world at any time, earning lenders roughly \(\$10\) billion a year.</p>
+    <p>Think of it like renting out a flat you're going to own for decades anyway. A pension fund will hold its shares for years. Lending them out while it waits earns extra income for very little risk: typically \(5\) to \(50\) bp a year on the whole portfolio, more if it owns shares that lots of people want to short.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Who</th><th>Examples</th><th>Their part</th></tr></thead>
+      <tbody>
+        <tr><td>Lenders (beneficial owners)</td><td>Pension funds, mutual funds, ETFs, insurers, sovereign wealth funds</td><td>Lend long-term holdings for extra income. Usually keep \(70\)–\(85\%\) of the fee</td></tr>
+        <tr><td>Lending agents</td><td>Custodian banks such as State Street, BNY and JPMorgan</td><td>Run the lending for the owner: collateral, risk, paperwork. Keep \(15\)–\(30\%\) of the fee</td></tr>
+        <tr><td>Prime brokers</td><td>Goldman Sachs, Morgan Stanley, JPMorgan</td><td>The middlemen in the middle: borrow from agents and their own custody clients, lend on to hedge funds</td></tr>
+        <tr><td>Borrowers</td><td>Hedge funds (through their prime broker), market makers, banks</td><td>Borrow to short, to hedge, or to deliver shares they've sold on time</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Collateral: the lender is never left with nothing</h3>
+    <p>The lender gives away its shares, so it takes collateral worth a bit more than them in return:</p>
+    <ul>
+      <li><strong>Cash collateral</strong>, usually \(102\%\) of the shares' value. This is the norm in the US.</li>
+      <li><strong>Non-cash collateral</strong>, such as government bonds, usually around \(105\%\). Common in Europe.</li>
+    </ul>
+    <p>Both sides revalue it every day. If the shares go up, the borrower tops up the collateral; if they fall, some comes back. If the borrower went bust, the lender would sell the collateral and buy its shares back.</p>
+    <h3>The rebate: how the fee is paid with cash collateral</h3>
+    <p>With cash collateral the fee is hidden in a {% gl "rebate rate" %}rebate{% endgl %}. The lender invests your cash (in money market funds, say) and earns interest. It keeps its fee out of that interest and pays the rest back to you:</p>
+  </div>
+  <div class="formula"><span class="lbl">Fee and rebate</span>\[ \text{lending fee} = \text{interest earned on the cash} - \text{rebate paid to the borrower} \]</div>
+  <div class="prose">
+    <p>Say cash earns \(4\%\). An easy share with a \(0.3\%\) fee pays you a rebate of \(3.7\%\): you barely notice the cost. A hard-to-borrow share with a \(30\%\) fee gives a rebate of \(4\% - 30\% = -26\%\). A <strong>negative rebate</strong> means you're paying the lender on top of giving up the interest on your own cash.</p>
+    <h3>Who gets the dividend and the vote?</h3>
+    <p>Once you've sold the shares, the buyer owns them outright, with the vote and the dividend. But the lender expected to receive that dividend too, so <em>you</em> pay it to the lender out of your own pocket (a "manufactured dividend"). The lender does lose its vote while the shares are out on loan, which is why lenders often recall shares just before an important shareholder vote.</p>
+    <p>Loans are usually open-ended and can be ended by either side on any business day. That's convenient for the lender and dangerous for you: the shares can be called back exactly when you least want to give them back.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "What a Short Costs", "Is the borrow fee a big deal?", "What a short costs" %}
+  <div class="prose">
+    <p>A long position costs nothing to hold once you've paid for it. A short costs money every single day it's open, whatever the price does. Traders say a short has <strong>negative carry</strong>. The bill has three parts:</p>
+    <ol>
+      <li><strong>The borrow fee</strong>, quoted as a percentage per year of the shares' value.</li>
+      <li><strong>Dividends</strong> paid while you're short, which you owe to the lender in full.</li>
+      <li><strong>Margin costs</strong>: the interest you give up on the cash you've posted.</li>
+    </ol>
+    <p>The borrow fee depends on how many people want to short the share compared with how many shares are available to lend:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Borrow fee per year</th><th>Desk name</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>Under \(1\%\)</td><td>{% gl "general collateral" %}General collateral (GC){% endgl %}</td><td>Easy to borrow. Most big shares, most of the time</td></tr>
+        <tr><td>\(1\)–\(10\%\)</td><td>Warm</td><td>Demand is building. Worth watching the rate</td></tr>
+        <tr><td>Over \(10\%\)</td><td>{% gl "hard-to-borrow" %}Hard-to-borrow (HTB){% endgl %}</td><td>A popular short. Recalls are likely</td></tr>
+        <tr><td>Over \(50\%\)</td><td>Special</td><td>Very few shares left to lend. Shorting this is a fight</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The rate isn't fixed. If a share suddenly becomes a popular short (bad results, fraud claims, an activist attacking it), the fee can go from under \(1\%\) to \(50\%\) in a few days, and it changes on positions you already hold. One sign it's coming is {% gl "utilisation" %}utilisation{% endgl %}: the share of all lendable stock that's already out on loan. Above about \(90\%\), new shorts struggle to find any.</p>
+    <p>A worked case. Short \(5{,}000\) shares at \(60.00\) (about \(300{,}000\) of value), cover three months later at \(51.00\), with a \(4\%\) borrow fee. The price move made \(5{,}000 \times 9 = 45{,}000\). The borrow cost about \(300{,}000 \times 4\% \times \frac{3}{12} = 3{,}000\). Net: about \(42{,}000\). If the company had paid a \(0.50\) dividend while you were short, that's another \(2{,}500\) owed to the lender.</p>
+    <p>The real danger is time. Being right about a share isn't enough; you have to be right <em>soon enough</em>. A short costing \(2\%\) a month in borrow and margin loses \(24\%\) a year while you wait for the market to agree with you.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Can the short outrun its costs?</h3><p>Pick how hard the share is to borrow, how far you think the price will fall, and how long it takes to happen. The costs build up every month you wait; the fall only pays out once.</p></div>
+    <div class="controls">
+      <div class="presets ss-pick" id="carry-fee" aria-label="Borrow fee"></div>
+      <div class="ctrl"><label for="carry-fall">Expected fall</label><input type="range" id="carry-fall" min="5" max="50" step="1" value="15"><output id="carry-fall-out" for="carry-fall">15%</output></div>
+      <div class="ctrl"><label for="carry-div">Dividend yield</label><input type="range" id="carry-div" min="0" max="6" step="0.5" value="2"><output id="carry-div-out" for="carry-div">2%</output></div>
+      <div class="ctrl"><label for="carry-t">Months to play out</label><input type="range" id="carry-t" min="1" max="24" step="1" value="6"><output id="carry-t-out" for="carry-t">6</output></div>
+    </div>
+    <svg class="chart" id="chart-carry" viewBox="0 0 640 290" role="img" aria-label="Running cost of a short position over 24 months compared with the profit from the expected price fall"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Costs so far (borrow fee + dividends)</span><span><i class="sw grey"></i>Profit from the fall</span></div>
+    <div class="readout" id="carry-read"></div>
+    <p class="look" id="carry-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Why Shorting Isn't Buying Backwards", "If it's the mirror image of buying, why is it riskier?", "Not buying backwards" %}
+  <div class="prose">
+    <p>It's tempting to think a short is just a long with the sign flipped. It isn't. Four things only happen to shorts:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The loss has no ceiling.<span class="why">If you buy a share at \(50\), the worst case is it goes to \(0\): you lose \(100\%\). If you short at \(50\), the best case is it goes to \(0\) (\(+100\%\)), but there's no limit to how high it can go. At \(150\) you've lost \(200\%\) of what you sold.</span></span></li>
+    <li><span class="n">2</span><span>Even "equal" moves aren't equal.<span class="why">A price halving and a price doubling look like the same size of surprise. For a short, halving makes \(+50\%\) and doubling loses \(-100\%\). The bad outcome is twice the size of the good one.</span></span></li>
+    <li><span class="n">3</span><span>A losing short grows.<span class="why">When a long goes wrong, the price falls, so the position shrinks and hurts you less. When a short goes wrong, the price rises, so the position gets <em>bigger</em>: a \(5\%\) short that doubles is now \(10\%\) of your money, just when you least want more of it.</span></span></li>
+    <li><span class="n">4</span><span>Someone else controls your exit.<span class="why">The lender can recall the shares and the fee can be raised while you hold them. If you can't re-borrow, you're forced to buy back, often on the day the price is rising and everyone else is doing the same. That forced purchase is a {% gl "buy-in" %}buy-in{% endgl %}.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>How professionals handle it</h3>
+    <ul>
+      <li><strong>Size shorts smaller than longs.</strong> Many funds start a short at half the size of an equally good long idea.</li>
+      <li><strong>Use stop-losses</strong>, and stick to them, because waiting gets more expensive the further it goes against you.</li>
+      <li><strong>Buy put options instead.</strong> A put also profits from a fall, but the most you can lose is what you paid for it. The Derivatives chapter covers puts.</li>
+      <li><strong>Set a maximum borrow fee</strong>, and cut the position if the rate goes above it.</li>
+      <li><strong>Use more than one prime broker</strong>, so a recall at one can be re-borrowed at another.</li>
+      <li><strong>Watch for surprise good news.</strong> A takeover bid, strong results or an activist investor can send a share up \(30\%\) overnight.</li>
+    </ul>
+    <h3>The rules can change under you</h3>
+    <p>Regulators sometimes ban short selling in a crisis, as many did for bank shares in 2008 and several European countries did in March 2020. A ban forces shorts to cover at the worst moment, and research finds bans mostly make markets less liquid with wider spreads, without stopping the fall. There are milder rules too. In the US, if a share falls \(10\%\) in a day, new shorts can only sell above the best bid for the rest of that day and the next (the "alternative uptick rule"). In the UK, anyone with a net short of \(0.2\%\) or more of a company must tell the FCA, which publishes the total short position in each company without naming who holds it. The Regulation note has more.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Short Squeezes", "Why do heavily shorted shares sometimes explode upwards?", "Short squeezes" %}
+  <div class="prose">
+    <p>Imagine a crowded room with one small door, and someone shouts "fire". Everyone needs to get out the same door at the same time. That's a {% gl "short squeeze" %}short squeeze{% endgl %}.</p>
+    <p>Every short seller will one day have to buy the shares back. If lots of people are short and the price starts rising, some hit their stop-loss, some get margin calls, some have their borrow recalled. They all have to <em>buy</em>. Their buying pushes the price up further, which forces the next group of shorts to buy, and so on. The price can rise far beyond anything the news justified, then fall back once the shorts are gone.</p>
+    <p>The fuel is a crowded short in a share that's hard to borrow and doesn't trade much. Desks measure the danger like this:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Measure</th><th>How it's worked out</th><th>Danger signs</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "short interest" %}Short interest (SI){% endgl %}</td><td>Total shares sold short. In the US, published twice a month</td><td>Rising while the price rises</td></tr>
+        <tr><td>SI as % of free float</td><td>Short interest \(\div\) shares available to trade</td><td>Over \(10\%\) high, over \(20\%\) very high, over \(30\%\) extreme</td></tr>
+        <tr><td>{% gl "days to cover" %}Days to cover{% endgl %}</td><td>Short interest \(\div\) average daily volume</td><td>Over \(5\) crowded, over \(10\) very crowded</td></tr>
+        <tr><td>Borrow fee and utilisation</td><td>From the lending market, every day</td><td>Fee over \(10\%\), utilisation over \(90\%\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Watch a squeeze</h3><p>Pick how crowded the short is, then how big a piece of good news hits the share. Each short seller has a different pain point; when the price passes it, they have to buy, and their buying pushes the price on to the next one. Covering is limited by how much normally trades in a day.</p></div>
+    <div class="controls">
+      <div class="presets ss-pick" id="sq-crowd" aria-label="How crowded the short is"></div>
+      <div class="ctrl"><label for="sq-news">Good news jump</label><input type="range" id="sq-news" min="0" max="20" step="1" value="10"><output id="sq-news-out" for="sq-news">+10%</output></div>
+    </div>
+    <svg class="chart" id="chart-squeeze" viewBox="0 0 640 300" role="img" aria-label="Share price over 20 days after good news, with and without forced buying by short sellers"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Price with the squeeze</span><span><i class="sw grey"></i>Price from the news alone (bars: shorts buying back)</span></div>
+    <div class="readout" id="sq-read"></div>
+    <p class="look" id="sq-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Famous squeezes</h3>
+    <ul>
+      <li><strong>Volkswagen, October 2008.</strong> Porsche revealed it controlled far more VW shares than anyone knew, through options. With the state of Lower Saxony holding another \(20\%\), almost no shares were left for the shorts to buy back. The price quadrupled in two days and VW was briefly the most valuable company in the world.</li>
+      <li><strong>GameStop, January 2021.</strong> Short interest was over \(100\%\) of the free float (the same shares had been lent and shorted more than once). Retail traders on Reddit bought shares and call options, and the price went from under \(\$20\) at the start of the month to over \(\$480\) at its peak. Melvin Capital, one of the biggest shorts, needed a rescue of nearly \(\$3\) billion and later closed.</li>
+    </ul>
+    <p>A squeeze is the upside-down version of a margin-call spiral: falling prices force leveraged longs to sell, which pushes prices lower still. That's the next note.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How do you go short in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: you're always short something</h3>
+    <p>In FX there's no locate and no stock-loan desk, because every trade is a swap of one currency for another. Buying EUR/USD means you're long euros and short dollars; selling it means the opposite. Going short a currency is as easy as going long, which is one reason FX has no squeezes of the GameStop kind.</p>
+    <p>There's still a cost of holding, but it comes from interest rates, not a borrow fee. If you're short the currency with the higher interest rate, you pay the difference every night you hold the position. Your broker shows this as the swap or rollover; banks do it with a tom-next swap. It's the FX version of negative carry, and it gets its own note in FX › Carry.</p>
+    <p>FX does have something like a squeeze. When lots of traders are short the same currency, a surprise can make them all buy it back at once. In August 2024 a Bank of Japan rate rise forced traders who'd borrowed cheap yen to unwind together, and the yen jumped sharply in a few days.</p>
+    <h3>Gold (and silver): leasing the metal</h3>
+    <p>Most traders short gold with futures on COMEX or with a CFD, where no metal is borrowed. But physical gold and silver are lent too, by central banks and big holders to bullion banks, refiners and jewellers. The fee is called the {% gl "lease rate" %}lease rate{% endgl %}, and it's normally well under \(1\%\) a year.</p>
+    <p>October 2025 showed what happens when the metal runs short. Fears of US tariffs had pulled huge amounts of silver from London vaults to New York. With little free silver left in London, one-month lease rates jumped to around \(35\)–\(39\%\) a year. Anyone short physical silver either paid that to keep borrowing or bought metal back, and silver squeezed to record highs. That's a hard-to-borrow stock and a short squeeze, in a metal.</p>
+    <h3>Bonds: borrowing through repo</h3>
+    <p>To short a bond, you borrow it through the {% gl "repo" %}repo{% endgl %} market: you lend cash against the bond and agree to give the bond back later. Shorting government bonds is routine: dealers do it every day to hedge bonds they've bought from clients.</p>
+    <p>The bond equivalent of a hard-to-borrow share is a bond trading <strong>special</strong>. When everyone wants to borrow one particular bond, the interest you earn on the cash you lend against it falls below the normal rate, sometimes below zero. That gap is exactly the negative rebate from the share market, under a different name.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Short / cover</h3><span class="tag desk">Desk</span></div><p>To sell borrowed shares, and later to buy them back to close the position.</p><p class="eg">"We covered half the short into the results."</p></div>
+    <div class="term"><div class="term-top"><h3>Locate</h3><span class="tag desk">Desk</span></div><p>Confirmation that shares are available to borrow before you short.</p><p class="eg">"Can't get a locate on it, the PB has nothing."</p></div>
+    <div class="term"><div class="term-top"><h3>GC / HTB</h3><span class="tag desk">Desk</span></div><p>General collateral (easy, cheap to borrow) and hard-to-borrow (scarce and expensive).</p><p class="eg">"It was GC last week, now it's HTB at 25%."</p></div>
+    <div class="term"><div class="term-top"><h3>Borrow / the rate</h3><span class="tag desk">Desk</span></div><p>The shares you've borrowed, and the yearly fee for them.</p><p class="eg">"Borrow's getting expensive, the rate's gone to 12."</p></div>
+    <div class="term"><div class="term-top"><h3>Recall / buy-in</h3><span class="tag desk">Desk</span></div><p>The lender asking for its shares back, and the forced purchase if you can't re-borrow.</p><p class="eg">"They've recalled 200k, we're getting bought in."</p></div>
+    <div class="term"><div class="term-top"><h3>Short interest / days to cover</h3><span class="tag desk">Desk</span></div><p>How much of a share is sold short, and how many days of normal trading it would take to buy it all back.</p><p class="eg">"SI's 25% of float, eight days to cover. Crowded."</p></div>
+    <div class="term"><div class="term-top"><h3>Squeeze</h3><span class="tag desk">Desk</span></div><p>Shorts forced to buy at once, pushing the price up on themselves.</p><p class="eg">"Don't fight it, it's a squeeze, not news."</p></div>
+    <div class="term"><div class="term-top"><h3>Negative carry</h3><span class="tag desk">Desk</span></div><p>A position that costs you money every day you hold it.</p><p class="eg">"The thesis is fine, but the carry's killing us."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where shorting turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: check the carry before you short</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Shorting EUR/USD or gold on a trading platform looks free, but check the overnight swap: on a trade held for weeks it can eat a real part of the profit. In share trading, never size a short like a long; plan where you'd get out before you get in. And when a heavily shorted share starts rising, ask whether it's news or a squeeze: a squeeze can run a long way and then reverse just as hard.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: a market you can't short</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>You can't borrow a house and sell it. So house prices only reflect the people optimistic enough to buy, which is one reason property bubbles can build for years with nothing pushing back. Before 2008, the investors who saw the US housing crash coming couldn't short houses directly; they had to build the bet with credit default swaps on mortgage bonds (the story of <em>The Big Short</em>). Today you can short listed property companies and REITs, which is how negative views on property get into prices.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: rules exist, lending barely does</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has had securities lending rules since 2012 and the NGX uses the standard international lending contract (the GMSLA, with a Nigerian addendum). Short selling is allowed only once the shares have been borrowed, and naked shorting is banned. But the pool of shares on offer to lend has been small (in 2021 it was a few big names such as Zenith Bank, GTBank and MTN Nigeria), so shorting Nigerian shares is rare, and prices mostly reflect the optimists. Getting pension funds to lend their shares is an open opportunity.</p>
+      <p>In FX, the Central Bank of Nigeria went the other way. In January 2024 it limited banks' foreign currency positions to at most \(20\%\) short and \(0\%\) long of their capital, which stopped banks from holding dollars to bet on the naira falling and forced them to sell billions of dollars into the market. It's a lesson from this note in reverse: limit one side's bets and the price moves.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on a short?" %}
+  <div class="formula"><span class="lbl">P&L on a position (a short has negative \(q\))</span>\[ \text{P\&L} = q \times (P_{\text{now}} - P_{\text{entry}}) \]</div>
+  <div class="formula"><span class="lbl">Borrow cost</span>\[ \text{borrow cost} \approx \text{value} \times \text{fee} \times \frac{\text{months}}{12} \]</div>
+  <div class="formula"><span class="lbl">Return on a short</span>\[ r_{\text{short}} = -\left(\frac{P_1}{P_0} - 1\right) \qquad \text{best case } +100\%, \ \text{worst case unlimited} \]</div>
+  <div class="formula"><span class="lbl">Days to cover</span>\[ \text{days to cover} = \frac{\text{short interest}}{\text{average daily volume}} \]</div>
+  <div class="formula"><span class="lbl">Breakeven time</span>\[ \text{months until costs eat the fall} = \frac{12 \times \text{expected fall}}{\text{borrow fee} + \text{dividend yield}} \]</div>
+  <div class="prose">
+    <p>The borrow cost is "approximately" because the fee is charged on the shares' value each day, and that value changes as the price moves. As the short goes your way, it gets cheaper to hold; as it goes against you, dearer.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Short \(5{,}000\) at \(60.00\), cover at \(51.00\) after \(3\) months. Borrow fee \(4\%\), one dividend of \(0.50\).</h3>
+    <ol class="steps">
+      <li>Price move: \(5{,}000 \times (60.00 - 51.00) = 45{,}000\).</li>
+      <li>Borrow: \(300{,}000 \times 4\% \times \frac{3}{12} = 3{,}000\).</li>
+      <li>Dividend owed to the lender: \(5{,}000 \times 0.50 = 2{,}500\).</li>
+    </ol>
+    <p class="answer">\(45{,}000 - 3{,}000 - 2{,}500 = 39{,}500\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>\(12\) million shares short, free float \(40\) million, average volume \(1.5\) million a day.</h3>
+    <ol class="steps">
+      <li>SI as % of float: \(12 / 40 = 30\%\). Extreme.</li>
+      <li>Days to cover: \(12 / 1.5 = 8\) days. Crowded.</li>
+    </ol>
+    <p class="answer">A dangerous short: any good news could start a squeeze that takes days to burn out.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A trader is short \(2{,}000\) shares from \(45.00\) and the stock now trades at \(42.30\). What is the P&L?</span></p>
+      <details><summary>Show answer</summary><div><span>\(-2{,}000 \times (42.30 - 45.00) = +5{,}400\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Short \(2{,}000\) shares at \(35.00\), covered at \(28.00\), ignoring fees. What is the gross profit?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2{,}000 \times (35.00 - 28.00) = 14{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A short of \(100{,}000\) in value pays a \(6\%\) yearly borrow fee. What does the borrow cost over \(6\) months?</span></p>
+      <details><summary>Show answer</summary><div><span>\(100{,}000 \times 6\% \times \frac{6}{12} = 3{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>You expect a share to fall \(10\%\). It costs \(20\%\) a year to borrow and pays no dividend. How long can you wait before the fees eat the whole profit?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\frac{12 \times 10\%}{20\%} = 6\) months. After that, even being right loses money.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Cash collateral earns \(4\%\) and the rebate on a share is \(-10\%\). What is the lending fee?</span></p>
+      <details><summary>Show answer</summary><div><span>Fee \(=\) interest \(-\) rebate \(= 4\% - (-10\%) = 14\%\) a year. A hard-to-borrow share.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A short at \(40\) sees the price halve. Another short at \(40\) sees it double. What are the two returns?</span></p>
+      <details><summary>Show answer</summary><div><span>Halving to \(20\): \(+50\%\). Doubling to \(80\): \(-100\%\). The same-sized surprise in price is twice as big a loss as a gain.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: a share looks overvalued, but short interest is \(35\%\) of float and the borrow fee is \(60\%\). Do you short it?</span></p>
+      <details><summary>Show answer</summary><div><span>Probably not, or only small with a hard stop, or with puts. The crowd already agrees with you, the fee costs \(5\%\) a month, recalls are likely, and any good news could start a squeeze. Being right on value doesn't help if the costs and the squeeze risk get you first.</span></div></details></div>
+  </div>
+{% endsec %}
