@@ -252,6 +252,120 @@ export default function (eleventyConfig) {
   });
 
 
+  // ==========================================================
+  // Homepage highlights
+  //
+  // Builds the pool of highlight cards from everything on the site:
+  //   - every project in _data/projects.json
+  //   - every blog post
+  //   - hub lessons that say `highlight: true` in their front matter
+  //   - hand-written cards in _data/highlights.json (these replace the
+  //     automatic card for the same URL, so you can write better wording)
+  //
+  // Any project, post or lesson can carry its own wording:
+  //   highlight: { headline: "...", summary: "...", points: ["...", "..."], cta: "...", pin: true }
+  // `pin: true` keeps a card in every visit's mix. `highlight: false` on a project
+  // or post leaves it out. On the page, highlights.js picks a fresh mix each visit.
+  // ==========================================================
+  eleventyConfig.addFilter("highlightPool", (handWritten = [], projects = [], posts = [], notes = [], shelves = []) => {
+    const colourOf = (topic) => {
+      if (!topic) return "";
+      if (topic === "simulations") return "walnut";
+      const shelf = shelves.find((s) => s.slug === topic);
+      return shelf ? shelf.colour || "" : "";
+    };
+    const shelfName = (slug) => (shelves.find((s) => s.slug === slug) || {}).name || "Knowledge Hub";
+    const dayOf = (d) => {
+      if (!d) return "";
+      if (d instanceof Date) return d.toISOString().slice(0, 10);
+      const s = String(d);
+      return /^\d{4}-\d{2}$/.test(s) ? s + "-15" : s.slice(0, 10); // "2026-10" → mid-month
+    };
+    const extra = (h) => (h && typeof h === "object" ? h : {});
+    // One card, with any hand-written wording from `highlight: {...}` laid on top
+    const card = (base, h) => {
+      const o = extra(h);
+      return {
+        ...base,
+        tag: o.tag || base.tag,
+        headline: o.headline || base.headline,
+        summary: o.summary || (o.points ? "" : base.summary || ""),
+        points: o.points || base.points || null,
+        cta: o.cta || base.cta,
+        colour: o.topic ? colourOf(o.topic) : base.colour,
+        pin: !!o.pin,
+      };
+    };
+
+    const cards = [];
+    projects.forEach((p) => {
+      if (p.highlight === false || !p.url) return;
+      cards.push(card({
+        kind: "project",
+        tag: "Project · " + ((p.markets || [])[0] || p.kind || "Projects"),
+        headline: p.title,
+        summary: p.headline,
+        url: p.url,
+        cta: p.cta || "View project",
+        colour: colourOf(p.topic),
+        date: dayOf(p.date),
+      }, p.highlight));
+    });
+    posts.forEach((post) => {
+      const d = post.data || {};
+      if (d.highlight === false) return;
+      cards.push(card({
+        kind: "post",
+        tag: "Blog · " + (d.category || "Post"),
+        headline: d.title,
+        summary: d.summary,
+        url: post.url,
+        cta: "Read the post",
+        colour: colourOf(d.topic),
+        date: dayOf(post.date),
+      }, d.highlight));
+    });
+    notes.forEach((note) => {
+      const d = note.data || {};
+      if (!d.highlight) return; // lessons only join when they ask to
+      cards.push(card({
+        kind: "lesson",
+        tag: "Knowledge Hub · " + shelfName(d.shelf),
+        headline: d.title,
+        summary: d.summary,
+        url: note.url,
+        cta: "Read the note",
+        colour: colourOf(d.shelf),
+        date: dayOf(extra(d.highlight).date), // lessons have no date unless you give one
+      }, d.highlight));
+    });
+
+    // Hand-written cards win over the automatic card for the same page
+    handWritten.forEach((h) => {
+      const i = cards.findIndex((c) => c.url === h.url);
+      const auto = i === -1 ? null : cards[i];
+      const kind = h.url.startsWith("/hub/") ? "lesson" : h.url.startsWith("/blog/") ? "post" : "project";
+      const c = {
+        kind,
+        tag: h.tag || (auto && auto.tag) || "",
+        headline: h.headline || (auto && auto.headline) || "",
+        summary: h.points ? "" : h.summary || (auto && auto.summary) || "",
+        points: h.points || null,
+        url: h.url,
+        cta: h.cta || (auto && auto.cta) || "Take a look",
+        colour: h.topic ? colourOf(h.topic) : auto ? auto.colour : "",
+        date: dayOf(h.date) || (auto && auto.date) || "",
+        pin: !!h.pin,
+      };
+      if (i === -1) cards.push(c);
+      else cards[i] = c;
+    });
+
+    // Pinned first, then newest first; keep the page light by sending at most 40
+    cards.sort((a, b) => (b.pin - a.pin) || String(b.date).localeCompare(String(a.date)));
+    return cards.slice(0, 40);
+  });
+
   // Everything a project page needs (layouts/project.njk): its entry in
   // projects.json (found by the page's URL), its topic and colour, up to
   // three projects to suggest (same topic first, then same market), and the next one.

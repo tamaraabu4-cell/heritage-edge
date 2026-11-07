@@ -2,10 +2,15 @@
   <div class="container">
     <h2 class="section-title">Get the highlights.</h2>
   </div>
-  <div class="carousel" role="region" aria-label="Highlights from across the site, scroll sideways" tabindex="0">
-    {% for item in highlights %}
-    {# Each card takes the colour of its "topic" (a slug from shelves.json) #}
-    <a class="highlight-card{% for s in shelves %}{% if s.slug == item.topic and s.colour %} tone-{{ s.colour }}{% endif %}{% endfor %}" href="{{ item.url }}">
+  {#
+    The cards come from projects, blog posts, marked hub lessons and _data/highlights.json
+    (see "Homepage highlights" in eleventy.config.js). The newest 8 show without JavaScript;
+    highlights.js then picks a fresh mix of 8 on every visit.
+  #}
+  {% set pool = highlights | highlightPool(projects, collections.posts or [], collections.hubNote or [], shelves) %}
+  <div class="carousel" data-highlights data-show="8" role="region" aria-label="Highlights from across the site, scroll sideways" tabindex="0">
+    {% for item in pool %}
+    <a class="highlight-card{% if item.colour %} tone-{{ item.colour }}{% endif %}" href="{{ item.url }}" data-kind="{{ item.kind }}" data-date="{{ item.date }}"{% if item.pin %} data-pin{% endif %}{% if loop.index > 8 %} hidden{% endif %}>
       <span class="card-top">
         <span class="card-tag">{{ item.tag }}</span>
         <span class="card-headline">{{ item.headline }}</span>
@@ -15,6 +20,8 @@
           {% for point in item.points %}
           <span class="card-point">{{ point }}</span>
           {% endfor %}
+        {% elif item.summary %}
+          <span class="card-summary">{{ item.summary }}</span>
         {% endif %}
         <span class="card-cta">{{ item.cta }} ›</span>
       </span>

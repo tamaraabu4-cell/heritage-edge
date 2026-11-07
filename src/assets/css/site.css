@@ -315,6 +315,18 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 500;
 }
 .card-cta { margin-top: 8px; font-size: 15px; font-weight: 500; color: var(--card-accent); }
+/* Automatic cards (projects, posts, lessons) show their summary instead of points */
+.card-summary {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(245, 245, 247, 0.82);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* Cards left out of this visit's mix (highlights.js); display: flex above would otherwise show them */
+.highlight-card[hidden] { display: none; }
 
 /* Topic colours: a card with "topic" in highlights.json takes that topic's colour
    (the colour names come from shelves.json). Deep colour behind, bright version for the tag and link. */
@@ -329,6 +341,7 @@ h1, h2, h3, p { margin: 0; }
 .highlight-card.tone-burgundy { --card-bg: #4a1d24; --card-accent: #fda4af; }
 .highlight-card.tone-navy     { --card-bg: #1b2a44; --card-accent: #93c5fd; }
 .highlight-card.tone-steel    { --card-bg: #2f4858; --card-accent: #a5c8dc; }
+.highlight-card.tone-walnut   { --card-bg: #5b4636; --card-accent: #e7cdb4; }
 
 /* 9. Homepage — every project, four steps */
 .steps-section {
