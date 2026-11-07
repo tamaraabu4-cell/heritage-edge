@@ -18,6 +18,7 @@ const HUB_HOME = "/hub/";                    // where you land after unlocking
 const UNLOCK_PAGE = "/unlock/";             // the passcode page
 const UNLOCK_API = "/api/unlock";           // where the passcode form is sent
 const LOCK_API = "/api/lock";               // visiting this signs you out
+const LOCKED_PAGE = "/locked/";             // ...then plays the locking animation
 const PASSKEY_API = "/api/passkey/";        // Face ID / Touch ID (passkeys)
 const COOKIE = "hub_pass";
 
@@ -36,9 +37,9 @@ export async function onRequest(context) {
     return handleUnlock(request, env, url);
   }
 
-  // 2. Sign out: delete the pass
+  // 2. Sign out: delete the pass, then show the locking animation (it goes on to the homepage)
   if (url.pathname === LOCK_API) {
-    const res = redirect(url, "/");
+    const res = redirect(url, LOCKED_PAGE);
     res.headers.append("Set-Cookie", `${COOKIE}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax`);
     return res;
   }

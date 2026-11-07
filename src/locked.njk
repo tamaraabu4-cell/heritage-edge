@@ -1,0 +1,62 @@
+---
+layout: layouts/base.njk
+title: Knowledge Hub locked
+permalink: /locked/
+eleventyExcludeFromCollections: true
+---
+{# The hub's Lock button signs you out (/api/lock), then lands here.
+   This page plays the unlock animation in reverse, then goes to the homepage. #}
+<section class="unlock lock-page" data-lock-page>
+  <div class="unlock-card">
+    <div class="unlock-emblem" aria-hidden="true">
+      <svg class="unlock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path class="lock-shackle" d="M8 10.5V7.5a4 4 0 0 1 8 0v3"></path>
+        <rect class="lock-body" x="4.5" y="10.5" width="15" height="10" rx="2.5"></rect>
+      </svg>
+    </div>
+    <p class="page-eyebrow">Knowledge Hub</p>
+    <h1 class="unlock-title" data-lock-title>Locking…</h1>
+    <p class="unlock-intro">This part of Heritage Edge is private again.</p>
+
+    <div class="pin-boxes lock-boxes" aria-hidden="true">
+      {% for i in range(0, 6) %}<span class="pin-box" style="--r: {{ 5 - i }}"></span>{% endfor %}
+    </div>
+    <p class="unlock-message" data-lock-message role="status" aria-live="polite"></p>
+
+    <noscript>
+      <meta http-equiv="refresh" content="1; url=/">
+      <a class="unlock-back" href="/">‹ Back to Heritage Edge</a>
+    </noscript>
+  </div>
+</section>
+
+<script>
+  // The locking animation (styles: site.css section 20)
+  // 1. the boxes empty one by one, right to left   2. the padlock swings shut with a click
+  // 3. the card sinks away                          4. the homepage opens
+  (function () {
+    var page = document.querySelector("[data-lock-page]");
+    if (!page) return;
+    var title = page.querySelector("[data-lock-title]");
+    var message = page.querySelector("[data-lock-message]");
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var go = function () { location.replace("/"); };
+
+    function done() {
+      title.textContent = "Locked.";
+      message.textContent = "Taking you home…";
+    }
+
+    if (reduceMotion) {
+      page.classList.add("is-locking");
+      done();
+      return setTimeout(go, 600);
+    }
+
+    // A short pause showing the hub "open", then lock it
+    setTimeout(function () { page.classList.add("is-locking"); }, 250);
+    setTimeout(done, 1150);
+    setTimeout(function () { page.classList.add("is-leaving"); }, 1750);
+    setTimeout(go, 2200);
+  })();
+</script>
