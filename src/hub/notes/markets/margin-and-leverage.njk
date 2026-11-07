@@ -1,0 +1,291 @@
+---
+title: Margin and Leverage
+shelf: markets
+chapter: how-markets-work
+subtopic: Borrowing to Trade
+order: 2
+summary: Trading with borrowed money - marking to market, gross and net exposure, how leverage scales every outcome, how margin protects the lender, and how margin calls turn falls into crashes.
+lede: Leverage means controlling more than your own money, using a loan. It makes every move bigger, in both directions. Margin is the deposit the lender holds to keep itself safe, and when that deposit runs low, the lender sells your position for you at the worst possible moment.
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/margin-and-leverage.js]
+alsoIn: [trading/risk-and-position-sizing/Position Sizing, hedge-funds/portfolio-construction-and-risk/Gross and Net Exposure]
+
+quiz:
+  - q: 'Equity of \(200{,}000\) runs gross exposure of \(1.2\) million. What is the leverage?'
+    opts: ['\(1.2\times\)', '\(0.17\times\)', '\(6\times\)']
+    right: 2
+    why: 'Leverage \(= \frac{\text{gross exposure}}{\text{equity}} = \frac{1{,}200{,}000}{200{,}000} = 6\). Every \(1\%\) move in the positions moves your own money about \(6\%\).'
+  - q: 'At leverage \(6\), the market moves \(3\%\) against you. Roughly what happens to your equity?'
+    opts: ['It falls about \(18\%\)', 'It falls about \(3\%\)', 'It falls about \(0.5\%\)']
+    right: 0
+    why: 'Equity moves about \(L \times x = 6 \times 3\% = 18\%\). At this leverage, a \(16.7\%\) fall would wipe you out completely.'
+  - q: 'Buy \(1{,}000\) shares at \(40.00\) with \(50\%\) initial margin. Maintenance margin is \(25\%\). At what price does the margin call arrive?'
+    opts: ['\(30.00\)', '\(26.67\)', '\(20.00\)']
+    right: 1
+    why: 'The loan is \(20{,}000\). The call comes when \(\frac{1{,}000P - 20{,}000}{1{,}000P} = 0.25\), so \(P = \frac{20{,}000}{750} = 26.67\): a \(33\%\) fall.'
+
+connected:
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: Life on a Desk, where: Markets · What Markets Are, url: /hub/markets/life-on-a-desk/ }
+  - { label: Next, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Gross and Net Exposure, where: Hedge Funds · Portfolio Construction and Risk, url: /hub/hedge-funds/ }
+  - { label: Used in, title: Archegos, where: Hedge Funds · Famous Funds and Blow-ups, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .ml-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Marking to Market", "If I haven't sold, have I really lost anything?", "Marking to market" %}
+  <div class="prose">
+    <p>You bought a car for \(\text{£}20{,}000\). A year later, the same car sells for \(\text{£}14{,}000\). You haven't sold yours, so have you lost \(\text{£}6{,}000\)? A trader would say yes. The car is worth what someone would pay for it today, not what you paid. Keeping it is a choice to hold a \(\text{£}14{,}000\) car.</p>
+    <p>That's {% gl "mark to market" %}marking to market{% endgl %}: every position is revalued at today's market price, every day (often every second), whether or not anything has been sold. The day's change in value is that day's profit or loss. Risk systems, margin calculations and performance reports all run on this number.</p>
+    <h3>Realised and unrealised</h3>
+    <ul>
+      <li>{% gl "realised P&L" %}Realised P&L{% endgl %} is locked in: you've sold, and the money is in the account.</li>
+      <li>{% gl "unrealised P&L" %}Unrealised P&L{% endgl %} is the profit or loss on positions you still hold, at today's prices.</li>
+    </ul>
+    <p>The difference matters for tax and for feelings, but not for how much you're worth. An unrealised loss is still a loss: it's money you could have today and don't. "It's only a paper loss" is one of the most expensive sentences in trading.</p>
+    <h3>Average cost</h3>
+    <p>Most positions are built in several buys. Traders track one {% gl "average cost" %}average cost{% endgl %} for the whole position. Buy \(400\) shares at \(80.00\) and then \(600\) more at \(82.00\):</p>
+  </div>
+  <div class="formula"><span class="lbl">Average cost</span>\[ \frac{400 \times 80 + 600 \times 82}{1{,}000} = 81.20 \]</div>
+  <div class="prose">
+    <p>With the price at \(85.00\), the position shows \(1{,}000 \times (85.00 - 81.20) = 3{,}800\) unrealised. Sell everything at \(92.00\) and you realise \(1{,}000 \times (92.00 - 81.20) = 10{,}800\). Selling didn't create the profit; it just turned the latest mark into cash.</p>
+    <h3>Money, not percentages</h3>
+    <p>Percentages are good for comparing skill: a \(10\%\) return is a \(10\%\) return at any size. But profits and losses add up in money. A \(2\%\) gain on a \(100{,}000\) position (\(+2{,}000\)) and a \(2\%\) loss on a \(1{,}000{,}000\) position (\(-20{,}000\)) don't cancel out. Together they lose \(18{,}000\). Books are always added up in currency.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A position is worth today's price, every day. That daily mark is what decides whether a lender is still happy to lend you the money.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Gross and Net Exposure", "How big is my bet, really?", "Gross and net exposure" %}
+  <div class="prose">
+    <p>{% gl "exposure" %}Exposure{% endgl %} is how much you gain or lose when something moves. For a single share, it's simply the value of the position: hold \(50{,}000\) of a share and a \(1\%\) move is \(500\). A fund with longs <em>and</em> shorts needs two numbers:</p>
+  </div>
+  <div class="formula"><span class="lbl">Net and gross exposure</span>\[ \text{net} = \text{longs} - \text{shorts} \qquad \text{gross} = \text{longs} + \text{shorts} \]</div>
+  <div class="prose">
+    <p>A book long \(10\) million and short \(8\) million has {% gl "net exposure" %}net{% endgl %} exposure of \(2\) million: that's its bet on the whole market going up. Its {% gl "gross exposure" %}gross{% endgl %} exposure is \(18\) million: everything that could go wrong if individual shares move in unexpected ways.</p>
+    <p>Two books can have the same net and be completely different risks. Book A is long \(2\) million and short nothing. Book B is long \(10\) million and short \(8\) million. Both are net \(2\) million long. But book B can lose badly if its longs fall while its shorts rise (the two sides "diverge"), even in a calm market. That risk grows with gross, and gross is also what uses up the lender's money. The Hedge Funds topic has a whole note on this.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Leverage: The Double Edge", "Why does borrowing make everything bigger?", "Leverage" %}
+  <div class="prose">
+    <p>A mortgage is the leverage almost everyone understands. You put down a \(\text{£}50{,}000\) deposit and borrow \(\text{£}200{,}000\) to buy a \(\text{£}250{,}000\) flat. You control five times your own money.</p>
+    <ul>
+      <li>If the flat rises \(10\%\) to \(\text{£}275{,}000\), you still owe \(\text{£}200{,}000\), so your \(\text{£}50{,}000\) has become \(\text{£}75{,}000\): <strong>\(+50\%\)</strong>.</li>
+      <li>If it falls \(10\%\) to \(\text{£}225{,}000\), your share is now \(\text{£}25{,}000\): <strong>\(-50\%\)</strong>.</li>
+      <li>If it falls \(20\%\), your deposit is gone completely.</li>
+    </ul>
+    <p>The loan doesn't move. Only your slice does, so every move in the price lands on your slice, five times over. Traders measure {% gl "leverage" %}leverage{% endgl %} the same way:</p>
+  </div>
+  <div class="formula"><span class="lbl">Leverage</span>\[ L = \frac{\text{gross exposure}}{\text{equity}} \qquad \Delta \text{equity} \approx L \times \text{market move} \]</div>
+  <div class="prose">
+    <p>Equity of \(100{,}000\) at \(5\times\) leverage controls \(500{,}000\). A \(4\%\) market move changes equity by \(5 \times 4\% = 20\%\): \(\pm 20{,}000\). And the fall that wipes you out is \(1/L\):</p>
+  </div>
+  <div class="tiles" aria-label="The fall that wipes out your equity at each leverage">
+    <div class="tile"><span class="d">\(1\times\)</span><span>\(100\%\) fall</span></div>
+    <div class="tile"><span class="d">\(2\times\)</span><span>\(50\%\)</span></div>
+    <div class="tile"><span class="d">\(3\times\)</span><span>\(33\%\)</span></div>
+    <div class="tile"><span class="d">\(5\times\)</span><span>\(20\%\)</span></div>
+    <div class="tile"><span class="d">\(10\times\)</span><span>\(10\%\)</span></div>
+    <div class="tile hot"><span class="d">\(30\times\)</span><span>\(3.3\%\)</span></div>
+  </div>
+  <div class="prose">
+    <p>Leverage doesn't make a strategy better or worse. It stretches every possible outcome, including the ones that end the account. Market falls of \(30\)–\(50\%\) have happened roughly once a decade, so anything run at \(3\times\) or more needs a plan for surviving one.</p>
+    <h3>Right in the end, ruined on the way</h3>
+    <p>The worst thing about leverage is that the <em>path</em> matters, not just where the price ends up. Without leverage, you can sit through a \(40\%\) fall and wait for the recovery. With leverage, the lender may close you out at the bottom, and a temporary loss becomes a permanent one. Being right eventually is worth nothing if the financing runs out first.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Same share, different leverage</h3><p>A share falls \(40\%\) over nine months, then recovers to finish \(20\%\) up after two years. Choose your leverage. The lender closes you out if your equity drops below \(10\%\) of the position (a maintenance margin a hedge fund might have).</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="lev-l">Leverage</label><input type="range" id="lev-l" min="1" max="5" step="0.5" value="3"><output id="lev-l-out" for="lev-l">3×</output></div>
+    </div>
+    <svg class="chart" id="chart-path" viewBox="0 0 640 300" role="img" aria-label="Your equity over 24 months at the chosen leverage, compared with holding the share without borrowing"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your equity with leverage</span><span><i class="sw grey"></i>Without leverage (the share itself)</span></div>
+    <div class="readout" id="lev-read"></div>
+    <p class="look" id="lev-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Margin: The Lender's Cushion", "How does the lender make sure it gets its money back?", "Margin" %}
+  <div class="prose">
+    <p>Whoever lends you the money (your broker, or a prime broker for a fund) holds your account as security. {% gl "margin" %}Margin{% endgl %} is the part of the account that's really yours: the cushion between the value of your positions and what you owe. There are two levels to know:</p>
+    <ul>
+      <li>{% gl "initial margin" %}Initial margin{% endgl %}: the deposit you need to <em>open</em> a position. At \(50\%\), you can buy \(\text{£}100{,}000\) of shares with \(\text{£}50{,}000\) of your own. That caps your leverage at the start.</li>
+      <li>{% gl "maintenance margin" %}Maintenance margin{% endgl %}: the minimum you need to <em>keep</em> it open. Fall below it and you get a {% gl "margin call" %}margin call{% endgl %}: put in more money, or the broker sells.</li>
+    </ul>
+    <p>Because the loan is fixed and only your slice shrinks, equity falls faster than the price, and each further fall brings the call closer more quickly. The good news: the price where the call arrives can be worked out on day one, before anything moves. Doing that sum before every leveraged trade is basic risk hygiene.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Rule (US shares)</th><th>Level</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "Reg T" %}Regulation T{% endgl %} initial margin</td><td>\(50\%\)</td><td>Pay at least half of any share purchase with your own money</td></tr>
+        <tr><td>FINRA maintenance</td><td>\(25\%\)</td><td>Equity must stay above a quarter of the positions' value. Many brokers ask for \(30\)–\(40\%\)</td></tr>
+        <tr><td>{% gl "portfolio margin" %}Portfolio margin{% endgl %}</td><td>about \(15\%\)</td><td>Margin based on the risk of the whole account, so hedged books need less. Most hedge funds use it</td></tr>
+        <tr><td>Short sale, initial</td><td>\(150\%\)</td><td>The sale proceeds (\(100\%\)) plus a \(50\%\) deposit</td></tr>
+        <tr><td>Short sale, maintenance</td><td>\(30\%\)</td><td>Equity must stay above \(30\%\) of the short's current value</td></tr>
+        <tr><td>Concentrated position</td><td>\(50\)–\(100\%\)</td><td>Extra margin when one name is a big part of the account</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Where does the margin call arrive?</h3><p>\(1{,}000\) shares at \(50.00\), long or short. Set the margins, then move the price and watch your equity as a share of the position. The dashed line is the maintenance margin: cross it and the call arrives.</p></div>
+    <div class="controls">
+      <div class="presets ml-pick" id="mc-side" aria-label="Long or short"></div>
+      <div class="ctrl"><label for="mc-i">Initial margin</label><input type="range" id="mc-i" min="25" max="100" step="5" value="50"><output id="mc-i-out" for="mc-i">50%</output></div>
+      <div class="ctrl"><label for="mc-m">Maintenance</label><input type="range" id="mc-m" min="10" max="50" step="5" value="30"><output id="mc-m-out" for="mc-m">30%</output></div>
+      <div class="ctrl"><label for="mc-p">Price now</label><input type="range" id="mc-p" min="20" max="80" step="0.5" value="50"><output id="mc-p-out" for="mc-p">50.00</output></div>
+    </div>
+    <svg class="chart" id="chart-call" viewBox="0 0 640 300" role="img" aria-label="Equity as a percentage of the position's value at every price, with the maintenance margin line and the margin call price marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your equity as % of the position</span><span><i class="sw grey"></i>Maintenance margin</span></div>
+    <div class="readout" id="mc-read"></div>
+    <p class="look" id="mc-story"></p>
+  </div>
+  <div class="prose">
+    <p>Try the short side with the same settings. A long at \(50\%\) / \(30\%\) gets its call after a \(28.6\%\) <em>fall</em>. A short at the standard \(150\%\) / \(30\%\) gets its call after a rise of only \(15.4\%\). That's the asymmetry from the last note, showing up in the margin account.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Margin Calls and Forced Selling", "What happens when the call comes, and why does it make crashes worse?", "Margin calls" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Stage</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td>Trigger</td><td>Equity falls below maintenance: a price fall (long), a price rise (short), taking money out, or the broker raising its requirement</td></tr>
+        <tr><td>The call</td><td>The broker demands more cash or securities, by an automated alert, email or phone call, often during the day now, not just at the close</td></tr>
+        <tr><td>Your options</td><td>Add cash, add securities, or sell positions yourself. Deadlines are often a few days, but brokers can sell immediately without asking</td></tr>
+        <tr><td>{% gl "forced liquidation" %}Forced liquidation{% endgl %}</td><td>If you don't meet the call, the broker sells for you, usually your most liquid holdings, at whatever the market will pay</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The cascade</h3>
+    <p>One forced seller is a bad day for them. Lots of forced sellers at once is a crash. The loop goes like this:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Prices fall.<span class="why">Bad news, a shock, or simply too many people trying to sell at once.</span></span></li>
+    <li><span class="n">2</span><span>Leveraged holders get margin calls.<span class="why">Their equity drops faster than prices because of the leverage, and some can't add more cash.</span></span></li>
+    <li><span class="n">3</span><span>Brokers sell their positions.<span class="why">Forced sellers don't care about price; they have to sell. That pushes prices lower.</span></span></li>
+    <li><span class="n">4</span><span>Others with similar positions get called.<span class="why">They were fine yesterday. Now the lower prices push them under, and stop-losses and risk models add more selling. Back to step 1.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>This {% gl "deleveraging" %}deleveraging{% endgl %} spiral is why leveraged markets can fall far further than the news justifies. It's the short squeeze from the last note, running downwards. And there's a twist: lenders raise margin requirements when markets get volatile, demanding a bigger cushion exactly when everyone's cushions are shrinking. That protects each lender, but it adds fuel to the fire.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "When Leverage Blows Up", "What does this look like in real life?", "When leverage blows up" %}
+  <div class="prose">
+    <h3>LTCM, 1998</h3>
+    <p>Long-Term Capital Management had two Nobel prize winners and some of Wall Street's best traders. It made small, "safe" bets on prices converging and used enormous leverage (roughly \(25\times\) on its balance sheet) to make them pay. When Russia defaulted in 1998, those bets all moved against it at once, everyone else running similar trades sold too, and LTCM lost about \(\$4.6\) billion in a few months. The New York Fed got \(14\) banks to put in \(\$3.6\) billion to wind it down safely, because a fire sale of its positions threatened the whole system.</p>
+    <h3>Archegos, 2021</h3>
+    <p>Bill Hwang's family office had around \(\$10\) billion of its own money but held positions worth several times that, through {% gl "total return swap" %}total return swaps{% endgl %} with several banks. A swap gives you the gains and losses of a share without owning it, so nobody outside, and no single bank, could see the whole position. When a few of its big holdings fell in March 2021, Archegos couldn't meet the margin calls. The banks raced to sell: the ones that sold first (Goldman Sachs, Morgan Stanley) lost little; Credit Suisse lost about \(\$5.5\) billion and Nomura nearly \(\$3\) billion. Banks lost over \(\$10\) billion in total.</p>
+    <p>Both stories have the same shape: concentrated positions, high leverage, and a lender that couldn't see (or didn't want to see) the full risk. Both get their own notes in Hedge Funds › Famous Funds and Blow-ups.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How does leverage work in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the most leveraged market most people touch</h3>
+    <p>Retail FX and CFD platforms offer leverage on a deposit. In the UK and EU, regulators cap it for retail clients: up to \(30\times\) on major currency pairs, \(20\times\) on other pairs, gold and major indices, \(10\times\) on other commodities, and \(5\times\) on shares. At \(30\times\), a \(3.3\%\) move against you wipes out the deposit, and EUR/USD can move that in a few bad weeks.</p>
+    <p>Two retail protections work like a built-in margin call. The platform must close your positions once your equity falls to half of the margin required, and you can't lose more than you put in (negative balance protection). Professionals trade FX against credit lines from their banks or through a prime broker, which is the next note.</p>
+    <p>Prop firm challenges are leverage with the margin rules written as limits: a daily loss limit (often \(5\%\)) and a maximum drawdown (often \(10\%\)). Break either and the account is closed, which is exactly what a forced liquidation is.</p>
+    <h3>Gold: futures margin set by the exchange</h3>
+    <p>A COMEX gold future controls \(100\) ounces for a deposit of a small part of its value, set by the exchange and changed whenever volatility changes. When prices go wild, the exchange raises margins, and traders who can't pay must sell. Silver in 2011 is the classic case: the exchange raised silver margins five times in about nine days, and the price fell by about a quarter in a week as leveraged longs were forced out.</p>
+    <h3>Bonds: repo, haircuts and the 2022 gilt crisis</h3>
+    <p>In bonds, leverage usually comes through repo: you buy a bond, lend it out against cash, and use the cash to buy more. The lender keeps a {% gl "haircut" %}haircut{% endgl %}, lending a little less than the bond is worth (say \(98\%\)), and the haircut works like margin.</p>
+    <p>The UK had its own margin cascade in September 2022. Many pension schemes used leveraged "liability-driven investment" (LDI) funds that held gilts with repo and swaps. After the mini-budget, gilt yields jumped so fast that these funds faced about \(\text{£}66\) billion of collateral calls in a few days. To raise cash, they sold gilts, which pushed yields higher and triggered more calls. The Bank of England stepped in to buy long-dated gilts (it bought about \(\text{£}19\) billion), giving the funds time to raise money instead of selling into a falling market.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Levered / leverage</h3><span class="tag desk">Desk</span></div><p>Controlling more than your own money, using borrowing. Measured as gross exposure divided by equity.</p><p class="eg">"We're running three times levered."</p></div>
+    <div class="term"><div class="term-top"><h3>The mark / MTM</h3><span class="tag desk">Desk</span></div><p>Today's value of a position, and the daily process of revaluing everything.</p><p class="eg">"What's the mark on the book?"</p></div>
+    <div class="term"><div class="term-top"><h3>Gross / net</h3><span class="tag desk">Desk</span></div><p>Longs plus shorts, and longs minus shorts.</p><p class="eg">"Gross is 180, net's only 20."</p></div>
+    <div class="term"><div class="term-top"><h3>Margin call</h3><span class="tag desk">Desk</span></div><p>The lender asking for more money because your cushion is too thin.</p><p class="eg">"We got a call from the PB this morning."</p></div>
+    <div class="term"><div class="term-top"><h3>Blown out / liquidated</h3><span class="tag desk">Desk</span></div><p>Having your positions sold by the lender after failing a margin call.</p><p class="eg">"He got blown out at the lows."</p></div>
+    <div class="term"><div class="term-top"><h3>Deleveraging</h3><span class="tag desk">Desk</span></div><p>Cutting positions to reduce leverage, often by lots of funds at the same time.</p><p class="eg">"This isn't news, it's a degrossing."</p></div>
+    <div class="term"><div class="term-top"><h3>Haircut</h3><span class="tag desk">Desk</span></div><p>How much less than a security's value a lender will lend against it.</p><p class="eg">"Haircut on that bond's gone from 2 to 10."</p></div>
+    <div class="term"><div class="term-top"><h3>Paper loss</h3><span class="tag desk">Desk</span></div><p>An unrealised loss. Still a loss.</p><p class="eg">"It's not a paper loss, it's a loss."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where leverage turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: work out the call before you trade</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>The leverage a platform offers is a ceiling, not a target. Size from the stop instead: decide how much of the account you'll lose if the stop is hit, and let that set the position size. Then check how far the price would have to move to reach a margin close-out. If that's closer than your stop, the position is too big. A good trader's real leverage is usually far below what the platform allows.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: a mortgage is leverage without margin calls</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A \(75\%\) loan-to-value mortgage is \(4\times\) leverage: a \(25\%\) price fall wipes out the deposit, which is what "negative equity" means. The big difference from trading is that a home lender can't force a sale just because prices fell, as long as you keep paying. That's why property investors can survive falls that would liquidate a trader. Commercial property loans are different: they often have loan-to-value limits written into them, and breaking one works much like a margin call. For a villa or development business, the question is the same as on a trading desk: can you survive the worst path, not just the average one?</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the 2008 margin loan crash</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria lived through this note in 2008. Banks had lent heavily to investors to buy shares (margin loans), often shares in the banks themselves, which helped push the NSE All-Share Index to a record of nearly \(59{,}000\) in March 2008. When prices turned, banks called the loans, investors were forced to sell, and the index fell by about two thirds within a year. Banks' losses on margin loans ran to around \(1\) trillion naira, and AMCON was later set up to take bad loans like these off the banks. Today, many Nigerians trade FX and CFDs through offshore platforms at high leverage, often without the UK-style protections above: a good subject for a fintech product that teaches people to size positions safely.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on leverage and margin?" %}
+  <div class="formula"><span class="lbl">Average cost</span>\[ \bar{p} = \frac{\sum_i q_i p_i}{\sum_i q_i} \qquad \text{unrealised P\&L} = q \times (P_{\text{now}} - \bar{p}) \]</div>
+  <div class="formula"><span class="lbl">Exposure and leverage</span>\[ \text{net} = L - S \qquad \text{gross} = L + S \qquad \text{leverage} = \frac{\text{gross}}{\text{equity}} \]</div>
+  <div class="formula"><span class="lbl">Leverage scales moves</span>\[ \Delta \text{equity} \approx \text{leverage} \times x \qquad \text{wipe-out move} = \frac{1}{\text{leverage}} \]</div>
+  <div class="formula"><span class="lbl">Margin call price, long (loan \(B\), \(n\) shares, maintenance \(m\))</span>\[ \frac{nP - B}{nP} = m \ \Rightarrow \ P^{*} = \frac{B}{n(1 - m)} \]</div>
+  <div class="formula"><span class="lbl">Margin call price, short (entry \(P_0\), initial \(i\), maintenance \(m\))</span>\[ \frac{n P_0 (1 + i) - nP}{nP} = m \ \Rightarrow \ P^{*} = \frac{P_0 (1 + i)}{1 + m} \]</div>
+  <div class="formula"><span class="lbl">Getting back to where you started after a fall \(d\)</span>\[ \text{gain needed} = \frac{d}{1 - d} \qquad 20\% \to 25\%, \ \ 50\% \to 100\% \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 1</span>
+    <h3>Buy \(1{,}000\) shares at \(50.00\) with \(50\%\) initial margin. Maintenance is \(30\%\).</h3>
+    <ol class="steps">
+      <li>Equity \(25{,}000\), loan \(25{,}000\).</li>
+      <li>Call when \(\frac{1{,}000P - 25{,}000}{1{,}000P} = 0.30\), so \(P = \frac{25{,}000}{700} \approx 35.71\).</li>
+      <li>That's a fall of \(\frac{50.00 - 35.71}{50.00} = 28.6\%\). At \(35.71\), equity is \(10{,}714\): the share fell \(28.6\%\), but your money fell \(57\%\).</li>
+    </ol>
+    <p class="answer">The call arrives at about \(35.71\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example 2</span>
+    <h3>Short \(1{,}000\) shares at \(50.00\). Initial margin \(50\%\), maintenance \(30\%\).</h3>
+    <ol class="steps">
+      <li>Cash in the account: \(50{,}000\) proceeds \(+\ 25{,}000\) deposit \(= 75{,}000\).</li>
+      <li>Call when \(\frac{75{,}000 - 1{,}000P}{1{,}000P} = 0.30\), so \(P = \frac{75{,}000}{1{,}300} \approx 57.69\).</li>
+    </ol>
+    <p class="answer">A rise of just \(15.4\%\) brings the call.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Buy \(300\) shares at \(50.00\), then \(700\) at \(54.00\). Sell all \(1{,}000\) at \(60.00\). What is the realised profit?</span></p>
+      <details><summary>Show answer</summary><div><span>Average cost \(= \frac{15{,}000 + 37{,}800}{1{,}000} = 52.80\). Profit \(= 1{,}000 \times (60.00 - 52.80) = 7{,}200\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A book is long \(14\) million and short \(9\) million. What are its gross and net exposure?</span></p>
+      <details><summary>Show answer</summary><div><span>Gross \(= 23\) million, net \(= 5\) million long.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Equity of \(200{,}000\) runs gross exposure of \(1.2\) million. What is the leverage ratio?</span></p>
+      <details><summary>Show answer</summary><div><span>\(1{,}200{,}000 / 200{,}000 = 6\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>At leverage \(6\), a \(3\%\) adverse market move changes equity by what percent?</span></p>
+      <details><summary>Show answer</summary><div><span>About \(-18\%\) (\(6 \times -3\%\)), or \(-0.18\) as a decimal.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>You have \(100{,}000\) in a share. You borrow \(200{,}000\) to triple the position. The share falls \(12\%\). What happens to your equity, and what fall would wipe you out?</span></p>
+      <details><summary>Show answer</summary><div><span>The \(300{,}000\) position loses \(36{,}000\), so equity falls \(36\%\) to \(64{,}000\). At \(3\times\), a fall of \(33.3\%\) wipes you out.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Buy \(2{,}000\) shares at \(25.00\) with \(50\%\) initial margin and \(25\%\) maintenance. Where is the margin call?</span></p>
+      <details><summary>Show answer</summary><div><span>Loan \(= 25{,}000\). \(P^{*} = \frac{25{,}000}{2{,}000 \times 0.75} = 16.67\), a fall of \(33.3\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>A trader makes \(2\%\) on a \(100{,}000\) position and loses \(2\%\) on a \(1{,}000{,}000\) position. What's the total?</span></p>
+      <details><summary>Show answer</summary><div><span>\(+2{,}000 - 20{,}000 = -18{,}000\). Percentages don't add up across sizes; money does.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">8</span><span>Interview question: why do lenders raise margin requirements when markets get volatile, and why can that make a crash worse?</span></p>
+      <details><summary>Show answer</summary><div><span>Bigger daily moves mean the same cushion covers fewer bad days, so each lender asks for more to stay safe. But it asks everyone at once, exactly when prices are falling and cash is scarce. Those who can't pay are forced to sell, which pushes prices down and triggers more calls: each lender acting sensibly adds up to a spiral.</span></div></details></div>
+  </div>
+{% endsec %}
