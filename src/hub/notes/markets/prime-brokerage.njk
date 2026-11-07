@@ -1,0 +1,249 @@
+---
+title: Prime Brokerage
+shelf: markets
+chapter: how-markets-work
+subtopic: Borrowing to Trade
+order: 3
+summary: The bank behind every hedge fund - the services a prime broker provides, how it earns its money, how funds choose one, why the prime broker itself is a risk, and synthetic prime brokerage through swaps.
+lede: A hedge fund can be ten people in an office. Everything else it needs to trade (the loans, the borrowed shares, the safekeeping, the settlement) comes from a prime broker. It's the most important relationship a fund has, and the one that can sink it fastest if it goes wrong.
+goals: [trading, realestate, fintech]
+themes: [trading, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/prime-brokerage.js]
+alsoIn: [hedge-funds/the-hedge-fund-business/What a Hedge Fund Is]
+
+quiz:
+  - q: 'A fund borrows \(\$150\) million from its prime broker at SOFR \(+\,50\) bp. SOFR is \(4\%\). Roughly what does the loan cost for a year?'
+    opts: ['\(\$6.75\) million', '\(\$0.75\) million', '\(\$6\) million']
+    right: 0
+    why: 'The fund pays \(4\% + 0.5\% = 4.5\%\) on \(\$150\) million, which is \(\$6.75\) million. The \(\$0.75\) million spread is the prime broker''s share.'
+  - q: 'Why do most hedge funds use two or three prime brokers?'
+    opts: ['To get lower commissions on every trade', 'Because regulators require it', 'So one broker failing, or pulling its financing, can''t freeze everything']
+    right: 2
+    why: 'After Lehman Brothers collapsed in 2008 and froze client assets, funds spread their positions across several prime brokers. It costs more to run, but it''s insurance against the broker itself.'
+  - q: 'In a total return swap on a share, what does the fund actually own?'
+    opts: ['The shares, held for it by the bank', 'A contract with the bank that pays it the share''s gains and losses', 'Nothing at all until the swap ends']
+    right: 1
+    why: 'The bank owns the shares (to hedge itself). The fund owns a contract with the bank. That''s why swaps can hide how big a position really is.'
+
+connected:
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: Following the Money, where: Markets · What Markets Are, url: /hub/markets/following-the-money/ }
+  - { label: Next, title: Clearing and Settlement, where: Markets · How Markets Work, url: /hub/markets/ }
+  - { label: Used in, title: Raising Capital, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .pb-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "What a Prime Broker Is", "Who does all the work behind a hedge fund?", "What a prime broker is" %}
+  <div class="prose">
+    <p>Imagine opening a restaurant with just a chef and two cooks. You don't build your own kitchen, run your own farm or hire your own accountant. You rent a fully equipped kitchen, a supplier delivers ingredients on credit, and someone else does the books and the deliveries. You focus on the cooking.</p>
+    <p>A hedge fund works the same way. A portfolio manager, a few analysts and a trader focus on picking positions. Almost everything else comes from a {% gl "prime broker" %}prime broker{% endgl %} (PB): a division of a big investment bank that lends the fund money, lends it shares to short, holds its assets, settles its trades and reports on its risk.</p>
+    <p>You've already met the PB in this chapter: it's the stock-loan desk the execution trader calls for a locate, and the lender that issues the margin calls. This note looks at it from the bank's side, and at what happens when the relationship goes wrong.</p>
+    <h3>Who the prime brokers are</h3>
+    <p>A handful of banks dominate: Goldman Sachs, Morgan Stanley and JPMorgan serve most of the world's hedge fund assets, followed by banks such as BofA, Barclays, BNP Paribas, UBS and Deutsche Bank. They compete hard for funds because prime brokerage pays steady, recurring revenue: the fund pays interest, borrow fees and commissions every day it trades, whether markets go up or down.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The prime broker decides how much a fund can borrow and what it can short. The most important thing about it isn't the price; it's whether it stands by you when markets go wrong.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Services", "What does a prime broker actually do for a fund?", "The services" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Service</th><th>What it is</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "custody" %}Custody{% endgl %}</td><td>Safekeeping the fund's cash, shares and other assets in separate accounts</td><td>Assets kept apart from the bank's own are protected if the bank fails (in theory; see section 5)</td></tr>
+        <tr><td>Margin financing</td><td>Lending the fund money to buy more than its own capital</td><td>Charged at a {% gl "financing spread" %}spread{% endgl %} over a benchmark rate such as SOFR: often SOFR \(+\,35\) to \(75\) bp</td></tr>
+        <tr><td>Securities lending</td><td>Finding shares for the fund to borrow and short</td><td>Access to hard-to-borrow shares can decide whether a short is possible at all</td></tr>
+        <tr><td>Execution</td><td>Trading through the bank's desks and algos</td><td>Many funds trade through their PB to keep the relationship (and revenue) in one place</td></tr>
+        <tr><td>{% gl "capital introduction" %}Capital introduction{% endgl %}</td><td>Introducing the fund to investors such as pension funds, family offices and endowments</td><td>No direct fee, but the PB expects trading business in return. Valuable for new funds</td></tr>
+        <tr><td>Operations</td><td>Settling trades, processing dividends and other corporate actions, cash management, reporting</td><td>Lets a fund run with a small back office</td></tr>
+        <tr><td>Risk and analytics</td><td>Real-time exposure, stress tests and factor analysis (for example Goldman's Marquee, Morgan Stanley's Matrix)</td><td>For smaller funds, this can replace a risk system of their own</td></tr>
+        <tr><td>Synthetic prime brokerage</td><td>Giving the fund exposure through swaps instead of owning the shares</td><td>More leverage and easier access to some markets (section 6)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Inside the fund, the PB relationship touches almost everyone. The head trader manages it day to day, the execution trader gets locates from its stock-loan desk, operations reconcile cash and collateral with it every morning, and the CFO negotiates its rates. Roles at the PB itself (financing, stock loan, client service, capital introduction) are a common way into hedge fund careers from the sell side.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How a Prime Broker Makes Money", "What does a fund pay, and for what?", "How it makes money" %}
+  <div class="formula"><span class="lbl">Prime broker revenue</span>\[ \text{revenue} = \text{financing spread} + \text{borrow markup} + \text{commissions} + \text{minimum revenue top-up} \]</div>
+  <div class="prose">
+    <ul>
+      <li><strong>Financing spread.</strong> The PB borrows money cheaply and lends it to the fund at a spread above the benchmark rate. A large fund might pay SOFR \(+\,35\) bp; a small one SOFR \(+\,75\) bp or more.</li>
+      <li><strong>Borrow markup.</strong> The PB borrows shares from lenders and lends them on to the fund at a higher fee, keeping the difference. Often it lends shares straight out of other clients' accounts, which is cheaper still.</li>
+      <li><strong>Commissions</strong> on trades the fund sends through the PB's desks.</li>
+      <li><strong>Minimum revenue guarantees.</strong> Smaller funds often promise the PB a minimum amount of business a year. If the fund trades less, it pays the difference anyway.</li>
+    </ul>
+    <h3>Reusing your collateral</h3>
+    <p>There's a hidden part of the business. When a fund borrows from its PB, it usually lets the PB reuse the shares it holds as collateral: lend them to other clients for shorting, or pledge them to raise cash. This is called {% gl "rehypothecation" %}rehypothecation{% endgl %}, and it's a big reason the PB can lend cheaply. In the US, a PB can reuse client securities worth up to \(140\%\) of what the client owes it. The catch comes if the PB fails: shares it has reused are no longer sitting in your account (section 5).</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>What does a prime broker earn from a fund?</h3><p>Set the fund's size, gross and net exposure. The numbers are illustrative: a financing spread from \(75\) bp (small funds) down to \(35\) bp (large), a \(0.3\%\) borrow markup on shorts, \(2\) bp commission with the book traded four times a year, and a \(\$300{,}000\) minimum.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="rev-aum">Fund size</label><input type="range" id="rev-aum" min="0" max="6" step="1" value="2"><output id="rev-aum-out" for="rev-aum">$200m</output></div>
+      <div class="ctrl"><label for="rev-g">Gross</label><input type="range" id="rev-g" min="100" max="400" step="10" value="200"><output id="rev-g-out" for="rev-g">200%</output></div>
+      <div class="ctrl"><label for="rev-n">Net</label><input type="range" id="rev-n" min="0" max="100" step="10" value="40"><output id="rev-n-out" for="rev-n">40%</output></div>
+    </div>
+    <svg class="chart" id="chart-rev" viewBox="0 0 640 260" role="img" aria-label="A prime broker's yearly revenue from one fund, split into financing, stock loan, commissions and any minimum revenue top-up"></svg>
+    <div class="readout" id="rev-read"></div>
+    <p class="look" id="rev-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Choosing a Prime Broker", "If you were launching a fund, what would you look for?", "Choosing a prime broker" %}
+  <div class="prose">
+    <p>For a new fund launching with \(\$50\) to \(\$200\) million, picking a PB is one of the biggest early decisions. It sets how much the fund can borrow, which shares it can short, the systems it runs on, and often which investors it meets. The terms are agreed at launch and renegotiated as the fund grows; bigger funds that trade more get cheaper financing, lower borrow markups and better commissions.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>What to check</th><th>Why it matters</th></tr></thead>
+      <tbody>
+        <tr><td>Balance sheet strength</td><td>A PB that pulls your financing in a crisis can force you to sell at the bottom. Will it stand by you through a drawdown?</td></tr>
+        <tr><td>Borrow inventory</td><td>How many shares it can lend, especially hard-to-borrow names. Critical for long/short equity funds</td></tr>
+        <tr><td>Technology and reporting</td><td>Real-time risk, reports and data feeds that plug into the fund's own systems</td></tr>
+        <tr><td>Total cost</td><td>Financing, borrow, commissions <em>and</em> minimums together, not just the headline rate</td></tr>
+        <tr><td>Counterparty risk</td><td>Could the PB itself fail and trap your assets?</td></tr>
+        <tr><td>Service</td><td>A team that answers the phone at 6am in a crisis is worth paying for</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The most important point is the first one. In calm markets every PB looks similar. The difference shows when markets fall: that's exactly when a PB can raise margin requirements, cut how much it will lend, or recall borrowed shares, and a fund with a nervous PB can be forced to sell everything at the worst moment.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "When the Prime Broker Is the Risk", "What happens if your prime broker goes bust?", "When the PB is the risk" %}
+  <div class="prose">
+    <p>Funds worry about their PB pulling financing. In 2008 they learned to worry about something worse: the PB itself failing.</p>
+    <ul>
+      <li><strong>Bear Stearns, March 2008.</strong> Hedge funds feared for Bear and moved their cash and positions to other banks within days. The money running out of its prime brokerage helped push Bear into an emergency sale to JPMorgan.</li>
+      <li><strong>Lehman Brothers, September 2008.</strong> When Lehman collapsed, hedge funds with accounts at its London business found their assets frozen in the bankruptcy. Shares Lehman had reused (rehypothecated) were gone from their accounts; the funds were left as creditors waiting in line. Some waited years to get assets back.</li>
+    </ul>
+    <p>After Lehman, most institutional funds moved to {% gl "multi-prime" %}multi-prime{% endgl %}: two or three prime brokers, with strict rules on keeping assets separate and limits on how much each PB can reuse. Running several PBs costs more and is more work, but it's insurance: if one fails or turns nervous, most of the fund keeps working.</p>
+    <p>The risk runs both ways. In 2021 Archegos traded with several PBs at once, and none of them could see the full size of its positions. When it failed, the banks that sold first lost little and the slowest lost billions (the Margin and Leverage note has the story). Credit Suisse, the biggest loser, later handed its prime brokerage clients to BNP Paribas.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Your prime broker goes bust</h3><p>A fund has \(\$1\) billion of assets, split evenly across its prime brokers. One of them fails. Choose how many PBs the fund used, and how much of its assets the failed PB had reused.</p></div>
+    <div class="controls">
+      <div class="presets pb-pick" id="fail-n" aria-label="Number of prime brokers"></div>
+      <div class="ctrl"><label for="fail-r">Assets reused</label><input type="range" id="fail-r" min="0" max="100" step="5" value="40"><output id="fail-r-out" for="fail-r">40%</output></div>
+    </div>
+    <svg class="chart" id="chart-fail" viewBox="0 0 640 230" role="img" aria-label="The fund's assets at each prime broker, showing what is still usable, what is frozen and what has become a claim in the bankruptcy"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Still usable today</span><span><i class="sw grey"></i>At the failed broker: frozen, or a claim in the bankruptcy</span></div>
+    <div class="readout" id="fail-read"></div>
+    <p class="look" id="fail-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Synthetic Prime Brokerage", "Can a fund get a position without owning anything?", "Synthetic prime brokerage" %}
+  <div class="prose">
+    <p>With a normal ("physical") account, the fund owns the shares, held for it at the PB. With synthetic prime brokerage, the fund owns a contract instead: a {% gl "total return swap" %}total return swap{% endgl %}. The bank pays the fund any rise in the share plus dividends; the fund pays the bank any fall plus a financing fee. The bank usually buys the shares itself to hedge, so the fund gets the same gains and losses without owning anything.</p>
+    <p>Why would a fund want that?</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>More leverage.<span class="why">A swap isn't a share purchase, so rules like Reg T's \(50\%\) don't apply. The bank sets the margin itself.</span></span></li>
+    <li><span class="n">2</span><span>Access.<span class="why">Some markets are hard or slow for foreign funds to enter directly. The bank already has the access, so the fund trades the swap.</span></span></li>
+    <li><span class="n">3</span><span>Simpler operations and tax.<span class="why">No settlement in each local market, and in some countries different tax on dividends.</span></span></li>
+    <li><span class="n">4</span><span>Less visible.<span class="why">The fund doesn't own the shares, so in many cases it doesn't have to disclose a large stake. This is exactly what let Archegos build huge positions that no single bank could see, and why regulators have since pushed for more reporting of swaps.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The trade-off is counterparty risk: the fund's gains are only as good as the bank's promise to pay them.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "Is there prime brokerage in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX prime brokerage</h3>
+    <p>In FX, each trade is a promise between two parties to swap currencies later, so every bank needs to trust whoever it trades with. A fund can't open a credit line with twenty banks. Instead, it gets one with an FX prime broker. The fund then trades with any bank on the PB's list, and each trade is {% gl "give-up" %}given up{% endgl %} to the PB, which steps in as the other side for the bank. The banks trust the PB; only the PB has to trust the fund.</p>
+    <p>FX PB had its own Lehman moment on 15 January 2015, when the Swiss National Bank suddenly dropped its cap on the franc. The franc jumped about \(30\%\) against the euro in minutes, many clients' losses went past their whole deposit, and some FX brokers couldn't cover their clients' losses. FXCM, a large retail broker, needed a \(\$300\) million rescue loan, and Alpari UK went bust. FX prime brokers then cut back on smaller clients and asked the rest for more margin.</p>
+    <h3>Gold: allocated or unallocated?</h3>
+    <p>Bullion banks play a similar role for gold. The key choice is the type of account. <strong>Allocated</strong> gold is specific bars held in your name; if the bank fails, they're yours. <strong>Unallocated</strong> gold is a promise from the bank to deliver gold, like a bank deposit: cheaper, but if the bank fails you're a creditor. It's the same custody question as rehypothecation. For gold futures, the equivalent of a PB is the clearing broker; when the futures broker MF Global collapsed in 2011, about \(\$1.6\) billion of client money was missing and clients waited months to get it back.</p>
+    <h3>Bonds: the basis trade</h3>
+    <p>For bond funds, the PB (and the dealers' repo desks) finance positions through repo. One of the largest hedge fund trades runs this way: the Treasury "basis trade", buying government bonds and selling bond futures against them to capture a tiny price gap, made worthwhile by borrowing \(20\) to \(50\) times or more. In March 2020, when funding got tight and margins rose, funds had to unwind these trades at once, and the US Federal Reserve stepped in to buy Treasuries to calm the market.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>PB</h3><span class="tag desk">Desk</span></div><p>Prime broker, or prime brokerage.</p><p class="eg">"Our PB's cutting financing on small caps."</p></div>
+    <div class="term"><div class="term-top"><h3>Financing / the spread</h3><span class="tag desk">Desk</span></div><p>The loan from the PB, and how much above the benchmark rate it costs.</p><p class="eg">"We got financing down to SOFR plus 40."</p></div>
+    <div class="term"><div class="term-top"><h3>Stock loan</h3><span class="tag desk">Desk</span></div><p>The PB desk that finds shares to borrow.</p><p class="eg">"Ask stock loan if they can find any."</p></div>
+    <div class="term"><div class="term-top"><h3>Cap intro</h3><span class="tag desk">Desk</span></div><p>Capital introduction: the PB introducing funds to investors.</p><p class="eg">"Cap intro set up six meetings with family offices."</p></div>
+    <div class="term"><div class="term-top"><h3>Multi-prime</h3><span class="tag desk">Desk</span></div><p>Using several prime brokers to spread the risk.</p><p class="eg">"We're multi-prime: Goldman, MS and JPM."</p></div>
+    <div class="term"><div class="term-top"><h3>Rehypothecation</h3><span class="tag desk">Desk</span></div><p>The PB reusing a client's collateral for its own lending and funding.</p><p class="eg">"Cap the rehyp in the new agreement."</p></div>
+    <div class="term"><div class="term-top"><h3>Synthetic / swap</h3><span class="tag desk">Desk</span></div><p>Holding a position through a total return swap instead of owning it.</p><p class="eg">"We hold the Asian book on swap."</p></div>
+    <div class="term"><div class="term-top"><h3>Give-up</h3><span class="tag desk">Desk</span></div><p>In FX, handing a trade done with one bank over to your prime broker.</p><p class="eg">"Trade with whoever's best, it all gets given up."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where the prime broker idea turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your broker is your mini prime broker</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A retail trading platform does a small version of a PB's job: it holds your money, lends you leverage and settles your trades. So the same question applies: what happens if it fails? In the UK, regulated firms must keep client money separate from their own, and the FSCS protects up to \(\text{£}85{,}000\) if an investment firm collapses. An offshore broker may offer neither. With a prop firm, you don't own the account at all: the firm does, which is why its rules can close you out.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the lender that stands by you</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A property developer's main bank plays the PB role: it lends, sets the terms, and can decide whether to stand by a project when sales slow. Choosing that lender has the same lessons as choosing a PB. The cheapest headline rate matters less than whether it will extend a loan in a downturn, and spreading big projects across more than one lender stops one nervous bank from forcing a sale.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: who's really holding your assets?</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has no prime brokerage industry: local funds rarely borrow or short, and use custodian banks to hold their assets. Foreign funds reach Nigerian shares through global custodians, or through swaps and notes from international banks. When foreign investors sold Nigerian shares in 2016 and again in 2022–23, many couldn't change the naira back into dollars for months. Their money wasn't lost, but it was frozen: the same lesson as a failed PB. Assets you can't move when you need them aren't really liquid.</p>
+      <p>Apps that let Nigerians buy US shares usually hold them through a US partner broker, so your shares are only as safe as each link in that chain keeps client assets separate. Making that chain clear to users is a real fintech opportunity.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on a prime broker relationship?" %}
+  <div class="formula"><span class="lbl">Financing cost to the fund</span>\[ \text{cost} = \text{loan} \times (\text{SOFR} + \text{spread}) \times \frac{\text{days}}{360} \]</div>
+  <div class="formula"><span class="lbl">Longs and shorts from gross and net (as % of the fund)</span>\[ \text{longs} = \frac{G + N}{2} \qquad \text{shorts} = \frac{G - N}{2} \]</div>
+  <div class="formula"><span class="lbl">US rehypothecation limit</span>\[ \text{securities the PB may reuse} \le 140\% \times \text{what the client owes} \]</div>
+  <div class="formula"><span class="lbl">Exposure to one PB failing (split evenly across \(n\) PBs)</span>\[ \text{assets at risk} = \frac{1}{n} \times \text{total assets} \]</div>
+  <div class="prose">
+    <p>US money markets count interest on a \(360\)-day year, which is why the formula divides by \(360\), not \(365\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$200\) million fund runs \(200\%\) gross and \(40\%\) net, borrowing what it needs from its PB at SOFR \(+\,60\) bp.</h3>
+    <ol class="steps">
+      <li>Longs \(= \frac{200\% + 40\%}{2} = 120\%\), or \(\$240\) million. Shorts \(= 80\%\), or \(\$160\) million.</li>
+      <li>The fund has \(\$200\) million of its own, so it borrows about \(\$40\) million to pay for the longs (short sale proceeds are held as collateral, so they don't pay for longs).</li>
+      <li>The PB's spread: \(\$40\text{m} \times 0.6\% = \$240{,}000\) a year.</li>
+      <li>Borrow markup on \(\$160\) million of shorts at \(0.3\%\): \(\$480{,}000\) a year.</li>
+    </ol>
+    <p class="answer">For a long/short fund, lending shares can earn the PB more than lending money.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name the four main ways a prime broker earns money from a hedge fund.</span></p>
+      <details><summary>Show answer</summary><div><span>The financing spread on loans, the markup on borrowed shares, commissions on trades, and minimum revenue guarantees from smaller funds.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A fund borrows \(\$200\) million. A small fund pays SOFR \(+\,75\) bp; a large fund pays SOFR \(+\,35\) bp. What's the yearly difference?</span></p>
+      <details><summary>Show answer</summary><div><span>\(40\) bp on \(\$200\) million \(= \$800{,}000\) a year.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A US client owes its PB \(\$10\) million. Up to how much of its securities can the PB reuse?</span></p>
+      <details><summary>Show answer</summary><div><span>\(140\% \times \$10\) million \(= \$14\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A fund generates \(\$180{,}000\) of revenue for its PB this year but promised a \(\$300{,}000\) minimum. What does it pay?</span></p>
+      <details><summary>Show answer</summary><div><span>The \(\$180{,}000\) of normal charges plus a \(\$120{,}000\) top-up.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A fund splits its assets evenly across three PBs and one fails. What share of its assets is still usable straight away?</span></p>
+      <details><summary>Show answer</summary><div><span>Two thirds. With only one PB, it would have been none.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why might a fund hold a position through a total return swap instead of owning the shares?</span></p>
+      <details><summary>Show answer</summary><div><span>More leverage (no Reg T limit), access to hard-to-reach markets, simpler settlement and sometimes tax, and often no need to disclose a large stake. The cost: it relies on the bank to pay, and the opacity can hide dangerous size.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're launching a \(\$100\) million long/short equity fund. What do you look for in a prime broker?</span></p>
+      <details><summary>Show answer</summary><div><span>First, whether it will stand by the fund in a drawdown: balance sheet strength and its record in past crises. Then borrow inventory for the shorts, total cost including minimums, technology and reporting, capital introduction to help raise money, and service. Plan for a second PB as the fund grows, to spread counterparty risk.</span></div></details></div>
+  </div>
+{% endsec %}

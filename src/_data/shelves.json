@@ -117,7 +117,7 @@
         "subtopics": [
           "Where Trading Happens",
           "Placing a Trade",
-          { "name": "Borrowing to Trade", "planned": ["Short Selling and Securities Lending", "Margin and Leverage", "Prime Brokerage"] },
+          "Borrowing to Trade",
           { "name": "After the Trade", "planned": ["Clearing and Settlement", "Corporate Actions"] },
           { "name": "Rules and History", "planned": ["Regulation", "Crashes That Changed the Rules"] }
         ] },
