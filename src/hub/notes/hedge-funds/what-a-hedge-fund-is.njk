@@ -1,0 +1,304 @@
+---
+title: What a Hedge Fund Is
+shelf: hedge-funds
+chapter: the-hedge-fund-business
+subtopic: What a Hedge Fund Is
+order: 1
+summary: What makes a fund a hedge fund - the freedoms it has, who is allowed in, the GP/LP partnership, onshore and offshore feeders into one master fund, the rules on taking money out (lock-ups, gates, side pockets), and the service providers that keep the manager honest.
+lede: "A hedge fund isn't defined by what it buys. It's defined by how it's built: a private partnership for wealthy investors and institutions, free to borrow, short and concentrate, paid on performance, and wrapped in a legal structure designed around tax, freedom and the question every investor eventually asks: can I have my money back?"
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/what-a-hedge-fund-is.js]
+
+quiz:
+  - q: 'Why does a US university endowment usually invest in a hedge fund through the offshore feeder?'
+    opts: ['The offshore feeder charges lower fees', 'To avoid UBTI, a tax that can hit tax-exempt investors in partnerships that borrow', 'US law bans endowments from Delaware partnerships']
+    right: 1
+    why: 'Endowments don''t normally pay tax, but income from a partnership that uses borrowed money can count as UBTI and be taxed. Investing through an offshore company blocks that, so the offshore feeder is the tax-exempt investor''s door.'
+  - q: 'A fund has a \(20\%\) quarterly gate. This quarter, investors holding \(50\%\) of the fund ask to leave. What usually happens?'
+    opts: ['Each leaver gets \(40\%\) of what they asked for now; the rest waits for later quarters', 'The fund must pay everyone in full, selling whatever it takes', 'The first investors to ask get paid in full and the rest get nothing']
+    right: 0
+    why: 'The gate caps payouts at \(20\%\) of the fund. Shared out pro rata, that''s \(20 \div 50 = 40\%\) of each request now. The rest is paid in later quarters, subject to the gate again.'
+  - q: 'Who calculates the official value of a hedge fund each month?'
+    opts: ['The portfolio manager, since they know the positions best', 'The prime broker that holds the assets', 'An independent fund administrator']
+    right: 2
+    why: 'The NAV sets the manager''s fees and the price investors buy and sell at, so the manager shouldn''t mark their own homework. Madoff did exactly that, and nobody independent checked.'
+
+connected:
+  - { label: Builds on, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/prime-brokerage/ }
+  - { label: Builds on, title: Life on a Desk, where: Markets · What Markets Are, url: /hub/markets/life-on-a-desk/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Used in, title: Raising Capital, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .hf-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .hf-map { display: flex; flex-direction: column; gap: 8px; }
+  .hf-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  .hf-box { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; background: var(--bg); transition: background 0.2s, border-color 0.2s, opacity 0.2s; }
+  .hf-box b { display: block; font-size: 14px; font-weight: 600; }
+  .hf-box span { display: block; font-size: 13px; color: var(--text-2); margin-top: 2px; }
+  .hf-box.on { background: var(--tone-bg); border-color: var(--tone); }
+  .hf-box.on b { color: var(--tone); }
+  .hf-box.dim { opacity: 0.45; }
+  .hf-box.small b { font-size: 13px; }
+  .hf-arrow { text-align: center; font-size: 13px; color: var(--text-2); }
+  .hf-label { font: 500 12px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); }
+</style>
+
+{% sec 1, "What Makes a Fund a Hedge Fund?", "What's actually different about a hedge fund?", "What makes a hedge fund" %}
+  <div class="prose">
+    <p>Think of two ways to get across town. A public bus is open to everyone, so it runs on strict rules: fixed routes, speed limits, a timetable, seat belts checked. A private car with a hired driver can go anywhere, as fast as the law allows, on any route the driver likes, but only people who can afford it, and are trusted to understand the risks, get in.</p>
+    <p>A {% gl "mutual fund" %}mutual fund{% endgl %} is the bus. A {% gl "hedge fund" %}hedge fund{% endgl %} is the private car. Both pool money from many investors and pay a professional to invest it. The difference is the rulebook: because a hedge fund only takes money from wealthy people and institutions, the law leaves it free to do things an ordinary fund can't.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Mutual fund</th><th>Hedge fund</th></tr></thead>
+      <tbody>
+        <tr><td>Who can invest</td><td>Anyone</td><td>Only wealthy individuals and institutions</td></tr>
+        <tr><td>Borrowing (leverage)</td><td>Tightly limited</td><td>As much as its lenders will allow</td></tr>
+        <tr><td>Short selling</td><td>Rare or limited</td><td>A core tool</td></tr>
+        <tr><td>Big bets on a few ideas</td><td>Diversification rules stop it</td><td>Allowed</td></tr>
+        <tr><td>Taking money out</td><td>Any day</td><td>Monthly or quarterly, with notice, sometimes locked in for years</td></tr>
+        <tr><td>Fees</td><td>A small flat percentage</td><td>A yearly fee <em>plus</em> a share of the profits</td></tr>
+        <tr><td>Who sees the holdings</td><td>Published for anyone to read</td><td>Private: told to its own investors and regulators</td></tr>
+        <tr><td>The manager's own money</td><td>Optional</td><td>Usually a large part of their wealth is in the fund</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>So where's the "hedge"?</h3>
+    <p>The name comes from the first one, started in 1949 by Alfred Winslow Jones. He bought shares he thought were cheap and sold short shares he thought were expensive, so a fall in the whole market would hurt his longs but help his shorts. The shorts were his hedge. Today plenty of hedge funds hardly hedge at all: some bet on currencies, some ride trends in futures, some buy the debt of bankrupt companies. The name stuck to the <em>structure</em>, not the strategy. (The next note tells the story from Jones to today.)</p>
+    <h3>Who's allowed in?</h3>
+    <p>In the US, a hedge fund can only take money from investors the law treats as able to look after themselves. Smaller funds take <strong>{% gl "accredited investor" %}accredited investors{% endgl %}</strong> (roughly \(\$1\) million of wealth not counting your home, or \(\$200{,}000\) a year of income). Most large funds go further and only take <strong>{% gl "qualified purchaser" %}qualified purchasers{% endgl %}</strong>: people with at least \(\$5\) million of investments, or institutions with \(\$25\) million or more. In the UK, hedge funds can only be marketed to professional investors and certain wealthy or sophisticated individuals, never to the general public. In practice, most hedge fund money comes from pension funds, endowments, sovereign wealth funds, insurers and family offices.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A hedge fund trades fewer protections for more freedom. Investors give up easy access to their money and public disclosure; in return, the manager can borrow, short and concentrate, and gets paid mainly for making money.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Who Owns What: The GP and the LPs", "Who runs the money, and who owns it?", "The GP and the LPs" %}
+  <div class="prose">
+    <p>Imagine some friends who each put money in a pot and hand it to one friend who's brilliant at investing. They agree two rules. She decides everything: they can't tell her what to buy. And in return, if things go badly, none of them can lose more than they put in. If any of them started giving orders, they'd share the blame, and the debts.</p>
+    <p>That's a <strong>limited partnership</strong>, the legal shape of almost every hedge fund since Jones:</p>
+    <ul>
+      <li>The <strong>{% gl "general partner" %}general partner{% endgl %} (GP)</strong> runs the fund. In practice it's a company owned by the founders, alongside a management company that employs the team. It makes every investment decision and earns the fees.</li>
+      <li>The <strong>{% gl "limited partner" %}limited partners{% endgl %} (LPs)</strong> are the investors. They provide the money, can lose no more than they put in, and have no say in day-to-day decisions. An LP who started directing the investments could lose that protection.</li>
+    </ul>
+    <p>So how do LPs keep any power? Two ways. They can <strong>leave</strong>, taking their money out on the terms the fund allows (section 4). And big investors negotiate a {% gl "side letter" %}side letter{% endgl %}: a private agreement that changes the standard terms just for them, such as lower fees, more information about the positions, or the right to leave sooner. Many side letters include a "most favoured nation" clause: if another investor later gets a better deal, so do they.</p>
+    <h3>Why a partnership?</h3>
+    <ul>
+      <li><strong>Freedom.</strong> A private partnership for wealthy investors avoids the US Investment Company Act of 1940, the law that limits mutual funds' borrowing, shorting and concentration.</li>
+      <li><strong>Tax.</strong> A partnership pays no tax itself. Gains and losses pass straight through to each partner, who pays tax on their share (in the US, reported on a form called a K-1). There's no double tax, as there would be in a company that pays tax and then pays dividends.</li>
+      <li><strong>Flexible fees.</strong> The GP and LPs can agree any fee they like. The GP's share of profits is usually written as an "allocation" of the partnership's income rather than a fee, which can give it better tax treatment. The Fees note covers how it's calculated.</li>
+    </ul>
+    <h3>Inside the management company</h3>
+    <p>Every fund, big or small, has two sides. The <strong>front office</strong> makes the money: the portfolio manager (often the founder, as chief investment officer), the analysts who research ideas, and the traders who carry them out. The <strong>business side</strong> keeps it safe and running: risk, operations, compliance, technology, legal and investor relations. Life on a Desk introduces each role; this chapter's last note compares how single-manager funds and multi-manager platforms organise them.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Onshore, Offshore and the Master Fund", "Why are so many hedge funds in the Cayman Islands?", "Onshore and offshore" %}
+  <div class="prose">
+    <p>A fund of any real size has investors with very different tax situations: American families, American universities, a UK pension fund, a family office in Lagos. One partnership can't suit them all. So the fund builds several front doors that all lead into the same room.</p>
+    <ul>
+      <li>The <strong>onshore feeder</strong> is usually a Delaware limited partnership, for US investors who pay tax. They get the pass-through treatment from section 2.</li>
+      <li>The <strong>offshore feeder</strong> is usually a company in the Cayman Islands (sometimes the British Virgin Islands). It's the door for two groups: investors outside the US, who don't want to file US tax returns, and US investors who don't pay tax, like endowments and pension funds. Those would otherwise risk a tax called {% gl "UBTI" %}UBTI{% endgl %} on income from a partnership that borrows money; going through an offshore company blocks it.</li>
+      <li>Both feeders put all their money into one <strong>master fund</strong>, usually in Cayman, which makes every trade and holds every position. This is the {% gl "master-feeder" %}master-feeder structure{% endgl %}.</li>
+    </ul>
+    <p>Why bother with a master? Without it, the manager would run two copies of the same portfolio and have to split every trade fairly between them. With it, there's one portfolio and every investor gets exactly the same return before fees, whichever door they came through. Cayman is popular because it's tax-neutral (no tax on the fund itself, so investors are only taxed at home), has deep benches of fund lawyers, administrators and directors, and has a recognised regulator, the Cayman Islands Monetary Authority (CIMA).</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Which door does your money come in by?</h3><p>Pick an investor to see the path its money takes into the fund, and why.</p></div>
+    <div class="controls">
+      <div class="presets hf-pick" id="door-pick" aria-label="Type of investor"></div>
+    </div>
+    <div class="hf-map" id="hf-map">
+      <span class="hf-label">Investors</span>
+      <div class="hf-row">
+        <div class="hf-box" data-k="us"><b>US taxable investors</b><span>Wealthy families, US companies</span></div>
+        <div class="hf-box" data-k="exempt"><b>US tax-exempt investors</b><span>Pension funds, endowments, foundations</span></div>
+        <div class="hf-box" data-k="nonus"><b>Investors outside the US</b><span>UK pensions, Nigerian family offices, Gulf wealth funds</span></div>
+      </div>
+      <div class="hf-arrow">↓ subscribe to</div>
+      <span class="hf-label">Feeder funds</span>
+      <div class="hf-row">
+        <div class="hf-box" data-k="on"><b>Onshore feeder</b><span>Delaware limited partnership</span></div>
+        <div class="hf-box" data-k="off"><b>Offshore feeder</b><span>Cayman Islands company</span></div>
+      </div>
+      <div class="hf-arrow">↓ all the money is pooled in</div>
+      <div class="hf-row">
+        <div class="hf-box" data-k="master"><b>Master fund</b><span>Cayman: makes every trade, holds every position</span></div>
+        <div class="hf-box" data-k="mgr"><b>Investment manager (GP)</b><span>Runs the master fund, earns the fees. Often in New York or London</span></div>
+      </div>
+      <div class="hf-arrow">↓ works with</div>
+      <span class="hf-label">Service providers</span>
+      <div class="hf-row">
+        <div class="hf-box small" data-k="svc"><b>Prime brokers</b><span>Hold, lend, settle</span></div>
+        <div class="hf-box small" data-k="svc"><b>Administrator</b><span>Values the fund</span></div>
+        <div class="hf-box small" data-k="svc"><b>Auditor</b><span>Checks the books</span></div>
+        <div class="hf-box small" data-k="svc"><b>Lawyers</b><span>Write the documents</span></div>
+      </div>
+    </div>
+    <p class="look" id="door-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Where the manager sits is not where the fund sits</h3>
+    <p>A "London hedge fund" is usually a London investment manager, authorised by the FCA, running a fund that legally lives in the Cayman Islands. The manager is regulated where it works; the fund is regulated where it's registered. In the US, a manager running \(\$150\) million or more must register with the SEC and file Form ADV, a public document describing its business, fees and conflicts of interest. Registered managers also file Form PF, a confidential report on size, borrowing and risk (in more detail, every quarter, once they run \(\$1.5\) billion or more in hedge funds). The EU's AIFMD, and the UK's version of it, cover managers selling to European investors. Some managers also run a copy of their strategy in Ireland or Luxembourg under UCITS rules, which allow frequent dealing and limit leverage, so it can be sold far more widely. The Regulation note covers the reporting in more detail.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Getting Your Money Out", "Can you take your money out whenever you like?", "Getting your money out" %}
+  <div class="prose">
+    <p>Picture a bank. It takes deposits you can withdraw any day, and lends them out as mortgages that take 25 years to repay. That works as long as only a few people want their money at once. If everyone turns up on the same day, the bank can't pay: that's a bank run.</p>
+    <p>A hedge fund has the same problem. Some of what it owns can be sold in minutes (big shares, government bonds); some takes weeks or months (small companies, private loans, distressed debt). If investors could leave any day, a rush of {% gl "redemption" %}redemptions{% endgl %} would force the fund to dump its hardest-to-sell assets at bad prices, hurting the investors who stayed. So every fund sets <strong>liquidity terms</strong>: the rules for getting money out.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Term</th><th>What it means</th><th>Typical</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "lock-up" %}Lock-up{% endgl %}</td><td>How long new money must stay in before it can leave</td><td>\(1\) to \(3\) years. A "soft" lock-up lets you leave early for a fee, often \(2\) to \(5\%\)</td></tr>
+        <tr><td>Redemption frequency</td><td>How often you can leave</td><td>Quarterly is most common; monthly or yearly also used</td></tr>
+        <tr><td>{% gl "redemption notice" %}Notice period{% endgl %}</td><td>How far ahead you must ask</td><td>\(30\) to \(90\) days</td></tr>
+        <tr><td>{% gl "gate" %}Gate{% endgl %}</td><td>A cap on how much of the fund can leave in one period</td><td>\(10\) to \(25\%\) of the fund a quarter</td></tr>
+        <tr><td>{% gl "side pocket" %}Side pocket{% endgl %}</td><td>Hard-to-value assets put in a separate account, paid out only when they're sold</td><td>Private stakes, distressed debt, lawsuits</td></tr>
+        <tr><td>{% gl "suspension" %}Suspension{% endgl %}</td><td>The fund stops all withdrawals for a while</td><td>Only in extreme markets</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Gated!</h3><p>A \(\$1\) billion fund. Some of its assets are easy to sell; the rest are hard to sell, and fetch \(25\%\) less than their value if sold in a hurry. Leavers are paid at the fund's value before any fire sale. Choose how much is hard to sell, how much investors ask to take out this quarter, and whether there's a gate.</p></div>
+    <div class="controls">
+      <div class="presets hf-pick" id="gate-pick" aria-label="Gate"></div>
+      <div class="ctrl"><label for="gate-i">Hard to sell</label><input type="range" id="gate-i" min="10" max="90" step="5" value="60"><output id="gate-i-out" for="gate-i">60%</output></div>
+      <div class="ctrl"><label for="gate-r">Asking to leave</label><input type="range" id="gate-r" min="0" max="60" step="5" value="50"><output id="gate-r-out" for="gate-r">50%</output></div>
+    </div>
+    <svg class="chart" id="chart-gate" viewBox="0 0 640 232" role="img" aria-label="The fund before redemptions, the money paid out this quarter and what is left for the investors who stay, split into easy-to-sell and hard-to-sell assets"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Easy to sell</span><span><i class="sw grey"></i>Hard to sell</span><span><i class="sw grey" style="background:none;border:1.5px dashed var(--text-2)"></i>Waiting, or lost in a fire sale</span></div>
+    <div class="readout" id="gate-read"></div>
+    <p class="look" id="gate-story"></p>
+  </div>
+  <div class="prose">
+    <h3>2008: when the gates came down</h3>
+    <p>In the 2008 crisis, investors rushed to pull money out of hedge funds at the same moment as the funds' credit, convertible bond and small-company holdings became almost impossible to sell. Many funds put up their gates, some suspended withdrawals completely, and some moved their worst assets into side pockets that took years to wind down. Investors who thought they could leave quarterly found themselves trapped in falling funds.</p>
+    <p>It changed the relationship for good. Big investors now push for shorter lock-ups, more information about what the fund holds, and sometimes a {% gl "managed account" %}separately managed account{% endgl %}: instead of buying into the fund, the investor opens its own account, which the manager trades. The investor owns the assets directly, can see every position, and can fire the manager at any time, so it can never be gated.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Watchdogs", "Who checks the manager isn't making it all up?", "The watchdogs" %}
+  <div class="prose">
+    <p>A hedge fund's investors can't see inside it every day. So the structure puts independent firms around the manager, each holding one of the keys. No single person should be able to make the money, value it, hold it and report on it.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Provider</th><th>What it does</th><th>Who</th></tr></thead>
+      <tbody>
+        <tr><td>Prime broker</td><td>Holds the assets, lends money and shares, settles trades (the Prime Brokerage note covers it)</td><td>Goldman Sachs, Morgan Stanley, JPMorgan, and others</td></tr>
+        <tr><td>{% gl "fund administrator" %}Administrator{% endgl %}</td><td>Calculates the fund's value ({% gl "NAV" %}NAV{% endgl %}) every month, processes money coming in and going out, keeps the official investor records, works out the fees</td><td>Citco, SS&amp;C, Northern Trust, State Street</td></tr>
+        <tr><td>Auditor</td><td>Checks the yearly accounts and confirms the reported value and returns are right</td><td>The Big Four (PwC, EY, Deloitte, KPMG) or a specialist firm</td></tr>
+        <tr><td>Lawyers</td><td>Write the partnership agreement and offering documents, register with regulators, negotiate with prime brokers and investors</td><td>Specialist fund law firms. Setting up a fund can cost \(\$250{,}000\) to \(\$500{,}000\) in legal fees alone</td></tr>
+        <tr><td>Directors</td><td>Cayman funds have a board, often with independent directors, to oversee the fund on investors' behalf</td><td>Professional fund directors</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Why the administrator matters most</h3>
+    <p>The NAV decides three things: what the manager earns in fees, the price new investors pay to come in, and the amount leavers get paid. If the manager calculated it, they could flatter the numbers and nobody would know. An independent administrator values the holdings itself, using its own prices, so the manager can't mark their own homework.</p>
+    <p>Bernie Madoff showed what happens without that check. For decades his firm sent investors statements showing smooth, steady returns, eventually on about \(\$65\) billion of accounts that mostly didn't exist. His own firm held the assets, did the accounting and produced the statements, and the books were "audited" by a tiny three-person firm in a New York suburb. When it collapsed in 2008, investors learned there had never been anyone independent checking. Today, big investors run <strong>operational due diligence</strong> on every fund before investing: who holds the assets, who values them, who audits them, and whether those firms are truly independent. The Raising Capital note covers that process.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The four keys</span>
+    <p>The manager decides what to buy. The prime broker holds it. The administrator values it. The auditor checks it. When one firm holds more than one key, investors should ask why.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Does the structure change in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: share classes in your own currency</h3>
+    <p>Macro and currency funds use the same partnership, feeders and master fund. FX turns up in a quieter place too: the share classes. A fund that invests in dollars often offers pound and euro <strong>share classes</strong>. The fund hedges each class back to its own currency with FX forwards, rolled every month, so a UK pension fund sees its return in pounds without betting on the dollar. The hedge isn't free: it costs or earns roughly the difference between the two countries' interest rates, which is why a pound class and a dollar class of the same fund report slightly different returns. (Markets › FX › Forwards and Swaps explains why.)</p>
+    <h3>Gold and commodities: why trend followers are called CTAs</h3>
+    <p>In the US, a fund that trades futures, including gold, oil and currency futures, is legally a <strong>commodity pool</strong>, run by a commodity pool operator, and its manager is a {% gl "commodity trading advisor" %}commodity trading advisor{% endgl %}. Both register with the CFTC and join the industry body, the NFA. That legal label is where the name <strong>CTA</strong> comes from: the trend-following funds in the Strategies chapter are called CTAs because most of them trade futures. Funds hold gold through futures, ETFs or allocated bars. In 2009, after gold had rallied, the hedge fund firm Paulson &amp; Co even offered investors a share class priced in gold, so their returns were measured in ounces rather than dollars.</p>
+    <h3>Bonds and credit: the biggest liquidity gap</h3>
+    <p>Credit funds hold the hardest things to sell: corporate bonds that trade a few times a week, private loans, distressed debt. Their liquidity terms are the strictest, with longer notice periods, yearly redemptions or lock-ups, and side pockets for loans that can't be priced each month. That's why so many of the 2008 gates and suspensions were in credit and convertible bond funds: their promises to investors were the furthest from what their assets could deliver.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>GP / LPs</h3><span class="tag desk">Desk</span></div><p>The manager and the investors in the partnership.</p><p class="eg">"Two of our biggest LPs want a call about the drawdown."</p></div>
+    <div class="term"><div class="term-top"><h3>Master-feeder</h3><span class="tag desk">Desk</span></div><p>Onshore and offshore funds feeding one master fund that does all the trading.</p><p class="eg">"Standard master-feeder: Delaware and Cayman feeders into a Cayman master."</p></div>
+    <div class="term"><div class="term-top"><h3>The admin</h3><span class="tag desk">Desk</span></div><p>The fund administrator, which calculates the NAV.</p><p class="eg">"The admin's struck the NAV: up 1.2% for the month."</p></div>
+    <div class="term"><div class="term-top"><h3>Subs and reds</h3><span class="tag desk">Desk</span></div><p>Subscriptions (money coming in) and redemptions (money going out).</p><p class="eg">"Net subs of 40 million this quarter."</p></div>
+    <div class="term"><div class="term-top"><h3>Lock-up</h3><span class="tag desk">Desk</span></div><p>The period new money can't leave.</p><p class="eg">"It's a two-year hard lock."</p></div>
+    <div class="term"><div class="term-top"><h3>Gated</h3><span class="tag desk">Desk</span></div><p>When a fund caps withdrawals, so investors only get part of their money out.</p><p class="eg">"We got gated in 2008 and it took a year to get out."</p></div>
+    <div class="term"><div class="term-top"><h3>Side pocket</h3><span class="tag desk">Desk</span></div><p>A separate account for assets that can't be valued or sold easily.</p><p class="eg">"The private stake's in a side pocket until it's sold."</p></div>
+    <div class="term"><div class="term-top"><h3>Side letter</h3><span class="tag desk">Desk</span></div><p>A private deal giving one investor different terms.</p><p class="eg">"The pension fund's side letter gets them monthly position reports."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the fund structure turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: from your own account to other people's money</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Trading your own money needs a broker and nothing else. The moment you trade other people's money, you need everything in this note. In the UK, pooling other people's money and managing it for them is a regulated activity: you'd need FCA authorisation, or to join a firm that already has it, even if the money comes from friends and family. That's one reason traders start with their own account or a prop firm, where the firm owns the capital and carries the regulation. A track record built that way, recorded honestly, is what a future fund's investors will ask to see.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same partnership, a longer lock-up</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property funds use the same GP and LP partnership. A private real estate fund is usually <strong>closed-ended</strong>: investors promise money up front, the GP calls it as it buys buildings, and nobody can leave for the fund's life, often \(7\) to \(10\) years. That's the honest answer to the liquidity problem: buildings take months to sell, so the fund doesn't pretend otherwise.</p>
+      <p>UK open-ended property funds tried to offer daily dealing on buildings, and it didn't work: after the Brexit vote in 2016, and again in March 2020, several big ones suspended withdrawals. The same GP/LP structure is how a villa or development project with partners would be set up: you as GP finding and running the deals, investors as LPs, with the terms on fees and exits agreed before the first brick.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: where Africa funds live</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Most money managed for Nigerian savers sits in mutual funds and pension funds, regulated by SEC Nigeria and PenCom, not in hedge funds. International funds investing across Africa are often set up in Mauritius rather than Cayman, for its tax treaties with African countries. A Nigerian family office investing in a London or New York hedge fund would come in through the offshore feeder, like any investor outside the US.</p>
+      <p>The plumbing in this note (subscriptions, redemptions, investor checks, NAV reports) is still largely paperwork and email. Tools that make investing in a fund as easy as opening a bank account, with the investor checks built in, are a real fintech opportunity, especially for diaspora investors who want access to Nigerian funds from abroad.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on a fund's structure?" %}
+  <div class="formula"><span class="lbl">Net asset value per unit</span>\[ \text{NAV per unit} = \frac{\text{assets} - \text{liabilities}}{\text{units in issue}} \]</div>
+  <div class="formula"><span class="lbl">Units a new investor gets</span>\[ \text{units} = \frac{\text{amount invested}}{\text{NAV per unit}} \]</div>
+  <div class="formula"><span class="lbl">With a gate, the share of each request paid now</span>\[ \text{paid now} = \text{request} \times \min\!\left(1,\ \frac{\text{gate} \times \text{NAV}}{\text{all requests}}\right) \]</div>
+  <div class="formula"><span class="lbl">Fire-sale cost of paying leavers</span>\[ \text{cost} = (C - L) \times \frac{d}{1 - d} \quad \text{when } C > L \]</div>
+  <div class="prose">
+    <p>Here \(C\) is the cash leavers are owed, \(L\) the assets that are easy to sell, and \(d\) the discount on hard-to-sell assets sold in a hurry. The fund has to sell \((C - L) \div (1 - d)\) of hard-to-sell assets to raise the missing \(C - L\) in cash; the difference is lost, and falls on the investors who stay.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$1\) billion fund holds \(60\%\) hard-to-sell assets. Investors owning half the fund ask to leave. There's no gate, and hard-to-sell assets fetch \(25\%\) less in a hurry.</h3>
+    <ol class="steps">
+      <li>Leavers are owed \(C = \$500\) million. Easy-to-sell assets: \(L = \$400\) million.</li>
+      <li>Missing cash: \(C - L = \$100\) million. To raise it, the fund sells \(\$100\text{m} \div 0.75 = \$133.3\) million of hard-to-sell assets.</li>
+      <li>Fire-sale cost: \(\$133.3\text{m} - \$100\text{m} = \$33.3\) million.</li>
+      <li>Stayers' fund: \(\$1{,}000\text{m} - \$500\text{m} - \$33.3\text{m} = \$466.7\) million, instead of \(\$500\) million: a \(6.7\%\) loss caused only by other people leaving.</li>
+      <li>What's left is all hard-to-sell assets. If anyone else asks to leave next quarter, every dollar has to come from a fire sale.</li>
+    </ol>
+    <p class="answer">That's why runs happen, and why gates exist: the first out are paid in full, and the last out pay for it.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name four things a hedge fund is free to do that a typical mutual fund isn't.</span></p>
+      <details><summary>Show answer</summary><div><span>Borrow heavily (leverage), short sell freely, concentrate in a few big positions, use derivatives widely, lock investors' money in, and charge a share of profits. It can do this because it only takes money from wealthy and institutional investors.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Why do US tax-exempt investors, like endowments, usually invest through the offshore feeder?</span></p>
+      <details><summary>Show answer</summary><div><span>To avoid UBTI (unrelated business taxable income). Income from a partnership that uses borrowed money can be taxed as UBTI even for a tax-exempt investor. Investing through an offshore company blocks it.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A fund's assets are worth \(\$310\) million and it owes \(\$10\) million. It has \(6\) million units. What's the NAV per unit, and how many units does a new \(\$2\) million investment buy?</span></p>
+      <details><summary>Show answer</summary><div><span>NAV per unit \(= (\$310\text{m} - \$10\text{m}) \div 6\text{m} = \$50\). Units bought \(= \$2\text{m} \div \$50 = 40{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>An \(\$800\) million fund has a \(20\%\) quarterly gate. Investors ask for \(\$240\) million. How much is paid this quarter, and what share of each request?</span></p>
+      <details><summary>Show answer</summary><div><span>The gate allows \(20\% \times \$800\text{m} = \$160\) million. Each leaver gets \(160 \div 240 = \frac{2}{3}\) of their request now; the other \(\$80\) million waits for the next quarter.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>What does the fund administrator do, and why does it matter that it's independent of the manager?</span></p>
+      <details><summary>Show answer</summary><div><span>It calculates the NAV, processes subscriptions and redemptions, keeps the official books and works out the fees. Because the NAV sets the manager's fees and the price investors deal at, an independent administrator stops the manager overstating performance. Madoff's fraud lasted so long partly because nobody independent valued the accounts.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why do the onshore and offshore feeders invest through one master fund instead of each running its own portfolio?</span></p>
+      <details><summary>Show answer</summary><div><span>So there's one portfolio: every investor gets the same return before fees, trades never have to be split between two funds, and the manager runs one book, while investors with different tax needs still come in through the door that suits them.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: after 2008, why did many big investors ask for managed accounts instead of investing in the fund?</span></p>
+      <details><summary>Show answer</summary><div><span>In 2008 many were gated or suspended in falling funds. With a managed account, the investor owns the assets directly, sees every position, and can end the arrangement at any time, so it can't be gated or caught in a fire sale caused by other investors. The trade-off: more work and cost for both sides, and only large investors can get one.</span></div></details></div>
+  </div>
+{% endsec %}
