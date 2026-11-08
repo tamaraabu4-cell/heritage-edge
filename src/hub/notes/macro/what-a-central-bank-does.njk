@@ -1,0 +1,313 @@
+---
+title: What a Central Bank Does
+shelf: macro
+chapter: central-banks-and-rates
+subtopic: Central Banks
+order: 1
+summary: What a central bank is and the jobs it does, the mandates that tell each one what to aim for and why the target is 2%, the Fed, ECB, Bank of England, Bank of Japan and Central Bank of Nigeria side by side, why independence and credibility matter so much, and the toolbox the rest of the chapter opens up.
+lede: "Every price in finance starts from one number: the interest rate a central bank sets. A central bank can't make anyone spend, hire or invest. What it controls is the price of money, plus people's belief that it will keep prices steady. That belief turns out to be its most powerful tool."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/macro/what-a-central-bank-does.js]
+
+quiz:
+  - q: 'The Fed has a "dual mandate". What are its two goals?'
+    opts: ['Low interest rates and a strong dollar', 'Stable prices and maximum employment', 'Stable prices and a balanced government budget']
+    right: 1
+    why: 'Congress told the Fed to aim for maximum employment and stable prices (which the Fed defines as \(2\%\) inflation). The ECB and the Bank of England put price stability first, with growth as a secondary aim.'
+  - q: 'Inflation is \(5\%\) and unemployment is rising. Which central bank is more likely to raise rates anyway?'
+    opts: ['The ECB, because its mandate puts prices first', 'The Fed, because it cares about jobs', 'Neither: central banks always cut when unemployment rises']
+    right: 0
+    why: 'When prices and jobs both look bad, the goals pull in opposite directions. A bank whose mandate ranks price stability first (the ECB) leans towards fighting inflation; the Fed has to weigh jobs equally, so it is more likely to wait.'
+  - q: 'Why does it matter whether people believe a central bank will hit its \(2\%\) target?'
+    opts: ['It doesn''t: only the interest rate matters', 'Because banks are only allowed to lend if people trust the central bank', 'Because expected inflation feeds into pay claims and prices, so belief helps keep inflation at \(2\%\)']
+    right: 2
+    why: 'If workers and firms expect \(2\%\), they set pay and prices around \(2\%\), and a temporary shock fades. If they expect high inflation to continue, they build it in and it becomes self-fulfilling, so the bank has to squeeze much harder.'
+
+connected:
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Builds on, title: Crashes That Changed the Rules, where: Markets · How Markets Work, url: /hub/markets/crashes-that-changed-the-rules/ }
+  - { label: Used in, title: Rate Differentials, where: Macro · What Moves FX, url: /hub/macro/ }
+---
+
+<style>
+  .cb-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .cb-loop { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; counter-reset: loop; }
+  .cb-loop li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--hub-card); font-size: 15px; }
+  .cb-loop li::before { counter-increment: loop; content: counter(loop); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 700 13px var(--mono); background: var(--tone-bg); color: var(--tone); }
+  .cb-loop li.cb-bank::before { background: var(--tone); color: var(--on-tone); }
+  .cb-loop li.cb-back { border-style: dashed; color: var(--text-2); }
+  .cb-loop li.cb-back::before { content: "↺"; background: transparent; border: 1.5px dashed var(--tone); }
+</style>
+
+{% sec 1, "The Bank Behind the Banks", "What is a central bank, in plain words?", "The bank behind the banks" %}
+  <div class="prose">
+    <p>Think of the whole economy as a house, and the {% gl "central bank" %}central bank{% endgl %} as the person in charge of the thermostat. When the house is too cold, businesses close and people lose their jobs. When it's too hot, everyone spends at once, shops can't keep up, and prices start rising fast: that's {% gl "inflation" %}inflation{% endgl %}. The central bank can't change the weather outside (a war, a pandemic, a bad harvest), but it can turn the heating up or down.</p>
+    <p>Its dial is the interest rate. Lower rates make borrowing cheaper and saving less rewarding, so people and companies spend and invest more: the heating goes up. Higher rates make loans more expensive and saving more attractive, so spending cools. Using that dial is called {% gl "monetary policy" %}monetary policy{% endgl %}.</p>
+    <h3>Its five jobs</h3>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>It sets the price of money.<span class="why">Each central bank sets one short-term {% gl "policy rate" %}policy rate{% endgl %}, the rate banks earn or pay when they deal with it overnight. Every other rate in the country (mortgages, savings accounts, business loans, government bonds) is built on top of it.</span></span></li>
+    <li><span class="n">2</span><span>It's the bank for banks.<span class="why">You keep your money at a bank; banks keep theirs at the central bank. Those accounts, called reserves, are how banks pay each other when you send money from your bank to a friend's.</span></span></li>
+    <li><span class="n">3</span><span>It issues the currency.<span class="why">The notes in your wallet are a promise from the central bank. In most countries it's the only institution allowed to create them.</span></span></li>
+    <li><span class="n">4</span><span>It's the {% gl "lender of last resort" %}lender of last resort{% endgl %}.<span class="why">When banks panic and stop lending to each other, the central bank lends to sound banks against good collateral so a scare doesn't become a collapse. Crashes That Changed the Rules shows it at work in 2008 and 2020.</span></span></li>
+    <li><span class="n">5</span><span>It often supervises the banks.<span class="why">In the UK, the Bank of England's Prudential Regulation Authority checks that banks hold enough capital; the ECB does this for the biggest euro area banks; the CBN licenses and supervises Nigerian banks and many fintechs. It's also usually the government's own bank.</span></span></li>
+  </ul>
+  <div class="prose">
+    <h3>The loop it sits in</h3>
+    <p>The central bank watches four numbers: how much the economy produces (GDP), how fast prices rise (inflation), how many people have jobs, and interest rates. They are tied together in a loop, and the central bank's dial is the only part of it that someone controls directly:</p>
+  </div>
+  <ol class="cb-loop" aria-label="How growth, jobs, prices and interest rates feed into each other">
+    <li>The economy grows: companies sell more and hire more people.</li>
+    <li>With fewer people looking for work, employers have to pay more to hire and keep staff.</li>
+    <li>Higher pay means more spending, and companies pass higher wage costs on in their prices.</li>
+    <li>Inflation rises above the central bank's target.</li>
+    <li class="cb-bank">The central bank raises interest rates.</li>
+    <li>Borrowing costs more, so people and companies spend and invest less.</li>
+    <li class="cb-back">Growth slows, hiring slows, inflation cools, and the bank can cut rates again.</li>
+  </ol>
+  <div class="prose">
+    <p>Each step takes time. A rate rise today mostly affects spending and prices a year or more from now, a delay the How a Rate Change Travels note covers properly. That's why central banks act on forecasts, not just on today's numbers.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A central bank can't make anyone spend, hire or lower their prices. It changes the price of money, and the promise of what it will do next, then waits for millions of people to change their behaviour.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "What They're Told to Aim For", "What is a mandate, and why is the target 2%?", "Mandates" %}
+  <div class="prose">
+    <p>A central bank doesn't choose its own goals. Its government or parliament gives it a job description, called a <strong>mandate</strong>, and then (in most rich countries) leaves it alone to decide how to meet it.</p>
+    <ul>
+      <li><strong>A {% gl "dual mandate" %}dual mandate{% endgl %}:</strong> the US Federal Reserve was told by Congress in 1977 to aim for maximum employment and stable prices, with equal weight.</li>
+      <li><strong>Prices first:</strong> the European Central Bank's treaty makes price stability its main aim; supporting the EU's wider economic goals only comes after that. The Bank of England is the same: a <strong>2%</strong> target set by the government, with supporting growth and jobs as a secondary objective.</li>
+    </ul>
+    <p>The difference matters most when the goals clash. If unemployment is high and inflation low, every central bank cuts. But if inflation is high <em>and</em> people are losing jobs (this is called {% gl "stagflation" %}stagflation{% endgl %}), a bank told to put prices first will keep fighting inflation, while one with a dual mandate has to weigh the job losses too.</p>
+    <h3>Why 2%, and not zero?</h3>
+    <p>Almost every major central bank aims for an {% gl "inflation target" %}inflation target{% endgl %} of <strong>2%</strong> a year. The Fed made its 2% target official in 2012, the Bank of Japan in 2013, and the ECB settled on "2%, symmetric" in 2021. Why not aim for prices that never change?</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The official numbers slightly overstate inflation.<span class="why">When a product gets better (a faster phone at the same price), the price index can't fully capture it. So measured inflation of 0% might really be a small fall in prices.</span></span></li>
+    <li><span class="n">2</span><span>Falling prices are dangerous.<span class="why">In {% gl "deflation" %}deflation{% endgl %}, people put off buying because things will be cheaper next month, and debts get heavier in real terms. Japan spent much of 1995 to 2012 stuck in it. A cushion of 2% keeps the economy away from that edge.</span></span></li>
+    <li><span class="n">3</span><span>It leaves room to cut.<span class="why">Interest rates usually sit a little above inflation. With 2% inflation, rates are normally a few per cent, so the central bank has room to cut in a recession before it hits zero.</span></span></li>
+    <li><span class="n">4</span><span>It makes wage adjustments easier.<span class="why">People hate pay cuts. With 2% inflation, a firm in trouble can hold pay flat for a year, which is a small real cut, instead of cutting it.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>2% is low enough that people stop thinking about inflation in their daily lives, which is exactly the point. At 2% a year, prices double in about 35 years; at 10%, in about 7.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Same economy, different rulebook</h3><p>Pick a central bank, then set inflation and unemployment (or choose a moment from US history). The shading shows where that bank's mandate pushes it: towards raising rates (coloured) or cutting them (grey). The "lean score" is a simplified teaching version of how much each bank weighs prices against jobs, not a real policy rule.</p></div>
+    <div class="controls">
+      <div class="presets cb-pick" id="cb-bank" aria-label="Which central bank"></div>
+      <div class="presets cb-pick" id="cb-preset" aria-label="A moment in history"></div>
+      <div class="ctrl"><label for="cb-pi">Inflation</label><input type="range" id="cb-pi" min="-2" max="14" step="0.5" value="4.5"><output id="cb-pi-out" for="cb-pi">4.5%</output></div>
+      <div class="ctrl"><label for="cb-u">Unemployment</label><input type="range" id="cb-u" min="2" max="12" step="0.5" value="7.5"><output id="cb-u-out" for="cb-u">7.5%</output></div>
+    </div>
+    <svg class="chart" id="chart-mandate" viewBox="0 0 640 340" role="img" aria-label="A map with inflation across and unemployment up, shaded where the chosen central bank would lean towards raising or cutting rates, with a dot for the economy you set"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Leans to raising rates</span><span><i class="sw grey"></i>Leans to cutting rates</span><span>Unshaded: hold</span></div>
+    <div class="readout" id="cb-read"></div>
+    <p class="look" id="cb-story"></p>
+  </div>
+  <div class="prose">
+    <p>Try "Mild stagflation" and switch between the three banks. The coloured "raise rates" area for the ECB stretches much further into high unemployment than the Fed's does. That one difference in the job description explains a lot of real decisions: in 2011, with the euro area still weak, the ECB raised rates twice because inflation was above target, while the Fed held rates at zero.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Big Four, and Nigeria", "Who are the central banks markets watch most?", "The big four and Nigeria" %}
+  <div class="prose">
+    <p>Dozens of central banks matter to someone, but four move global markets, because they run the world's main currencies: the dollar, the euro, the pound and the yen. For anyone working on Nigeria, the fifth is the Central Bank of Nigeria.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Central bank</th><th>Main goal</th><th>Its policy rate</th><th>Rate on 8 Nov 2026</th><th>Who decides</th><th>Meetings a year</th></tr></thead>
+      <tbody>
+        <tr><td>Federal Reserve (US, dollar)</td><td>Maximum employment and stable prices (2% inflation)</td><td>{% gl "fed funds" %}Federal funds rate{% endgl %} (a target range)</td><td>\(3.75\)–\(4.00\%\)</td><td>{% gl "FOMC" %}FOMC{% endgl %}: 12 voters</td><td>\(8\)</td></tr>
+        <tr><td>European Central Bank (euro, 21 countries)</td><td>Price stability (2%), then support for growth</td><td>Deposit facility rate</td><td>\(2.50\%\)</td><td>Governing Council: 6 Executive Board members plus the 21 national governors</td><td>\(8\)</td></tr>
+        <tr><td>Bank of England (pound)</td><td>2% CPI inflation, then support for growth</td><td>Bank Rate</td><td>\(4.00\%\)</td><td>{% gl "MPC" %}Monetary Policy Committee{% endgl %}: 9 members</td><td>\(8\)</td></tr>
+        <tr><td>Bank of Japan (yen)</td><td>Price stability (2% inflation)</td><td>Overnight call rate</td><td>\(1.25\%\)</td><td>Policy Board: 9 members</td><td>\(8\)</td></tr>
+        <tr><td>Central Bank of Nigeria (naira)</td><td>Monetary and price stability, plus a stable financial system</td><td>Monetary Policy Rate (MPR)</td><td>\(23\%\)</td><td>Monetary Policy Committee: 12 members</td><td>about \(6\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Rates move. These are the levels after each bank's latest meeting before 8 November 2026; always check the bank's own website for the current number.</p>
+    <h3>The Fed</h3>
+    <p>The Fed is really a system: a Board of Governors in Washington (seven governors, each appointed for 14 years) and 12 regional Federal Reserve Banks. Rates are set by the Federal Open Market Committee (FOMC): the seven governors, the president of the New York Fed, and four of the other eleven regional presidents, who take turns. Kevin Warsh became chair in May 2026, replacing Jerome Powell after eight years; Powell stayed on as a governor. After cutting through 2025, the Fed raised rates in September 2026, its first rise since 2023, because inflation had been above 2% for more than five years and an oil shock from the Iran war was pushing it up again.</p>
+    <h3>The ECB</h3>
+    <p>The ECB sets one interest rate for 21 countries (Bulgaria became the 21st in January 2026). That's its hardest problem: the same rate has to suit a booming country and a struggling one at the same time, and each government still borrows separately, so investors can lose faith in one country's bonds even when the euro is fine. Rates rose in June and September 2026. Christine Lagarde has said she will step down as president in February 2027, ahead of her term's end.</p>
+    <h3>The Bank of England</h3>
+    <p>The Bank has set UK interest rates independently since 1997; before that, the Chancellor decided. The government sets the 2% target, and if inflation misses it by more than one percentage point either way, the Governor must write an open letter to the Chancellor explaining why and what the Bank will do. On 5 November 2026 the MPC raised Bank Rate from \(3.75\%\) to \(4\%\), by eight votes to one, its first rise since 2023.</p>
+    <h3>The Bank of Japan</h3>
+    <p>Japan is the exception that proves the rule about deflation. After decades of falling or flat prices, the BoJ kept its main rate at or near zero for most of 1999 to 2024, held it below zero from 2016 until March 2024, and even capped the yield on 10-year government bonds (the QE and QT note explains how). It has since been raising rates step by step, to \(1.25\%\) in September 2026. Because Japanese rates were so low for so long, investors borrowed yen cheaply to invest elsewhere, so BoJ decisions can shake markets worldwide.</p>
+    <h3>The Central Bank of Nigeria</h3>
+    <p>The CBN's job is harder in different ways. Inflation was above 30% in 2024, so the CBN raised the MPR from \(18.75\%\) in early 2024 to \(27.5\%\) by the end of that year. As inflation fell (to \(14.63\%\) in September 2026), it started cutting: to \(27\%\) in 2025, \(26.5\%\) in February 2026 and \(23\%\) in September 2026. It also uses tools rich-country central banks have mostly dropped, such as a very high {% gl "cash reserve requirement" %}cash reserve requirement{% endgl %}: banks must leave about \(45\%\) of their customers' deposits frozen at the CBN, which limits how much they can lend. And because Nigeria imports so much, the naira's exchange rate feeds straight into prices, so the CBN watches the currency much more closely than the Fed watches the dollar.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Independence and Credibility", "Why shouldn't politicians set interest rates?", "Independence and credibility" %}
+  <div class="prose">
+    <p>Imagine letting students mark their own exams. Most would be tempted to be generous with themselves, especially just before results day. Politicians setting interest rates face the same temptation: cutting rates before an election makes people feel richer for a while, and the inflation that follows arrives after the votes are counted.</p>
+    <p>That's why most rich countries hand the dial to an independent central bank: politicians set the goal, the bank decides how to reach it, and its leaders can't be sacked for making unpopular decisions. {% gl "central bank independence" %}Central bank independence{% endgl %} was learned the hard way.</p>
+    <h3>The 1970s: what happens without it</h3>
+    <p>In the early 1970s, the Fed kept rates low under heavy pressure from the White House ahead of the 1972 election. Then oil prices quadrupled in 1973. Inflation climbed and kept climbing, reaching about \(14.8\%\) in early 1980. People stopped believing it would ever come down, so they demanded bigger pay rises and firms raised prices in advance, which kept it high.</p>
+    <p>Paul Volcker, Fed chair from 1979, broke it by raising rates to around \(20\%\). It caused two recessions and pushed unemployment to \(10.8\%\) in 1982, but inflation fell to about \(3\%\) by 1983. The lesson central banks took: once people stop believing you, regaining their trust is brutally expensive.</p>
+    <h3>Credibility: the belief that does the work</h3>
+    <p>What people <em>expect</em> inflation to be shapes what it becomes. If workers expect \(2\%\), they ask for pay rises around \(2\%\) plus a bit; shops plan price rises around \(2\%\). If they expect \(10\%\), they ask for \(10\%\), and shops put prices up \(10\%\), and it comes true. These {% gl "inflation expectations" %}inflation expectations{% endgl %} are why credibility (people's belief that the bank will hit its target) is a central bank's most valuable asset.</p>
+    <p>A credible central bank can let a temporary shock, like a jump in oil prices, pass through without overreacting, because nobody expects it to last. A central bank that has lost credibility has to squeeze much harder to get the same result.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Same shock, different trust</h3><p>An oil price shock adds a few points to inflation and then fades. How much do people trust the 2% promise? The coloured line is your setting; the dashed grey line is a fully trusted central bank facing the same shock. A simple model for illustration: each month, people expect a mix of 2% and last month's inflation, and the bank's rates squeeze a little off.</p></div>
+    <div class="controls">
+      <div class="presets cb-pick" id="cr-preset" aria-label="How much people trust the central bank"></div>
+      <div class="ctrl"><label for="cr-c">Trust in 2%</label><input type="range" id="cr-c" min="10" max="100" step="5" value="50"><output id="cr-c-out" for="cr-c">50%</output></div>
+      <div class="ctrl"><label for="cr-s">Size of shock</label><input type="range" id="cr-s" min="1" max="8" step="0.5" value="4"><output id="cr-s-out" for="cr-s">+4 pts</output></div>
+    </div>
+    <svg class="chart" id="chart-cred" viewBox="0 0 640 280" role="img" aria-label="Inflation over four years after an energy shock, for your level of trust in the central bank and for a fully trusted bank"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your setting</span><span><i class="sw grey"></i>Fully trusted bank</span></div>
+    <div class="readout" id="cr-read"></div>
+    <p class="look" id="cr-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Credibility in the news</h3>
+    <ul>
+      <li><strong>2021: "transitory".</strong> As prices rose after the pandemic, the Fed and others said the rise would be temporary and waited. US inflation hit \(9.1\%\) in June 2022. The Fed then raised rates from near zero to \(5.25\)–\(5.5\%\) by July 2023, its fastest rises since the 1980s, partly to prove it still meant 2%.</li>
+      <li><strong>2025–26: pressure on the Fed.</strong> In August 2025 President Trump tried to remove Fed Governor Lisa Cook, the first attempt by any president to fire a Fed governor; in June 2026 the Supreme Court ruled 5–4 that she could stay while the case continues. With US inflation above target for over five years, markets watch every sign of political pressure, because it affects whether people believe the 2% promise.</li>
+      <li><strong>Nigeria: lending to the government.</strong> The CBN Act limits the CBN's short-term lending to the government to \(5\%\) of the previous year's revenue. For years that limit was far exceeded: by 2023 the CBN had lent the government about ₦22.7 trillion, which was turned into long-term bonds that year. Printing money to fund a government is one of the surest routes to high inflation, and ending it has been central to rebuilding trust in the CBN.</li>
+    </ul>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A central bank people believe in gets most of its work done by its reputation. One that has lost that belief has to use rates, and jobs, to win it back.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Toolbox", "What can a central bank actually do?", "The toolbox" %}
+  <div class="prose">
+    <p>The interest rate is the main tool, but not the only one. The rest of this chapter opens each of these up; this is the map.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Tool</th><th>What it does</th><th>Where you'll meet it</th></tr></thead>
+      <tbody>
+        <tr><td>Policy rate</td><td>Raises or lowers the overnight rate that every other rate is built on</td><td>The Price of Money; How a Rate Change Travels</td></tr>
+        <tr><td>{% gl "forward guidance" %}Forward guidance{% endgl %}</td><td>Tells markets what the bank expects to do next, which moves longer-term rates today</td><td>How Central Banks Decide</td></tr>
+        <tr><td>{% gl "QE" %}Quantitative easing{% endgl %} (QE) and tightening (QT)</td><td>Buys government bonds with newly created money to push long-term rates down; QT reverses it</td><td>QE and QT</td></tr>
+        <tr><td>Lender of last resort</td><td>Lends to sound banks in a panic so a scare doesn't become a collapse</td><td>Crashes That Changed the Rules</td></tr>
+        <tr><td>Reserve requirements</td><td>Forces banks to park part of their deposits at the central bank, limiting lending</td><td>Rarely used in rich countries (the Fed set its requirement to zero in 2020); central to the CBN's toolkit</td></tr>
+        <tr><td>Currency intervention</td><td>Buys or sells its own currency to steady the exchange rate</td><td>What Moves FX; Emerging Market FX</td></tr>
+        <tr><td>Bank supervision</td><td>Checks banks hold enough capital and cash to survive losses</td><td>Regulation</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Markets describe central bankers by which way they lean. A {% gl "hawkish" %}hawk{% endgl %} worries most about inflation and wants rates higher for longer; a {% gl "dovish" %}dove{% endgl %} worries most about jobs and growth and wants rates lower. In October 2026 two FOMC members voted for a rate rise when the rest voted to hold: the hawks of that meeting.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How do central banks move my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: currencies follow the expected rate gap</h3>
+    <p>Money flows to where it earns more, if the risk looks acceptable. If the Bank of England is expected to raise rates while the Fed holds, holding pounds becomes more rewarding than holding dollars, and GBP/USD tends to rise. So FX traders spend most of their time guessing what central banks will do next, and decision days are among the busiest of the year. Some central banks also trade their own currency directly: Japan's finance ministry, working through the BoJ, sold dollars to prop up the yen in 2022 and 2024, and the CBN regularly sells dollars into the naira market.</p>
+    <h3>Gold: the central banks' own favourite</h3>
+    <p>Gold pays no interest, so when interest rates after inflation are high, holding gold costs you what you could have earned in a savings account, which tends to weigh on its price. But central banks are now among the biggest gold buyers in the world: they bought more than 1,000 tonnes a year in 2022, 2023 and 2024. After Russia's dollar and euro reserves were frozen in 2022, many central banks wanted reserves that no other government can block.</p>
+    <h3>Bonds: the front end follows the central bank</h3>
+    <p>Short-dated government bonds, such as a 2-year gilt or a 2-year Treasury, track what markets expect the policy rate to average over their life. That's why a surprise rate decision moves them sharply. Longer bonds depend more on whether people trust the central bank to keep inflation low for decades, which is credibility again. And since the QE years, central banks have been among the largest holders of their own government's bonds.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Hawk</h3><span class="tag desk">Desk</span></div><p>A policymaker most worried about inflation, who leans towards higher rates.</p><p class="eg">"The minutes were more hawkish than expected."</p></div>
+    <div class="term"><div class="term-top"><h3>Dove</h3><span class="tag desk">Desk</span></div><p>A policymaker most worried about jobs and growth, who leans towards lower rates.</p><p class="eg">"Two doves on the committee wanted a cut."</p></div>
+    <div class="term"><div class="term-top"><h3>Hike, cut, hold</h3><span class="tag desk">Desk</span></div><p>Raise rates, lower rates, or leave them unchanged.</p><p class="eg">"Market's pricing a hold in December."</p></div>
+    <div class="term"><div class="term-top"><h3>Bps</h3><span class="tag desk">Desk</span></div><p>Basis points: hundredths of a percentage point. A quarter-point move is 25 bps.</p><p class="eg">"They went 25 bps, consensus was unchanged."</p></div>
+    <div class="term"><div class="term-top"><h3>Behind the curve</h3><span class="tag desk">Desk</span></div><p>A central bank that has moved too slowly and now has to catch up.</p><p class="eg">"The Fed was behind the curve in 2021."</p></div>
+    <div class="term"><div class="term-top"><h3>Data dependent</h3><span class="tag desk">Desk</span></div><p>The bank won't commit to a path; it will decide meeting by meeting from the numbers.</p><p class="eg">"Data dependent means every CPI print is live."</p></div>
+    <div class="term"><div class="term-top"><h3>Pivot</h3><span class="tag desk">Desk</span></div><p>When a central bank changes direction, from raising to cutting or the other way round.</p><p class="eg">"Everyone's been calling the pivot for six months."</p></div>
+    <div class="term"><div class="term-top"><h3>Don't fight the Fed</h3><span class="tag desk">Desk</span></div><p>Old market saying: don't bet against the direction the central bank is pushing.</p><p class="eg">"Short bonds into a hiking cycle? Don't fight the Fed."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where central banks turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: know the calendar</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Central bank decision days are some of the biggest moves of the year in FX, gold and bonds, and the move often comes from what the bank <em>says</em>, not the decision itself. Before any trade in EUR/USD, GBP/USD, USD/JPY or gold, check when the Fed, ECB, Bank of England and BoJ next meet, and what markets expect them to do. Holding a large position through a decision you haven't thought about is a bet on a coin toss. On a prop firm account, one surprise can hit the daily loss limit.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the rate sets the price of every mortgage</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Mortgage rates are built on the central bank's rate, so property prices and the profit on a rental both move with it. When UK rates rose from \(0.1\%\) to over \(5\%\) in 2021–23, monthly payments on new mortgages jumped and house prices stalled. For villas in Europe, the ECB sets the cost of borrowing in euros; in Nigeria, with the MPR at \(23\%\), most property is bought with cash or developer payment plans because bank loans are so expensive.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the CBN is your regulator</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The CBN doesn't just set rates: it licenses payment companies, mobile money operators and digital banks, and its rules decide what a Nigerian fintech can do. It launched the eNaira, its own digital currency, in 2021, though few people use it. Its interest rate decisions also shape fintech business models directly: at a \(23\%\) policy rate, savings and lending apps compete with treasury bills paying high rates, and anyone building a product for Nigeria needs to follow MPC meetings as closely as a trader does.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "Which numbers does a central bank live by?" %}
+  <div class="formula"><span class="lbl">The real interest rate: what you earn after inflation</span>\[ r_{\text{real}} \approx i - \pi \qquad\text{exactly: } \; 1 + r_{\text{real}} = \frac{1 + i}{1 + \pi} \]</div>
+  <div class="prose">
+    <p>\(i\) is the interest rate you're paid and \(\pi\) is inflation. If the bank pays \(5\%\) but prices rise \(3\%\), your money buys only about \(2\%\) more after a year. Central banks think in {% gl "real interest rate" %}real rates{% endgl %}: a \(4\%\) policy rate is tight if inflation is \(1\%\) and loose if inflation is \(8\%\).</p>
+  </div>
+  <div class="formula"><span class="lbl">What £1 buys after \(n\) years of inflation \(\pi\)</span>\[ \text{value} = \frac{1}{(1 + \pi)^n} \qquad \text{prices double after about } \frac{70}{\pi \text{ (in \%)}} \text{ years} \]</div>
+  <div class="formula"><span class="lbl">The trust model in the interactive</span>\[ \pi_t^{e} = c \times 2\% + (1 - c)\,\pi_{t-1} \]</div>
+  <div class="prose">
+    <p>\(\pi_t^{e}\) is what people expect this month and \(c\) is how much they trust the target (between \(0\) and \(1\)). With \(c = 1\), everyone expects \(2\%\) whatever happened last month; with \(c = 0\), everyone expects last month to repeat, so any shock carries on.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Which central bank is tightest? Fed funds midpoint \(3.875\%\) with US inflation (PCE) at \(3.6\%\); ECB deposit rate \(2.5\%\) with euro area inflation around \(3.8\%\); CBN at \(23\%\) with Nigerian inflation at \(14.63\%\).</h3>
+    <ol class="steps">
+      <li>Fed: \(3.875 - 3.6 \approx +0.3\%\). Barely above inflation.</li>
+      <li>ECB: \(2.5 - 3.8 \approx -1.3\%\). Savers lose ground: still loose in real terms, which is why it's been raising.</li>
+      <li>CBN: \(23 - 14.63 \approx +8.4\%\). Exactly: \(1.23 \div 1.1463 - 1 = 7.3\%\). Very tight, which is why it had room to cut.</li>
+    </ol>
+    <p class="answer">The headline rate alone tells you little. Subtract inflation first.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>You keep £1,000 in cash for 10 years. What does it buy at the end with \(2\%\) inflation, and with \(10\%\)?</h3>
+    <ol class="steps">
+      <li>At \(2\%\): \(1{,}000 \div 1.02^{10} = 1{,}000 \div 1.219 = \text{£}820\) of today's spending power.</li>
+      <li>At \(10\%\): \(1{,}000 \div 1.10^{10} = 1{,}000 \div 2.594 = \text{£}386\).</li>
+      <li>Rule of 70 check: prices double in about \(70 \div 2 = 35\) years at \(2\%\), and \(70 \div 10 = 7\) years at \(10\%\).</li>
+    </ol>
+    <p class="answer">At \(2\%\), cash quietly loses a fifth of its value in a decade; at \(10\%\), more than half.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Last month's inflation was \(6\%\). What do people expect this month if trust is \(c = 0.9\), and if it's \(c = 0.2\)?</h3>
+    <ol class="steps">
+      <li>\(c = 0.9\): \(0.9 \times 2 + 0.1 \times 6 = 1.8 + 0.6 = 2.4\%\).</li>
+      <li>\(c = 0.2\): \(0.2 \times 2 + 0.8 \times 6 = 0.4 + 4.8 = 5.2\%\).</li>
+    </ol>
+    <p class="answer">Same shock, but with low trust people already expect over \(5\%\), and that gets built into pay and prices.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name four jobs a central bank does.</span></p>
+      <details><summary>Show answer</summary><div><span>Any four of: sets the policy interest rate; acts as the bank for banks (holds their reserves, settles payments between them); issues the currency; is the lender of last resort in a panic; supervises banks; acts as the government's bank.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>The Fed faces high unemployment and inflation below target. The ECB faces the same situation. How would each be likely to act, and would they differ?</span></p>
+      <details><summary>Show answer</summary><div><span>Both would lean towards cutting, because inflation below target and high unemployment point the same way. The Fed, with jobs as half its mandate, would likely cut sooner and harder. The ECB acts on its inflation outlook; if inflation is close to target it may be slower, but with both goals pointing down it would also ease.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Give three reasons central banks aim for \(2\%\) inflation rather than \(0\%\).</span></p>
+      <details><summary>Show answer</summary><div><span>Measured inflation slightly overstates true inflation (quality improvements); a cushion keeps the economy away from deflation; it keeps normal interest rates high enough to leave room to cut in a recession; it lets firms make small real pay cuts by holding wages flat instead of cutting them.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A Nigerian savings app pays \(18\%\) a year. Inflation is \(14.63\%\). What's the real return, roughly and exactly?</span></p>
+      <details><summary>Show answer</summary><div><span>Roughly \(18 - 14.63 = 3.4\%\). Exactly \(1.18 \div 1.1463 - 1 = 2.9\%\). The gap between the two methods grows when rates and inflation are high, so use the exact formula for Nigeria.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why did the Fed's "transitory" call in 2021 matter for its credibility?</span></p>
+      <details><summary>Show answer</summary><div><span>The Fed waited because it expected the price rises to fade. When inflation instead reached \(9.1\%\) in 2022, people had reason to doubt its forecasts and its commitment to \(2\%\). It had to raise rates very fast, from near zero to over \(5\%\), to show it still meant the target and to stop high inflation becoming built into expectations.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>The CBN's cash reserve requirement is about \(45\%\). A bank takes in ₦10 billion of new deposits. How much can it lend or invest, at most?</span></p>
+      <details><summary>Show answer</summary><div><span>\(45\%\) of ₦10 billion (₦4.5 billion) must stay frozen at the CBN, so at most ₦5.5 billion is left for loans and investments, before any other rules. That's one way the CBN keeps money tight without changing the MPR.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: why should a trader care whether a central bank is independent?</span></p>
+      <details><summary>Show answer</summary><div><span>Because independence is what makes the inflation target believable, and that belief sets the price of long-term bonds and the value of the currency. If markets think politicians can push the bank to keep rates low, they expect more inflation: long-term yields rise, the currency weakens and gold tends to benefit. Any sign of pressure on a central bank is a market event in itself.</span></div></details></div>
+  </div>
+{% endsec %}

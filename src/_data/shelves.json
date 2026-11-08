@@ -142,17 +142,23 @@
     "description": "Interest rates, inflation and the big forces that move every market.",
     "chapters": [
       { "title": "Central Banks and Rates", "blurb": "Who sets the price of money, and how.",
-        "subtopics": ["Central Banks", "Interest Rates", "QE and QT"] },
+        "subtopics": [
+          { "name": "Central Banks", "planned": ["What a Central Bank Does", "How Central Banks Decide"] },
+          { "name": "Interest Rates", "planned": ["The Price of Money", "How a Rate Change Travels"] },
+          { "name": "QE and QT", "planned": ["QE and QT"] }
+        ] },
       { "title": "Inflation", "blurb": "Why prices rise, and why markets care.",
         "subtopics": ["Measuring Inflation", "What Drives It?"] },
       { "title": "Growth and Jobs", "blurb": "How the economy is doing.",
-        "subtopics": ["GDP", "The Jobs Market"] },
+        "subtopics": ["GDP", "The Jobs Market", "The Business Cycle"] },
       { "title": "The Yield Curve", "blurb": "What bond yields say about the future.",
         "subtopics": ["Reading the Curve", "Inversions"] },
       { "title": "What Moves FX", "blurb": "Why one currency rises against another.",
-        "subtopics": ["Rate Differentials", "Risk On, risk Off"] },
+        "subtopics": ["Rate Differentials", "Risk On, Risk Off"] },
       { "title": "Data Days", "blurb": "The releases that move markets, and how to read them.",
-        "subtopics": ["CPI", "Payrolls", "FOMC"] }
+        "subtopics": ["Beats and Misses", "CPI", "Payrolls", "PMIs", "FOMC"] },
+      { "title": "Macro in the Portfolio", "blurb": "Using the big picture to choose sectors, styles and stocks.",
+        "subtopics": ["Sector Rotation", "Factors and Regimes", "Top-Down Meets Bottom-Up"] }
     ]
   },
   {
