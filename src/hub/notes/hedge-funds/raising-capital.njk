@@ -1,0 +1,264 @@
+---
+title: Raising Capital
+shelf: hedge-funds
+chapter: the-hedge-fund-business
+subtopic: Raising Capital
+order: 1
+summary: How a hedge fund finds and keeps its money - the chicken-and-egg problem for new funds, who the allocators are and what each wants, seeders and anchor investors, the three tracks of due diligence, and the investor relations work that keeps capital in the fund.
+lede: "Running money well isn't enough: someone has to give it to you first. Big investors want a long track record, a large fund and institutional-grade operations before they'll invest, and a new fund has none of those. How managers break that loop, and then keep the money once it arrives, decides which funds survive."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/raising-capital.js]
+
+quiz:
+  - q: 'A pension fund never wants to be more than \(10\%\) of any fund it invests in. It wants to invest \(\$100\) million. How big must your fund already be?'
+    opts: ['\(\$100\) million', '\(\$1\) billion', 'At least \(\$900\) million']
+    right: 2
+    why: 'After investing, its \(\$100\) million must be no more than \(10\%\) of the total: \(100 \div (A + 100) \le 0.1\), so \(A \ge \$900\) million. Big cheques only go to funds that are already big.'
+  - q: 'Which kind of due diligence checks who values the fund, who holds the assets and whether trades are reconciled?'
+    opts: ['Operational due diligence', 'Investment due diligence', 'Legal due diligence']
+    right: 0
+    why: 'Operational due diligence (ODD) looks at the fund''s plumbing: service providers, systems, controls and the separation between the people who trade and the people who check. It grew hugely after Madoff.'
+  - q: 'What does a seeder usually get in return for putting \(\$50\) to \(\$200\) million into a new fund?'
+    opts: ['A guaranteed fixed return each year', 'A share of the management company''s revenue or ownership', 'The right to choose the fund''s trades']
+    right: 1
+    why: 'The seeder takes a slice of the firm''s fee revenue or a stake in the management company, usually with a lock-up on its money and rights to invest more later. It doesn''t run the portfolio.'
+
+connected:
+  - { label: Builds on, title: What a Hedge Fund Is, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/what-is-a-hedge-fund/ }
+  - { label: Builds on, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/prime-brokerage/ }
+  - { label: Builds on, title: Fees and the High-Water Mark, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/fees-and-the-high-water-mark/ }
+  - { label: Used in, title: The Investment Memo, where: Hedge Funds · The Investment Process, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .rc-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .rc-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .rc-checks li { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: start; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); font-size: 14px; }
+  .rc-checks li .mark { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; background: var(--tone); color: var(--on-tone); }
+  .rc-checks li.fail .mark { background: var(--note-grey); color: var(--bg); }
+  .rc-checks li b { display: block; font-weight: 600; }
+  .rc-checks li span.why { color: var(--text-2); font-size: 13px; }
+  .rc-checks li .val { font: 500 13px var(--mono); color: var(--text-2); white-space: nowrap; }
+  .rc-verdict { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--tone-bg); border: 1px solid var(--tone); font-size: 15px; }
+  .rc-verdict.no { background: transparent; border-style: dashed; border-color: var(--note-grey); }
+  .rc-verdict b { color: var(--tone); }
+  .rc-verdict.no b { color: var(--text); }
+</style>
+
+{% sec 1, "The Chicken-and-Egg Problem", "Why is the first money so hard to find?", "The chicken and the egg" %}
+  <div class="prose">
+    <p>Picture a new restaurant. Food critics won't review it until it has been open a while. Diners go where there's already a queue. Big event bookings only go to places that have handled big events before. The restaurant needs customers to prove it's good, and needs to prove it's good to get customers.</p>
+    <p>A new hedge fund is stuck in the same loop. The investors with the most money, the {% gl "allocator" %}allocators{% endgl %} running pension funds, endowments and sovereign wealth funds, usually want three things before they invest:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>A {% gl "track record" %}track record{% endgl %} of two to three years or more.<span class="why">Anyone can be lucky for a year. A few years of returns, through some rough markets, start to show whether there's a repeatable process behind them.</span></span></li>
+    <li><span class="n">2</span><span>A fund that's already big, often \(\$500\) million or more.<span class="why">Most allocators won't be more than about \(10\) to \(20\%\) of any one fund, so they don't become its lifeline. To write a \(\$100\) million cheque under a \(10\%\) limit, they need your fund to be about \(\$900\) million already.</span></span></li>
+    <li><span class="n">3</span><span>Institutional-grade operations.<span class="why">An independent administrator, a recognised auditor, a compliance officer, proper systems and controls: the "four keys" from What a Hedge Fund Is. All of this costs money before the fund has much.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>A new fund has none of these. That's why most launches start small, why many never reach the \(\$250\) to \(\$500\) million a fund needs to be viable (the Fees note shows the sums), and why so much of the industry's money has piled up in the biggest firms.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Allocators are paid to avoid mistakes, not to find the next star. So capital flows to funds that are already big, already proven and already well run, and a new manager's whole early strategy is about breaking into that loop.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Who Has the Money?", "Who invests in hedge funds, and what does each want?", "Who has the money" %}
+  <div class="prose">
+    <p>Each kind of allocator has its own goals, its own rules and its own speed. Pitching a family office like a pension fund, or the other way round, is a quick way to fail.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Allocator</th><th>Share of their money in hedge funds</th><th>What they want</th><th>Time to decide</th></tr></thead>
+      <tbody>
+        <tr><td>Pension funds</td><td>\(5\)–\(15\%\)</td><td>Steady returns, protection in falls, returns that don't follow their shares</td><td>\(6\)–\(18\) months</td></tr>
+        <tr><td>Endowments and foundations</td><td>\(15\)–\(30\%\)</td><td>Strong returns over decades, real skill</td><td>\(3\)–\(12\) months</td></tr>
+        <tr><td>Sovereign wealth funds</td><td>\(5\)–\(20\%\)</td><td>Spreading risk, access to the best managers, chances to invest alongside them</td><td>\(6\)–\(24\) months</td></tr>
+        <tr><td>{% gl "family office" %}Family offices{% endgl %}</td><td>\(10\)–\(40\%\)</td><td>Protecting wealth, tax efficiency, talking to the manager directly</td><td>\(1\)–\(6\) months</td></tr>
+        <tr><td>Funds of funds</td><td>\(100\%\)</td><td>Picking managers, spreading risk across them</td><td>\(1\)–\(3\) months</td></tr>
+        <tr><td>Insurance companies</td><td>\(1\)–\(5\%\)</td><td>A bit of extra return with low swings, within capital rules</td><td>\(6\)–\(18\) months</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>The gatekeepers</h3>
+    <p>Many pension funds and foundations don't pick hedge funds themselves. They hire <strong>investment consultants</strong>, firms such as Cambridge Associates, Albourne, Mercer and Aksia, which research thousands of managers and recommend a shortlist. Getting onto a big consultant's approved list can open dozens of doors at once; being rejected by one can close them. Wealthy individuals mostly invest through their private banks and wealth platforms, which run their own checks and offer only a handful of funds.</p>
+    <h3>What they're really buying</h3>
+    <p>An allocator isn't buying the best possible return. It's buying something that fits a portfolio it already has. A pension that owns lots of shares wants a fund that does well when shares fall. So the questions are always about fit: how does this fund behave in a crash, how much does it move with what we already own, and how much of its return is skill rather than market exposure (its {% gl "Sharpe ratio" %}Sharpe ratio{% endgl %}, its worst {% gl "drawdown" %}drawdowns{% endgl %}, its correlation with the stock market)?</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Getting the First Money In", "How do new funds break the loop?", "The first money" %}
+  <div class="prose">
+    <p>There are four common routes to a fund's first few hundred million. Most launches use more than one.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Route</th><th>How it works</th><th>What it costs the manager</th></tr></thead>
+      <tbody>
+        <tr><td>Bootstrapping</td><td>Founders' own money plus wealthy contacts and family offices, then grow the record</td><td>Slow: years at a size that barely pays the bills</td></tr>
+        <tr><td>{% gl "seeder" %}Seed capital{% endgl %}</td><td>A seeding firm puts in \(\$50\)–\(200\) million on day one</td><td>A share of the firm's fee revenue or an ownership stake, often for years; seed money is usually locked in, with rights to add more later</td></tr>
+        <tr><td>{% gl "anchor investor" %}Anchor investor{% endgl %}</td><td>One big institution commits a large first allocation</td><td>Lower fees (often a founders' class), sometimes rights to invest alongside in particular trades</td></tr>
+        <tr><td>Spin-out with a name</td><td>A star portfolio manager leaves a big fund and launches with investors who already know their record</td><td>Little, if the record is real and can be shown; it's the fastest route</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The spin-out route explains why the biggest launches come from big firms. A PM who ran \(\$2\) billion at a multi-manager platform for years has a record allocators can check, and often a team. Bobby Jain, formerly co-chief investment officer at Millennium, launched Jain Global in 2024 with about \(\$5\) billion, one of the largest launches in years. For everyone else, it's a slower climb.</p>
+    <h3>Help along the way</h3>
+    <ul>
+      <li><strong>{% gl "capital introduction" %}Capital introduction{% endgl %}:</strong> prime brokers run events and meetings that put new funds in front of allocators. It's one of the reasons a fund chooses its prime broker (the Prime Brokerage note covers it).</li>
+      <li><strong>{% gl "emerging manager" %}Emerging manager{% endgl %} programmes:</strong> some pension funds and funds of funds set aside money specifically for newer, smaller managers, accepting shorter records in return for getting in early on lower fees.</li>
+      <li><strong>Founders' share classes:</strong> lower fees for investors who back the fund at launch (the Fees note explains them).</li>
+    </ul>
+  </div>
+{% endsec %}
+
+{% sec 4, "Due Diligence: Three Tracks at Once", "What does an allocator check before investing?", "Due diligence" %}
+  <div class="prose">
+    <p>Before a big allocator invests, it runs one of the most thorough checks in finance, often taking \(6\) to \(18\) months. Three teams work in parallel:</p>
+    <ul>
+      <li><strong>Investment due diligence (IDD)</strong> asks whether the returns come from real, repeatable skill. Where do ideas come from? What's the edge? How are positions sized and risks limited? Where did past profits and losses actually come from (attribution)? How did the fund do in bad markets? How much more money can the strategy take before returns suffer ({% gl "capacity" %}capacity{% endgl %})? Is the team good, and will it stay?</li>
+      <li><strong>{% gl "operational due diligence" %}Operational due diligence (ODD){% endgl %}</strong> asks whether the money is safe. Who holds the assets, who values them, who audits them? Are trades reconciled every day? Are the people who trade separate from the people who check? What about cybersecurity, backups and compliance? After Madoff, many allocators gave ODD its own team with the power to veto an investment the investment team loves.</li>
+      <li><strong>Legal due diligence</strong> reads the documents: the partnership agreement, the offering memorandum and any side letters. It focuses on fees, liquidity terms, investor protections and the {% gl "key-person clause" %}key-person clause{% endgl %}, which lets investors leave early if the star manager leaves or stops running the fund.</li>
+    </ul>
+    <p>Most of it starts with a long standard form, the {% gl "DDQ" %}due diligence questionnaire (DDQ){% endgl %}; the industry body AIMA publishes a widely used template. Then come on-site visits, interviews with the whole team, background checks, and calls to references: other investors, former employees, the prime broker, people the manager didn't list.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Pitch to an allocator</h3><p>Describe your fund, choose who you're pitching to, and see whether you'd get through their first screen. The thresholds are typical rules of thumb, not fixed rules: every allocator sets its own.</p></div>
+    <div class="controls">
+      <div class="presets rc-pick" id="rc-who" aria-label="Who you're pitching to"></div>
+      <div class="ctrl"><label for="rc-aum">Fund size</label><input type="range" id="rc-aum" min="0" max="7" step="1" value="2"><output id="rc-aum-out" for="rc-aum">$100m</output></div>
+      <div class="ctrl"><label for="rc-yrs">Track record</label><input type="range" id="rc-yrs" min="0" max="10" step="1" value="1"><output id="rc-yrs-out" for="rc-yrs">1 year</output></div>
+      <div class="presets rc-pick" id="rc-ops" aria-label="Operations"></div>
+    </div>
+    <ul class="rc-checks" id="rc-checks"></ul>
+    <div class="rc-verdict" id="rc-verdict"></div>
+  </div>
+{% endsec %}
+
+{% sec 5, "Investor Relations: Keeping the Money", "What happens after the money arrives?", "Investor relations" %}
+  <div class="prose">
+    <p>Raising money is half the job. Keeping it is the other half. At a small fund the portfolio manager does this personally; at a large one, an investor relations (IR) and business development team does. Its work runs in a cycle:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Stage</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td>Raising</td><td>Deciding who to target, building the pitch book, running meetings and roadshows</td></tr>
+        <tr><td>Onboarding</td><td>Subscription documents, identity and anti-money-laundering checks (KYC/AML), side letters, opening accounts</td></tr>
+        <tr><td>Reporting</td><td>Monthly or quarterly letters: returns, where they came from, risk, the main positions and the thinking behind them</td></tr>
+        <tr><td>Due diligence</td><td>Answering questionnaires and visits, again and again; big investors re-check every year or two</td></tr>
+        <tr><td>Annual meeting</td><td>The chief investment officer presents the year and the outlook; investors ask questions</td></tr>
+        <tr><td>Servicing</td><td>Ad hoc requests, handling redemptions, persuading investors to stay or add more ("re-up")</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Bad months test the relationship</h3>
+    <p>Every fund has a drawdown eventually. Investors who were told clearly what the strategy does, when it should struggle and what the manager is doing about it tend to stay. Investors who are surprised tend to leave, often at the worst time, forcing the fund to sell into a falling market (What a Hedge Fund Is shows how that hurts the investors who stay). Funds talk about "sticky" capital: long-term investors who understand the strategy, are on longer lock-ups, and won't run after one bad quarter. It's worth more than a bigger cheque from someone nervous.</p>
+    <h3>Why this matters even if you never work in IR</h3>
+    <p>When an analyst writes an investment memo and sticks to the process, they're creating the track record that IR will one day show to allocators. Allocators judge a fund on four things: whether the process is repeatable, whether risk is managed with discipline, whether the operations are solid, and whether the manager's interests line up with theirs. Disciplined work today is fundraising material tomorrow.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Who invests in funds that trade my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX and macro: follow the volatility</h3>
+    <p>Macro funds raise money most easily when currencies and interest rates are moving: the 2022 inflation shock and rate rises made macro one of the most popular strategies again after a quiet decade. Sovereign wealth funds and other big state investors are important backers, and the Gulf has become a hub: since 2022 many large hedge funds, including Millennium and Brevan Howard, have opened offices in Dubai and Abu Dhabi, partly to be close to the money there.</p>
+    <h3>Gold and commodities: investors chase last year</h3>
+    <p>Trend-following CTAs, the funds most tied to gold, oil and currency futures, show how performance drives fundraising. After a weak decade they struggled to raise money; after a strong 2022, when trends in rates, energy and currencies paid well, investors came back. Allocators often buy after a strategy's best year, which is usually the wrong time. A good IR team spends the good years explaining what the bad years will look like.</p>
+    <h3>Bonds and credit: insurers and long lock-ups</h3>
+    <p>Credit funds raise heavily from insurers and pension funds that need income. Because credit is hard to sell, these investors accept long lock-ups, sometimes years, and the funds often look more like private equity, with money called when needed. The fast growth of "private credit" funds since 2008 is largely this: institutions lending directly to companies through funds, where banks used to.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Allocator</h3><span class="tag desk">Desk</span></div><p>An investor that hands money to fund managers: pensions, endowments and so on.</p><p class="eg">"Three allocators are in due diligence with us."</p></div>
+    <div class="term"><div class="term-top"><h3>Ticket</h3><span class="tag desk">Desk</span></div><p>The size of one investor's allocation.</p><p class="eg">"Their minimum ticket is 50 million."</p></div>
+    <div class="term"><div class="term-top"><h3>DDQ</h3><span class="tag desk">Desk</span></div><p>Due diligence questionnaire: the long standard form every allocator sends.</p><p class="eg">"IR is buried in DDQs this month."</p></div>
+    <div class="term"><div class="term-top"><h3>ODD</h3><span class="tag desk">Desk</span></div><p>Operational due diligence: checks on the fund's plumbing and controls.</p><p class="eg">"We passed IDD but ODD flagged the admin."</p></div>
+    <div class="term"><div class="term-top"><h3>Seeder</h3><span class="tag desk">Desk</span></div><p>A firm that backs new funds in return for a share of their revenue.</p><p class="eg">"They launched with 150 from a seeder."</p></div>
+    <div class="term"><div class="term-top"><h3>Anchor</h3><span class="tag desk">Desk</span></div><p>A large first investor who gets better terms for committing early.</p><p class="eg">"The anchor took the founders' class at 1 and 15."</p></div>
+    <div class="term"><div class="term-top"><h3>Cap intro</h3><span class="tag desk">Desk</span></div><p>A prime broker's team that introduces funds to investors.</p><p class="eg">"Cap intro got us six meetings in Zurich."</p></div>
+    <div class="term"><div class="term-top"><h3>Re-up</h3><span class="tag desk">Desk</span></div><p>When an existing investor adds more money.</p><p class="eg">"The endowment re-upped after the annual meeting."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where raising money turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your record starts now</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every allocator's first question is "show me your track record", and a record only counts if someone else can check it: broker statements, a dated trade journal, written reasons before each trade rather than after. Writing trade ideas down before you place them, as in your Heritage Edge trade memos, and keeping every result, good and bad, is how a personal record becomes something an investor or employer can trust. A prop firm record helps too, because the firm's own statements back it up.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same investors, one deal at a time</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property developers raise money the same way, usually deal by deal. Family offices and wealthy individuals put in the equity; a bank lends the rest. The chicken-and-egg problem is identical: investors want to see a finished project before backing the next one. That's why first-time developers often partner with someone who already has a record, as with a real estate specialist, and why the first villa project matters so much: it becomes the track record for every raise after it.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: big local money, strict rules</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria's biggest pools of long-term money are its pension funds, which have grown fast since the contributory pension reform of 2004 and are run by pension fund administrators under PenCom's investment rules, which limit how much can go into alternative investments. Family offices and diaspora investors are the more flexible source for newer funds. Onboarding is a real friction everywhere: identity and anti-money-laundering checks, subscription documents, bank details in several currencies. Tools that make this fast and clean for investors in Nigeria and abroad solve a problem every fund has.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on raising money?" %}
+  <div class="formula"><span class="lbl">The biggest cheque an allocator can write</span>\[ x_{\max} = \frac{s \times A}{1 - s} \]</div>
+  <div class="formula"><span class="lbl">How big a fund must be for a given cheque</span>\[ A_{\min} = \frac{x \,(1 - s)}{s} \]</div>
+  <div class="prose">
+    <p>Here \(A\) is the fund's size before the allocator invests, \(s\) the most of any fund the allocator will be (for example \(10\%\)), and \(x\) its cheque. After investing, its share is \(x \div (A + x)\), which must stay at or below \(s\).</p>
+  </div>
+  <div class="formula"><span class="lbl">Sharpe ratio: return per unit of risk</span>\[ \text{Sharpe} = \frac{r - r_f}{\sigma} \]</div>
+  <div class="prose">
+    <p>\(r\) is the fund's yearly return, \(r_f\) the cash rate and \(\sigma\) the yearly volatility of its returns. Allocators compare funds on this rather than on returns alone: \(12\%\) with \(6\%\) volatility is far more attractive than \(15\%\) with \(20\%\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A pension fund will be at most \(10\%\) of any fund. Your fund is \(\$300\) million. What's the most it can invest, and how big must you be for a \(\$100\) million cheque?</h3>
+    <ol class="steps">
+      <li>Biggest cheque now: \(0.1 \times 300 \div 0.9 = \$33.3\) million.</li>
+      <li>For \(\$100\) million: \(100 \times 0.9 \div 0.1 = \$900\) million.</li>
+      <li>Check: \(100 \div (900 + 100) = 10\%\).</li>
+    </ol>
+    <p class="answer">To get the big cheques, you have to be big already. That's the loop.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A seeder puts \(\$100\) million into a new fund for \(20\%\) of the firm's fee revenue. The fund grows to \(\$500\) million, charges \(1.5\%\) and \(20\%\), and makes \(10\%\) before fees in a year. What does the seeder earn from the deal that year?</h3>
+    <ol class="steps">
+      <li>Management fee: \(1.5\% \times \$500\text{m} = \$7.5\) million.</li>
+      <li>Profit after the management fee: \(\$50\text{m} - \$7.5\text{m} = \$42.5\) million. Performance fee: \(20\% \times \$42.5\text{m} = \$8.5\) million.</li>
+      <li>Fee revenue: \(\$16\) million. The seeder's share: \(20\% \times \$16\text{m} = \$3.2\) million, on top of the return on its own \(\$100\) million.</li>
+    </ol>
+    <p class="answer">The founders give up \(\$3.2\) million a year, but without the seed they might never have reached \(\$500\) million at all.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name the three tracks of due diligence and one question each asks.</span></p>
+      <details><summary>Show answer</summary><div><span>Investment (IDD): is the return repeatable skill, and where did past profits come from? Operational (ODD): who holds, values and audits the assets, and are trading and checking separate? Legal: what do the fees, liquidity terms, side letters and key-person clause say?</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>An endowment will be at most \(15\%\) of a fund. The fund is \(\$170\) million. What's the largest allocation it can make?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.15 \times 170 \div 0.85 = \$30\) million. Check: \(30 \div 200 = 15\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Name four services a prime broker provides, including the one that helps with fundraising.</span></p>
+      <details><summary>Show answer</summary><div><span>Custody, securities lending for short selling, financing (leverage), trade clearing and settlement, reporting and risk tools, and capital introduction, which connects new funds with potential investors.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Fund A returned \(12\%\) with \(6\%\) volatility; fund B returned \(15\%\) with \(20\%\) volatility. Cash pays \(4\%\). Which has the better Sharpe ratio?</span></p>
+      <details><summary>Show answer</summary><div><span>A: \((12 - 4) \div 6 = 1.33\). B: \((15 - 4) \div 20 = 0.55\). A is much better per unit of risk, even with the lower return.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>What's a key-person clause, and why do investors want one?</span></p>
+      <details><summary>Show answer</summary><div><span>It lets investors redeem early, outside the normal terms, if a named person (usually the founder or CIO) leaves or stops running the fund. Investors are backing the person, so they want a way out if that person goes.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Give two advantages and one cost of launching with a seeder.</span></p>
+      <details><summary>Show answer</summary><div><span>Advantages: day-one size (\(\$50\)–\(200\) million) that makes the fund viable sooner and more credible to other allocators; often help with operations and introductions. Cost: a share of the firm's revenue or ownership, often for many years, plus terms such as locked-in seed money and rights to capacity.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're an analyst at a hedge fund, not in IR. Why should you care how the fund raises money?</span></p>
+      <details><summary>Show answer</summary><div><span>Because your work is what gets marketed. Allocators judge a fund on a repeatable process, disciplined risk management, solid operations and aligned interests. Every memo you write and every position you manage within the rules builds the track record IR shows them. A fund that can't raise or keep money can't keep paying its analysts, so fundraising and investing are the same business.</span></div></details></div>
+  </div>
+{% endsec %}
