@@ -1,0 +1,306 @@
+---
+title: How Central Banks Decide
+shelf: macro
+chapter: central-banks-and-rates
+subtopic: Central Banks
+order: 2
+summary: Who sits round the table at the Fed, the Bank of England, the ECB and the CBN, the Taylor Rule as a yardstick for where rates "should" be, how central banks talk (statements, press conferences, the dot plot, minutes), forward guidance and the Warsh Fed's retreat from it, reading a statement like a trader, and why markets react to surprises rather than decisions.
+lede: "A rate decision is made by a committee, explained in a few hundred carefully chosen words, and judged by markets against what they already expected. Learning to read all three (the people, the words and the expectations) is most of what a macro trader does on decision day."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/macro/how-central-banks-decide.js]
+
+quiz:
+  - q: 'The Fed raises rates by \(0.25\) points, exactly as markets expected, but the dot plot shows two more rises than markets had priced. What usually happens to 2-year Treasury yields?'
+    opts: ['They fall, because the hike is now done', 'They rise, because the expected path of rates has moved up', 'Nothing, because the hike was expected']
+    right: 1
+    why: 'Markets had already priced the hike, so the decision itself is no news. The surprise is the higher path in the dots: 2-year yields track the expected average policy rate, so they rise. This is the Deltashark Knowledge Check case.'
+  - q: 'Neutral real rate \(1\%\), inflation \(4\%\), output gap \(0\). What does the basic Taylor Rule suggest?'
+    opts: ['\(5\%\)', '\(4\%\)', '\(6\%\)']
+    right: 2
+    why: '\(1 + 4 + 0.5 \times (4 - 2) + 0.5 \times 0 = 6\%\). The rule adds more than one point of interest rate for each extra point of inflation, so real rates rise when inflation rises.'
+  - q: 'What did Kevin Warsh change at his first meeting as Fed chair in June 2026?'
+    opts: ['He shortened the statement, dropped forward guidance and didn''t submit his own dot', 'He stopped publishing the interest rate decision', 'He replaced the 2% target with a range']
+    right: 0
+    why: 'The statement fell from 341 to 130 words, forward guidance was removed, and Warsh left his own projection out of the dot plot. He kept the 2% target and set up task forces to review the dot plot, projections and other communication.'
+
+connected:
+  - { label: Builds on, title: What a Central Bank Does, where: Macro · Central Banks and Rates, url: /hub/macro/what-a-central-bank-does/ }
+  - { label: Used in, title: FOMC, where: Macro · Data Days, url: /hub/macro/ }
+  - { label: Used in, title: The Yield Curve, where: Macro · The Yield Curve, url: /hub/macro/ }
+---
+
+<style>
+  .hd-pick button[aria-pressed="true"], .ty-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .hd-box { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--hub-card); font: 15px/1.65 var(--mono); }
+  .hd-box p { margin: 0; }
+  .hd-box del { color: var(--text-2); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .hd-box ins { text-decoration: none; background: var(--tone-bg); color: var(--text); border-bottom: 2px solid var(--tone); padding: 0 2px; }
+  .hd-guess { display: flex; gap: 8px; margin: 12px 0 0; flex-wrap: wrap; }
+  .hd-guess button { font: inherit; font-size: 14px; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  .hd-guess button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .hd-ans { margin-top: 12px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--note-grey); font-size: 15px; color: var(--text-2); }
+  .hd-ans.ok { border: 1px solid var(--tone); background: var(--tone-bg); color: var(--text); }
+  .hd-ans.no { border-style: solid; color: var(--text); }
+  .hd-score { margin-top: 8px; font: 500 13px var(--mono); color: var(--text-2); min-height: 1em; }
+</style>
+
+{% sec 1, "Who's in the Room", "Who actually makes the decision?", "Who's in the room" %}
+  <div class="prose">
+    <p>A central bank's rate isn't set by one person. Each big central bank uses a committee, partly so no single person's mistakes or biases decide the economy's fate, and partly so the decision carries more weight. But committees work very differently.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Committee</th><th>Who votes</th><th>How it decides</th><th>Are the votes published?</th></tr></thead>
+      <tbody>
+        <tr><td>Fed: {% gl "FOMC" %}FOMC{% endgl %}</td><td>12: the 7 governors, the New York Fed president, and 4 of the other 11 regional presidents, rotating each year. All 19 join the discussion.</td><td>The chair proposes; the committee usually agrees. Members who disagree can {% gl "dissent" %}dissent{% endgl %}.</td><td>Yes, by name, in the statement</td></tr>
+        <tr><td>Bank of England: MPC</td><td>9: the Governor, three deputy governors and the chief economist, plus four outside experts appointed for three years</td><td>One person, one vote; the Governor can be outvoted</td><td>Yes, with the decision</td></tr>
+        <tr><td>ECB: Governing Council</td><td>The 6 Executive Board members always vote; the 21 national governors share 15 votes in rotation</td><td>Aims for consensus; formal votes are rare</td><td>No: only a summary of the debate ("accounts"), four weeks later</td></tr>
+        <tr><td>Bank of Japan: Policy Board</td><td>9: the Governor, two deputies and six members</td><td>Majority vote</td><td>Yes, with the decision</td></tr>
+        <tr><td>CBN: MPC</td><td>12: the Governor, four deputy governors, two CBN board members and five outside members</td><td>Majority vote</td><td>Yes: a communiqué, then each member's personal statement</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>What a meeting looks like</h3>
+    <p>An FOMC meeting runs over two days. Staff present their forecast for the economy and the options for policy. Every participant gives their view of the economy, then their view of policy. The chair sums up and proposes a decision and the wording of the statement; the voters vote. At 2pm New York time (7pm in London, in winter) the statement comes out, and half an hour later the chair holds a press conference.</p>
+    <p>Dissents matter because they show which way the committee is leaning. At the October 2026 meeting, ten members voted to hold rates at \(3.75\)–\(4.00\%\) and two, Governor Lisa Cook and Cleveland Fed President Beth Hammack, voted for another rise. Markets read that as a sign the next move was more likely up than down.</p>
+    <p>Before each meeting comes a {% gl "blackout period" %}blackout period{% endgl %}: from the second Saturday before the meeting until the day after, Fed officials don't speak publicly about policy, so markets aren't moved by individual opinions just before the committee decides.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "A Yardstick: The Taylor Rule", "Is there a formula for where rates should be?", "The Taylor Rule" %}
+  <div class="prose">
+    <p>Imagine a doctor deciding a dose of medicine. There's a standard rule of thumb based on weight and how ill the patient is, but the doctor adjusts it for things the rule doesn't know. In 1993 the economist John Taylor wrote down a rule of thumb like that for interest rates. No central bank follows it exactly, but almost every central bank watcher checks it.</p>
+    <p>The {% gl "Taylor Rule" %}Taylor Rule{% endgl %} builds a suggested rate in four steps:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Start from the {% gl "neutral rate" %}neutral real rate{% endgl %}, \(r^*\).<span class="why">The interest rate after inflation that neither speeds the economy up nor slows it down. It can't be measured directly; estimates for the US are around \(0.5\) to \(1.5\%\).</span></span></li>
+    <li><span class="n">2</span><span>Add current inflation.<span class="why">This turns the real rate into a normal (nominal) rate. With inflation at \(3\%\), a neutral \(1\%\) real rate means a \(4\%\) actual rate.</span></span></li>
+    <li><span class="n">3</span><span>Add half of how far inflation is above target.<span class="why">If inflation is \(4\%\) against a \(2\%\) target, add \(1\) more point. This makes the rate rise by more than inflation does, so the real rate goes up and actually cools the economy.</span></span></li>
+    <li><span class="n">4</span><span>Add half of the {% gl "output gap" %}output gap{% endgl %}.<span class="why">The gap is how far the economy's output is above (positive) or below (negative) what it could sustainably produce. An economy running below its potential, with spare workers and factories, gets a lower rate.</span></span></li>
+  </ul>
+  <div class="formula"><span class="lbl">The Taylor Rule</span>\[ i = r^* + \pi + 0.5\,(\pi - \pi^*) + 0.5\,(y - y^*) \]</div>
+  <div class="prose">
+    <p>\(i\) is the suggested policy rate, \(\pi\) inflation, \(\pi^*\) the \(2\%\) target and \(y - y^*\) the output gap in per cent.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>What would the rule say?</h3><p>Each bar adds one piece of the rule; the last bar is the rate it suggests. The dashed line across the chart is the actual policy rate. On a phone the bars are labelled with symbols: \(r^*\) is the neutral rate, \(\pi\) inflation. Pick a moment or move the sliders. The inputs for each moment are rounded estimates.</p></div>
+    <div class="controls">
+      <div class="presets ty-pick" id="ty-preset" aria-label="A moment to test"></div>
+      <div class="ctrl"><label for="ty-r">Neutral real rate</label><input type="range" id="ty-r" min="0" max="2.5" step="0.25" value="1.25"><output id="ty-r-out" for="ty-r">1.25%</output></div>
+      <div class="ctrl"><label for="ty-pi">Inflation</label><input type="range" id="ty-pi" min="-1" max="10" step="0.1" value="3.1"><output id="ty-pi-out" for="ty-pi">3.1%</output></div>
+      <div class="ctrl"><label for="ty-gap">Output gap</label><input type="range" id="ty-gap" min="-8" max="4" step="0.5" value="0"><output id="ty-gap-out" for="ty-gap">0%</output></div>
+      <div class="ctrl"><label for="ty-act">Actual rate</label><input type="range" id="ty-act" min="0" max="8" step="0.125" value="3.875"><output id="ty-act-out" for="ty-act">3.875%</output></div>
+    </div>
+    <svg class="chart" id="chart-taylor" viewBox="0 0 640 300" role="img" aria-label="A staircase of bars building the Taylor Rule rate from the neutral rate, inflation, the inflation gap and the output gap, compared with the actual policy rate"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Adds to the rate</span><span><i class="sw grey" style="background:none;border:1.5px dashed var(--note-grey)"></i>Takes away</span><span><i class="sw grey" style="background:none;border:1.5px dashed var(--text)"></i>Actual policy rate</span></div>
+    <div class="readout" id="ty-read"></div>
+    <p class="look" id="ty-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Why nobody follows it exactly</h3>
+    <ul>
+      <li><strong>The neutral rate is a guess.</strong> The Fed's own long-run estimate of where rates settle moved from \(3.1\%\) to \(3.2\%\) between June and September 2026, and estimates across economists differ by a whole point. Moving \(r^*\) by half a point moves the answer by half a point.</li>
+      <li><strong>The output gap is revised for years.</strong> What the economy "could" produce is a theory, not a measurement, and today's estimate will be rewritten later.</li>
+      <li><strong>It ignores everything else:</strong> a banking scare, a war, a currency crisis. Central banks also move gradually, so they rarely jump straight to the rule's answer.</li>
+    </ul>
+    <p>Its real use is as a yardstick. When the actual rate sits far from the rule for a long time, ask why, because the gap tends to close and that creates trades.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How Central Banks Talk", "Where do the words come from, and when?", "How they talk" %}
+  <div class="prose">
+    <p>A rate decision is one number. Everything around it is words, and the words often move markets more than the number. The Fed's channels, in the order they arrive:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Channel</th><th>When</th><th>What traders look for</th></tr></thead>
+      <tbody>
+        <tr><td>The statement</td><td>Decision day, 2pm New York</td><td>The decision, the vote, and every word changed since last time</td></tr>
+        <tr><td>Press conference</td><td>30 minutes later</td><td>How the chair answers questions they didn't script; tone often moves markets more than the statement</td></tr>
+        <tr><td>{% gl "SEP" %}Summary of Economic Projections{% endgl %} and {% gl "dot plot" %}dot plot{% endgl %}</td><td>Four meetings a year (March, June, September, December)</td><td>Each participant's forecast for growth, jobs, inflation and the right interest rate</td></tr>
+        <tr><td>{% gl "minutes" %}Minutes{% endgl %}</td><td>Three weeks later</td><td>How many members leaned which way, and what worried them</td></tr>
+        <tr><td>Speeches and interviews</td><td>Between meetings, outside the blackout</td><td>Whether individual members are shifting, especially the chair and the New York Fed president</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Other central banks follow a similar pattern with their own twists. The Bank of England publishes its decision, the vote and the minutes all at once at noon, with a full forecast (the Monetary Policy Report) four times a year. The ECB announces at 2:15pm Frankfurt time with a press conference half an hour later. The CBN Governor reads a communiqué at a press briefing, and the personal statement of every MPC member is published a few weeks later, so you can see exactly who argued for what.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Forward Guidance and the Dot Plot", "Should a central bank say what it will do next?", "Forward guidance" %}
+  <div class="prose">
+    <p>A teacher who tells the class "there'll be a test on Friday" changes how everyone behaves this week, before Friday arrives. {% gl "forward guidance" %}Forward guidance{% endgl %} works the same way: if a central bank says rates will stay low for a long time, long-term borrowing costs fall today, because lenders price in years of low rates.</p>
+    <p>It was the main tool after 2008, when rates were already at zero. In 2011 the Fed said rates would stay exceptionally low "at least through mid-2013", a promise with a date on it. Later guidance tied rates to outcomes instead ("until unemployment falls below \(6.5\%\)").</p>
+    <h3>The dot plot</h3>
+    <p>Since 2012, four times a year, each FOMC participant (up to 19 of them) marks with a dot where they think the fed funds rate should be at the end of each of the next few years. The middle dot (the median) is what headlines quote. The spread of dots shows how much the committee disagrees.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Median dot for the end of…</th><th>June 2026</th><th>September 2026</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>2026</td><td>\(3.8\%\)</td><td>\(4.1\%\)</td><td>up about one rise</td></tr>
+        <tr><td>2027</td><td>\(3.6\%\)</td><td>\(4.1\%\)</td><td>up \(0.5\) points: about two more rises</td></tr>
+        <tr><td>2028</td><td>\(3.4\%\)</td><td>\(3.9\%\)</td><td>up \(0.5\) points</td></tr>
+        <tr><td>Longer run</td><td>\(3.1\%\)</td><td>\(3.2\%\)</td><td>a little higher</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The September 2026 dots told markets the Fed expected one more rise in 2026 and then to keep rates high through 2027, instead of cutting. They also projected core inflation of \(3.4\%\) for 2026, well above target.</p>
+    <h3>The case against: the Warsh Fed</h3>
+    <p>Guidance has a cost. If a central bank promises a path and the economy changes, it must either break its word (and lose credibility) or stick to a plan that has become wrong. Many argue the Fed was slow to react in 2021 partly because it had told markets rates would stay low.</p>
+    <p>Kevin Warsh made this argument for years, and acted on it at his first meeting as chair in June 2026. The statement shrank from 341 words to 130, all forward guidance was dropped, and Warsh didn't submit his own dot, so the plot had 18 dots instead of 19. He set up task forces to review the dot plot, the projections and the rest of the Fed's communication. Supporters say the Fed will be freer to respond to data; critics say markets will be more volatile because they have less to go on. Either way, for now each data release matters more, because the Fed is telling markets less about what comes next.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Reading Between the Lines", "How do traders read a statement?", "Reading the statement" %}
+  <div class="prose">
+    <p>Central bank statements are written by committee and checked word by word, so small changes are deliberate. The standard way to read one is a <strong>redline</strong>: lay the new statement over the last one and mark every word that was removed or added. Desks have the redline out within seconds of the release.</p>
+    <p>Each change below is a made-up sentence in the style of a statement. Crossed-out words were removed; highlighted words were added. Decide whether the change leans {% gl "hawkish" %}hawkish{% endgl %} (towards higher rates) or {% gl "dovish" %}dovish{% endgl %} (towards lower rates).</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Hawk or dove?</h3><p>Pick a change, read the redline, then make your call.</p></div>
+    <div class="controls">
+      <div class="presets hd-pick" id="hd-pick" aria-label="Which statement change"></div>
+    </div>
+    <div class="hd-box" id="hd-box" aria-live="polite"></div>
+    <div class="hd-guess" id="hd-guess" aria-label="Your call"></div>
+    <div class="hd-ans" id="hd-ans" aria-live="polite"></div>
+    <div class="hd-score" id="hd-score"></div>
+  </div>
+{% endsec %}
+
+{% sec 6, "Priced In: Why Surprises Move Markets", "Why does an expected rate rise sometimes make markets rally?", "Priced in" %}
+  <div class="prose">
+    <p>Suppose everyone in your class knows the teacher will set homework on Friday. When it's set, nobody's surprised and nobody changes their weekend plans. If the teacher also announces a test on Monday, that's the news. Markets work the same way: by decision day, traders have already bet on what the central bank will do, so the decision is usually {% gl "priced in" %}priced in{% endgl %}. Prices move on the <em>surprise</em>: the gap between what happened and what was expected.</p>
+    <h3>How you know what's expected</h3>
+    <p>Traders can bet on the future average of the policy rate using {% gl "fed funds futures" %}fed funds futures{% endgl %} and overnight index swaps. From their prices you can work out the market's implied chance of a move. Websites such as CME FedWatch publish these numbers every day. Before the October 2026 meeting, markets gave a hike only about a one-in-six chance, so the hold was no surprise.</p>
+    <h3>A worked case: the hike that sent stocks down</h3>
+    <p>This is the Deltashark Knowledge Check case. The Fed raises rates by \(0.25\) points, exactly as expected, and shares rise. Then the dot plot shows the median path \(0.5\) points higher than before: two extra rises nobody had priced. Shares turn and fall sharply.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Market</th><th>What happens</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>2-year Treasury yield</td><td>Jumps</td><td>It tracks the average expected policy rate over two years, and that just went up</td></tr>
+        <tr><td>10-year yield</td><td>Rises less</td><td>Higher rates now may mean slower growth later; the curve flattens</td></tr>
+        <tr><td>Dollar</td><td>Strengthens</td><td>US rates are now expected to be higher than elsewhere for longer</td></tr>
+        <tr><td>Rate-sensitive shares (property, high-growth tech, utilities)</td><td>Fall most</td><td>Their value depends on profits far in the future, which are worth less at higher rates</td></tr>
+        <tr><td>Gold</td><td>Usually falls</td><td>Higher real rates make an asset that pays nothing less attractive, and a stronger dollar makes it dearer abroad</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Something very close to this happened in September 2026: the hike was expected, but the dots for 2027 rose by half a point.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Markets don't trade the decision; they trade the difference between the decision (and the words around it) and what they expected. Before any central bank meeting, find out what's priced in.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "What does decision day look like in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: two central banks in every pair</h3>
+    <p>Every currency pair has two central banks behind it, so FX traders compare the expected paths of both. EUR/USD moves on the Fed and the ECB; USD/JPY on the Fed and the BoJ. The biggest moves come when the two surprise in opposite directions. On decision days, liquidity thins in the minutes before the release, spreads widen, and the first move after the statement is often reversed during the press conference.</p>
+    <h3>Gold: the real rate trade</h3>
+    <p>Gold reacts to what a decision does to real interest rates and the dollar. A hawkish surprise (higher expected rates) usually pushes gold down; a dovish one pushes it up. But central banks' own buying of gold has made this link weaker since 2022.</p>
+    <h3>Bonds: the front end reacts first</h3>
+    <p>Two-year yields react most to central bank surprises, because they are mostly a forecast of the policy rate. Longer yields depend more on growth, inflation over decades and how many bonds the government is selling. That's why a hawkish surprise often <em>flattens</em> the yield curve: the short end rises more than the long end. The Yield Curve chapter takes this further.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>The dots</h3><span class="tag desk">Desk</span></div><p>The Fed's dot plot: each official's guess for future rates.</p><p class="eg">"The dots moved up 50 for '27."</p></div>
+    <div class="term"><div class="term-top"><h3>Presser</h3><span class="tag desk">Desk</span></div><p>The press conference after a decision.</p><p class="eg">"Statement was neutral; the presser was hawkish."</p></div>
+    <div class="term"><div class="term-top"><h3>Redline</h3><span class="tag desk">Desk</span></div><p>The new statement marked against the old one, word by word.</p><p class="eg">"Send me the redline the second it's out."</p></div>
+    <div class="term"><div class="term-top"><h3>Blackout</h3><span class="tag desk">Desk</span></div><p>The quiet period before a meeting when officials don't talk policy.</p><p class="eg">"Fed's in blackout, so it's all data this week."</p></div>
+    <div class="term"><div class="term-top"><h3>Dissent</h3><span class="tag desk">Desk</span></div><p>A vote against the decision.</p><p class="eg">"Two hawkish dissents: they're not done."</p></div>
+    <div class="term"><div class="term-top"><h3>Terminal rate</h3><span class="tag desk">Desk</span></div><p>The highest (or lowest) point the policy rate is expected to reach in this cycle.</p><p class="eg">"Market's pricing a 4.25 terminal."</p></div>
+    <div class="term"><div class="term-top"><h3>Priced in</h3><span class="tag desk">Desk</span></div><p>Already expected, so already reflected in prices.</p><p class="eg">"The hike was fully priced; it's all about the guidance."</p></div>
+    <div class="term"><div class="term-top"><h3>Fed speak</h3><span class="tag desk">Desk</span></div><p>Speeches and interviews by Fed officials between meetings.</p><p class="eg">"Lots of Fed speak tomorrow; watch Williams."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where reading central banks turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: build a decision-day routine</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Before a decision, write down three things: what's priced in (from FedWatch or the news), what would be a hawkish surprise, and what would be a dovish one, with how you'd expect EUR/USD, gold and 2-year yields to react in each case. Afterwards, compare. Doing this every meeting is the fastest way to learn how central banks move your markets, and the notes make a strong addition to your trade journal and to interview answers.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: fixed-rate deals follow the expected path</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Two- and five-year fixed mortgage rates are priced off swap rates, which follow the expected path of the central bank rate, not today's rate. That's why lenders reprice mortgages after a hawkish dot plot or Bank of England report, even when the rate itself didn't change. Anyone financing a property deal should watch the guidance, not just the decision.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: read the personal statements</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The CBN publishes each MPC member's personal statement, which is unusually open: you can see who wanted a bigger cut and why. In September 2026 the MPC cut the rate from \(26.5\%\) to \(23\%\). Tracking which members argue about the naira, food prices or bank lending tells you what the next decision depends on, and a simple tool that summarises the communiqué and statements after each meeting would be useful to investors in Nigeria and abroad.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <h3>Further reading</h3>
+    <p>Deltashark recommends Sebastian Mallaby's <em>The Man Who Knew</em>, a biography of Alan Greenspan, for how Fed decisions really get made inside the institution.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "Which numbers do central bank watchers work out?" %}
+  <div class="formula"><span class="lbl">The Taylor Rule</span>\[ i = r^* + \pi + 0.5\,(\pi - \pi^*) + 0.5\,(y - y^*) \]</div>
+  <div class="prose">
+    <p>Rewrite it as \(i = r^* - 0.5\pi^* + 1.5\pi + 0.5(y - y^*)\) and you can see the key feature: each extra point of inflation adds \(1.5\) points to the rate, so the real rate rises. This is called the Taylor principle.</p>
+  </div>
+  <div class="formula"><span class="lbl">The market's implied chance of a 25 bp move (simplified)</span>\[ P(\text{move}) \approx \frac{\text{rate implied by futures} - \text{current rate}}{0.25} \]</div>
+  <div class="prose">
+    <p>If futures imply \(4.00\%\) for after the meeting and the current midpoint is \(3.875\%\), the market prices \(0.125 \div 0.25 = 50\%\) odds of a hike. Real calculators also allow for the meeting date falling partway through the month.</p>
+  </div>
+  <div class="formula"><span class="lbl">The median dot</span>\[ \text{median of 19 dots} = \text{the 10th dot from the bottom} \qquad \text{of 18 dots} = \text{average of the 9th and 10th} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark Knowledge Check)</span>
+    <h3>The fed funds rate is \(5.25\%\), core PCE inflation \(3.5\%\), the output gap \(-0.5\%\), and the neutral real rate \(0.75\%\). What does the Taylor Rule suggest?</h3>
+    <ol class="steps">
+      <li>Neutral real rate plus inflation: \(0.75 + 3.5 = 4.25\%\).</li>
+      <li>Half the inflation gap: \(0.5 \times (3.5 - 2) = +0.75\).</li>
+      <li>Half the output gap: \(0.5 \times (-0.5) = -0.25\).</li>
+      <li>Total: \(4.25 + 0.75 - 0.25 = 4.75\%\).</li>
+    </ol>
+    <p class="answer">The actual \(5.25\%\) is half a point tighter than the rule, which hints that cuts become more likely if inflation keeps falling.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The dot plot moves the median for next year from \(3.6\%\) to \(4.1\%\). How many quarter-point rises is that?</h3>
+    <ol class="steps">
+      <li>Change: \(4.1 - 3.6 = 0.5\) points \(= 50\) basis points.</li>
+      <li>\(50 \div 25 = 2\) extra rises.</li>
+    </ol>
+    <p class="answer">Two more rises than the committee expected three months earlier: a hawkish shift.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Who votes on the FOMC, and why can't all 12 regional Fed presidents vote every year?</span></p>
+      <details><summary>Show answer</summary><div><span>The 7 Board governors, the New York Fed president (always) and 4 of the other 11 regional presidents, rotating each year: 12 votes. Giving every regional bank a permanent vote would let the regional presidents outvote the governors appointed by the President and confirmed by the Senate; the rotation keeps a balance while everyone joins the discussion.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Deltashark Knowledge Check: the Fed raises rates by \(0.25\) points as expected, but the dot plot shifts up by \(0.5\) points. Shares rally, then sell off. Explain, and name three trades.</span></p>
+      <details><summary>Show answer</summary><div><span>The rally priced the expected hike ("buy the fact"); the sell-off is the hawkish surprise, two more rises than markets expected. Trades: sell 2-year Treasuries (yields rise as the path reprices); a curve flattener (sell 2-year, buy 10-year); sell rate-sensitive shares such as property and high-growth tech; buy the dollar against low-yielding currencies. Watch credit spreads in case markets read it as bad for growth.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Deltashark Knowledge Check: fed funds \(5.25\%\), core PCE \(3.5\%\), output gap \(-0.5\%\), \(r^* = 0.75\%\). What does the Taylor Rule suggest, and what does it mean for shares?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.75 + 3.5 + 0.75 - 0.25 = 4.75\%\). Policy is half a point tighter than the rule, so cuts are more likely if inflation keeps easing, which would be mildly good for shares through lower discount rates. The rule is a yardstick, not a forecast: \(r^*\) and the output gap are uncertain.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Futures imply \(4.0625\%\) after the next meeting. The current range is \(3.75\)–\(4.00\%\). Roughly what chance of a 25 bp hike is priced?</span></p>
+      <details><summary>Show answer</summary><div><span>Midpoint \(3.875\%\). \((4.0625 - 3.875) \div 0.25 = 0.1875 \div 0.25 = 75\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Give one argument for forward guidance and one against.</span></p>
+      <details><summary>Show answer</summary><div><span>For: it moves long-term rates today, which is powerful when the policy rate is already at zero, and it reduces surprises and volatility. Against: it can lock the bank into a path the data no longer supports, so it either breaks its word or acts too late (the criticism of 2021, and Warsh's argument for dropping it).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>The Bank of England holds rates, as expected, but the vote is 5–4 with four members wanting a cut, when markets expected 7–2. What happens to the pound, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>The pound usually falls. The decision was priced, but the vote shows the committee is closer to cutting than markets thought, so expected UK rates fall relative to other countries'. A dovish surprise in the vote, not the decision.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: walk me through how you'd prepare for an FOMC meeting.</span></p>
+      <details><summary>Show answer</summary><div><span>Check what's priced (futures, FedWatch) for this meeting and the next few. Read the last statement, the minutes and recent Fed speak to see which way members lean. Know the latest CPI, PCE and payrolls. Set out scenarios: in line, hawkish surprise (decision, dots or words), dovish surprise, and how 2-year yields, the dollar, gold and equities should react in each. Decide position size beforehand, because liquidity thins around the release, and read the redline and the press conference before trading the first move.</span></div></details></div>
+  </div>
+{% endsec %}
