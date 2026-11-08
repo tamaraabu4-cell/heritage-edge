@@ -1,0 +1,264 @@
+---
+title: Single-Manager vs Multi-Manager
+shelf: hedge-funds
+chapter: the-hedge-fund-business
+subtopic: Single-Manager vs Multi-Manager
+order: 1
+summary: Why multi-manager platforms took over the industry and what that costs - how many independent pods smooth returns, how the central risk team and stop-losses work, who pays for the platform (pass-through fees and netting risk), the case for single-manager funds, crowding, and the hybrids in between.
+lede: "One star investor making every call, or hundreds of portfolio managers each running their own book under one strict risk team? The second model now manages the biggest share of hedge fund money. It's worth knowing exactly why it works, what it costs investors, and when it breaks."
+goals: [trading, realestate, fintech]
+themes: [trading, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/single-manager-vs-multi-manager.js]
+
+quiz:
+  - q: 'Twenty pods each have \(10\%\) yearly volatility, and their returns are almost unrelated (correlation \(0.1\)). Roughly how volatile is the platform as a whole?'
+    opts: ['About \(10\%\), the same as one pod', 'About \(4\%\)', 'About \(0.5\%\), twenty times smaller']
+    right: 1
+    why: '\(\sigma_p = 10\% \times \sqrt{0.1 + 0.9 \div 20} = 10\% \times \sqrt{0.145} \approx 3.8\%\). Spreading over pods cuts the risk a lot, but the shared part (the correlation) never goes away.'
+  - q: 'A platform has ten pods. Six make \(\$20\) million each and four lose \(\$25\) million each. PMs keep \(20\%\) of their own profits. What happens to investors?'
+    opts: ['They get the fund''s \(\$20\) million profit, less a \(20\%\) fee', 'PM payouts of \(\$24\) million are more than the fund''s \(\$20\) million profit, so investors lose money', 'Nothing is paid until the losing pods make their losses back']
+    right: 1
+    why: 'The fund makes \(6 \times 20 - 4 \times 25 = \$20\) million, but the winners are paid on their own books: \(20\% \times \$120\text{m} = \$24\) million. That''s netting risk. The losing PMs don''t pay anything back.'
+  - q: 'What''s the main reason platforms cut a PM who loses \(5\) to \(10\%\) of their capital?'
+    opts: ['To stop any one PM threatening the whole fund, keeping returns steady for investors', 'Because regulators require it', 'To save on the PM''s salary']
+    right: 0
+    why: 'The stop-loss is the heart of the platform model: losses are cut before they grow, so the fund''s returns stay smooth. The cost is that PMs can''t hold ideas that need time to come right.'
+
+connected:
+  - { label: Builds on, title: Life on a Desk, where: Markets · What Markets Are, url: /hub/markets/life-on-a-desk/ }
+  - { label: Builds on, title: Fees and the High-Water Mark, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/fees-and-the-high-water-mark/ }
+  - { label: Builds on, title: From Jones to $4.5 Trillion, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/from-jones-to-trillions/ }
+  - { label: Used in, title: The Risk Team, where: Hedge Funds · Portfolio Construction and Risk, url: /hub/hedge-funds/ }
+  - { label: Next, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .mm-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .mm-run { align-self: center; }
+</style>
+
+{% sec 1, "Two Models, One Question", "How do the two kinds of fund differ?", "Two models" %}
+  <div class="prose">
+    <p>Life on a Desk compared the two ways to run a fund: a restaurant with one head chef, or a food hall full of independent stalls. This note looks at the business underneath: why the food halls took over, what keeps them standing, and who really pays for them.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Single-manager fund</th><th>Multi-manager platform</th></tr></thead>
+      <tbody>
+        <tr><td>Who decides</td><td>One founder and chief investment officer (CIO) has the final say on every position</td><td>Each portfolio manager (PM) runs their own book within limits</td></tr>
+        <tr><td>Number of PMs</td><td>\(1\)</td><td>\(10\) to \(300+\)</td></tr>
+        <tr><td>Typical size</td><td>\(\$500\) million to \(\$15\) billion</td><td>\(\$10\) billion to \(\$65\) billion+</td></tr>
+        <tr><td>How risk is controlled</td><td>Fund-wide limits, and the CIO's judgement</td><td>Stop-losses for each PM, limits on gross and net exposure and on factor bets, watched in real time</td></tr>
+        <tr><td>How PMs are paid</td><td>A bonus pool decided by the founder</td><td>A fixed share of their own profit, usually \(15\)–\(25\%\)</td></tr>
+        <tr><td>Culture</td><td>Small, close, shaped by one person</td><td>Competitive, data-driven, high turnover</td></tr>
+        <tr><td>Examples</td><td>Viking Global, Lone Pine, Pershing Square</td><td>Citadel, Millennium, Point72, Balyasny</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Multi-manager platforms (also called {% gl "multi-strategy platform" %}multi-strategy platforms{% endgl %} or "pod shops") grew from under \(\$100\) billion in 2010 to over \(\$600\) billion, and they're now the biggest employers of investment people in the industry. Millennium pioneered the model; Citadel, Point72, Balyasny, ExodusPoint, Schonfeld and Verition followed. The biggest run between \(150\) and more than \(300\) pods each.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Why Many Pods Beat One Star", "How do lots of separate managers make returns smoother?", "Why pods smooth returns" %}
+  <div class="prose">
+    <p>Picture a fishing village. If it relies on one boat, some days it eats well and some days it goes hungry. If it sends out twenty boats to different spots, a few always come back empty, but the village nearly always has fish. Its catch is steadier even though no single boat got better.</p>
+    <p>A platform is the twenty boats. Each pod has its own good and bad months, but if the pods are trading different things, their bad months rarely land together, so the fund's overall return is much smoother than any one pod's. The catch is the word "different". If all the boats fish the same spot, they all come back empty on the same day. That shared part, the {% gl "correlation" %}correlation{% endgl %} between pods, is the bit diversification can never remove.</p>
+  </div>
+  <div class="formula"><span class="lbl">How volatile is a fund of \(N\) equal pods?</span>\[ \sigma_{\text{fund}} = \sigma \sqrt{\rho + \frac{1 - \rho}{N}} \]</div>
+  <div class="prose">
+    <p>Here \(\sigma\) is one pod's volatility and \(\rho\) the average correlation between pods. As \(N\) grows, the second part shrinks towards zero, but \(\rho\) stays. With \(\rho = 0.1\), twenty pods have about \(38\%\) of one pod's volatility; two hundred pods still have about \(33\%\). With \(\rho = 0.5\), even two hundred pods only get you down to about \(71\%\).</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Run a platform</h3><p>Three years, month by month. Each PM has \(10\%\) volatility. On average PMs expect about \(7\%\) a year before fees, the same as the single manager, but some are better than others and nobody knows who in advance. Choose how many pods, how alike their trades are, and the stop-loss: a pod that falls that far from its best level is closed and its money handed to a new PM. "Run again" draws a fresh three years.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="mm-n">Pods</label><input type="range" id="mm-n" min="2" max="50" step="1" value="20"><output id="mm-n-out" for="mm-n">20</output></div>
+      <div class="ctrl"><label for="mm-rho">How alike</label><input type="range" id="mm-rho" min="0" max="0.8" step="0.05" value="0.1"><output id="mm-rho-out" for="mm-rho">0.10</output></div>
+      <div class="presets mm-pick" id="mm-stop" aria-label="Stop-loss"></div>
+      <div class="presets mm-run"><button type="button" id="mm-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-mm" viewBox="0 0 640 280" role="img" aria-label="Value of 100 dollars over 36 months in one single manager and in a platform of many pods"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Platform (average of all pods)</span><span><i class="sw grey"></i>Single manager (one book)</span></div>
+    <div class="readout" id="mm-read"></div>
+    <p class="look" id="mm-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Stop-Loss Machine", "How does the central risk team keep hundreds of PMs in line?", "The risk machine" %}
+  <div class="prose">
+    <p>The platform's real product isn't any one PM's ideas. It's the central risk team, one of the most sophisticated operations in finance, watching every pod in real time. Each PM gets a {% gl "risk budget" %}risk budget{% endgl %} and a set of hard limits:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Limit</th><th>What it does</th><th>Typical</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "stop-loss" %}Drawdown stop{% endgl %}</td><td>Cuts the PM's capital when their book falls from its peak, and ends the allocation if it falls further</td><td>Capital halved around \(5\%\) down; out at \(7.5\)–\(10\%\)</td></tr>
+        <tr><td>Gross and net exposure</td><td>Caps how big the book is, and how much it leans long or short</td><td>Set per PM and strategy</td></tr>
+        <tr><td>{% gl "factor" %}Factor{% endgl %} limits</td><td>Stops PMs making hidden bets on the whole market, a sector, or a style such as "cheap stocks" or "momentum"</td><td>Most equity pods kept close to market-neutral</td></tr>
+        <tr><td>Concentration</td><td>Caps any one position as a share of the book</td><td>Often \(5\)–\(10\%\)</td></tr>
+        <tr><td>Overlap</td><td>Watches when many pods own the same thing</td><td>The risk team can trim the firm's total</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Capital moves constantly. PMs with steady, risk-adjusted profits get more money; those who struggle get less, and those who hit their stop are replaced. Factor limits matter because the platform wants each PM's profit to come from <em>their</em> picks, not from the market rising: a pod that's secretly just long tech would lose at the same time as every other pod secretly long tech.</p>
+    <h3>What the stop-loss does to behaviour</h3>
+    <ul>
+      <li><strong>It works for investors.</strong> Losses are cut before they grow, so the fund rarely has a bad year. That steadiness is exactly what pensions and sovereign wealth funds pay for.</li>
+      <li><strong>It shortens horizons.</strong> A PM who knows a \(7\%\) loss ends their job can't hold a contrarian idea through months of pain, even if it's right. Ideas need to work quickly.</li>
+      <li><strong>It herds people.</strong> The safest positions are liquid ones with a clear catalyst soon, so PMs across platforms end up in similar trades (section 5).</li>
+    </ul>
+  </div>
+{% endsec %}
+
+{% sec 4, "Who Pays for the Platform?", "Why can investors pay more than the old 2 and 20?", "Who pays" %}
+  <div class="prose">
+    <h3>Pass-through costs</h3>
+    <p>Most big platforms don't charge a normal management fee. They pass their actual running costs to investors: PM payouts, salaries, technology, data, offices. Those can reach \(5\) to \(7\%\) of assets a year, on top of a performance fee of \(20\%\) or more. Altogether, fees and costs can take more than \(30\%\) of the gross return. Investors accept it because the best platforms have still delivered steady returns after all of it. (The Fees note covers the idea.)</p>
+    <h3>Netting risk: paying winners when the fund is flat</h3>
+    <p>Here's the less obvious cost. Each PM is paid a share of <em>their own</em> profit. A PM who loses doesn't pay anything back. So the platform pays its winners even if its losers cancel them out. This is called {% gl "netting risk" %}netting risk{% endgl %}.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Netting risk in numbers</span>
+    <h3>Ten pods. Six make \(\$20\) million each; four lose \(\$25\) million each. PMs keep \(20\%\) of their own profit.</h3>
+    <ol class="steps">
+      <li>Fund profit before payouts: \(6 \times 20 - 4 \times 25 = \$120\text{m} - \$100\text{m} = \$20\) million.</li>
+      <li>Payouts to the six winners: \(20\% \times \$120\text{m} = \$24\) million.</li>
+      <li>Investors: \(\$20\text{m} - \$24\text{m} = -\$4\) million, before any other costs.</li>
+    </ol>
+    <p class="answer">A fund that made money overall can still cost its investors money. The more pods disagree, the bigger the gap. That's why platforms cut losing pods quickly and keep their pods' returns positive on average.</p>
+  </div>
+  <div class="prose">
+    <h3>The war for talent</h3>
+    <p>With so much money chasing a limited number of proven PMs, platforms compete hard: guaranteed first-year pay, sign-on bonuses, and large allocations. They also protect themselves with long {% gl "garden leave" %}garden leave{% endgl %} and non-compete periods, often many months, sometimes a year or more, during which a departing PM is paid but can't work for a rival. All of this ends up in the pass-through costs.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "When All the Boats Fish in One Spot", "What's the biggest risk to the platform model?", "Crowding" %}
+  <div class="prose">
+    <p>Platform PMs face the same pressures: stop-losses, quick catalysts, liquid stocks they can exit fast. So they tend to own similar things: mid-sized companies with an earnings surprise coming, the same "pairs", the same popular shorts. Across all the platforms together, that becomes {% gl "crowding" %}crowding{% endgl %}.</p>
+    <p>Crowding is fine until something forces a few funds to sell. Their selling pushes prices against everyone in the same trades. Those PMs hit their stops, their risk teams cut them, and the selling spreads. Within days, positions that had nothing to do with each other fall together. In the "Run a platform" interactive, it's like the correlation slider jumping up exactly when you least want it to.</p>
+    <p>The best-known example came in August 2007, the "quant quake". Many quantitative equity funds held very similar market-neutral portfolios. When one large fund cut its positions quickly, the others suffered sudden, heavy losses over a few days, many of which reversed soon after for the funds that could hold on. Platforms now track overlap between their own pods and across the industry, and trim positions that look too crowded.</p>
+    <h3>Stars at scale</h3>
+    <p>A second risk hides inside the diversification. A platform may have hundreds of PMs, but a large share of its profit often comes from a handful of stars. Losing them to a rival, or to their own launch, can hurt more than the numbers suggest.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "The Case for One Manager", "Why do single-manager funds still exist?", "The single-manager case" %}
+  <div class="prose">
+    <p>If platforms are so steady, why does anyone run a single-manager fund? Because some of the best returns come from exactly what platforms can't do:</p>
+    <ul>
+      <li><strong>Conviction.</strong> A single manager can put a large share of the fund into a few ideas they understand deeply. Pershing Square typically holds around ten big positions.</li>
+      <li><strong>Patience.</strong> With no automatic stop-loss, the CIO can hold an idea through a year of pain if the thesis is intact, and buy more when it's cheaper. Many of the most famous trades took that long to pay.</li>
+      <li><strong>Lower costs.</strong> No army of PMs to pay, so less netting risk and usually lower total costs for investors.</li>
+      <li><strong>Learning.</strong> For a junior analyst, it's an apprenticeship: you see how one experienced investor thinks about the whole portfolio, every day.</li>
+    </ul>
+    <p>The risks are the mirror image: everything depends on one person (the key-person risk from the Raising Capital note), losses can be deep, and investors need the patience the manager has. Many of the strongest single-manager funds are Tiger Cubs such as Viking Global and Lone Pine, built on deep company research.</p>
+    <h3>In between</h3>
+    <ul>
+      <li><strong>Multi-PM, single strategy:</strong> a long/short equity fund with three to five PMs covering different sectors, under one CIO.</li>
+      <li><strong>Family offices:</strong> some famous funds returned outside money and now invest only for the founder, as Soros Fund Management did in 2011, which frees them from investors' short-term pressure.</li>
+      <li><strong>Quant firms:</strong> Renaissance, Two Sigma and D.E. Shaw are organised around research teams and shared models rather than PMs with their own books; "research scientist" replaces "analyst".</li>
+    </ul>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A platform sells steadiness: many small, separate bets with losses cut fast, at a high cost. A single manager sells conviction: a few big bets held with patience, with deeper drawdowns. Neither is better; they suit different investors, and different careers.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How do platforms trade my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX and macro pods</h3>
+    <p>Platforms run macro pods trading G10 currencies and rates alongside their equity pods, and they've hired heavily from bank FX and rates desks. Tight stop-losses suit trades that work quickly, such as positioning around a central bank meeting or a data release, and suit badly the slow, big-picture currency bets of a classic macro fund.</p>
+    <h3>Commodities, including gold</h3>
+    <p>Commodity trading became one of the platforms' biggest growth areas after 2020, with teams in energy, metals and agriculture. 2022's energy shock showed how much these books can make in a volatile year, and platforms competed hard for experienced commodity traders. It's also a reminder that commodity pods can lose fast when prices gap.</p>
+    <h3>Bonds: relative value at scale</h3>
+    <p>Fixed income relative value pods, including the Treasury basis trade (the Prime Brokerage note explains it), are a major part of several big platforms. These trades profit from small price gaps using a lot of borrowing, so they depend on the risk team's limits more than almost anything else: many pods in a similar, highly borrowed bond trade is exactly the crowding problem regulators watch.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Pod</h3><span class="tag desk">Desk</span></div><p>One PM and their small team inside a platform.</p><p class="eg">"They're adding three new credit pods."</p></div>
+    <div class="term"><div class="term-top"><h3>Pod shop</h3><span class="tag desk">Desk</span></div><p>A multi-manager platform.</p><p class="eg">"She left the pod shop to join a single-manager fund."</p></div>
+    <div class="term"><div class="term-top"><h3>Stopped out</h3><span class="tag desk">Desk</span></div><p>When a PM hits their drawdown limit and loses their allocation.</p><p class="eg">"The healthcare PM got stopped out in March."</p></div>
+    <div class="term"><div class="term-top"><h3>Cut in half</h3><span class="tag desk">Desk</span></div><p>The usual first step at a drawdown limit: the PM's capital is halved.</p><p class="eg">"Down 5%, so they cut him in half."</p></div>
+    <div class="term"><div class="term-top"><h3>Payout</h3><span class="tag desk">Desk</span></div><p>The PM's share of their own profit.</p><p class="eg">"Payout's 20% with a 3% hurdle."</p></div>
+    <div class="term"><div class="term-top"><h3>Pass-through</h3><span class="tag desk">Desk</span></div><p>Running costs charged straight to investors.</p><p class="eg">"Pass-through ran to 6% last year."</p></div>
+    <div class="term"><div class="term-top"><h3>Crowded</h3><span class="tag desk">Desk</span></div><p>A trade many funds own at once.</p><p class="eg">"That long's crowded with the pods; size it small."</p></div>
+    <div class="term"><div class="term-top"><h3>Garden leave</h3><span class="tag desk">Desk</span></div><p>Paid time off before starting at a rival.</p><p class="eg">"He's on twelve months' garden leave."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where the two models turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: a prop firm is a mini platform</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Prop firms borrowed the platform model almost exactly: an allocation of the firm's capital, a hard drawdown limit (often \(5\%\) daily and \(10\%\) overall), a profit split, and replacement if you break the rules. The firm survives the same way a platform does: many traders, losses cut early, so it doesn't matter much if one blows up. Seen that way, passing a challenge is practice for the risk discipline a platform PM lives with: know your limit, size so one bad day can't hit it, and make returns that don't depend on everyone else's trade.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: one big project or many small ones</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>The same trade-off shows up in property. One large development is a single-manager bet: high conviction, big payoff, everything riding on one site, one market and one builder. Several smaller villas in different places is the platform: each can go wrong, but they rarely all go wrong together, unless they're all exposed to the same thing, such as interest rates or one tourist market. That shared exposure is the property version of correlation.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: risk technology</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A platform is really a technology business: real-time positions, profit and loss, exposures and limits across hundreds of books. That kind of risk software is valuable anywhere money is managed in many separate pots, from asset managers and pension fund administrators to brokers and banks, and it's often built in-house at great cost. Simple, reliable risk dashboards for growing firms in markets like Nigeria are a real product idea.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on diversification and payouts?" %}
+  <div class="formula"><span class="lbl">Volatility of \(N\) equal pods</span>\[ \sigma_{\text{fund}} = \sigma \sqrt{\rho + \frac{1 - \rho}{N}} \]</div>
+  <div class="formula"><span class="lbl">The floor diversification can't go below</span>\[ \lim_{N \to \infty} \sigma_{\text{fund}} = \sigma \sqrt{\rho} \]</div>
+  <div class="formula"><span class="lbl">PM payouts with netting risk</span>\[ \text{payouts} = p \sum_{i} \max(0, \text{P\&L}_i) \ \ge\ p \times \max\!\Big(0, \sum_i \text{P\&L}_i\Big) \]</div>
+  <div class="prose">
+    <p>The left side is what the platform pays: a share \(p\) of each winning pod's profit. The right side is what a single fund-wide performance fee would cost. The gap is the netting risk, and it grows the more the pods disagree.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Pods have \(10\%\) volatility. How volatile is the fund with \(20\) pods at correlation \(0.1\), and at \(0.5\)?</h3>
+    <ol class="steps">
+      <li>\(\rho = 0.1\): \(\sqrt{0.1 + 0.9 \div 20} = \sqrt{0.145} = 0.381\), so about \(3.8\%\).</li>
+      <li>\(\rho = 0.5\): \(\sqrt{0.5 + 0.5 \div 20} = \sqrt{0.525} = 0.725\), so about \(7.2\%\).</li>
+      <li>Even with infinitely many pods at \(\rho = 0.5\): \(10\% \times \sqrt{0.5} \approx 7.1\%\).</li>
+    </ol>
+    <p class="answer">Adding pods helps; keeping them different helps far more.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A PM runs \(\$1\) billion, makes \(\$80\) million, and keeps \(20\%\). Her team of four costs \(\$3\) million. What does she take home before tax?</h3>
+    <ol class="steps">
+      <li>Payout: \(20\% \times \$80\text{m} = \$16\) million.</li>
+      <li>At many platforms the PM pays her team from her payout: \(\$16\text{m} - \$3\text{m} = \$13\) million.</li>
+      <li>Had she lost \(\$80\) million instead, she'd most likely have been stopped out well before that, with no payout at all.</li>
+    </ol>
+    <p class="answer">Huge upside, a hard floor of zero, and a real chance of losing the seat: that's the PM deal.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Describe the multi-strategy platform model. Give two advantages and two disadvantages compared with a single-manager fund.</span></p>
+      <details><summary>Show answer</summary><div><span>Many PMs run independent pods with their own capital and limits, under central risk management and shared infrastructure. Advantages: built-in diversification, so steadier returns; shared infrastructure and institutional-grade operations that attract big investors and talent. Disadvantages: stop-losses force short horizons and can make PMs sell at bad times; high pass-through costs and netting risk; crowding across platforms.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Pods have \(12\%\) volatility and correlation \(0.2\). What's the fund's volatility with \(30\) pods?</span></p>
+      <details><summary>Show answer</summary><div><span>\(12\% \times \sqrt{0.2 + 0.8 \div 30} = 12\% \times \sqrt{0.2267} = 12\% \times 0.476 \approx 5.7\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Five pods make \(+30\), \(+10\), \(-15\), \(-20\) and \(+5\) (\(\$\) millions). PMs keep \(20\%\) of their own profit. What are the payouts, and what's left for investors?</span></p>
+      <details><summary>Show answer</summary><div><span>Fund profit: \(30 + 10 - 15 - 20 + 5 = \$10\) million. Payouts: \(20\% \times (30 + 10 + 5) = \$9\) million. Left for investors: \(\$1\) million, before other costs. A single \(20\%\) fee on the fund would have been \(\$2\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why do platforms limit each pod's factor exposure, not just its losses?</span></p>
+      <details><summary>Show answer</summary><div><span>So each PM's profit comes from their own picks rather than hidden bets on the market, a sector or a style. If many pods secretly carried the same factor bet, their returns would be correlated and the diversification the platform sells would vanish when that factor turned.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Explain crowding and how it can turn a small loss into a big one at a platform.</span></p>
+      <details><summary>Show answer</summary><div><span>Many PMs, across many funds, hold similar positions. If some are forced to sell, prices move against everyone in the trade; more PMs hit their stop-losses and are cut, which means more selling. Losses spread through positions that looked unrelated. The August 2007 quant quake is the classic example.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Give two reasons a talented investor might choose a single-manager fund over a platform.</span></p>
+      <details><summary>Show answer</summary><div><span>They can hold high-conviction, contrarian ideas for longer without an automatic stop-loss; they learn the whole portfolio closely from an experienced CIO; and, if they later launch their own fund, they keep the management fee and most of the performance fee rather than \(15\)–\(25\%\) of their own P&amp;L.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: would you rather start at a platform or a single-manager fund?</span></p>
+      <details><summary>Show answer</summary><div><span>There's no right answer, so show you understand the trade-off and tie it to yourself. Platform: a clear path to running your own capital, a specialised role under one PM, steadier pay, but narrower scope and real risk of your PM being stopped out. Single-manager: broad exposure, close to the CIO, an apprenticeship, but your career depends on one person and pay swings with one fund. Then say which fits how you think, for example: "I like fast, catalyst-driven trades with strict risk limits, which suits a pod" or "I want to learn deep research and portfolio construction first".</span></div></details></div>
+  </div>
+{% endsec %}

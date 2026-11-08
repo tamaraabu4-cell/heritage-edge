@@ -188,12 +188,7 @@
     "projectsBlurb": "Ideas pitched and sized the way a fund would: a thesis, a portfolio, a risk budget.",
     "chapters": [
       { "title": "The Hedge Fund Business", "blurb": "Other people's money: who gives it, what they pay, and how funds are set up.",
-        "subtopics": [
-          { "name": "What a Hedge Fund Is", "planned": ["What a Hedge Fund Is", "From Jones to $4.5 Trillion"] },
-          { "name": "Fees and the High-Water Mark", "planned": ["Fees and the High-Water Mark"] },
-          { "name": "Raising Capital", "planned": ["Raising Capital"] },
-          { "name": "Single-Manager vs Multi-Manager", "planned": ["Single-Manager vs Multi-Manager"] }
-        ] },
+        "subtopics": ["What a Hedge Fund Is", "Fees and the High-Water Mark", "Raising Capital", "Single-Manager vs Multi-Manager"] },
       { "title": "Strategies", "blurb": "The main ways hedge funds try to make money.",
         "subtopics": ["The Strategy Map", "Long/Short Equity", "Global Macro", "Trend Following (CTAs)", "Relative Value", "Event-Driven", "Credit and Distressed", "Quant Funds"] },
       { "title": "The Investment Process", "blurb": "From an idea to a position the portfolio manager will back.",
