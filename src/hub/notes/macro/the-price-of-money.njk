@@ -1,0 +1,291 @@
+---
+title: The Price of Money
+shelf: macro
+chapter: central-banks-and-rates
+subtopic: Interest Rates
+order: 1
+summary: What an interest rate is and why money today is worth more than money tomorrow, compounding and the effective annual rate (AER and APR), how the central bank's one overnight rate becomes every rate in the economy through a corridor of standing facilities, the overnight benchmarks that replaced LIBOR (SONIA, SOFR, €STR and Nigeria's new NOFR), and nominal versus real rates.
+lede: "An interest rate is a price: the rent you pay to use someone else's money for a while. This note shows how that rent grows when it's charged on itself, how a central bank sets the rent for one night and makes it stick, and how that one overnight rate turns into the rate on your savings account, your mortgage and a government bond."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech, valuation]
+noteScripts: [/assets/js/notes/macro/the-price-of-money.js]
+
+quiz:
+  - q: 'You borrow at \(12\%\) a year, charged monthly (\(1\%\) a month). What do you really pay over a year?'
+    opts: ['Exactly \(12\%\)', 'About \(11.4\%\)', 'About \(12.7\%\)']
+    right: 2
+    why: 'Each month''s interest is charged on the previous months'' interest too: \((1.01)^{12} - 1 = 12.68\%\). That''s the effective annual rate, the number UK savings accounts call AER.'
+  - q: 'Banks are full of spare cash and the central bank pays \(4\%\) on money left with it overnight. Where will the overnight rate between banks settle?'
+    opts: ['Just under \(4\%\), near the floor', 'Well above \(4\%\), near the ceiling', 'At zero, because there is too much cash']
+    right: 0
+    why: 'No bank will lend to another for much less than it can earn risk-free at the central bank, and with so much spare cash nobody needs to pay more. The deposit rate becomes the floor the market rests on.'
+  - q: 'Why was LIBOR replaced by rates like SONIA and SOFR?'
+    opts: ['LIBOR was too low', 'LIBOR was based on banks'' estimates, which some banks rigged; the new rates are built from real overnight trades', 'Central banks stopped setting interest rates']
+    right: 1
+    why: 'LIBOR asked banks what they thought they would pay to borrow. Traders at several banks manipulated their submissions, leading to large fines. SONIA, SOFR, €STR and Nigeria''s NOFR are calculated from actual overnight transactions.'
+
+connected:
+  - { label: Builds on, title: How Central Banks Decide, where: Macro · Central Banks and Rates, url: /hub/macro/how-central-banks-decide/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Used in, title: Time Value of Money, where: Valuation, url: /hub/valuation/ }
+  - { label: Used in, title: Bond Basics, where: Markets · Rates and Bonds, url: /hub/markets/ }
+---
+
+<style>
+  .pm-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .pm-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .pm-steps li { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 9px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--hub-card); font-size: 15px; }
+  .pm-steps li b { font: 600 14px var(--mono); color: var(--tone); white-space: nowrap; }
+  .pm-steps li:first-child { background: var(--tone-bg); border-color: var(--tone); }
+  .pm-steps li small { display: block; color: var(--text-2); font-size: 13px; margin-top: 2px; }
+</style>
+
+{% sec 1, "Renting Money", "What is an interest rate, in plain words?", "Renting money" %}
+  <div class="prose">
+    <p>If you rent a car for a week, you pay the owner for using something of theirs. An {% gl "interest rate" %}interest rate{% endgl %} is exactly that, for money: the rent a borrower pays a lender for using their money for a while, written as a percentage of the amount per year. Borrow £1,000 at \(5\%\) for a year and the rent is £50.</p>
+    <p>Saving is the same deal the other way round. Put money in a savings account and you are lending it to the bank; the interest is the bank paying you rent.</p>
+    <h3>Why money today is worth more than money tomorrow</h3>
+    <p>Would you rather have £100 today or £100 in a year? Everyone picks today, and that preference is called the {% gl "time value of money" %}time value of money{% endgl %}. There are three reasons:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>You could put it to work.<span class="why">£100 today can be saved or invested and become more than £100 by next year. Waiting means giving that up.</span></span></li>
+    <li><span class="n">2</span><span>Prices rise.<span class="why">With {% gl "inflation" %}inflation{% endgl %}, £100 next year buys less than £100 today.</span></span></li>
+    <li><span class="n">3</span><span>A promise might not be kept.<span class="why">The person who owes you might not pay, or something might go wrong. Money in your hand carries no such risk.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>An interest rate is the price that makes someone happy to wait. Each of the three reasons adds to it: lenders want paying for the return they give up, for inflation, and for the risk of not being paid back. That's why a loan to a struggling company costs more than a loan to the UK government, and why rates in Nigeria, where inflation is higher, are much higher than in the UK.</p>
+    <p>Rates are usually quoted as a percentage per year. Markets talk in {% gl "basis point" %}basis points{% endgl %}: one basis point is one hundredth of a percentage point, so a move from \(4.00\%\) to \(4.25\%\) is 25 basis points ("25 bps").</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Interest on Interest", "What is compounding, and why does it matter so much?", "Compounding" %}
+  <div class="prose">
+    <p>Roll a small snowball down a hill. Each turn it picks up snow, and the bigger it gets, the more snow it picks up each turn. That's {% gl "compounding" %}compounding{% endgl %}: interest is added to your money, then next time you earn interest on the interest too.</p>
+    <p>£100 at \(10\%\) a year becomes £110 after one year. In the second year you earn \(10\%\) on £110, not £100, so you end up with £121, not £120. That extra £1 is interest on interest. Over one or two years it's small; over 30 years it becomes most of the money.</p>
+    <h3>How often it's added matters too</h3>
+    <p>If the bank adds interest monthly instead of once a year, each month's interest starts earning sooner. £100 at \(10\%\) a year:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Interest added…</th><th>After 1 year</th><th>Effective annual rate</th></tr></thead>
+      <tbody>
+        <tr><td>Once a year</td><td>£110.00</td><td>\(10.00\%\)</td></tr>
+        <tr><td>Twice a year</td><td>£110.25</td><td>\(10.25\%\)</td></tr>
+        <tr><td>Monthly</td><td>£110.47</td><td>\(10.47\%\)</td></tr>
+        <tr><td>Continuously (every instant)</td><td>£110.52</td><td>\(10.52\%\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The \(10\%\) you're quoted is the <strong>nominal</strong> (stated) rate. What you actually get after compounding is the {% gl "effective annual rate" %}effective annual rate{% endgl %}. To compare two products fairly, compare their effective rates. In the UK this has names: savings accounts must show the <strong>AER</strong> (annual equivalent rate), which is the effective rate; loans and credit cards show the {% gl "APR" %}APR{% endgl %}, which also includes compulsory fees, so it shows the full cost of borrowing.</p>
+    <p>"Continuously" is the limit if interest is added every instant. It's the standard way of working in derivatives pricing and quant models, because the maths is neater, and it's why you'll see \(e\) in those formulas.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Interest on interest</h3><p>£1,000 grows at the rate you choose. The dashed grey line is simple interest (interest only on the original £1,000); the coloured line is compound interest. The shaded wedge between them is interest earned on interest.</p></div>
+    <div class="controls">
+      <div class="presets pm-pick" id="cp-preset" aria-label="Example rates"></div>
+      <div class="presets pm-pick" id="cp-freq" aria-label="How often interest is added"></div>
+      <div class="ctrl"><label for="cp-r">Rate a year</label><input type="range" id="cp-r" min="0" max="30" step="0.5" value="4"><output id="cp-r-out" for="cp-r">4%</output></div>
+      <div class="ctrl"><label for="cp-t">Years</label><input type="range" id="cp-t" min="1" max="40" step="1" value="20"><output id="cp-t-out" for="cp-t">20 years</output></div>
+    </div>
+    <svg class="chart" id="chart-comp" viewBox="0 0 640 280" role="img" aria-label="Growth of £1,000 over time with compound interest compared with simple interest, with the extra from interest on interest shaded"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Compound interest</span><span><i class="sw grey"></i>Simple interest</span></div>
+    <div class="readout" id="cp-read"></div>
+    <p class="look" id="cp-story"></p>
+  </div>
+  <div class="prose">
+    <p>A handy shortcut, the <strong>rule of 72</strong>: divide 72 by the rate to get roughly how many years it takes to double. At \(4\%\), about 18 years; at \(23\%\), about 3. The same rule works for inflation halving the value of cash (some people use 70; both are approximations).</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Money Tomorrow, Valued Today", "If money grows forward, how do you bring it back?", "Discounting" %}
+  <div class="prose">
+    <p>Compounding runs forward: £100 today at \(10\%\) becomes £121 in two years. Run it backwards and you answer a question finance asks all day: <em>what is £121 in two years worth to me today?</em> At \(10\%\), the answer is £100. Working backwards like this is called {% gl "discounting" %}discounting{% endgl %}, and the answer is the {% gl "present value" %}present value{% endgl %}.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Higher rates make future money worth less today.<span class="why">£1,000 promised in 10 years is worth £676 today at \(4\%\), but only £386 at \(10\%\).</span></span></li>
+    <li><span class="n">2</span><span>The further away, the bigger the effect.<span class="why">A rate change barely moves the value of money due next month, but hugely moves the value of money due in 30 years.</span></span></li>
+    <li><span class="n">3</span><span>So interest rates move the price of almost everything.<span class="why">A bond, a share and a house are all promises of future money (coupons, profits, rent). When rates rise, those promises are worth less today, so prices fall. When rates fall, prices rise.</span></span></li>
+  </ul>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Every price in finance is future money brought back to today using an interest rate. That's why a central bank changing one overnight rate can move bonds, shares, property and currencies all at once.</p>
+  </div>
+  <div class="prose">
+    <p>The full toolkit (annuities, perpetuities, valuing a stream of cash flows) lives in Valuation › Time Value of Money; bonds get their own note, Bond Basics, in Markets.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "From One Rate to Every Rate", "How does the central bank's rate reach my mortgage?", "One rate to every rate" %}
+  <div class="prose">
+    <p>The central bank only sets one rate, for one night, for banks. Every other rate is built on top of it, like floors of a building on a foundation. Each floor adds something: a longer wait, more risk, or the lender's costs and profit.</p>
+  </div>
+  <ol class="pm-steps" aria-label="UK rates in January 2026, from the Bank of England's rate upwards">
+    <li><span>Bank Rate<small>The Bank of England's policy rate, the foundation</small></span><b>3.75%</b></li>
+    <li><span>Easy-access savings (average)<small>Below Bank Rate: the bank keeps a slice for its costs and profit</small></span><b>about 2.5%</b></li>
+    <li><span>Two-year fixed mortgage (average)<small>Expected Bank Rate over two years, plus the risk the borrower doesn't pay, plus the bank's margin</small></span><b>4.83%</b></li>
+    <li><span>Standard variable rate (average)<small>What borrowers pay when their fixed deal ends and they don't switch</small></span><b>7.25%</b></li>
+    <li><span>Credit cards<small>Unsecured, so much higher risk of not being repaid</small></span><b>often over 20%</b></li>
+  </ol>
+  <div class="prose">
+    <p>Averages from Moneyfacts for the start of January 2026, when Bank Rate was \(3.75\%\). Bank Rate is now \(4\%\), and these averages move with it, at different speeds.</p>
+    <h3>The pieces each rate adds</h3>
+    <ul>
+      <li><strong>Time:</strong> lending for 10 years instead of overnight usually costs more, because the lender is locked in and much can change. The extra is called the {% gl "term premium" %}term premium{% endgl %}.</li>
+      <li><strong>Risk:</strong> lending to a company or a household is riskier than lending to the government, so the lender charges a {% gl "credit spread" %}credit spread{% endgl %} on top.</li>
+      <li><strong>Costs and profit:</strong> a bank has staff, branches and capital to pay for, so it pays savers less than it charges borrowers. The gap is its margin.</li>
+    </ul>
+    <h3>How the central bank makes its rate stick</h3>
+    <p>Saying "the rate is \(4\%\)" doesn't make it so. The central bank has to make sure banks actually trade money overnight at about that rate. It does it with two windows that work like the kerbs on either side of a road, an {% gl "interest rate corridor" %}interest rate corridor{% endgl %}:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The ceiling: a lending window.<span class="why">Any bank can borrow overnight from the central bank (against good collateral) at a set rate. No bank will pay another bank more than that.</span></span></li>
+    <li><span class="n">2</span><span>The floor: a deposit window.<span class="why">Any bank can leave spare cash at the central bank overnight and earn a set rate on these {% gl "reserves" %}reserves{% endgl %}. No bank will lend to another bank for less.</span></span></li>
+    <li><span class="n">3</span><span>The market rate lives between the two.<span class="why">Where it sits depends on how much spare cash banks have. When they're short, it presses on the ceiling; when they're flush, it sinks to the floor.</span></span></li>
+  </ul>
+  <div class="lab">
+    <div class="lab-head"><h3>Where does the overnight rate land?</h3><p>The shaded band is the corridor between the central bank's lending rate (ceiling) and its deposit rate (floor). Drag the slider to change how much spare cash banks have, and watch where overnight lending between banks settles. The curve is a simplified illustration of how the market behaves; the corridor levels are real.</p></div>
+    <div class="controls">
+      <div class="presets pm-pick" id="cr-bank" aria-label="Which central bank"></div>
+      <div class="ctrl"><label for="cr-liq">Spare cash</label><input type="range" id="cr-liq" min="0" max="100" step="1" value="85"><output id="cr-liq-out" for="cr-liq">Flush</output></div>
+    </div>
+    <svg class="chart" id="chart-corr" viewBox="0 0 640 270" role="img" aria-label="An interest rate corridor between the central bank's lending and deposit rates, with the overnight market rate moving from ceiling to floor as banks' spare cash grows"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Overnight market rate</span><span><i class="sw grey"></i>Ceiling and floor</span></div>
+    <div class="readout" id="cr-read"></div>
+    <p class="look" id="cr-story"></p>
+  </div>
+  <div class="prose">
+    <p>Since 2008, the Bank of England and the Fed have kept banks full of reserves (partly a side effect of QE), so the market rests on the floor and the floor <em>is</em> the policy tool. The CBN case shows what happens when the policy rate and the floor drift apart: in 2026 Nigerian banks, newly recapitalised and full of cash, were lending to each other at about \(22\%\) while the MPR was \(26.5\%\), and some were offering loans below the MPR. In September 2026 the CBN cut the MPR to \(23\%\) and moved the corridor to \(+0.5\) and \(-3\) points around it.</p>
+    <h3>The overnight benchmarks</h3>
+    <p>For decades loans and derivatives were priced off {% gl "LIBOR" %}LIBOR{% endgl %}, a rate built from what banks <em>said</em> they would pay to borrow. After traders at several banks were found rigging it (see Regulation, in Markets), regulators replaced it with rates calculated from real overnight trades:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Currency</th><th>Benchmark</th><th>Built from</th></tr></thead>
+      <tbody>
+        <tr><td>Pound</td><td>{% gl "SONIA" %}SONIA{% endgl %}</td><td>Unsecured overnight sterling deposits, run by the Bank of England</td></tr>
+        <tr><td>Dollar</td><td>{% gl "SOFR" %}SOFR{% endgl %}</td><td>Overnight loans secured on US Treasuries ({% gl "repo" %}repo{% endgl %}), run by the New York Fed</td></tr>
+        <tr><td>Euro</td><td>€STR</td><td>Unsecured overnight borrowing by euro area banks, run by the ECB</td></tr>
+        <tr><td>Naira</td><td>{% gl "NOFR" %}NOFR{% endgl %}</td><td>Overnight secured repo trades between Nigerian banks, introduced by the CBN in April 2026 to replace NIBOR</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Dollar LIBOR finally stopped in June 2023. Most new floating-rate loans and interest rate swaps are now priced as "SOFR plus a margin" or "SONIA plus a margin".</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Nominal and Real", "What does my money really earn?", "Nominal and real" %}
+  <div class="prose">
+    <p>The rate on a savings account is a <strong>nominal</strong> rate: how many more pounds you'll have. What you care about is how much more you can <em>buy</em>, which is the {% gl "real interest rate" %}real interest rate{% endgl %}: roughly the nominal rate minus inflation.</p>
+    <ul>
+      <li>In 2021 UK savings paid about \(0.2\%\) while inflation passed \(5\%\): a real return of about \(-5\%\). Savers were losing spending power fast while the number in their account crept up.</li>
+      <li>In Nigeria in late 2024, a naira savings product paying \(20\%\) sounded excellent, but with inflation near \(35\%\) savers lost about a tenth of their spending power in a year. By September 2026, with inflation at \(14.63\%\), the same \(20\%\) would be a real gain.</li>
+    </ul>
+    <p>Central banks think in real rates too: what slows an economy is a real rate above the neutral rate, not a high-looking number. Some government bonds pay a real return directly, by raising their payments with inflation (index-linked gilts in the UK, TIPS in the US); the Inflation chapter uses them to read what markets expect inflation to be.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Where do interest rates show up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: every currency pays its own interest rate</h3>
+    <p>Holding pounds earns SONIA; holding dollars earns SOFR. So swapping one currency for another means swapping one interest rate for another. That's why the price for exchanging currencies in the future (a forward) differs from today's price by the gap between the two rates, and why traders borrow in low-rate currencies to hold high-rate ones (the carry trade). Markets › FX covers both in Forwards and Swaps and Carry.</p>
+    <h3>Gold: the cost of holding something that pays nothing</h3>
+    <p>A bar of gold pays no interest, so holding it means giving up what the cash could have earned. When interest rates (especially real ones) rise, that cost goes up and gold tends to struggle; when they fall, gold looks better. The rate at which gold itself can be lent out, the lease rate, is usually tiny compared with cash rates.</p>
+    <h3>Bonds: discounting in action</h3>
+    <p>A bond is a set of future payments, so its price is the present value of those payments at today's interest rates. When rates rise, the payments are discounted more heavily and the price falls; when rates fall, the price rises. Bond Basics works this through properly; it's the step that makes QE (a central bank buying bonds to push their prices up and their yields down) make sense.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Bps</h3><span class="tag desk">Desk</span></div><p>Basis points: hundredths of a percentage point.</p><p class="eg">"Mortgages are up 30 bps since the dots."</p></div>
+    <div class="term"><div class="term-top"><h3>The front end</h3><span class="tag desk">Desk</span></div><p>Short-dated rates and bonds (overnight to about two years), which follow the central bank most closely.</p><p class="eg">"The front end's pricing one more hike."</p></div>
+    <div class="term"><div class="term-top"><h3>Overnight</h3><span class="tag desk">Desk</span></div><p>A loan or rate for one night; the shortest rate there is.</p><p class="eg">"Overnight's sitting right on the floor."</p></div>
+    <div class="term"><div class="term-top"><h3>SOFR plus</h3><span class="tag desk">Desk</span></div><p>A floating rate priced as the overnight benchmark plus a fixed margin.</p><p class="eg">"The loan's SOFR plus 250."</p></div>
+    <div class="term"><div class="term-top"><h3>Liquidity</h3><span class="tag desk">Desk</span></div><p>On a money markets desk: how much spare cash the banking system has.</p><p class="eg">"Liquidity's flush after the coupon payments."</p></div>
+    <div class="term"><div class="term-top"><h3>Margin</h3><span class="tag desk">Desk</span></div><p>The extra a lender charges over its own cost of funding.</p><p class="eg">"Banks are squeezing margins to win mortgages."</p></div>
+    <div class="term"><div class="term-top"><h3>Negative real</h3><span class="tag desk">Desk</span></div><p>A rate below inflation, so money loses spending power.</p><p class="eg">"Euro rates are still negative real."</p></div>
+    <div class="term"><div class="term-top"><h3>Compounding</h3><span class="tag desk">Desk</span></div><p>Interest earned on earlier interest; also used for any growth that builds on itself.</p><p class="eg">"Fees compound; that's what kills returns."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the price of money turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: holding positions overnight costs (or pays) interest</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A leveraged FX or CFD position held past the daily rollover is charged or paid interest based on the rate gap between the two currencies, plus the broker's margin. Long a high-rate currency against a low-rate one, you may be paid each night; the other way round, you pay. Over weeks this adds up, so check the swap rates before holding a trade for a long time.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the rate decides what a property is worth</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A rental property is a stream of future rent, so its value is that rent discounted at an interest rate plus a premium for risk. When rates rise, buyers pay less for the same rent, so property yields rise and prices fall. And a mortgage compounds against you: £200,000 borrowed at \(5\%\) over 25 years costs about £150,000 in interest. A villa project financed in euros at ECB-linked rates and one financed in naira at \(23\%\)-plus are completely different deals.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: compounding is the product</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian savings and investment apps compete on headline rates, and with money market rates near \(20\%\) the compounding is dramatic. A product that shows the real (after-inflation) return clearly, and how often interest is added, would stand out. NOFR also gives lenders a transparent benchmark to price loans as "NOFR plus a margin", the way UK and US lending works.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "Which formulas sit behind all this?" %}
+  <div class="formula"><span class="lbl">Compounding and discounting</span>\[ FV = PV \times (1 + r)^n \qquad PV = \frac{FV}{(1 + r)^n} \]</div>
+  <div class="formula"><span class="lbl">Compounding \(m\) times a year, and continuously</span>\[ FV = PV \left(1 + \frac{r}{m}\right)^{m n} \qquad FV = PV\, e^{r n} \]</div>
+  <div class="formula"><span class="lbl">Effective annual rate (AER)</span>\[ \text{EAR} = \left(1 + \frac{r}{m}\right)^{m} - 1 \qquad \text{continuous: } \text{EAR} = e^{r} - 1 \]</div>
+  <div class="formula"><span class="lbl">Doubling time, and the real rate</span>\[ n_{\text{double}} = \frac{\ln 2}{\ln(1 + r)} \approx \frac{72}{r\ (\text{in \%})} \qquad 1 + r_{\text{real}} = \frac{1 + i}{1 + \pi} \]</div>
+  <div class="prose">
+    <p>Keep the rate and the number of periods in the same units: a monthly rate with a number of months, a yearly rate with a number of years. Mixing them is the most common mistake.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A bond yields \(8\%\) a year, paid in two halves (semi-annually). What is its effective annual rate?</h3>
+    <ol class="steps">
+      <li>Half-year rate: \(8\% \div 2 = 4\%\).</li>
+      <li>\(\text{EAR} = 1.04^2 - 1 = 1.0816 - 1 = 8.16\%\).</li>
+    </ol>
+    <p class="answer">Two half-year payments of \(4\%\) are worth \(8.16\%\) a year, because the first half-year's interest earns interest in the second.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>What is £1,000 in 10 years worth today at \(4\%\), and at \(10\%\)?</h3>
+    <ol class="steps">
+      <li>At \(4\%\): \(1{,}000 \div 1.04^{10} = 1{,}000 \div 1.480 = \text{£}676\).</li>
+      <li>At \(10\%\): \(1{,}000 \div 1.10^{10} = 1{,}000 \div 2.594 = \text{£}386\).</li>
+    </ol>
+    <p class="answer">The same promise is worth \(43\%\) less today when rates are \(10\%\) instead of \(4\%\): this is why rising rates hit long-dated bonds and growth shares hardest.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A credit card charges \(2\%\) a month. What is the effective annual rate, and how long until an unpaid balance doubles?</h3>
+    <ol class="steps">
+      <li>\(\text{EAR} = 1.02^{12} - 1 = 1.268 - 1 = 26.8\%\), more than the \(24\%\) you'd get from \(12 \times 2\%\).</li>
+      <li>Doubling: \(\ln 2 \div \ln 1.02 = 0.693 \div 0.0198 = 35\) months. Rule of 72 check: \(72 \div 2 = 36\) months.</li>
+    </ol>
+    <p class="answer">Left alone, the balance doubles in about three years.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Give the three reasons £100 today is worth more than £100 in a year.</span></p>
+      <details><summary>Show answer</summary><div><span>It can be invested to earn a return (the opportunity you give up by waiting); inflation means future money buys less; and a future payment carries the risk it won't be made.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>£5,000 is saved at \(6\%\) a year, compounded monthly, for 3 years. How much is there at the end?</span></p>
+      <details><summary>Show answer</summary><div><span>Monthly rate \(0.5\%\), 36 months: \(5{,}000 \times 1.005^{36} = 5{,}000 \times 1.1967 = \text{£}5{,}983\). With annual compounding it would be \(5{,}000 \times 1.06^3 = \text{£}5{,}955\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Account A pays \(4.9\%\) once a year. Account B pays \(4.8\%\) compounded monthly. Which is better?</span></p>
+      <details><summary>Show answer</summary><div><span>B's AER is \((1 + 0.048/12)^{12} - 1 = 4.91\%\), just ahead of A's \(4.90\%\). Very close: compare the AERs, not the headline rates.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>The CBN's MPR is \(23\%\) with a corridor of \(+0.5\) and \(-3\) points. What are the lending and deposit facility rates, and where would you expect overnight rates if banks are flush with cash?</span></p>
+      <details><summary>Show answer</summary><div><span>Lending (ceiling) \(23.5\%\); deposit (floor) \(20\%\). With lots of spare cash, banks compete to lend it out and the overnight rate sinks towards the \(20\%\) floor, below the MPR.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why do rising interest rates hurt the price of a 30-year bond more than a 2-year bond?</span></p>
+      <details><summary>Show answer</summary><div><span>Its payments are much further in the future, and discounting compounds with time: dividing by \((1 + r)^{30}\) is far more sensitive to a change in \(r\) than dividing by \((1 + r)^{2}\). So the same rise in rates cuts its present value by much more.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Using the rule of 72, roughly how long does money take to double at \(9\%\)? At \(23\%\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(72 \div 9 = 8\) years; \(72 \div 23 \approx 3.1\) years. (Exact: \(8.0\) and \(3.3\) years.) But at \(23\%\) in naira, inflation and the exchange rate decide whether that doubling is worth anything in pounds.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: the Bank of England raises Bank Rate. Walk me through how that reaches a homeowner on a two-year fixed mortgage.</span></p>
+      <details><summary>Show answer</summary><div><span>Bank Rate sets the floor for overnight sterling (SONIA). Markets reprice the expected path of SONIA, so two-year swap rates move straight away (often before the decision, if it's expected). Lenders fund fixed mortgages off swap rates, so new two-year fixes reprice within days. A homeowner already on a fix pays nothing extra until the deal ends; then they remortgage at the new, higher rate or fall onto the lender's standard variable rate.</span></div></details></div>
+  </div>
+{% endsec %}
