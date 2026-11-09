@@ -1,0 +1,240 @@
+---
+title: How a Rate Change Travels
+shelf: macro
+chapter: central-banks-and-rates
+subtopic: Interest Rates
+order: 2
+summary: How one change in the central bank's rate spreads through the economy, from markets on the day to jobs and inflation up to two years later; the five channels it travels through (borrowing, asset prices, the currency, bank lending and expectations); Friedman's "long and variable lags" and the fool in the shower; and why the same rate rise works differently in the US, the UK, the euro area and Nigeria.
+lede: "A rate rise is decided in an afternoon, but it takes a year or two to reach shop prices. In between it travels through markets, banks, homes and businesses, at different speeds in different countries. Knowing the route, and how long each step takes, is how traders and central bankers judge whether the job is already done."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/macro/how-a-rate-change-travels.js]
+
+quiz:
+  - q: 'Roughly how long does a change in interest rates take to have its biggest effect on inflation?'
+    opts: ['A few days', 'About a year to two years', 'About five years']
+    right: 1
+    why: 'Markets react on the day, but spending, hiring and pay take months to adjust, and inflation responds last. Central banks usually reckon on 12 to 24 months for the peak effect on inflation.'
+  - q: 'Why can a central bank that only reacts to today''s inflation end up raising rates too far?'
+    opts: ['Because inflation data are always wrong', 'Because markets ignore central banks', 'Because today''s inflation reflects decisions from a year or more ago, so rises already in the pipeline haven''t shown up yet']
+    right: 2
+    why: 'This is Friedman''s fool in the shower: the water hasn''t warmed yet, so he turns the tap again, and then gets scalded. A bank that keeps raising until inflation falls will have done too much by the time the earlier rises take effect.'
+  - q: 'In which country does a rate rise reach households through their mortgages fastest?'
+    opts: ['The UK, where most mortgages are fixed for only two to five years', 'The US, where most mortgages are fixed for 30 years', 'Nigeria, where most homes are bought with mortgages']
+    right: 0
+    why: 'UK borrowers refix every few years, so higher rates reach them within months to a few years. Most US homeowners locked in for 30 years and feel nothing until they move. In Nigeria very few homes are bought with mortgages at all.'
+
+connected:
+  - { label: Builds on, title: The Price of Money, where: Macro · Central Banks and Rates, url: /hub/macro/the-price-of-money/ }
+  - { label: Builds on, title: What a Central Bank Does, where: Macro · Central Banks and Rates, url: /hub/macro/what-a-central-bank-does/ }
+  - { label: Used in, title: The Business Cycle, where: Macro · Growth and Jobs, url: /hub/macro/ }
+  - { label: Used in, title: Emerging Market FX, where: Markets · FX, url: /hub/markets/ }
+---
+
+<style>
+  .rt-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .rt-nav { display: flex; gap: 8px; margin-top: 10px; }
+  .rt-nav button { font: inherit; font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  .rt-nav button:disabled { opacity: 0.4; cursor: default; }
+  .rt-card { margin-top: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--tone); background: var(--tone-bg); }
+  .rt-card h4 { margin: 0 0 8px; font-size: 16px; }
+  .rt-card p { margin: 0 0 8px; font-size: 15px; line-height: 1.55; }
+  .rt-card p:last-child { margin-bottom: 0; }
+  .rt-card .rt-tag { display: inline-block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .04em; color: var(--tone); margin-right: 6px; }
+</style>
+
+{% sec 1, "A Stone in a Pond", "What happens after the central bank changes its rate?", "A stone in a pond" %}
+  <div class="prose">
+    <p>Drop a stone into a pond. The splash is instant, the first ripple spreads out in a second, and it takes a while before the ripples reach the far bank. A change in the central bank's rate spreads the same way. The route it takes is called the {% gl "transmission mechanism" %}transmission mechanism{% endgl %}.</p>
+    <ul>
+      <li><strong>The splash (same day):</strong> financial markets. Overnight rates, short-dated government bonds and the currency reprice within minutes.</li>
+      <li><strong>The first ripples (weeks to months):</strong> banks change the rates on loans and savings; house prices, share prices and lending conditions start to adjust.</li>
+      <li><strong>The far bank (6 to 24 months):</strong> people and businesses change how much they spend, invest and hire. Last of all, inflation moves.</li>
+    </ul>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Follow a rate rise</h3><p>Step through a quarter-point rise from the day of the decision to two years later. The lit area shows how far the ripple has spread; each dot is one stage, in the part of the economy it reaches.</p></div>
+    <div class="controls">
+      <div class="presets rt-pick" id="rp-stage" aria-label="Stage"></div>
+    </div>
+    <svg class="chart" id="chart-ripple" viewBox="0 0 640 220" role="img" aria-label="A timeline from decision day to two years later, with lanes for markets, banks, homes and firms, and jobs and prices, showing a rate rise moving through them"></svg>
+    <div class="rt-nav"><button type="button" id="rp-prev">← Back</button><button type="button" id="rp-next">Next stage →</button></div>
+    <div class="rt-card" aria-live="polite">
+      <h4 id="rp-title"></h4>
+      <p><span class="rt-tag">UK</span><span id="rp-uk"></span></p>
+      <p><span class="rt-tag">Nigeria</span><span id="rp-ng"></span></p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Five Channels", "Which routes does a rate change travel along?", "The five channels" %}
+  <div class="prose">
+    <p>Think of the economy's plumbing as five pipes running out from the central bank. A rate rise pushes water down all five at once; how much comes out of each depends on the country.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Borrowing and saving.<span class="why">Loans cost more and savings pay more, so people and firms borrow less, save more and spend less. A family remortgaging pays hundreds of pounds a month more; a company postpones a new warehouse.</span></span></li>
+    <li><span class="n">2</span><span>Asset prices.<span class="why">Higher rates lower the present value of future rents, profits and coupons, so house, share and bond prices fall. People feel poorer and spend less: the {% gl "wealth effect" %}wealth effect{% endgl %}.</span></span></li>
+    <li><span class="n">3</span><span>The currency.<span class="why">Higher rates attract money from abroad, so the currency strengthens. Imports get cheaper (lowering inflation directly) and exports get dearer (slowing the economy). How much import prices feed into inflation is called {% gl "exchange rate pass-through" %}exchange rate pass-through{% endgl %}.</span></span></li>
+    <li><span class="n">4</span><span>Bank lending.<span class="why">When rates rise and the economy looks riskier, banks get choosier: bigger deposits, tougher checks, smaller loans. Some people who want to borrow simply can't.</span></span></li>
+    <li><span class="n">5</span><span>Expectations.<span class="why">If people believe the bank will get inflation back to 2%, they ask for smaller pay rises and firms raise prices less, before any of the other pipes have done their work. This is the credibility channel from What a Central Bank Does.</span></span></li>
+  </ul>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A central bank only controls the start of the pipes. How fast and how strongly a rate change reaches inflation depends on how a country borrows, what it imports and whether people believe the bank.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Long and Variable Lags", "Why is steering an economy so hard?", "Long and variable lags" %}
+  <div class="prose">
+    <p>Milton Friedman described monetary policy as working with "long and variable lags": long because the full effect takes a year or two, variable because nobody knows exactly how long this time.</p>
+    <p>He compared it to a fool in the shower. The water is cold, so he turns the hot tap. Nothing happens straight away, so he turns it further. Then the hot water arrives all at once and he's scalded, so he wrenches it to cold, and the same thing happens the other way.</p>
+    <p>A central bank faces the same problem. The inflation figure it sees today was shaped by decisions taken a year or more ago. If it keeps raising rates until today's inflation falls, it will have done too much by the time its earlier rises arrive, and may push the economy into a recession it didn't need. That's why central banks set policy using forecasts, and why "is the job already done?" is the most argued question in markets near the end of a hiking cycle.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The fool in the shower</h3><p>Inflation starts at 6% after a shock. Each quarter the central bank sets its rate; rates only affect inflation after the lag you choose. Compare a bank that reacts to today's inflation with one that looks ahead and counts the rate rises already in the pipeline. A simplified model for illustration.</p></div>
+    <div class="controls">
+      <div class="presets rt-pick" id="sh-mode" aria-label="How the bank decides"></div>
+      <div class="ctrl"><label for="sh-lag">Lag</label><input type="range" id="sh-lag" min="0" max="8" step="1" value="5"><output id="sh-lag-out" for="sh-lag">5 quarters</output></div>
+      <div class="ctrl"><label for="sh-phi">Response</label><input type="range" id="sh-phi" min="0.5" max="2.5" step="0.25" value="1.5"><output id="sh-phi-out" for="sh-phi">Firm</output></div>
+    </div>
+    <svg class="chart" id="chart-shower" viewBox="0 0 640 290" role="img" aria-label="Inflation and the policy rate over eight years after an inflation shock, showing overshooting when the central bank reacts to today's inflation despite a lag"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Inflation</span><span><i class="sw grey"></i>Policy rate</span><span>Shaded: inflation well below target</span></div>
+    <div class="readout" id="sh-read"></div>
+    <p class="look" id="sh-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Why the lags change</h3>
+    <ul>
+      <li><strong>How people borrow:</strong> if mortgages are fixed for longer, a rate rise takes longer to reach households (next section).</li>
+      <li><strong>How much cash people have:</strong> in 2022 many households still had savings built up during the pandemic, so they kept spending even as rates rose, which delayed the effect.</li>
+      <li><strong>How fast the bank moves:</strong> a surprise jump moves markets and expectations straight away; small, predictable steps work more slowly.</li>
+      <li><strong>What caused the inflation:</strong> rates can cool demand, but they can't make oil cheaper or fix a broken supply chain. When inflation comes from abroad, the main channel left is the currency.</li>
+    </ul>
+    <h3>The UK, 2021 to 2024</h3>
+    <p>The Bank of England began raising rates in December 2021, from \(0.1\%\), and reached \(5.25\%\) in August 2023. Inflation peaked at \(11.1\%\) in October 2022, fell to about \(4\%\) by the end of 2023 and reached the \(2\%\) target in May 2024, around two and a half years after the first rise. The Bank started cutting in August 2024, while many households were still coming off cheap fixed-rate mortgages: they were still feeling the old rises after the Bank had begun to reverse them.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Why the Pipes Differ", "Does a rate rise work the same everywhere?", "Why the pipes differ" %}
+  <div class="prose">
+    <p>The same quarter-point rise lands very differently depending on how a country borrows and what it buys from abroad.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Country</th><th>How homes are financed</th><th>Strongest channels</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>US</td><td>Mostly 30-year fixed mortgages</td><td>Asset prices, company borrowing, the dollar</td><td>Existing homeowners barely notice; people stop moving house rather than give up a cheap mortgage. The effect comes through markets and businesses.</td></tr>
+        <tr><td>UK</td><td>About 85% fixed, mostly for 2 or 5 years; the rest {% gl "tracker mortgage" %}trackers{% endgl %} or variable</td><td>Mortgages (with a delay), the pound</td><td>The effect arrives in waves as fixed deals end. A household can face a jump of hundreds of pounds a month in one go.</td></tr>
+        <tr><td>Euro area</td><td>Mixed: mostly fixed in Germany and France, more variable in Spain, Italy and Portugal</td><td>Bank lending, the euro</td><td>One ECB rate bites hardest in the variable-rate countries, part of why one rate for 21 economies is hard.</td></tr>
+        <tr><td>Nigeria</td><td>Very few mortgages (well under 1% of GDP); homes bought with cash, savings or developer instalments</td><td>The naira, bank lending to firms, government bill yields</td><td>Home loans hardly matter. Inflation responds most to the exchange rate, because so much food, fuel and machinery is imported or priced in dollars.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Nigeria: when the currency is the main pipe</h3>
+    <p>In 2023 Nigeria removed its petrol subsidy and let the naira fall sharply. Prices of imported goods jumped, and inflation rose to almost \(35\%\) by the end of 2024 (on the old index). The CBN raised the MPR by 8.75 points in 2024, and part of how that worked was by making naira assets attractive enough to bring dollars in and steady the currency. Once the naira stabilised, inflation fell much faster than rate rises alone could have achieved through borrowing. The lesson for any emerging market: watch the exchange rate first.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "Where in the chain do my three markets sit?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the fastest pipe</h3>
+    <p>The currency is the only channel that reacts on the day and also changes inflation directly, through import prices. For a big, closed economy like the US it's a smaller part of the story; for the UK, the euro area and especially emerging markets like Nigeria, it's one of the main ways a rate change reaches prices. That's why FX traders watch central banks so closely: they're trading the channel itself.</p>
+    <h3>Gold: a bet on how the story ends</h3>
+    <p>Gold reacts at the splash (higher real rates and a stronger dollar usually push it down), but it also responds to the far bank. If markets start to believe the bank has overdone it and a recession and rate cuts are coming, gold often rises well before the cuts arrive.</p>
+    <h3>Bonds: front end now, long end on the outcome</h3>
+    <p>Two-year yields move with the decision. Ten-year yields depend on where the journey ends: if markets think the rises will cause a slowdown, long yields can fall even while the central bank is still raising, which inverts the yield curve. An inverted curve is the bond market saying "the lags will catch up": The Yield Curve chapter takes this further.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Transmission</h3><span class="tag desk">Desk</span></div><p>How a rate change passes through to the economy.</p><p class="eg">"Transmission's slow because everyone fixed in 2021."</p></div>
+    <div class="term"><div class="term-top"><h3>The lag</h3><span class="tag desk">Desk</span></div><p>The delay before rate changes affect spending and inflation.</p><p class="eg">"Most of the hikes haven't hit yet: it's the lag."</p></div>
+    <div class="term"><div class="term-top"><h3>Mortgage cliff</h3><span class="tag desk">Desk</span></div><p>The jump in payments when cheap fixed deals end.</p><p class="eg">"Another 800k households hit the cliff next year."</p></div>
+    <div class="term"><div class="term-top"><h3>Pass-through</h3><span class="tag desk">Desk</span></div><p>How much a change (in rates or the currency) shows up in prices.</p><p class="eg">"FX pass-through to food is almost one for one."</p></div>
+    <div class="term"><div class="term-top"><h3>Overtightening</h3><span class="tag desk">Desk</span></div><p>Raising rates further than needed because of the lag.</p><p class="eg">"The risk now is they overtighten into a slowdown."</p></div>
+    <div class="term"><div class="term-top"><h3>Soft landing</h3><span class="tag desk">Desk</span></div><p>Inflation brought down without a recession.</p><p class="eg">"Market's pricing a soft landing."</p></div>
+    <div class="term"><div class="term-top"><h3>Hard landing</h3><span class="tag desk">Desk</span></div><p>Inflation brought down, but with a recession and job losses.</p><p class="eg">"Inverted curve says hard landing."</p></div>
+    <div class="term"><div class="term-top"><h3>Policy is biting</h3><span class="tag desk">Desk</span></div><p>Rate rises are finally showing up in the data.</p><p class="eg">"Approvals down 20%: policy is biting."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where the lag turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: trade the stage, not just the decision</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Each stage of the ripple shows up in a different data release: the pound and gilts on the day, mortgage approvals and house prices in the following months, PMIs and jobs data later, inflation last. If you know where in the chain the economy is, you can tell whether a weak number is a surprise or just the lag doing what it always does. Near the end of a hiking cycle, the big trades come from betting that the lag will (or won't) cause a slowdown before the central bank admits it.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the mortgage channel is the property market</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property feels the rate change through what buyers can borrow, and through owners refixing. In the UK, transactions and prices tend to turn months after rates do, as fixed deals roll off. For a villa business, the useful habit is to ask where each market is in its cycle: rates rising in the euro area squeeze European buyers; in Nigeria, the exchange rate matters more than the MPR for what foreign buyers and diaspora buyers can afford.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: products that work with weak pipes</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria's thin mortgage and consumer credit market is one reason rate changes reach households slowly, and also a gap fintechs are filling with instalment plans, buy-now-pay-later and small business loans. As digital lending grows, more of the economy becomes sensitive to the MPR, which makes CBN decisions more powerful. A lending product that reprices with NOFR would pass rate changes on to borrowers far faster than today's fixed, opaque pricing.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "Which numbers show the size and timing of the effect?" %}
+  <div class="formula"><span class="lbl">The monthly payment on a repayment mortgage</span>\[ M = P \times \frac{i}{1 - (1 + i)^{-n}} \]</div>
+  <div class="prose">
+    <p>\(P\) is the amount borrowed, \(i\) the monthly interest rate (the annual rate \(\div 12\)) and \(n\) the number of monthly payments. This is the annuity formula from Valuation, used backwards.</p>
+  </div>
+  <div class="formula"><span class="lbl">How much of the mortgage book has repriced after \(t\) years</span>\[ \text{share repriced} \approx \sum_k w_k \times \min\!\left(1, \frac{t}{T_k}\right) \]</div>
+  <div class="prose">
+    <p>\(w_k\) is the share of mortgages on deals of length \(T_k\) years, assuming deals end evenly over time. Variable-rate mortgages have \(T_k \approx 0\), so they reprice straight away.</p>
+  </div>
+  <div class="formula"><span class="lbl">The shower model in the interactive</span>\[ g_{t+1} = 0.92\, g_t - 0.15\, u_{t-L} \qquad u_t = \phi\, g_t \]</div>
+  <div class="prose">
+    <p>\(g\) is how far inflation is above target, \(u\) how far the policy rate is above neutral, \(L\) the lag in quarters and \(\phi\) how hard the bank responds. The "Look ahead" bank uses its forecast of \(g\) in \(L\) quarters instead of today's \(g\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A £200,000 mortgage over 25 years was fixed at \(2\%\). It's now refixing at \(5\%\). How much does the monthly payment rise?</h3>
+    <ol class="steps">
+      <li>At \(2\%\): \(i = 0.02 \div 12 = 0.001667\), \(n = 300\). \(M = 200{,}000 \times 0.001667 \div (1 - 1.001667^{-300}) = 333.33 \div 0.3932 = \text{£}848\).</li>
+      <li>At \(5\%\): \(i = 0.004167\). \(M = 833.33 \div (1 - 1.004167^{-300}) = 833.33 \div 0.7127 = \text{£}1{,}169\).</li>
+      <li>Increase: \(1{,}169 - 848 = \text{£}321\) a month, \(\text{£}3{,}852\) a year.</li>
+    </ol>
+    <p class="answer">A \(38\%\) jump in the payment, landing on the day the deal ends: that's the mortgage cliff.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A mortgage book is \(15\%\) variable, \(45\%\) on 2-year fixes and \(40\%\) on 5-year fixes. What share has repriced one year after the first rate rise?</h3>
+    <ol class="steps">
+      <li>Variable: all of it, \(15\%\).</li>
+      <li>2-year fixes: half have ended, \(45\% \times \tfrac{1}{2} = 22.5\%\).</li>
+      <li>5-year fixes: a fifth have ended, \(40\% \times \tfrac{1}{5} = 8\%\).</li>
+      <li>Total: \(15 + 22.5 + 8 = 45.5\%\). After two years: \(15 + 45 + 16 = 76\%\).</li>
+    </ol>
+    <p class="answer">Under half the mortgage book feels the rise in the first year: one reason the full effect takes so long.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Put these in the order they usually react to a rate rise: inflation, the currency, mortgage approvals, unemployment.</span></p>
+      <details><summary>Show answer</summary><div><span>The currency (same day), mortgage approvals (weeks to months), unemployment (about a year or more), inflation (last, around 12 to 24 months).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Name the five channels of monetary policy and give a one-line example of each.</span></p>
+      <details><summary>Show answer</summary><div><span>Borrowing and saving (a remortgaging family cuts spending); asset prices (house and share prices fall, people feel poorer); the currency (a stronger pound makes imports cheaper); bank lending (banks demand bigger deposits); expectations (workers ask for smaller pay rises because they believe inflation will fall).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Explain Friedman's "fool in the shower" and what it means for a central bank near the end of a hiking cycle.</span></p>
+      <details><summary>Show answer</summary><div><span>Policy works with a delay, so a bank that keeps raising until today's inflation falls will have done too much by the time the earlier rises take effect, like turning the hot tap further because the water's still cold. Near the end of a cycle, the bank should stop before inflation is back at target and let the lagged effects finish the job.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why does a Fed rate rise reach US homeowners more slowly than a Bank of England rise reaches UK homeowners?</span></p>
+      <details><summary>Show answer</summary><div><span>Most US homeowners have 30-year fixed mortgages, so their payments don't change at all unless they move. UK borrowers mostly fix for 2 or 5 years, so a growing share refix at higher rates each month.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A £150,000 mortgage over 20 years refixes from \(3\%\) to \(5.5\%\). Roughly what happens to the monthly payment?</span></p>
+      <details><summary>Show answer</summary><div><span>At \(3\%\): \(150{,}000 \times 0.0025 \div (1 - 1.0025^{-240}) = 375 \div 0.4508 \approx \text{£}832\). At \(5.5\%\): \(150{,}000 \times 0.004583 \div (1 - 1.004583^{-240}) = 687.5 \div 0.6664 \approx \text{£}1{,}032\). About £200 a month more.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why is the exchange rate the most important channel for the CBN?</span></p>
+      <details><summary>Show answer</summary><div><span>Very few Nigerians have mortgages or consumer loans, so the borrowing channel is weak. But Nigeria imports much of its food, fuel and machinery, so the naira passes through strongly to prices. Higher rates that attract dollars and steady the naira cut inflation faster than any other route.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: the central bank has raised rates by 4 points over 18 months, inflation is falling but still above target, and the jobs data are only starting to weaken. Should it keep raising?</span></p>
+      <details><summary>Show answer</summary><div><span>Make the case both ways, then decide. Much of the tightening hasn't fully passed through yet (refixing mortgages, slower hiring), so more rises risk overtightening: the lags argue for holding and watching. Against that, if inflation expectations or wage growth are still too high, stopping early risks a second wave. A good answer looks at expectations, wage growth and how much of the mortgage book has repriced, and leans towards holding unless those show inflation becoming entrenched.</span></div></details></div>
+  </div>
+{% endsec %}
