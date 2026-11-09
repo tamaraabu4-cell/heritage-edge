@@ -124,7 +124,7 @@
       { "title": "FX", "blurb": "The biggest market in the world, and why currencies move.",
         "subtopics": ["How FX Trades", "Majors and Crosses", "Forwards and Swaps", "Carry", "Fixes and Flows", "Emerging Market FX"] },
       { "title": "Rates and Bonds", "blurb": "Lending to governments and companies, and what it pays.",
-        "subtopics": ["Bond Basics", "Yields and the Curve", "Credit Risk"] },
+        "subtopics": [{ "name": "Bond Basics", "planned": ["Bond Prices and Yields", "Duration and DV01"] }, "Yields and the Curve", "Credit Risk"] },
       { "title": "Commodities and Gold", "blurb": "Oil, metals and crops, and why gold behaves differently.",
         "subtopics": ["Gold", "Oil and Energy", "Futures Curves"] },
       { "title": "Equities", "blurb": "Owning a slice of a company.",

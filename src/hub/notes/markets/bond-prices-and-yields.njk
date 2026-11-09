@@ -1,0 +1,271 @@
+---
+title: Bond Prices and Yields
+shelf: markets
+chapter: rates-and-bonds
+subtopic: Bond Basics
+order: 1
+alsoIn: [macro/central-banks-and-rates/Interest Rates]
+summary: What a bond is (face value, coupon, maturity, zero-coupon bonds), how its price is worked out by discounting each payment, why price and yield move in opposite directions, the par rule (premium, par, discount), current yield versus yield to maturity, why long bonds swing more and why the price–yield curve bends, and how gilts, Treasuries and Nigerian FGN bonds are quoted and sold.
+lede: "A bond is a loan cut into pieces you can buy and sell. Its price is simply what its promised payments are worth today, so when interest rates rise, those fixed promises are worth less and the price falls. Price and yield are the same fact said two ways, and being able to switch between them is the first skill of every bond trader."
+goals: [trading, realestate, fintech]
+themes: [macro, trading, real-estate, fintech]
+noteScripts: [/assets/js/notes/markets/bond-prices-and-yields.js]
+
+quiz:
+  - q: 'What is the price of a 2-year zero-coupon bond with face value 100 at a \(5\%\) yield?'
+    opts: ['\(95.00\)', '\(90.70\)', '\(90.00\)']
+    right: 1
+    why: '\(100 \div 1.05^2 = 100 \div 1.1025 = 90.70\). Paying \(90.70\) today for a certain \(100\) in two years is the same as earning \(5\%\) a year. This is the Deltashark quick check.'
+  - q: 'A bond''s coupon is \(4\%\) and the market yield is \(3\%\). How does it trade?'
+    opts: ['At a discount, below 100', 'At par, exactly 100', 'At a premium, above 100']
+    right: 2
+    why: 'It pays more than the going rate, so buyers pay more than 100 for it. Coupon above yield means premium; coupon below yield means discount; equal means par.'
+  - q: 'Yields rise by one percentage point. Which bond loses the most value?'
+    opts: ['A 30-year bond with a low coupon', 'A 2-year bond with a high coupon', 'They all lose the same, because the yield change is the same']
+    right: 0
+    why: 'The longer the bond and the lower its coupon, the more of its value comes from money far in the future, where a higher discount rate bites hardest. That sensitivity is called duration, the subject of the next note.'
+
+connected:
+  - { label: Builds on, title: The Price of Money, where: Macro · Central Banks and Rates, url: /hub/macro/the-price-of-money/ }
+  - { label: Builds on, title: A Tour of the Aisles, where: Markets · What Markets Are, url: /hub/markets/a-tour-of-the-aisles/ }
+  - { label: Used in, title: QE and QT, where: Macro · Central Banks and Rates, url: /hub/macro/ }
+  - { label: Used in, title: Reading the Curve, where: Macro · The Yield Curve, url: /hub/macro/ }
+---
+
+<style>
+  .bp-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .bp-anat { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 4px 0 0; }
+  .bp-anat div { padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--hub-card); }
+  .bp-anat b { display: block; font: 600 13px var(--mono); color: var(--tone); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .03em; }
+  .bp-anat span { font-size: 15px; }
+  #py-table td { font-family: var(--mono); }
+</style>
+
+{% sec 1, "A Loan You Can Sell", "What is a bond, in plain words?", "A loan you can sell" %}
+  <div class="prose">
+    <p>Say you lend a friend £100. They write you a signed note: "I'll pay you £5 every year for 10 years, then give you your £100 back." That note is a {% gl "bond" %}bond{% endgl %}. Now imagine you need your money back after three years. You can't ask your friend for it early, but you can sell the note to someone else, who will then receive the remaining payments. How much they'll pay you for it is the bond's price.</p>
+    <p>Governments and companies borrow this way all the time, from thousands of lenders at once, and the notes trade between investors every day. Every bond has the same few parts:</p>
+  </div>
+  <div class="bp-anat">
+    <div><b>Face value</b><span>The amount repaid at the end, also called par. Prices are quoted per 100 of face value.</span></div>
+    <div><b>{% gl "coupon" %}Coupon{% endgl %}</b><span>The interest paid each year, as a percentage of face value. A \(5\%\) coupon on 100 pays 5 a year.</span></div>
+    <div><b>Maturity</b><span>The date the face value is repaid and the bond ends. The time left is its tenor.</span></div>
+    <div><b>Issuer</b><span>Who is borrowing: the UK government (gilts), the US government (Treasuries), Nigeria's government (FGN bonds), or a company.</span></div>
+  </div>
+  <div class="prose">
+    <p>Some bonds pay no coupons at all. A {% gl "zero-coupon bond" %}zero-coupon bond{% endgl %} just pays its face value at maturity, so you buy it for less than 100 and the gap is your interest. Short-term government borrowing (Treasury bills in the UK, US and Nigeria) works this way.</p>
+    <p>Bonds matter beyond the bond market: the yield on government bonds is the starting point for pricing mortgages, company loans, shares and property, and it's the market central banks influence when they do QE.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Price Is Today's Value of the Promises", "How do you work out what a bond is worth?", "Pricing a bond" %}
+  <div class="prose">
+    <p>A bond is just a list of promised payments, so its price is what those payments are worth today. Discount each payment back to today at the market's interest rate for that kind of borrower (The Price of Money showed how) and add them up.</p>
+    <p>That interest rate is the bond's {% gl "yield to maturity" %}yield to maturity{% endgl %}, usually just called its yield: the single rate that makes the discounted payments add up to exactly the price. It's the return you'll earn if you buy at today's price, hold to the end and every payment arrives.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A 2-year zero-coupon bond, face value 100, at a \(5\%\) yield.</h3>
+    <ol class="steps">
+      <li>One payment: 100 in two years.</li>
+      <li>Today's value: \(100 \div 1.05^2 = 100 \div 1.1025 = 90.70\).</li>
+      <li>Check it forwards: \(90.70 \times 1.05 \times 1.05 = 100\).</li>
+    </ol>
+    <p class="answer">Paying \(90.70\) today for a certain 100 in two years <em>is</em> earning \(5\%\) a year. Price and yield are the same fact in two forms.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Build a bond's price</h3><p>Grey bars are the payments the bond promises (coupons, plus 100 at the end). Coloured bars are what each payment is worth today at the yield you set. The price is the coloured bars added together. Payments are once a year to keep it simple.</p></div>
+    <div class="controls">
+      <div class="presets bp-pick" id="cf-preset" aria-label="Example bonds"></div>
+      <div class="ctrl"><label for="cf-c">Coupon</label><input type="range" id="cf-c" min="0" max="25" step="0.1" value="5"><output id="cf-c-out" for="cf-c">5%</output></div>
+      <div class="ctrl"><label for="cf-y">Yield</label><input type="range" id="cf-y" min="0" max="25" step="0.1" value="6"><output id="cf-y-out" for="cf-y">6%</output></div>
+      <div class="ctrl"><label for="cf-t">Years left</label><input type="range" id="cf-t" min="1" max="30" step="1" value="5"><output id="cf-t-out" for="cf-t">5 years</output></div>
+    </div>
+    <svg class="chart" id="chart-cf" viewBox="0 0 640 280" role="img" aria-label="Bars for each payment a bond makes, showing the payment and its value today; the values today add up to the bond's price"></svg>
+    <div class="legend"><span><i class="sw grey"></i>Payment promised</span><span><i class="sw tone"></i>Worth today</span></div>
+    <div class="readout" id="cf-read"></div>
+    <p class="look" id="cf-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Price Up, Yield Down", "Why do bond prices fall when yields rise?", "Price up, yield down" %}
+  <div class="prose">
+    <p>Picture a seesaw with price on one end and yield on the other. When one goes up, the other goes down. The reason is that a bond's payments are fixed when it's issued, and nothing the market does can change them.</p>
+    <p>Suppose you own a bond paying \(5\%\), and new bonds start paying \(6\%\). Nobody will give you 100 for your \(5\%\) bond when they could buy a new one paying \(6\%\). You can only sell it by cutting the price until the buyer's total return (the coupons plus the gain from buying below 100) also works out at \(6\%\). The other way round, if new bonds only pay \(4\%\), your \(5\%\) bond becomes more valuable and its price rises above 100.</p>
+    <h3>The par rule</h3>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>If the coupon is…</th><th>The bond trades…</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Equal to the yield</td><td>At par (100)</td><td>It pays exactly the going rate</td></tr>
+        <tr><td>Above the yield</td><td>At a {% gl "premium" %}premium{% endgl %} (above 100)</td><td>It pays more than the going rate, so buyers pay up</td></tr>
+        <tr><td>Below the yield</td><td>At a {% gl "discount bond" %}discount{% endgl %} (below 100)</td><td>It pays less than the going rate, so it must be cheaper</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Nigeria shows this clearly. In 2025 the government issued a 10-year bond with a \(22.6\%\) coupon, when rates were very high. By May 2026 investors were buying more of it at yields around \(17\%\), so it traded well above 100. In September 2026 a new 10-year FGN bond was issued at \(16.79\%\): rates had fallen, so new borrowing was cheaper, and the old high-coupon bonds were worth more.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Price versus yield</h3><p>Three bonds with the same coupon, lasting 2, 10 and 30 years. Move the yield to see each price change, or change the coupon to see where par moves. The table shows what a one-point rise or fall in yield would do to each price from where you are.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="py-c">Coupon</label><input type="range" id="py-c" min="0" max="10" step="0.25" value="5"><output id="py-c-out" for="py-c">5%</output></div>
+      <div class="ctrl"><label for="py-y">Yield</label><input type="range" id="py-y" min="0.5" max="11" step="0.25" value="5"><output id="py-y-out" for="py-y">5%</output></div>
+    </div>
+    <svg class="chart" id="chart-py" viewBox="0 0 640 300" role="img" aria-label="Price against yield for 2-year, 10-year and 30-year bonds with the same coupon: all pass through 100 where yield equals coupon, and longer bonds have steeper, more curved lines"></svg>
+    <div class="legend"><span><i class="sw tone" style="background:none;border-top:2.5px dotted var(--tone);height:0"></i>2-year</span><span><i class="sw tone" style="background:none;border-top:2.5px dashed var(--tone);height:0"></i>10-year</span><span><i class="sw tone"></i>30-year</span></div>
+    <div class="table-wrap">
+      <table class="numbers">
+        <thead><tr><th>Bond</th><th>Price now</th><th>Yield +1 point</th><th>Yield −1 point</th></tr></thead>
+        <tbody id="py-table"></tbody>
+      </table>
+    </div>
+    <p class="look" id="py-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Two things the curves show</h3>
+    <ul>
+      <li><strong>Longer bonds swing more.</strong> A 30-year bond's payments stretch decades into the future, where a change in the discount rate has the biggest effect. The same applies to low-coupon bonds, which get more of their value from the final repayment. This sensitivity has a name, {% gl "duration" %}duration{% endgl %}, and the next note, Duration and DV01, measures it.</li>
+      <li><strong>The curve bends.</strong> Price falls as yield rises, but by less and less each time. So a fall in yields helps a bond more than an equal rise hurts it. This bend is called {% gl "convexity" %}convexity{% endgl %}, and bond investors like it.</li>
+    </ul>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A bond's payments are fixed, so its price has to move to give new buyers whatever yield the market now demands. Rates up, prices down; rates down, prices up, and the longer the bond, the bigger the move.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Two Yields You'll See Quoted", "What's the difference between current yield and yield to maturity?", "Two yields" %}
+  <div class="prose">
+    <p>Two different "yields" get quoted, and mixing them up is a classic mistake.</p>
+    <ul>
+      <li><strong>{% gl "current yield" %}Current yield{% endgl %}</strong> is the coupon divided by the price: the cash income you get each year for what you paid. A \(5\%\) coupon bond priced at 86 has a current yield of \(5 \div 86 = 5.8\%\).</li>
+      <li><strong>Yield to maturity</strong> also counts the gain or loss as the price moves to 100 by the end, called the pull to par. That same bond, with 10 years left, has a yield to maturity of about \(7\%\): the \(5.8\%\) income plus the 14-point gain spread over 10 years.</li>
+    </ul>
+    <p>For a discount bond, yield to maturity is higher than the current yield; for a premium bond it's lower, because the bond loses value as it falls back to 100. Yield to maturity is the full picture and the number traders quote.</p>
+    <h3>How bonds are quoted and sold</h3>
+    <ul>
+      <li><strong>Price per 100 of face value.</strong> Gilts are quoted in decimals (say \(97.42\)); US Treasuries traditionally in 32nds of a point.</li>
+      <li><strong>Clean and dirty prices.</strong> Between coupon dates, the seller has earned part of the next coupon. The quoted {% gl "clean price" %}clean price{% endgl %} leaves this out; the buyer pays the clean price plus this accrued interest, which is the dirty price.</li>
+      <li><strong>Moves in basis points of yield.</strong> Traders say "gilts are 5 bps higher" (yields up, prices down), not "gilts are down 0.4".</li>
+      <li><strong>New bonds are sold at auction.</strong> The UK's Debt Management Office sells gilts at regular auctions, mostly to a group of dealer banks (gilt-edged market makers); the US Treasury and Nigeria's Debt Management Office do the same. Nigeria's DMO holds a monthly FGN bond auction and usually reopens existing bonds (sells more of a bond already in the market) rather than creating new ones.</li>
+    </ul>
+    <p>Where yields stand now: the UK 10-year gilt yield reached \(5.51\%\) on 8 October 2026, its highest since 2007, as markets prepared for Bank of England rate rises, and was just under \(5.3\%\) at the end of October. Nigeria's new 10-year bond sold at \(16.79\%\) in September 2026.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX and Gold?", "How do bond yields reach my other two markets?", "FX and gold" %}
+  <div class="prose">
+    <h3>FX: currencies follow the yield gap</h3>
+    <p>Big investors compare government bond yields across countries. When UK yields rise relative to US yields, holding gilts becomes more attractive, so investors buy pounds to buy them, and GBP/USD tends to rise, at least when the rise comes from expected rate hikes and not from investors losing trust in the government. In Nigeria, high FGN bond and treasury bill yields are a main reason foreign investors bring in dollars, which supports the naira; when they leave, they sell naira.</p>
+    <h3>Gold: competing with real yields</h3>
+    <p>Gold pays nothing, so its rival is the real (after-inflation) yield on government bonds. When inflation-protected bond yields rise, gold looks less attractive; when they fall, gold looks better. For decades this was one of the most reliable links in markets, though central bank buying has made gold less sensitive to it since 2022.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Paper</h3><span class="tag desk">Desk</span></div><p>Bonds in general.</p><p class="eg">"Lots of supply: the DMO's selling 10-year paper tomorrow."</p></div>
+    <div class="term"><div class="term-top"><h3>Par</h3><span class="tag desk">Desk</span></div><p>A price of 100: the face value.</p><p class="eg">"It came at par and it's trading 102 now."</p></div>
+    <div class="term"><div class="term-top"><h3>Yields up, prices down</h3><span class="tag desk">Desk</span></div><p>Bonds selling off means yields rising.</p><p class="eg">"Gilts sold off: tens up 12 bps."</p></div>
+    <div class="term"><div class="term-top"><h3>Tens, twos, thirties</h3><span class="tag desk">Desk</span></div><p>The 10-, 2- and 30-year government bonds.</p><p class="eg">"Twos are leading the move."</p></div>
+    <div class="term"><div class="term-top"><h3>Bid-to-cover</h3><span class="tag desk">Desk</span></div><p>At an auction, bids received divided by bonds sold. Higher means stronger demand.</p><p class="eg">"Weak auction: 1.4 times covered."</p></div>
+    <div class="term"><div class="term-top"><h3>Stop rate</h3><span class="tag desk">Desk</span></div><p>The highest yield accepted at an auction (Nigeria's term; the US says high yield).</p><p class="eg">"The DMO took the stop rate up 50 bps."</p></div>
+    <div class="term"><div class="term-top"><h3>Reopening</h3><span class="tag desk">Desk</span></div><p>Selling more of a bond that already exists instead of creating a new one.</p><p class="eg">"It's a reopening of the 2035s."</p></div>
+    <div class="term"><div class="term-top"><h3>Pull to par</h3><span class="tag desk">Desk</span></div><p>A bond's price drifting towards 100 as maturity gets closer.</p><p class="eg">"Short-dated discount paper: you get the pull to par."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Macro, Trading, Real Estate and Fintech?", "Where bond pricing turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Macro: the market central banks steer</h3><a class="theme-link tone-olive" href="/hub/macro/">Macro</a></div>
+    <div class="prose">
+      <p>Short-dated bond yields follow the expected path of the policy rate; longer yields add expectations about growth, inflation and government borrowing. When central banks buy bonds (QE) they push prices up and yields down; when they sell or let them mature (QT), the reverse. The next Macro note, QE and QT, depends on everything here.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: watch the yield, not the price</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Retail traders usually reach bonds through bond futures, ETFs or CFDs on the 10-year. Charts are often shown in price, but the desk thinks in yield, and the two move in opposite directions: a rising yield chart is a falling price chart. Get into the habit of checking 2- and 10-year yields before trading GBP/USD or gold; they often move first.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: a property is a bond with a roof</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A rental property's yield (rent divided by price) works like a bond's current yield, and property prices react to bond yields the same way: when gilt yields rise, investors want higher rental yields, so they pay less for the same rent. Comparing a property's yield with the 10-year government bond yield is the first sense-check on any deal; a villa yielding \(5\%\) when gilts pay over \(5\%\) has to promise growth to be worth the extra risk.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: bonds for everyone</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria's DMO sells FGN Savings Bonds to individuals from ₦5,000, and investment apps let users buy treasury bills and bonds on their phones. The gap is explaining them: most users see a headline rate, not whether a bond trades at a premium, what its yield to maturity is, or what they'd get if they sold early. A simple "what is my bond worth today" tool using this note's maths would fill it.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "Which formulas price a bond?" %}
+  <div class="formula"><span class="lbl">Bond price: each payment discounted at the yield</span>\[ P = \sum_{t=1}^{N} \frac{C}{(1 + y)^t} + \frac{F}{(1 + y)^N} \]</div>
+  <div class="prose">
+    <p>\(C\) is the coupon each period, \(F\) the face value, \(y\) the yield per period and \(N\) the number of periods. For bonds paying twice a year (gilts, Treasuries, FGN bonds), use half the coupon, half the yield and twice the number of years.</p>
+  </div>
+  <div class="formula"><span class="lbl">The same thing using the annuity shortcut</span>\[ P = C \times \frac{1 - (1 + y)^{-N}}{y} + \frac{F}{(1 + y)^N} \]</div>
+  <div class="formula"><span class="lbl">Current yield, and a quick estimate of yield to maturity</span>\[ \text{CY} = \frac{C}{P} \qquad \text{YTM} \approx \frac{C + (F - P)/N}{(F + P)/2} \]</div>
+  <div class="prose">
+    <p>The exact yield to maturity has no simple formula: it's found by trying yields until the price matches (a spreadsheet's YIELD or IRR function does this). The quick estimate is close enough to check an answer.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A 5-year bond, face 1,000, \(5\%\) annual coupon, yielding \(6\%\). What's its price?</h3>
+    <ol class="steps">
+      <li>Coupons: \(50 \times \dfrac{1 - 1.06^{-5}}{0.06} = 50 \times 4.2124 = 210.62\).</li>
+      <li>Face: \(1{,}000 \div 1.06^5 = 1{,}000 \div 1.3382 = 747.26\).</li>
+      <li>Price: \(210.62 + 747.26 = 957.88\).</li>
+    </ol>
+    <p class="answer">A discount, because the \(5\%\) coupon is below the \(6\%\) yield. If the yield rises to \(7\%\), the price falls to \(918.00\), about \(4.2\%\) lower.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A 10-year bond with a \(5\%\) coupon is priced at 86. Find its current yield and estimate its yield to maturity.</h3>
+    <ol class="steps">
+      <li>Current yield: \(5 \div 86 = 5.81\%\).</li>
+      <li>Estimate: \(\dfrac{5 + (100 - 86)/10}{(100 + 86)/2} = \dfrac{6.4}{93} = 6.88\%\).</li>
+      <li>Exact (by trial): at \(7\%\), the price is \(5 \times 7.0236 + 100 \div 1.9672 = 35.12 + 50.83 = 85.95\). So the yield is about \(7\%\).</li>
+    </ol>
+    <p class="answer">Yield to maturity (\(7\%\)) is above the current yield (\(5.8\%\)) because the bond will be pulled up from 86 to 100.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (semi-annual coupons)</span>
+    <h3>A Nigerian-style bond pays a \(22.6\%\) coupon in two halves, has 9 years left and yields \(17\%\). Roughly what's its price?</h3>
+    <ol class="steps">
+      <li>Per half-year: coupon \(11.3\), yield \(8.5\%\), \(N = 18\) periods.</li>
+      <li>Coupons: \(11.3 \times \dfrac{1 - 1.085^{-18}}{0.085} = 11.3 \times 9.0555 = 102.33\).</li>
+      <li>Face: \(100 \div 1.085^{18} = 100 \div 4.3425 = 23.03\).</li>
+      <li>Price: \(102.33 + 23.03 = 125.36\).</li>
+    </ol>
+    <p class="answer">About 125 per 100 of face value: a big premium, because its coupon is far above today's yields.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Deltashark quick check: what is the price of a 2-year zero-coupon bond of face 100 at a \(5\%\) yield?</span></p>
+      <details><summary>Show answer</summary><div><span>\(100 \div 1.05^2 = 90.70\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Deltashark quick check: a bond's coupon is \(4\%\) and its yield is \(3\%\). Premium or discount?</span></p>
+      <details><summary>Show answer</summary><div><span>Premium: it pays more than the going rate, so it trades above 100.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A 3-year bond pays a \(6\%\) annual coupon. Price it at a \(4\%\) yield.</span></p>
+      <details><summary>Show answer</summary><div><span>\(6 \div 1.04 + 6 \div 1.04^2 + 106 \div 1.04^3 = 5.77 + 5.55 + 94.23 = 105.55\). A premium, as expected with the coupon above the yield.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>You pay 95 for a 1-year zero-coupon bond. What yield are you earning?</span></p>
+      <details><summary>Show answer</summary><div><span>\(100 \div 95 - 1 = 5.26\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why does yield to maturity exceed current yield for a bond trading at a discount?</span></p>
+      <details><summary>Show answer</summary><div><span>Current yield only counts the coupon income. Yield to maturity also counts the gain as the price rises from below 100 to 100 at maturity (the pull to par), so it's higher.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Yields jump by one point. Rank these from most to least affected: a 2-year \(8\%\) bond, a 30-year zero-coupon bond, a 10-year \(5\%\) bond.</span></p>
+      <details><summary>Show answer</summary><div><span>30-year zero (all its value is 30 years away), then the 10-year \(5\%\) bond, then the 2-year \(8\%\) bond (short, and much of its value arrives early as coupons).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: the 10-year gilt yield rises from \(5.0\%\) to \(5.5\%\). Explain what happens to the price of an existing 10-year gilt, and why.</span></p>
+      <details><summary>Show answer</summary><div><span>Its price falls. Its coupons are fixed, so to offer new buyers the higher \(5.5\%\) yield its price must drop. For a 10-year bond the fall is roughly 3.5 to 4% (about duration × the change in yield, which the next note covers). Holders who sell now lose money; anyone who holds to maturity still gets the promised payments and 100 back.</span></div></details></div>
+  </div>
+{% endsec %}
