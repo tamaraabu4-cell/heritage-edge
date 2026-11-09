@@ -142,11 +142,7 @@
     "description": "Interest rates, inflation and the big forces that move every market.",
     "chapters": [
       { "title": "Central Banks and Rates", "blurb": "Who sets the price of money, and how.",
-        "subtopics": [
-          { "name": "Central Banks", "planned": ["What a Central Bank Does", "How Central Banks Decide"] },
-          { "name": "Interest Rates", "planned": ["The Price of Money", "How a Rate Change Travels"] },
-          { "name": "QE and QT", "planned": ["QE and QT"] }
-        ] },
+        "subtopics": ["Central Banks", "Interest Rates", "QE and QT"] },
       { "title": "Inflation", "blurb": "Why prices rise, and why markets care.",
         "subtopics": ["Measuring Inflation", "What Drives It?"] },
       { "title": "Growth and Jobs", "blurb": "How the economy is doing.",

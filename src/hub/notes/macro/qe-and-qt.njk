@@ -1,0 +1,236 @@
+---
+title: QE and QT
+shelf: macro
+chapter: central-banks-and-rates
+subtopic: QE and QT
+order: 1
+summary: Why central banks buy bonds when interest rates hit zero, how quantitative easing works step by step (new reserves, not printed notes), whether it's "printing money", the Fed's and Bank of England's balance sheets from 2008 to 2026, quantitative tightening and the Bank of England's September 2026 plan, the Bank of Japan's yield curve control, and the difference between QE and a central bank funding its government, as in Nigeria.
+lede: "When the interest rate is already close to zero, a central bank can't cut much further. So since 2008 the big central banks have used a second dial: buying government bonds with newly created money to push long-term interest rates down. Now they're slowly reversing it, and how fast they do it moves bond markets, currencies and gold."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/macro/qe-and-qt.js]
+
+quiz:
+  - q: 'When a central bank does QE, how does it pay for the bonds it buys?'
+    opts: ['By creating new reserves in banks'' accounts at the central bank', 'By printing banknotes and handing them to investors', 'By borrowing the money from the government']
+    right: 0
+    why: 'It credits the seller''s bank with new reserves: money that didn''t exist before, created electronically. No notes are printed, and the reserves stay in the banking system until the central bank removes them through QT.'
+  - q: 'What is QE mainly trying to do?'
+    opts: ['Raise short-term interest rates', 'Make the currency stronger', 'Push long-term interest rates down when the policy rate can''t go much lower']
+    right: 2
+    why: 'By buying lots of longer-dated bonds, the central bank raises their prices and lowers their yields. Investors who sold then buy other assets, which lowers borrowing costs more widely. It was built for when the policy rate is already near zero.'
+  - q: 'How is QE different from the CBN''s "ways and means" lending to Nigeria''s government?'
+    opts: ['There is no difference; both create money', 'QE buys bonds in the market to steer interest rates and is meant to be reversed; ways and means directly funded government spending', 'Ways and means is smaller, so it had no effect on inflation']
+    right: 1
+    why: 'QE is a monetary policy decision by an independent central bank, buying existing bonds from investors, with a plan to unwind. Ways and means paid the government''s bills directly, far beyond the legal limit, which is monetary financing: one of the surest routes to high inflation.'
+
+connected:
+  - { label: Builds on, title: Bond Prices and Yields, where: Markets · Rates and Bonds, url: /hub/markets/bond-prices-and-yields/ }
+  - { label: Builds on, title: The Price of Money, where: Macro · Central Banks and Rates, url: /hub/macro/the-price-of-money/ }
+  - { label: Used in, title: Crashes That Changed the Rules, where: Markets · How Markets Work, url: /hub/markets/crashes-that-changed-the-rules/ }
+  - { label: Next, title: Measuring Inflation, where: Macro · Inflation, url: /hub/macro/ }
+---
+
+<style>
+  .qe-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .qe-nav { display: flex; gap: 8px; margin-top: 10px; }
+  .qe-nav button { font: inherit; font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+  .qe-nav button:disabled { opacity: 0.4; cursor: default; }
+  .qe-text { margin-top: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--tone); background: var(--tone-bg); font-size: 15px; line-height: 1.55; }
+</style>
+
+{% sec 1, "When the Main Tool Hits Zero", "Why would a central bank buy bonds?", "When rates hit zero" %}
+  <div class="prose">
+    <p>In late 2008 and again in 2020, central banks cut their rates almost to zero and the economy still needed more help. You can't easily take rates much below zero: people would rather keep cash in a safe than pay a bank to hold it. So central banks reached for a second dial.</p>
+    <p>Picture a market stall selling apples. If one enormous customer turns up and starts buying apples every day, the price of apples goes up. {% gl "QE" %}Quantitative easing{% endgl %} (QE) makes the central bank that enormous customer in the bond market. It buys huge amounts of government bonds (and sometimes other bonds), which pushes their prices up. And as Bond Prices and Yields showed, when a bond's price goes up its yield goes down.</p>
+    <p>The policy rate controls the cost of borrowing for one night. QE reaches further: it pushes down the yields on 5-, 10- and 30-year bonds, which set the cost of mortgages, company borrowing and government borrowing for years ahead. The opposite, {% gl "quantitative tightening" %}quantitative tightening{% endgl %} (QT), shrinks the pile of bonds again.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The policy rate steers the short end of the yield curve; QE and QT steer the long end, by changing how many bonds private investors have to hold.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "How QE Works, Step by Step", "Where does the money come from, and where does it go?", "How QE works" %}
+  <div class="prose">
+    <p>The key is a central bank's {% gl "central bank balance sheet" %}balance sheet{% endgl %}: a list of what it owns (assets, like the bonds it buys) and what it owes (liabilities, like the {% gl "reserves" %}reserves{% endgl %} banks keep with it). QE grows both sides by the same amount. Step through it with £100m:</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Follow the money</h3><p>Choose QE or QT, then step through who holds what. The numbers show each player's holdings in £ millions; coloured boxes and arrows show what moves at each step. Items marked * are owed to someone else: the central bank owes reserves to banks, and a bank owes deposits to its customers.</p></div>
+    <div class="controls">
+      <div class="presets qe-pick" id="fm-mode" aria-label="QE or QT"></div>
+      <div class="presets qe-pick" id="fm-step" aria-label="Step"></div>
+    </div>
+    <svg class="chart" id="chart-fm" viewBox="0 0 640 190" role="img" aria-label="Boxes for the central bank, a commercial bank, a pension fund and other markets, showing gilts, reserves and deposits moving between them during QE or QT"></svg>
+    <div class="qe-nav"><button type="button" id="fm-prev">← Back</button><button type="button" id="fm-next">Next step →</button></div>
+    <div class="qe-text" id="fm-text" aria-live="polite"></div>
+  </div>
+  <div class="prose">
+    <h3>The three ways it works</h3>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Fewer long bonds for everyone else.<span class="why">When the central bank holds a big share of long-dated bonds, investors are left holding fewer of them and will accept a lower yield. Economists call it the {% gl "portfolio balance effect" %}portfolio balance effect{% endgl %}: sellers move into other assets, pushing their prices up too.</span></span></li>
+    <li><span class="n">2</span><span>A promise in action.<span class="why">A central bank buying billions of bonds is unlikely to raise rates soon. QE backs up forward guidance with money.</span></span></li>
+    <li><span class="n">3</span><span>Keeping markets working.<span class="why">In a panic (2008, March 2020, the UK pension crisis of 2022), nobody wants to buy, and prices can collapse for no good reason. A central bank that steps in as buyer stops the spiral.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 3, "Is QE Printing Money?", "Does QE cause inflation?", "Printing money?" %}
+  <div class="prose">
+    <p>People often say QE is "printing money". It does create new money, but not in the way the phrase suggests.</p>
+    <ul>
+      <li><strong>No notes are printed.</strong> The new money is reserves: electronic balances that only banks hold at the central bank. They can't be spent in a shop.</li>
+      <li><strong>Swap, not gift.</strong> The seller gives up a bond and gets money. Their wealth hasn't changed; only its form has.</li>
+      <li><strong>It's meant to be reversed.</strong> QT removes the reserves again.</li>
+    </ul>
+    <p>After 2008, many people warned QE would cause high inflation. For the next decade inflation mostly stayed <em>below</em> 2%: the new reserves largely sat in the banking system while banks repaired themselves and households paid down debt. The 2020–21 round was different: it came alongside huge government spending, closed supply chains and then an energy shock, and inflation surged. Economists still argue about how much QE contributed. Most agree it mattered more when the money reached people who spent it.</p>
+    <p>QE also had side effects. By pushing up the prices of bonds, shares and houses, it helped people who already owned assets more than people who didn't. And when rates rose after 2022, central banks were paying more interest on all those reserves than they earned on their bonds, so they made losses (in the UK, the Treasury covers them).</p>
+    <h3>When it really is money printing: Nigeria</h3>
+    <p>What QE is not is a central bank paying the government's bills. That's {% gl "monetary financing" %}monetary financing{% endgl %}. It's banned by treaty in the euro area, and other independent central banks avoid it (the Bank of England briefly extended the UK government's overdraft in 2020, and it was repaid within months). In Nigeria, the CBN's "ways and means" lending to the government grew to about ₦22.7 trillion by 2023, far above the legal limit of \(5\%\) of the previous year's revenue, before it was turned into long-term bonds. That money went straight into government spending, which is a big part of why inflation and the naira's fall were so severe. Ending it has been central to the CBN rebuilding trust since 2023.</p>
+    <p>The CBN mostly does the opposite of QE: it sells its own short-term bills (OMO bills) to soak up spare naira, and keeps a high cash reserve requirement, both of which drain money from the banking system.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "QE Through the Years", "How big did central bank balance sheets get?", "QE through the years" %}
+  <div class="prose">
+    <p>Japan tried QE first, from 2001. After 2008 it became standard: the Fed, the Bank of England, and from 2015 the ECB. In 2020 all of them did it at once, on a scale never seen before.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The balance sheet over time</h3><p>Fed total assets and the Bank of England's QE gilt holdings, 2006 to 2026. Pick a central bank, then an event. Levels are rounded and approximate, to show the shape.</p></div>
+    <div class="controls">
+      <div class="presets qe-pick" id="bs-series" aria-label="Which central bank"></div>
+      <div class="presets qe-pick" id="bs-event" aria-label="Events"></div>
+    </div>
+    <svg class="chart" id="chart-bs" viewBox="0 0 640 280" role="img" aria-label="The size of the central bank's balance sheet from 2006 to 2026, with markers at key QE and QT events"></svg>
+    <div class="readout" id="bs-read"></div>
+    <p class="look" id="bs-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "QT: Letting the Air Out", "How do central banks reverse QE?", "QT" %}
+  <div class="prose">
+    <p>Letting the air out of a balloon slowly is easy; popping it is not. QT works the same way, and there are two ways to do it:</p>
+    <ul>
+      <li><strong>Passive QT:</strong> when bonds mature, the central bank takes the repayment and doesn't buy new ones. The Fed did this from June 2022, letting up to $95bn a month run off, until it stopped on 1 December 2025 when money markets showed signs of strain. Since then it has been buying Treasury bills again to keep reserves "ample", and its balance sheet is about $6.7 trillion.</li>
+      <li><strong>Active QT:</strong> the central bank also sells bonds back to the market. The Bank of England is the main one doing this, with sales starting in November 2022.</li>
+    </ul>
+    <h3>The Bank of England's September 2026 plan</h3>
+    <p>On 17 September 2026, with £488bn of gilts left, the Bank set out a plan to bring its QE holdings to zero by 2034:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>£222bn held to maturity.<span class="why">Gilts that mature before 2035 won't be sold; they'll simply run off.</span></span></li>
+    <li><span class="n">2</span><span>About £20bn a year of sales.<span class="why">Gilts maturing between 2035 and 2049 will be sold slowly. Including maturities, holdings fall by an average of about £46bn a year.</span></span></li>
+    <li><span class="n">3</span><span>No more sales of the longest gilts.<span class="why">About £120bn of the longest gilts will be kept, to back the banknotes in circulation, instead of being sold into a fragile long end.</span></span></li>
+    <li><span class="n">4</span><span>A pause until April 2027.<span class="why">The Bank stopped its sale auctions while it looks at selling gilts to the government's Debt Management Office instead.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>Gilt yields fell by around 6 to 12 basis points that day, as investors had expected more selling of long gilts. It shows QT moves markets even when the interest rate doesn't change.</p>
+    <p>In the US, Kevin Warsh has argued for years that the Fed's balance sheet is too big. In June 2026 he set up a task force to review it. Shrinking it much further isn't simple: banks have built their liquidity around plentiful reserves, and the overnight rate is controlled by paying interest on them (The Price of Money). Markets are watching for any sign of renewed QT, which would push long-term US yields up.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Yield Curve Control", "Can a central bank just fix a long-term yield?", "Yield curve control" %}
+  <div class="prose">
+    <p>QE buys a quantity of bonds and lets the yield fall wherever it falls. {% gl "yield curve control" %}Yield curve control{% endgl %} (YCC) does it the other way round: the central bank names a yield and promises to buy whatever amount it takes to hold it there.</p>
+    <p>The Bank of Japan did this from 2016 to March 2024, capping the 10-year government bond yield at around \(0\%\). It worked for years, but at a price: the BoJ ended up owning about half of all Japanese government bonds, the market barely traded, and as global yields rose in 2022 the yen fell sharply because Japanese yields couldn't follow. The BoJ widened its band in steps and finally ended YCC in March 2024, along with negative rates.</p>
+    <p>YCC only works if markets believe the bank will buy without limit. Australia's central bank learned this in November 2021: markets bet against its cap on 3-year yields, it chose not to defend it, and it scrapped the policy abruptly, a lesson in credibility.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How do QE and QT move my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: more money, weaker currency</h3>
+    <p>QE lowers a country's yields and adds to the supply of its money, so its currency tends to weaken, especially when one central bank is doing QE and others aren't. The yen's long slide while the BoJ held yields near zero is the clearest example. QT works the other way, but slowly.</p>
+    <h3>Gold: the debasement trade</h3>
+    <p>Many investors buy gold when central banks create money on a large scale, as a store of value that can't be printed. Gold rose strongly through the 2009–2011 QE years and again in 2020. With real yields low, the cost of holding something that pays nothing is low too.</p>
+    <h3>Bonds: the long end and the term premium</h3>
+    <p>QE pushes down the {% gl "term premium" %}term premium{% endgl %}, the extra yield investors want for lending for longer, because the central bank takes so much long-dated risk off the market. QT gives it back. That's why the Bank of England stopped selling its longest gilts: since the 2022 pension fund crisis, the long end of the gilt market has been the most fragile part.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>The balance sheet</h3><span class="tag desk">Desk</span></div><p>Shorthand for the size of a central bank's bond holdings.</p><p class="eg">"Warsh wants to shrink the balance sheet."</p></div>
+    <div class="term"><div class="term-top"><h3>Taper</h3><span class="tag desk">Desk</span></div><p>Slowing the pace of QE purchases before stopping.</p><p class="eg">"Remember the 2013 taper tantrum."</p></div>
+    <div class="term"><div class="term-top"><h3>Run-off</h3><span class="tag desk">Desk</span></div><p>Bonds maturing without being replaced: passive QT.</p><p class="eg">"They're letting $25bn a month run off."</p></div>
+    <div class="term"><div class="term-top"><h3>Ample reserves</h3><span class="tag desk">Desk</span></div><p>Enough reserves that banks don't fight over them and the overnight rate stays calm.</p><p class="eg">"Repo spiked: reserves aren't ample any more."</p></div>
+    <div class="term"><div class="term-top"><h3>The long end</h3><span class="tag desk">Desk</span></div><p>Bonds with 10 or more years to maturity.</p><p class="eg">"The long end rallied when the Bank stopped selling."</p></div>
+    <div class="term"><div class="term-top"><h3>Debasement</h3><span class="tag desk">Desk</span></div><p>Fear that money creation will erode a currency's value.</p><p class="eg">"Gold's trading the debasement story."</p></div>
+    <div class="term"><div class="term-top"><h3>Fed put</h3><span class="tag desk">Desk</span></div><p>The belief that the central bank will step in if markets fall far enough.</p><p class="eg">"Nobody wants to fight the Fed put."</p></div>
+    <div class="term"><div class="term-top"><h3>Taper tantrum</h3><span class="tag desk">Desk</span></div><p>A sharp sell-off when a central bank hints at buying fewer bonds; named after 2013.</p><p class="eg">"EM currencies got hit hardest in the taper tantrum."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where QE and QT turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: the balance sheet is a slow tide</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Rate decisions are waves; QE and QT are the tide underneath. A market where the central bank is buying bonds is a strong wind behind gold and against the currency; QT is a gentle headwind. Announcements about the balance sheet (like the Bank of England's September 2026 plan) can move gilts and the pound as much as a rate decision, so read them as carefully. Emerging market currencies, including the naira, have historically sold off hardest when the Fed signals less QE.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the decade of cheap money</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>QE helped push long-term borrowing costs to record lows from 2009 to 2021, and property values rose with them: UK two-year fixed mortgages fell below \(2\%\) in 2020. As QE reversed and rates rose, property yields had to rise and prices stalled. When valuing any property bought in those years, remember part of its price came from QE, and QT takes that support away.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: why central bank discipline matters to you</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The difference between QE and ways and means is the difference between a currency people trust and one they don't. A fintech holding customers' naira, offering dollar savings or pricing loans depends on the CBN keeping money creation under control. Watching the CBN's balance sheet and its lending to government is as important for a Nigerian product as watching the MPR.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "Which numbers sit behind QE and QT?" %}
+  <div class="formula"><span class="lbl">A balance sheet always balances</span>\[ \text{assets} = \text{liabilities} + \text{capital} \qquad \Delta\text{bonds held} = \Delta\text{reserves created} \]</div>
+  <div class="prose">
+    <p>Every £1 of QE adds £1 of bonds on one side and £1 of reserves on the other. QT removes both.</p>
+  </div>
+  <div class="formula"><span class="lbl">What a fall in yield does to a bond's price (from duration)</span>\[ \frac{\Delta P}{P} \approx -D \times \Delta y \]</div>
+  <div class="prose">
+    <p>\(D\) is the bond's duration in years (roughly how sensitive it is; the Duration and DV01 note covers it), and \(\Delta y\) is the change in yield. If QE lowers the 10-year yield by \(0.5\) points and the bond's duration is 8, its price rises by about \(8 \times 0.5 = 4\%\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The Bank of England has £488bn of gilts. £222bn will mature before 2035, about £120bn of the longest gilts will be kept, and the rest will be sold at about £20bn a year. How long will the selling take?</h3>
+    <ol class="steps">
+      <li>Gilts to sell: \(488 - 222 - 120 = 146\), so £146bn.</li>
+      <li>At £20bn a year: \(146 \div 20 \approx 7.3\) years.</li>
+      <li>Starting from April 2027, that ends around 2034, in line with the Bank's target.</li>
+    </ol>
+    <p class="answer">Average reduction including maturities: about £46bn a year, much slower than the £100bn a year of 2023–25.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The Fed's assets went from \$0.9 trillion in 2007 to about \$9 trillion at the 2022 peak, and are about \$6.7 trillion now. How much of the increase has been reversed?</h3>
+    <ol class="steps">
+      <li>Increase: \(9 - 0.9 = 8.1\) trillion.</li>
+      <li>Reversed: \(9 - 6.7 = 2.3\) trillion.</li>
+      <li>Share: \(2.3 \div 8.1 \approx 28\%\).</li>
+    </ol>
+    <p class="answer">Less than a third of the QE era has been unwound, and the Fed is now growing its balance sheet slowly again.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Why did central banks start QE in 2008–09?</span></p>
+      <details><summary>Show answer</summary><div><span>Policy rates were already close to zero and couldn't be cut much further, but the economy needed more support. Buying bonds let them push down long-term interest rates instead.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A central bank buys £50bn of gilts. What happens to its assets, its liabilities and banks' reserves?</span></p>
+      <details><summary>Show answer</summary><div><span>Assets rise by £50bn (the gilts). Liabilities rise by £50bn (new reserves owed to banks). Banks' reserves at the central bank rise by £50bn.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>What's the difference between passive and active QT? Which does the Bank of England use?</span></p>
+      <details><summary>Show answer</summary><div><span>Passive: letting bonds mature without replacing them. Active: also selling bonds into the market. The Bank of England has used both (active sales since November 2022); the Fed only used passive QT.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why did the Bank of Japan's yield curve control weaken the yen in 2022?</span></p>
+      <details><summary>Show answer</summary><div><span>Global yields rose fast, but the BoJ held Japanese 10-year yields near zero by buying bonds. The gap between Japanese and foreign yields widened, so investors moved money out of yen into higher-yielding currencies.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A 10-year gilt has a duration of 8. QT pushes its yield up by 0.3 points. Roughly what happens to its price?</span></p>
+      <details><summary>Show answer</summary><div><span>\(-8 \times 0.3 = -2.4\%\). The price falls by about \(2.4\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Why is QE not the same as the CBN's ways and means lending?</span></p>
+      <details><summary>Show answer</summary><div><span>QE is an independent central bank buying existing bonds from investors to steer interest rates, with a plan to reverse it. Ways and means directly funded government spending, far beyond the legal limit, which is monetary financing and fed straight into inflation.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: the Fed announces it will restart QT. What do you expect in Treasuries, the dollar and gold?</span></p>
+      <details><summary>Show answer</summary><div><span>Longer-dated Treasury yields rise as private investors have to absorb more bonds and the term premium goes up; the yield curve likely steepens. The dollar tends to firm on higher yields and tighter dollar liquidity, and emerging market currencies could come under pressure. Gold tends to weaken as real yields rise and the "debasement" story fades. The size of the reaction depends on how much was already priced in and on the pace announced.</span></div></details></div>
+  </div>
+{% endsec %}
