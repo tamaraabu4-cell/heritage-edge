@@ -1,0 +1,256 @@
+---
+title: The Strategy Map
+shelf: hedge-funds
+chapter: strategies
+subtopic: The Strategy Map
+order: 1
+summary: The six families of hedge fund strategy (long/short equity, global macro, event-driven, relative value, credit and distressed, quant), where each sits between directional and market-neutral, which ones win and lose in each kind of market, why allocators mix them, and how choosing a strategy means choosing a career.
+lede: "\"Hedge fund\" describes a structure, not a way of making money. Inside that structure are six very different families of strategy, from funds betting on whole economies to funds that try to have no view on the market at all. Each one wins in some kinds of market and suffers in others, and each one is a different job."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, macro, quant, real-estate, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/the-strategy-map.js]
+
+quiz:
+  - q: 'Which family of strategies tries hardest to make money whichever way the market goes, by trading the gap between related securities?'
+    opts: ['Global macro', 'Long/short equity', 'Relative value']
+    right: 2
+    why: 'Relative value funds buy one security and sell a closely related one, aiming to profit as the gap between them closes. Their net exposure is close to zero, so the market''s direction matters little; the risk is the gap widening instead.'
+  - q: 'In a crash with high volatility and falling share prices, which strategies have historically done best?'
+    opts: ['Global macro and trend-following CTAs', 'Net-long long/short equity and long-biased credit', 'Statistical arbitrage and leveraged relative value']
+    right: 0
+    why: 'Macro funds can bet on falls in any market, and trend followers ride persistent moves, including falls. Net-long equity and credit lose with the market, and leveraged spread trades get squeezed when everyone sells at once.'
+  - q: 'A fund made \(12\%\) in a year when the market rose \(20\%\). It ran \(40\%\) net long. Roughly how much of its return was stock-picking skill?'
+    opts: ['About \(12\%\)', 'About \(4\%\)', 'About \(-8\%\)']
+    right: 1
+    why: 'Market exposure explains about \(0.4 \times 20\% = 8\%\), so only about \(4\%\) came from picking stocks. That split between beta and alpha is what allocators check before paying hedge fund fees.'
+
+connected:
+  - { label: Builds on, title: From Jones to $4.5 Trillion, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/from-jones-to-trillions/ }
+  - { label: Builds on, title: Single-Manager vs Multi-Manager, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/single-manager-vs-multi-manager/ }
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Used in, title: Gross and Net Exposure, where: Hedge Funds · Portfolio Construction and Risk, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .sm-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .sm-track { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding-top: 30px; }
+  .sm-track::before { content: ""; position: absolute; left: 4px; right: 4px; top: 12px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--tone), var(--tone-mid), var(--note-grey)); }
+  .sm-ends { display: flex; justify-content: space-between; font: 500 12px var(--mono); color: var(--text-2); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: -22px; }
+  .sm-chip { border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 12px; padding: 10px 8px; font-size: 14px; font-weight: 600; text-align: center; cursor: pointer; line-height: 1.25; }
+  .sm-chip span { display: block; font-size: 12px; font-weight: 400; color: var(--text-2); margin-top: 2px; }
+  .sm-chip[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .sm-chip[aria-pressed="true"] span { color: var(--on-tone); opacity: 0.85; }
+  .sm-side { margin-top: 8px; display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--text-2); }
+  .sm-side .sm-chip { flex: 0 0 auto; padding: 8px 14px; }
+  .sm-card { margin-top: 14px; border: 1px solid var(--tone); border-radius: 14px; padding: 14px 16px; background: var(--tone-bg); }
+  .sm-card h4 { margin: 0 0 4px; font-size: 18px; color: var(--tone); }
+  .sm-card p.like { margin: 0 0 10px; font-style: italic; color: var(--text-2); }
+  .sm-card dl { margin: 0; display: grid; grid-template-columns: 130px 1fr; gap: 6px 12px; font-size: 14px; }
+  .sm-card dt { font-weight: 600; }
+  .sm-card dd { margin: 0; }
+  @media (max-width: 560px) {
+    .sm-track { grid-template-columns: repeat(2, 1fr); padding-top: 0; }
+    .sm-track::before, .sm-ends { display: none; }
+    .sm-card dl { grid-template-columns: 1fr; gap: 2px; }
+    .sm-card dd { margin-bottom: 8px; }
+  }
+  .wx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .wx-tile { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; background: var(--bg); font-size: 14px; }
+  .wx-tile b { display: flex; justify-content: space-between; gap: 6px; font-weight: 600; }
+  .wx-tile small { display: block; margin-top: 4px; color: var(--text-2); font-size: 12.5px; line-height: 1.4; }
+  .wx-tile.win { background: var(--tone-bg); border-color: var(--tone); }
+  .wx-tile.win b i { color: var(--tone); }
+  .wx-tile.lose { border-style: dashed; border-color: var(--note-grey); }
+  .wx-tile.lose b { color: var(--text-2); }
+  .wx-tile.mid { opacity: 0.6; }
+  .wx-tile b i { font-style: normal; font-size: 12px; font-weight: 600; }
+</style>
+
+{% sec 1, "One Name, Many Jobs", "What are the main kinds of hedge fund strategy?", "Six families" %}
+  <div class="prose">
+    <p>"Doctor" covers a surgeon, a family GP and a psychiatrist. They share a title and a training, but their days, their tools and the risks they manage are completely different. "Hedge fund" is the same: it describes the structure (a private partnership with performance fees, from the first chapter), not what the fund actually does with the money.</p>
+    <p>Inside that structure, the industry sorts strategies into six main families:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Family</th><th>How it makes money, in plain words</th><th>Leans on the market?</th><th>Biggest risk</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "long/short equity" %}Long/short equity{% endgl %}</td><td>Buy shares it thinks are too cheap, short ones it thinks are too expensive</td><td>Usually: \(20\)–\(70\%\) net long</td><td>Picking wrong; crowded trades</td></tr>
+        <tr><td>{% gl "global macro" %}Global macro{% endgl %}</td><td>Bet on whole economies through currencies, interest rates, bonds, commodities and stock indices</td><td>Yes, in any direction</td><td>Policy surprises; the regime changing</td></tr>
+        <tr><td>{% gl "event-driven" %}Event-driven{% endgl %}</td><td>Trade around company events: takeovers, spin-offs, restructurings</td><td>Depends on the event</td><td>The deal falling apart</td></tr>
+        <tr><td>{% gl "relative value" %}Relative value{% endgl %}</td><td>Buy one security and sell a closely related one, profiting as the price gap closes</td><td>No: close to zero net</td><td>The gap widening; borrowed money</td></tr>
+        <tr><td>Credit and distressed</td><td>Lend to, or buy the debt of, companies, including ones in trouble</td><td>Usually long</td><td>Defaults; recovering less than expected</td></tr>
+        <tr><td>Quantitative (quant)</td><td>Computer models that find and trade patterns, often across thousands of positions</td><td>Varies by strategy</td><td>The pattern fading; crowding</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Long/short equity is the biggest family, with roughly a quarter to a third of the industry's money and more analysts than any other. Many funds blend families (an equity fund with lots of takeover situations straddles two), and multi-manager platforms run all six side by side under one roof. Each family has its own subtopic in this chapter; this note is the map.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "From Directional to Market-Neutral", "Where does each family sit between betting on direction and having no view on it?", "Directional to neutral" %}
+  <div class="prose">
+    <p>The most useful way to line the families up is by how much they depend on the market's direction.</p>
+    <ul>
+      <li>A <strong>{% gl "directional" %}directional{% endgl %}</strong> strategy makes or loses money mainly because prices go up or down: a macro fund betting the dollar will fall, or an equity fund that's \(70\%\) net long.</li>
+      <li>A <strong>{% gl "market-neutral" %}market-neutral{% endgl %}</strong> strategy tries to cancel out the market's direction, so its return comes from the <em>gap</em> between related positions: long one bond, short a nearly identical one, and profit as they converge.</li>
+    </ul>
+    <p>Net exposure (longs minus shorts, as a share of the fund, from Margin and Leverage) is the quick measure: near zero is neutral, far from zero is directional. Market-neutral doesn't mean safe. Neutral funds often borrow heavily to make small gaps worth trading, and when everyone in the same trade rushes for the exit, the gaps can blow out. LTCM was a "neutral" fund.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The strategy spectrum</h3><p>Tap a family to see how it works, what the job is like, and how it connects to FX, gold and bonds.</p></div>
+    <div class="sm-ends"><span>← More directional</span><span>More neutral →</span></div>
+    <div class="sm-track" id="sm-track" role="group" aria-label="Strategy families from most directional to most market-neutral"></div>
+    <div class="sm-side"><span>Anywhere on the line:</span><div id="sm-side"></div></div>
+    <div class="sm-card" id="sm-card" aria-live="polite"></div>
+  </div>
+{% endsec %}
+
+{% sec 3, "Who Wins in Which Weather", "Why do strategies take turns doing well?", "Market regimes" %}
+  <div class="prose">
+    <p>Think of a farmer with different crops. A hot, dry summer is great for some and ruins others; a wet one flips it round. No crop does well in every kind of weather, so a sensible farmer plants several.</p>
+    <p>Markets have their own weather, called a {% gl "regime" %}regime{% endgl %}: the mix of market direction, volatility, interest rates and credit conditions at the time. Each strategy has regimes it loves and regimes it hates, for reasons that follow from how it makes money. Trend followers need trends; spread trades need calm; distressed investors need companies in trouble.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Pick the weather</h3><p>Choose a market regime to see which strategies have tended to do best (filled) and worst (dashed), and why. These are broad patterns across the industry, not promises: any one fund can buck them.</p></div>
+    <div class="controls">
+      <div class="presets sm-pick" id="wx-pick" aria-label="Market regime"></div>
+    </div>
+    <p class="look" id="wx-why"></p>
+    <div class="wx-grid" id="wx-grid"></div>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>No strategy works in every kind of market. That's not a flaw to be fixed; it's how each one earns its return. The skill is knowing which weather your strategy needs, and not mistaking good weather for good skill.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Why Allocators Mix Strategies", "Why would an investor own several kinds of hedge fund at once?", "Mixing strategies" %}
+  <div class="prose">
+    <p>Because strategies take turns, a mix of them is far steadier than any one alone: the same diversification idea as the platform's many pods in Single-Manager vs Multi-Manager, applied across strategies instead of across managers.</p>
+    <p>2008 showed it clearly. The average hedge fund lost about \(19\%\) while the S&amp;P 500 fell \(38.5\%\). But the average hid opposite results. Trend-following CTAs, riding the long falls in shares, commodities and interest rates, made money as a group (roughly \(+14\%\) on one widely followed CTA index), and global macro funds as a group were roughly flat to slightly up. Meanwhile many net-long equity funds and leveraged relative value funds had their worst year ever. An allocator holding all of them lost far less than one holding only equity funds.</p>
+    <p>That's also why allocators care so much about what a fund's returns are made of. If a "hedge fund" mostly rises and falls with the stock market, the allocator could get that exposure from an index fund for almost nothing. What they want to pay for are returns that move <em>differently</em> from everything else they own.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Choosing a Strategy Is Choosing a Career", "How different is the job in each family?", "Strategy as a career" %}
+  <div class="prose">
+    <p>The strategy decides almost everything about the day-to-day work, and even the interview. Switching later gets harder the more specialised you become, so it's worth knowing which job fits you.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Family</th><th>What you'd spend your day on</th><th>What interviews test</th></tr></thead>
+      <tbody>
+        <tr><td>Long/short equity</td><td>Financial models, company meetings, industry experts, investment memos</td><td>Modelling and a stock pitch</td></tr>
+        <tr><td>Global macro</td><td>Central bank policy, data releases, trade flows, politics, yield curves, FX</td><td>Economic reasoning and live market knowledge</td></tr>
+        <tr><td>Event-driven</td><td>Merger documents, regulators, legal timetables, deal odds</td><td>Deal analysis and probability</td></tr>
+        <tr><td>Relative value</td><td>Pricing models, financing costs, spreads between related securities</td><td>Maths, derivatives and quick pricing</td></tr>
+        <tr><td>Credit and distressed</td><td>Bond documents, balance sheets, bankruptcy law, recovery analysis</td><td>Credit analysis and capital structures</td></tr>
+        <tr><td>Quant</td><td>Writing code, testing signals on data, cleaning datasets, machine learning</td><td>Maths, statistics, probability and programming</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Which strategies trade my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <p>Most hedge fund writing starts from equities, but FX, gold and bonds run through several families:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Market</th><th>Where it shows up</th></tr></thead>
+      <tbody>
+        <tr><td>FX</td><td>Global macro's biggest market (rate gaps, central banks, the Macro chapter's toolkit); carry trades; trend-following CTAs trading currency futures; quant FX signals; currency hedges inside equity books</td></tr>
+        <tr><td>Gold</td><td>Macro funds hedging inflation, money printing or geopolitics; CTAs riding gold's long trends; commodity relative value (gold against silver, London against New York)</td></tr>
+        <tr><td>Bonds</td><td>Macro bets on central banks and the yield curve; fixed income relative value and the Treasury basis trade; credit and distressed funds; convertible bond arbitrage</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>For someone focused on FX, gold and bonds, the closest families are global macro, trend following, fixed income relative value and quant. The Macro and Markets topics in the hub are the groundwork for all four.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>L/S</h3><span class="tag desk">Desk</span></div><p>Long/short equity.</p><p class="eg">"She runs a TMT L/S book at a pod shop."</p></div>
+    <div class="term"><div class="term-top"><h3>Directional</h3><span class="tag desk">Desk</span></div><p>Making money mainly from which way prices move.</p><p class="eg">"It's a directional fund dressed up as relative value."</p></div>
+    <div class="term"><div class="term-top"><h3>Market-neutral</h3><span class="tag desk">Desk</span></div><p>Designed so the market's direction barely matters.</p><p class="eg">"We run market-neutral: net is within ±5%."</p></div>
+    <div class="term"><div class="term-top"><h3>Disc vs sys</h3><span class="tag desk">Desk</span></div><p>Discretionary (people decide) vs systematic (models decide).</p><p class="eg">"Disc macro had a better year than the systematic guys."</p></div>
+    <div class="term"><div class="term-top"><h3>RV</h3><span class="tag desk">Desk</span></div><p>Relative value: trading the gap between related securities.</p><p class="eg">"RV books hate low volatility; the spreads are too tight."</p></div>
+    <div class="term"><div class="term-top"><h3>Regime</h3><span class="tag desk">Desk</span></div><p>The market's current "weather": direction, volatility, rates and credit.</p><p class="eg">"This is a different regime: rates matter again."</p></div>
+    <div class="term"><div class="term-top"><h3>Alpha / beta</h3><span class="tag desk">Desk</span></div><p>Return from skill / return from market exposure.</p><p class="eg">"Strip out the beta and there's no alpha left."</p></div>
+    <div class="term"><div class="term-top"><h3>Dedicated short</h3><span class="tag desk">Desk</span></div><p>A fund that mainly bets on prices falling.</p><p class="eg">"The dedicated shorts finally had a good year."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the strategy map turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: know your weather</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A personal trading strategy has a regime too. A trend-following approach on gold or EURUSD will struggle in choppy, sideways months; a mean-reversion approach struggles in strong trends. Writing down which weather your strategy needs, and checking your results by regime rather than as one number, stops you abandoning a good strategy in bad weather or trusting a bad one in good weather.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: strategies there too</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property investors sort themselves into strategy families the same way, from "core" (safe, fully let buildings, low borrowing, mostly rent) through "value-add" (buy, improve, re-let) to "opportunistic" (development and distressed deals, high borrowing, mostly capital gains). They have regimes as well: rising rates hurt the most borrowed strategies first. A villa development business sits at the opportunistic end.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: strategies in an emerging market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Some families travel to markets like Nigeria better than others. Shorting is hard on the NGX (the Short Selling note explains why), so long/short and relative value equity strategies are difficult. Macro views on rates, the naira and oil, and credit strategies in government and bank debt, are the more natural fit, and most international money reaches Nigeria through those.</p>
+      <p><strong>Further reading</strong> from Deltashark's list: <em>Margin of Safety</em> (Klarman) for long/short equity, <em>You Can Be a Stock Market Genius</em> (Greenblatt) for event-driven, <em>The Alchemy of Finance</em> (Soros) for macro, <em>The Man Who Solved the Market</em> (Zuckerman) for quant, and <em>More Money Than God</em> (Mallaby) for all of them.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you measure where a fund sits on the map?" %}
+  <div class="formula"><span class="lbl">Gross and net exposure</span>\[ \text{gross} = \frac{\text{longs} + \text{shorts}}{\text{NAV}} \qquad \text{net} = \frac{\text{longs} - \text{shorts}}{\text{NAV}} \]</div>
+  <div class="formula"><span class="lbl">Splitting a return into market and skill</span>\[ r_{\text{fund}} \approx \beta \times r_{\text{market}} + \alpha \]</div>
+  <div class="prose">
+    <p>\(\beta\) is how much the fund moves with the market (roughly its net exposure, adjusted for how jumpy its stocks are), and \(\alpha\) is what's left: the return from skill. Allocators estimate both by comparing the fund's returns with the market's over many months, and only want to pay performance fees on \(\alpha\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A \(\$500\) million fund holds \(\$400\) million of longs and \(\$200\) million of shorts. Where does it sit?</h3>
+    <ol class="steps">
+      <li>Gross: \((400 + 200) \div 500 = 120\%\).</li>
+      <li>Net: \((400 - 200) \div 500 = 40\%\) net long.</li>
+      <li>It will catch roughly \(40\%\) of the market's moves: directional, not market-neutral.</li>
+    </ol>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>The same fund returns \(12\%\) in a year the market rises \(20\%\). How much was skill?</h3>
+    <ol class="steps">
+      <li>Market part: \(0.4 \times 20\% = 8\%\).</li>
+      <li>Skill part: \(12\% - 8\% = 4\%\).</li>
+    </ol>
+    <p class="answer">A \(12\%\) year sounds good, but an allocator sees \(4\%\) of alpha, before fees.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name the six families of hedge fund strategy and put them in order from most directional to most market-neutral.</span></p>
+      <details><summary>Show answer</summary><div><span>Global macro (most directional), long/short equity, event-driven, credit and distressed (usually long), relative value (most neutral). Quant varies by strategy: trend following is directional, statistical arbitrage is neutral.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A fund has \(\$200\) million NAV, \(\$260\) million of longs and \(\$240\) million of shorts. What are its gross and net exposure, and how would you describe it?</span></p>
+      <details><summary>Show answer</summary><div><span>Gross \(= 500 \div 200 = 250\%\); net \(= 20 \div 200 = 10\%\). Close to market-neutral, but with a lot of borrowing, so the risk is in the gap between its longs and shorts rather than the market's direction.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Which strategies would you expect to do best in a period of high volatility and falling share prices? Explain why.</span></p>
+      <details><summary>Show answer</summary><div><span>Global macro (can bet on falls in any market and profits from big dislocations), trend-following CTAs (ride persistent moves, including falls), and dedicated short sellers (profit directly from falling prices). Event-driven funds can also benefit as volatility widens deal spreads and creates distressed opportunities.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why do relative value strategies tend to struggle in calm, low-volatility bull markets?</span></p>
+      <details><summary>Show answer</summary><div><span>Calm markets squeeze the price gaps they trade, so there's less to earn, and they need more borrowing to make the small gaps worth it, which raises the risk when calm ends.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Explain the difference between discretionary macro and systematic macro, with an example firm for each.</span></p>
+      <details><summary>Show answer</summary><div><span>Discretionary macro relies on a manager's judgement about the economy, often with concentrated, high-conviction trades (Soros's Quantum Fund, Druckenmiller's Duquesne). Systematic macro uses models, usually trend following, to trade across markets without discretionary input (Man AHL, Winton, AQR).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A fund returned \(9\%\) in a year the market rose \(15\%\), running \(50\%\) net long. Roughly how much was alpha?</span></p>
+      <details><summary>Show answer</summary><div><span>Beta part \(\approx 0.5 \times 15\% = 7.5\%\), so alpha \(\approx 9\% - 7.5\% = 1.5\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: which hedge fund strategy would you most like to work in, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>Pick one and tie it to your skills and interests, showing you know the day-to-day work and the regime it needs. For example: "Global macro. I follow central banks, rates and FX closely, I've written a trade memo on the December FOMC, and I like expressing a view across currencies, rates and gold. I know it's a strategy that struggles in calm, range-bound markets, so risk discipline matters most."</span></div></details></div>
+  </div>
+{% endsec %}

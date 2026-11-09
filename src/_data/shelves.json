@@ -192,7 +192,16 @@
       { "title": "The Hedge Fund Business", "blurb": "Other people's money: who gives it, what they pay, and how funds are set up.",
         "subtopics": ["What a Hedge Fund Is", "Fees and the High-Water Mark", "Raising Capital", "Single-Manager vs Multi-Manager"] },
       { "title": "Strategies", "blurb": "The main ways hedge funds try to make money.",
-        "subtopics": ["The Strategy Map", "Long/Short Equity", "Global Macro", "Trend Following (CTAs)", "Relative Value", "Event-Driven", "Credit and Distressed", "Quant Funds"] },
+        "subtopics": [
+          "The Strategy Map",
+          { "name": "Long/Short Equity", "planned": ["How a Long/Short Book Works", "Alpha, Beta and What Goes Wrong"] },
+          { "name": "Global Macro", "planned": ["Global Macro"] },
+          "Trend Following (CTAs)",
+          { "name": "Relative Value", "planned": ["Relative Value"] },
+          { "name": "Event-Driven", "planned": ["Event-Driven"] },
+          { "name": "Credit and Distressed", "planned": ["Credit and Distressed"] },
+          { "name": "Quant Funds", "planned": ["Quant Funds"] }
+        ] },
       { "title": "The Investment Process", "blurb": "From an idea to a position the portfolio manager will back.",
         "subtopics": ["Idea Generation", "Variant Perception", "The Investment Memo", "Pitching an Idea"] },
       { "title": "Portfolio Construction and Risk", "blurb": "Many positions, one portfolio, and the team that keeps it alive.",
