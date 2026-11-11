@@ -325,6 +325,29 @@ export default function (eleventyConfig) {
         date: dayOf(post.date),
       }, d.highlight));
     });
+    // The reading list: one pinned card for the blog's bookshelf, so it shows on
+    // every visit. It's built from every review with `book:` in its front matter,
+    // so a new review updates it automatically. Newest book first.
+    const books = posts
+      .filter((post) => post.data && post.data.book)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    if (books.length) {
+      const titles = books.map((post) => post.data.book.title);
+      const points = titles.slice(0, 3);
+      if (titles.length > 3) points.push("+ " + (titles.length - 3) + " more");
+      cards.push({
+        kind: "post",
+        tag: "Blog · Reading list",
+        headline: titles.length + " trading books, read and reviewed.",
+        summary: "",
+        points,
+        url: "/blog/blog.html#reading-list",
+        cta: "See the bookshelf",
+        colour: "",
+        date: dayOf(books[0].date),
+        pin: true,
+      });
+    }
     notes.forEach((note) => {
       const d = note.data || {};
       if (!d.highlight) return; // lessons only join when they ask to
