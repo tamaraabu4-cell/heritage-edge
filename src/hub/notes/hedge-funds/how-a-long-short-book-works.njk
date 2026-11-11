@@ -1,0 +1,246 @@
+---
+title: How a Long/Short Book Works
+shelf: hedge-funds
+chapter: strategies
+subtopic: Long/Short Equity
+order: 1
+summary: How a long/short equity fund is built - the two jobs of the short side, long, short, gross, net and beta-adjusted exposure, the main kinds of long/short fund, the layers of a real book (single names, pairs, baskets, and index, sector, country, factor and custom hedges), and how hedging strips a return down to pure stock-picking skill.
+lede: "A long/short fund isn't a list of good stocks and bad stocks. It's built in layers: a few big ideas, pairs that cancel out shared risks, and a stack of hedges that strip away the market, the sector, the country and the style, until what's left is the manager's own skill. That leftover is what investors pay for."
+goals: [trading, realestate, fintech]
+themes: [trading, markets, quant, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/how-a-long-short-book-works.js]
+alsoIn: [quant/factors-and-neutrality]
+
+quiz:
+  - q: 'A \(\$100\) million fund holds \(\$80\) million of longs and \(\$50\) million of shorts. What are its gross and net exposure?'
+    opts: ['Gross \(130\%\), net \(30\%\) long', 'Gross \(30\%\), net \(130\%\) long', 'Gross \(80\%\), net \(50\%\) long']
+    right: 0
+    why: 'Gross adds both sides: \((80 + 50) \div 100 = 130\%\). Net subtracts: \((80 - 50) \div 100 = 30\%\) net long, so the fund catches roughly \(30\%\) of the market''s moves.'
+  - q: 'A fund''s longs are mostly jumpy tech stocks and its shorts are mostly steady consumer stocks. It''s exactly \(0\%\) net. Is it market-neutral?'
+    opts: ['Yes: zero net means zero market risk', 'No: its beta-adjusted net is positive, so it still rises and falls with the market', 'No: it''s actually net short']
+    right: 1
+    why: 'Equal money long and short isn''t the same as equal risk. High-beta longs move more than low-beta shorts, so the book still leans long the market. That''s why funds track beta-adjusted net, not just dollar net.'
+  - q: 'Why would a fund short a momentum factor ETF such as MTUM alongside its stock picks?'
+    opts: ['Because it expects the whole market to fall', 'To earn the short rebate on the cash', 'To cancel an accidental bet that recent winners keep winning, leaving only its stock-specific view']
+    right: 2
+    why: 'If most of the longs are recent winners, the book is quietly betting on the momentum factor. A momentum crash would hit it however good the picks are. Shorting the factor removes that bet.'
+
+connected:
+  - { label: Builds on, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/the-strategy-map/ }
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Used in, title: Factors and Neutrality, where: Quant, url: /hub/quant/ }
+---
+
+<style>
+  .ls-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .ls-layers { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ls-layers button { border: 1px solid var(--border); background: var(--bg); color: var(--text-2); border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; text-decoration: line-through; }
+  .ls-layers button[aria-pressed="true"] { background: var(--tone-bg); color: var(--text); border-color: var(--tone); text-decoration: none; }
+  .ls-group { display: flex; flex-direction: column; gap: 6px; }
+  .ls-group > span { font: 500 12px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); }
+</style>
+
+{% sec 1, "Two Jobs for the Short Side", "What are the shorts for?", "Two jobs for the shorts" %}
+  <div class="prose">
+    <p>Picture a seaside stall that sells sunglasses <em>and</em> umbrellas. On a sunny day the sunglasses sell; on a rainy day the umbrellas do. The owner doesn't need to forecast the weather to have a decent day, only to stock good sunglasses and good umbrellas.</p>
+    <p>A {% gl "long/short equity" %}long/short equity{% endgl %} fund works the same way. It buys shares it thinks will beat the market (the longs) and short sells shares it thinks will lag (the shorts; Short Selling and Securities Lending covers how). The shorts have two jobs at once:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Make money.<span class="why">A short in a company that's genuinely overvalued profits when it falls.</span></span></li>
+    <li><span class="n">2</span><span>Cancel out the market.<span class="why">When the whole market drops, the shorts gain while the longs lose, so the fund's result depends more on how well it picked than on which way the market went.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>How much a manager leans on each job is one of the biggest differences between funds. Some treat the short book as a second source of profit, with as much research as the longs; others mostly use it as a hedge.</p>
+    <h3>Measuring the book</h3>
+    <p>Margin and Leverage introduced gross and net exposure. A long/short fund tracks five numbers, all as a share of the fund's value (NAV):</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Exposure</th><th>How it's worked out</th><th>\(\$100\)m fund, \(\$80\)m long, \(\$50\)m short</th><th>What it tells you</th></tr></thead>
+      <tbody>
+        <tr><td>Long</td><td>Longs ÷ NAV</td><td>\(80\%\)</td><td>How much it gains when its stocks rise</td></tr>
+        <tr><td>Short</td><td>Shorts ÷ NAV</td><td>\(50\%\)</td><td>How much is betting on falls, or hedging</td></tr>
+        <tr><td>{% gl "gross exposure" %}Gross{% endgl %}</td><td>(Longs + shorts) ÷ NAV</td><td>\(130\%\)</td><td>How big the bet is in total; over \(100\%\) means borrowed money</td></tr>
+        <tr><td>{% gl "net exposure" %}Net{% endgl %}</td><td>(Longs − shorts) ÷ NAV</td><td>\(30\%\) net long</td><td>How much it leans with the market</td></tr>
+        <tr><td>{% gl "beta-adjusted net" %}Beta-adjusted net{% endgl %}</td><td>Each position × its {% gl "beta" %}beta{% endgl %}, added up, ÷ NAV</td><td>Depends on the stocks</td><td>How much it <em>really</em> moves with the market</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Beta-adjusted net matters because a pound of a jumpy stock isn't the same risk as a pound of a steady one. A book that's long \(\$50\) million of tech stocks with a beta of \(1.5\) and short \(\$50\) million of utilities with a beta of \(0.5\) is \(0\%\) net, but its beta-adjusted net is \((50 \times 1.5 - 50 \times 0.5) \div 100 = 50\%\): it still behaves like a fund that's half long the market.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Kinds of Long/Short Fund", "Do all long/short funds work the same way?", "Kinds of L/S fund" %}
+  <div class="prose">
+    <p>Long/short equity is the biggest hedge fund strategy, with roughly a quarter to a third of the industry's money, and it comes in several flavours:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Kind</th><th>How it works</th><th>Its edge</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Fundamental</td><td>Deep research on each company: models, experts, management meetings. Typically \(20\)–\(50\) longs, \(15\)–\(40\) shorts, \(20\)–\(70\%\) net long, held \(6\) to \(24\) months</td><td>Seeing something the market has missed (variant perception)</td><td>Most of the industry</td></tr>
+        <tr><td>Sector specialist</td><td>Only one sector, such as tech, media and telecom (TMT), healthcare, financials or energy</td><td>Industry contacts and knowledge generalists can't match; more exposed to sector-wide falls</td><td>Many platform pods</td></tr>
+        <tr><td>Generalist</td><td>Any sector, wherever the best ideas are</td><td>Flexibility and diversification; needs a very strong team</td><td>Tiger Cubs: Viking, Lone Pine, Coatue, D1</td></tr>
+        <tr><td>Quant long/short</td><td>Models pick hundreds or thousands of stocks on factors such as value, momentum and quality</td><td>Statistical breadth (Quant Funds covers it)</td><td>AQR, Two Sigma</td></tr>
+        <tr><td>{% gl "activist" %}Activist{% endgl %}</td><td>Buys a big stake, then pushes the company to change: buybacks, sales, new management</td><td>Making the catalyst happen</td><td>Elliott, Third Point, Pershing Square, ValueAct</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="worked">
+    <span class="lbl">Deltashark's example</span>
+    <h3>A tech-focused fund in early 2023: long Microsoft at \(\$240\), short a smaller software company trading at \(15\) times its revenue with slowing growth and more customers leaving.</h3>
+    <ol class="steps">
+      <li>If Microsoft rises \(20\%\) and the small company falls \(30\%\), the fund makes money on both sides.</li>
+      <li>Even if the market falls \(10\%\), the fund can still make money, as long as Microsoft does better than the short.</li>
+    </ol>
+    <p class="answer">The bet isn't "tech goes up". It's "this company beats that one".</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Anatomy of a Book", "What does a real long/short portfolio look like?", "Anatomy of a book" %}
+  <div class="prose">
+    <p>A real book is built in layers, like a sandwich. Each layer has a job:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Layer</th><th>What it is</th><th>Its job</th></tr></thead>
+      <tbody>
+        <tr><td>Single names</td><td>The big researched ideas. Top longs often \(5\)–\(8\%\) of NAV; top shorts smaller, \(2\)–\(4\%\), because a short's loss has no ceiling</td><td>Where most of the profit is meant to come from</td></tr>
+        <tr><td>{% gl "pair trade" %}Pairs{% endgl %}</td><td>Long one company, short a close rival: Boeing against Airbus, PepsiCo against Coca-Cola</td><td>Cancel the shared industry risk, leaving only "this one beats that one"</td></tr>
+        <tr><td>Thematic baskets</td><td>A group of stocks for one theme, such as AI chips or the energy transition</td><td>Back a trend without betting on one company</td></tr>
+        <tr><td>Index hedges</td><td>Shorts in broad market ETFs such as SPY (S&amp;P 500) or QQQ (Nasdaq)</td><td>Cheaply cancel the leftover lean towards the market</td></tr>
+        <tr><td>Sector hedges</td><td>Shorts in sector ETFs such as XLK (tech) or XLV (healthcare)</td><td>Cancel accidental bets on a whole sector</td></tr>
+        <tr><td>Country hedges</td><td>Shorts in country ETFs such as EWJ (Japan)</td><td>Cancel the country's market, and its currency, behind a foreign long</td></tr>
+        <tr><td>{% gl "factor" %}Factor{% endgl %} hedges</td><td>Shorts in factor ETFs such as MTUM (momentum) or QUAL (quality)</td><td>Cancel hidden style bets, such as "recent winners keep winning"</td></tr>
+        <tr><td>Custom baskets</td><td>A bespoke basket built by a bank's "delta-one" desk to match the leftover risks, held as one {% gl "total return swap" %}total return swap{% endgl %}</td><td>Mop up whatever risks are left, in one trade</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Build the book</h3><p>Deltashark's example book: \(54\%\) long and \(60.5\%\) short of a fund's value, in eight layers. Switch layers on and off, then hit it with a market event to see which layers make or lose money. The betas and factor tilts are illustrative.</p></div>
+    <div class="controls">
+      <div class="ls-group"><span>Layers in the book</span><div class="ls-layers" id="ls-layers" aria-label="Layers of the book"></div></div>
+      <div class="ls-group"><span>What happens next</span><div class="presets ls-pick" id="ls-shock" aria-label="Market event"></div></div>
+    </div>
+    <div class="readout" id="ls-exp"></div>
+    <svg class="chart" id="chart-ls" viewBox="0 0 640 330" role="img" aria-label="Profit or loss from each layer of the book, as a share of the fund, after the chosen market event"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Layer made money</span><span><i class="sw grey"></i>Layer lost money</span></div>
+    <p class="look" id="ls-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Stripping a Return Down to Skill", "Why go to all this trouble with hedges?", "Down to skill" %}
+  <div class="prose">
+    <p>Think of a stock's daily move as an onion. The outer layers are things that move <em>lots</em> of stocks together: the whole market, the stock's sector, its country and currency, and styles such as cheapness or momentum. Those are <strong>systematic</strong> moves. At the centre is the part that belongs to this company alone: its products, its management, its next earnings surprise. That's the <strong>{% gl "idiosyncratic" %}idiosyncratic{% endgl %}</strong> part, and it's the only part the fund's research is really about.</p>
+  </div>
+  <div class="formula"><span class="lbl">A stock's return, peeled</span>\[ r_i = \alpha_i + \beta_{\text{mkt}} r_{\text{mkt}} + \beta_{\text{sector}} r_{\text{sector}} + \beta_{\text{country}} r_{\text{country}} + \sum \beta_{\text{factor}} r_{\text{factor}} + \varepsilon_i \]</div>
+  <div class="prose">
+    <p>Each \(\beta\) term is an outer layer; \(\alpha_i + \varepsilon_i\) is the centre. The hedge layer's job is to add shorts that match every \(\beta\) in the long book, so the outer layers cancel and only the centre is left. What remains is called {% gl "orthogonal alpha" %}orthogonal alpha{% endgl %}: returns with roughly zero correlation to the market, sectors, countries, currencies or factors.</p>
+    <p>Allocators care intensely, because they can buy the outer layers almost for free: an index fund for the market, a sector ETF for the sector, a factor ETF for momentum. What they can't buy cheaply is genuine stock-picking skill that moves differently from everything else they own. A manager whose returns mostly track the S&amp;P 500 is running an expensive, borrowed-money index fund.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Hedge it away</h3><p>A dollar-based fund is long \(\$10\) million of Shell, a UK oil company. Set what happens to the UK market, oil stocks, the pound and Shell's own news, then add hedges. Each hedge cancels one outer layer; a bank's custom basket cancels all three at once.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="sh-mkt">UK market</label><input type="range" id="sh-mkt" min="-10" max="10" step="1" value="-4"><output id="sh-mkt-out" for="sh-mkt">−4%</output></div>
+      <div class="ctrl"><label for="sh-oil">Oil stocks</label><input type="range" id="sh-oil" min="-15" max="15" step="1" value="-6"><output id="sh-oil-out" for="sh-oil">−6%</output></div>
+      <div class="ctrl"><label for="sh-fx">Pound vs $</label><input type="range" id="sh-fx" min="-6" max="6" step="1" value="-2"><output id="sh-fx-out" for="sh-fx">−2%</output></div>
+      <div class="ctrl"><label for="sh-own">Shell's news</label><input type="range" id="sh-own" min="-10" max="10" step="1" value="5"><output id="sh-own-out" for="sh-own">+5%</output></div>
+      <div class="ls-group"><span>Hedges</span><div class="ls-layers" id="sh-hedges" aria-label="Hedges"></div></div>
+    </div>
+    <svg class="chart" id="chart-sh" viewBox="0 0 640 250" role="img" aria-label="Profit or loss on the Shell position split into UK market, oil sector, currency and Shell's own news, with hedged parts cancelled"></svg>
+    <div class="readout" id="sh-read"></div>
+    <p class="look" id="sh-story"></p>
+  </div>
+  <div class="prose">
+    <p>In practice, banks build custom baskets mostly for whole portfolios rather than single stocks: to cancel a book's leftover sector tilt, a factor bet running across many longs, or the country and currency risk of an international book. The bank holds the basket and the fund holds one swap, paying a fee plus financing. It's one of the biggest businesses for banks' delta-one desks.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "Where does long/short thinking turn up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the hedge nobody notices</h3>
+    <p>Every foreign stock carries a currency bet. A dollar fund long Japanese banks gains or loses with the yen as well as the banks. Shorting a Japan ETF (EWJ) cancels Japan's market <em>and</em> most of the yen move; alternatively the fund sells yen forward. In FX itself, a pair is already a long/short trade: buying EURUSD is long euros, short dollars. Traders build "relative" views the same way an equity fund builds pairs, for example long the Australian dollar against the New Zealand dollar to bet on Australia doing better than its neighbour without betting on the US dollar.</p>
+    <h3>Gold: miners versus metal</h3>
+    <p>A gold mining share is partly a bet on gold and partly a bet on the company: its costs, its mines, its management. Going long a miner and short gold itself (or a gold ETF) cancels the gold price and leaves only the company. Long gold, short silver is a classic metals pair, a bet on the gold-to-silver price ratio.</p>
+    <h3>Bonds: long/short credit</h3>
+    <p>Credit funds run long/short books on bonds the same way: long the bonds of companies they think are safer than the market believes, short (often through credit default swaps) those they think are weaker, with interest rate hedges to cancel the rates "layer" so only the credit view is left.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>The book</h3><span class="tag desk">Desk</span></div><p>All of a fund's or PM's positions.</p><p class="eg">"The book's running 140 gross, 25 net."</p></div>
+    <div class="term"><div class="term-top"><h3>Beta-adjusted</h3><span class="tag desk">Desk</span></div><p>Exposure weighted by how jumpy each stock is.</p><p class="eg">"We're flat dollar-neutral but 20% beta-adjusted long."</p></div>
+    <div class="term"><div class="term-top"><h3>Pair</h3><span class="tag desk">Desk</span></div><p>Long one stock, short a close rival.</p><p class="eg">"We put on Pepsi versus Coke."</p></div>
+    <div class="term"><div class="term-top"><h3>Basket</h3><span class="tag desk">Desk</span></div><p>A group of stocks traded together.</p><p class="eg">"We hedged with a custom semis basket."</p></div>
+    <div class="term"><div class="term-top"><h3>Index hedge</h3><span class="tag desk">Desk</span></div><p>A short in a market ETF or future to cancel market risk.</p><p class="eg">"Put on some SPY to get the net down."</p></div>
+    <div class="term"><div class="term-top"><h3>Factor exposure</h3><span class="tag desk">Desk</span></div><p>The book's hidden style bets: value, momentum, quality, size.</p><p class="eg">"Risk flagged our momentum exposure."</p></div>
+    <div class="term"><div class="term-top"><h3>Idio</h3><span class="tag desk">Desk</span></div><p>Idiosyncratic: the company-specific part of a return.</p><p class="eg">"80% of our risk is idio, which is what we want."</p></div>
+    <div class="term"><div class="term-top"><h3>Delta-one</h3><span class="tag desk">Desk</span></div><p>A bank desk trading swaps and baskets that move one-for-one with the stocks.</p><p class="eg">"Ask delta-one to build a basket for the Japan longs."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where long/short thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: know what you're really betting on</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Before any trade, ask which layer the idea is about. A view that "gold will rise because the dollar will weaken" is really a dollar trade; a view that EURUSD will rise because the ECB is more hawkish than the Fed is a euro-versus-dollar trade. If you're long several dollar pairs at once (short dollars against euros, pounds and gold, say), you've built one big dollar bet, not several separate trades. Counting your positions by what drives them is the trader's version of factor exposure.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: hedging the layers you don't want</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A property deal has layers too: interest rates, the local market, the currency (euro villas for buyers earning pounds), and the project's own quality. Developers can't short a town, but they can fix interest rates with swaps, sell in the buyers' currency, or pre-sell units, cancelling the layers they don't want so the result depends on what they're good at: choosing, building and selling well.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: long-only by necessity</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>On the NGX, shorting is hard (the Short Selling note explains why), and there are few index futures or sector ETFs to hedge with, so Nigerian equity funds are mostly long-only and carry the whole market's swings, and the naira's. Hedging tools, such as index futures, a deeper securities lending market and naira hedges for foreign investors, are a real gap, and filling it would let local and foreign managers run the kind of books in this note.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you put numbers on a book's exposure?" %}
+  <div class="formula"><span class="lbl">Gross and net</span>\[ G = \frac{L + S}{\text{NAV}} \qquad N = \frac{L - S}{\text{NAV}} \]</div>
+  <div class="formula"><span class="lbl">Beta-adjusted net</span>\[ N_\beta = \frac{\sum_i w_i \beta_i}{\text{NAV}} \]</div>
+  <div class="prose">
+    <p>Here \(w_i\) is each position's size, positive for longs and negative for shorts. A hedge of size \(h\) in something with beta \(\beta_h\) changes beta-adjusted net by \(-h\beta_h\), so to bring the book to zero you need \(h = N_\beta \times \text{NAV} \div \beta_h\).</p>
+  </div>
+  <div class="formula"><span class="lbl">Profit from a market move</span>\[ \text{P\&L} \approx N_\beta \times \text{NAV} \times r_{\text{mkt}} \]</div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$200\) million fund holds \(\$120\) million of longs with an average beta of \(1.3\) and \(\$100\) million of shorts with an average beta of \(0.8\). How much SPY (beta \(1\)) must it short to be beta-neutral?</h3>
+    <ol class="steps">
+      <li>Dollar net: \((120 - 100) \div 200 = 10\%\).</li>
+      <li>Beta-adjusted: \((120 \times 1.3 - 100 \times 0.8) \div 200 = (156 - 80) \div 200 = 38\%\).</li>
+      <li>Hedge needed: \(0.38 \times 200 \div 1 = \$76\) million of SPY.</li>
+      <li>If the market then falls \(10\%\), the unhedged book loses about \(38\% \times 10\% = 3.8\%\); hedged, roughly nothing from the market.</li>
+    </ol>
+    <p class="answer">A book that looks "only \(10\%\) net" was really leaning nearly four times that much.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>What are the two jobs of the short book in a long/short fund?</span></p>
+      <details><summary>Show answer</summary><div><span>To make money from overvalued stocks falling, and to hedge the market so the fund's result depends more on stock picking than on the market's direction.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A \(\$400\) million fund is long \(\$300\) million and short \(\$220\) million. What are its long, short, gross and net exposures?</span></p>
+      <details><summary>Show answer</summary><div><span>Long \(75\%\), short \(55\%\), gross \(130\%\), net \(20\%\) long.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Why are top short positions usually smaller than top longs?</span></p>
+      <details><summary>Show answer</summary><div><span>A long can lose at most \(100\%\), but a short can lose without limit because a share price can keep rising. Smaller shorts keep a squeeze from doing outsized damage.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>What does a Boeing versus Airbus pair trade bet on, and what does it cancel?</span></p>
+      <details><summary>Show answer</summary><div><span>It bets that Boeing does better than Airbus (for example, on aircraft deliveries). It cancels the shared risk of the whole aerospace industry and much of the market, which both companies are exposed to.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A fund's longs are mostly high-quality, recent winners. What hidden bets does it carry, and how could it hedge them?</span></p>
+      <details><summary>Show answer</summary><div><span>Bets on the quality and momentum factors. It could short quality and momentum factor ETFs (such as QUAL and MTUM), or ask a bank for a custom basket matching those tilts.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A dollar fund is long a Japanese bank. Name two risks besides the bank itself, and one way to hedge both at once.</span></p>
+      <details><summary>Show answer</summary><div><span>The Japanese stock market and the yen. Shorting a Japan ETF such as EWJ hedges both, since it holds Japanese shares priced in yen.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: what is "orthogonal alpha", and why do allocators pay for it?</span></p>
+      <details><summary>Show answer</summary><div><span>Returns from stock-specific skill that have roughly zero correlation with the market, sectors, countries, currencies and factors, left after hedging all of those away. Allocators can get the other layers cheaply through index, sector and factor ETFs; what they can't buy cheaply is skill that diversifies everything else they own. That's what justifies hedge fund fees.</span></div></details></div>
+  </div>
+{% endsec %}
