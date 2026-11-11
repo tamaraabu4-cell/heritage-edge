@@ -195,7 +195,7 @@
         "subtopics": [
           "The Strategy Map",
           "Long/Short Equity",
-          { "name": "Global Macro", "planned": ["Global Macro"] },
+          "Global Macro",
           "Trend Following (CTAs)",
           { "name": "Relative Value", "planned": ["Relative Value"] },
           { "name": "Event-Driven", "planned": ["Event-Driven"] },

@@ -1,0 +1,304 @@
+---
+title: Global Macro
+shelf: hedge-funds
+chapter: strategies
+subtopic: Global Macro
+order: 1
+summary: How global macro funds trade whole economies through currencies, interest rates, stock indices, commodities and credit; discretionary versus systematic macro; the three-step macro framework; a real trade taken apart (betting on the Bank of Japan, 2022 to 2024); what the famous trades teach; the five big risks (timing, leverage, policy surprises, correlation spikes and crowding); and the people who made the strategy famous.
+lede: 'A long/short manager asks "which company will do well?" A macro manager asks "what will the Bank of Japan do, and what happens to the yen, Japanese bonds and Tokyo shares if it does?" Macro funds trade whole countries, and they can trade almost anything. That freedom is the strategy''s great strength, and its great trap.'
+goals: [trading, realestate, fintech]
+themes: [trading, macro, markets, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/global-macro.js]
+alsoIn: [macro/macro-in-the-portfolio]
+
+quiz:
+  - q: 'What''s the main difference between discretionary and systematic macro?'
+    opts: ['A person''s judgement decides discretionary trades; computer rules (usually following trends) decide systematic ones', 'Discretionary macro trades only currencies; systematic macro trades only commodities', 'Discretionary funds use no leverage']
+    right: 0
+    why: 'Discretionary macro (Soros, Druckenmiller) is driven by a manager''s view of the world. Systematic macro and CTAs (Man AHL, Winton, AQR) follow rules, mostly riding trends across many markets.'
+  - q: 'A macro fund bet that the Bank of Japan would end yield curve control, by shorting Japanese bonds and buying the yen. The BoJ did end it in March 2024, yet the yen leg lost money. Why?'
+    opts: ['The BoJ cut interest rates instead', 'Japanese bonds rose in price', 'A currency is a pair: US interest rates stayed high, so the dollar kept rising against the yen']
+    right: 2
+    why: 'Being right about one central bank isn''t enough in FX, because the yen is priced against the dollar. With US rates above \(5\%\) and Japan''s near zero, money kept flowing out of yen. The yen fell to about \(151\) per dollar the day after the BoJ moved.'
+  - q: 'Why do many macro managers use options rather than futures for big-picture bets?'
+    opts: ['Options are always cheaper', 'An option''s loss is capped at the premium, so the trade can survive being early without being stopped out', 'Options don''t need a view on direction']
+    right: 1
+    why: 'Macro trades often take months to work. A leveraged futures position can hit its stop-loss on the way, even if the view turns out right. An option costs a premium up front but can''t lose more, so the manager can wait.'
+
+connected:
+  - { label: Builds on, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/the-strategy-map/ }
+  - { label: Builds on, title: QE and QT, where: Macro · Central Banks and Rates, url: /hub/macro/qe-and-qt/ }
+  - { label: Builds on, title: How a Rate Change Travels, where: Macro · Central Banks and Rates, url: /hub/macro/how-a-rate-change-travels/ }
+  - { label: Used in, title: Trend Following (CTAs), where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .gm-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .gm-legs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gm-legs button { border: 1px solid var(--border); background: var(--bg); color: var(--text-2); border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; text-decoration: line-through; }
+  .gm-legs button[aria-pressed="true"] { background: var(--tone-bg); color: var(--text); border-color: var(--tone); text-decoration: none; }
+  .gm-group { display: flex; flex-direction: column; gap: 6px; }
+  .gm-group > span { font: 500 12px var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-2); }
+  .gm-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0 6px; }
+  .gm-flow > div { border: 1px solid var(--border); border-top: 3px solid var(--tone); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .gm-flow h4 { margin: 0 0 4px; font-size: 15px; }
+  .gm-flow p { margin: 0; font-size: 14px; color: var(--text-2); }
+  .gm-flow .q { display: block; margin-top: 6px; font-style: italic; color: var(--text); }
+  .gm-out { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 4px 0 10px; }
+  .gm-out span { border-radius: 999px; padding: 4px 12px; font-size: 13px; background: var(--tone-bg); color: var(--text); border: 1px solid var(--tone-mid); }
+  .gm-arrow { text-align: center; color: var(--text-2); font-size: 18px; line-height: 1; }
+  @media (max-width: 620px) { .gm-flow { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "Trading the Whole World", "What does a macro fund actually trade?", "Trading the whole world" %}
+  <div class="prose">
+    <p>Think of a weather forecaster. She doesn't study one tree; she studies pressure systems, ocean temperatures and wind across a whole continent, then says where it'll rain next week. A {% gl "global macro" %}global macro{% endgl %} manager does the same with economies. She reads growth, inflation, jobs, trade, central bank plans, elections and wars, then asks one question: <strong>what does the market have wrong?</strong></p>
+    <p>She isn't tied to any one market. If the view is about interest rates she trades bonds; if it's about a country's money she trades its currency; if it's about oil she trades oil. The table shows the five main toolkits.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Market</th><th>What moves it</th><th>How macro funds trade it</th></tr></thead>
+      <tbody>
+        <tr><td>Currencies (FX)</td><td>Interest rate gaps between countries, trade balances, money flowing in and out, politics</td><td>Spot and forwards, options. Often the biggest part of the book</td></tr>
+        <tr><td>Interest rates</td><td>What central banks will do, inflation, growth</td><td>Government bonds, rate futures, {% gl "interest rate swap" %}swaps{% endgl %}</td></tr>
+        <tr><td>Stock indices</td><td>The whole economy's outlook, not single companies</td><td>Index futures and ETFs (S&amp;P 500, Nikkei, FTSE)</td></tr>
+        <tr><td>Commodities</td><td>Supply and demand, wars, stockpiles, weather</td><td>Futures and options on oil, gas, gold, copper, crops</td></tr>
+        <tr><td>Credit</td><td>Default risk of countries and companies</td><td>{% gl "credit default swap" %}CDS{% endgl %}, bonds, credit indices</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>All five are deep, liquid markets, so a macro fund can put on or take off billions of dollars of risk in a day. That's why macro funds can run very large amounts of money, and why macro is the strategy closest to a bank's FX and rates trading desks: many macro portfolio managers started there.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Discretionary or Systematic?", "Who makes the decisions: a person or a program?", "Discretionary or systematic" %}
+  <div class="prose">
+    <p>Macro splits into two very different ways of working.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>{% gl "discretionary" %}Discretionary{% endgl %} macro</th><th>{% gl "systematic" %}Systematic{% endgl %} macro and CTAs</th></tr></thead>
+      <tbody>
+        <tr><td>Who decides</td><td>A portfolio manager, using research and judgement</td><td>Computer models, mostly following trends</td></tr>
+        <tr><td>Positions</td><td>A few big, high-conviction bets</td><td>Many small positions across dozens of markets</td></tr>
+        <tr><td>Holding through pain</td><td>Will sit through big swings if the story still holds</td><td>Rules decide: if the trend turns, the model exits</td></tr>
+        <tr><td>Does best when</td><td>A big turning point the market hasn't priced in</td><td>Long, steady trends, including in crises</td></tr>
+        <tr><td>Struggles when</td><td>The manager's story is wrong, or right too early</td><td>Choppy markets where trends keep reversing</td></tr>
+        <tr><td>Famous names</td><td>Soros (Quantum), Druckenmiller (Duquesne), Tudor Jones</td><td>Man AHL, Winton, AQR; Bridgewater runs systematic macro</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Trend-following CTAs get their own note later in this chapter. The rest of this note is mainly about the discretionary kind: one person, a view of the world, and the nerve to bet on it.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Macro Framework", "How does a macro manager go from a view to a trade?", "The macro framework" %}
+  <div class="prose">
+    <p>Deltashark breaks the process into three questions, asked in order. A view is worth nothing until all three have an answer.</p>
+  </div>
+  <div class="gm-flow" aria-label="The three steps of the macro framework">
+    <div><h4>1. Macro analysis</h4><p>Growth, inflation, jobs, trade, central bank policy.<span class="q">What will happen to the economy?</span></p></div>
+    <div><h4>2. Market analysis</h4><p>{% gl "positioning" %}Positioning{% endgl %}, money flows, charts, sentiment.<span class="q">Is it already in the price?</span></p></div>
+    <div><h4>3. Risk management</h4><p>Position size, correlations, what-if scenarios.<span class="q">How much can I lose if I'm wrong?</span></p></div>
+  </div>
+  <p class="gm-arrow" aria-hidden="true">▼</p>
+  <div class="gm-out" aria-label="Kinds of trade that come out"><span>FX trades</span><span>Rates trades</span><span>Equity index</span><span>Commodities</span><span>Credit</span></div>
+  <div class="prose">
+    <p>Step two is the one beginners skip. Being right about the economy only pays if most of the market is wrong. If every fund already expects a rate cut and has bet on it, the cut can arrive and prices barely move, or even move the other way as everyone takes profits. Macro traders call this "buy the rumour, sell the fact".</p>
+    <p>Step three is about the whole book, not one trade. A macro manager usually decides how much of the fund she's willing to lose on an idea before choosing the instruments. Deltashark's example below risks \(2\%\) of the fund.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Anatomy of a Trade: Japan, 2022 to 2024", "What does a real macro trade look like, and how did it play out?", "Anatomy of a trade" %}
+  <div class="prose">
+    <p>For years the Bank of Japan held its 10-year bond yield near \(0\%\) using {% gl "yield curve control" %}yield curve control{% endgl %} (QE and QT explains how). By late 2022, every other big central bank was raising rates fast, and the BoJ was under strain. Many macro managers concluded the policy couldn't last. Deltashark's version of the trade has three legs:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Leg</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Short</strong> Japanese government bonds (JGBs)</td><td>If the cap goes, yields rise and bond prices fall</td></tr>
+        <tr><td><strong>Long</strong> the yen</td><td>Higher Japanese rates should pull money into the yen</td></tr>
+        <tr><td><strong>Long</strong> Nikkei {% gl "put option" %}put options{% endgl %} (a hedge)</td><td>Higher rates might knock Japanese shares; the puts pay out if they fall a lot</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The whole trade is sized to risk about \(2\%\) of the fund. Here's how it would have gone if a fund had put it on the day before the BoJ's first surprise.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The Japan trade, step by step</h3><p>Entry on 19 December 2022. Pick a date to see each leg's profit or loss as a share of the fund, and switch legs on and off. The sizes are illustrative, the prices are rounded, and the puts (bought each December) are counted at what they'd pay out at expiry; the market moves are what really happened.</p></div>
+    <div class="controls">
+      <div class="gm-group"><span>Legs in the trade</span><div class="gm-legs" id="jp-legs" aria-label="Legs of the trade"></div></div>
+      <div class="gm-group"><span>Jump to</span><div class="presets gm-pick" id="jp-date" aria-label="Date"></div></div>
+    </div>
+    <div class="readout" id="jp-read"></div>
+    <svg class="chart" id="chart-jp" viewBox="0 0 640 200" role="img" aria-label="Profit or loss from each leg of the Japan trade, as a share of the fund, at the chosen date"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Made money</span><span><i class="sw grey"></i>Lost money</span></div>
+    <p class="look" id="jp-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The fund was right about the Bank of Japan, and still lost money for over a year. A currency is a pair: the yen is priced against the dollar, and US interest rates mattered as much as Japan's. A macro view has to be right about the other side of every trade too, and right <em>soon enough</em>.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Famous Trades and What They Teach", "What did the legendary macro trades have in common?", "Famous trades" %}
+  <div class="prose">
+    <p>From Jones to \$4.5 Trillion and Crashes That Changed the Rules tell these stories. Here they're laid side by side as trades, so the common pattern shows.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Trade</th><th>The view</th><th>How it was expressed</th><th>The lesson</th></tr></thead>
+      <tbody>
+        <tr><td>Soros, Black Wednesday (1992)</td><td>The UK couldn't keep the pound inside Europe's exchange rate system during a recession</td><td>A huge short on the pound; about \(\$1\) billion profit</td><td>A {% gl "currency peg" %}currency peg{% endgl %} the economy can't afford tends to break suddenly, and in one direction</td></tr>
+        <tr><td>Tudor Jones, Black Monday (1987)</td><td>The market looked like 1929, with heavy borrowing and "portfolio insurance" set to sell into falls</td><td>A big short; the fund made about \(126\%\) in October 1987 alone</td><td>Study how the market is built and who will be forced to sell</td></tr>
+        <tr><td>Paulson, subprime (2007–08)</td><td>House prices were propped up by loans that couldn't be repaid</td><td>CDS on subprime mortgage bonds; about \(\$15\) billion for his firm</td><td>Find bets where the loss is small and fixed and the gain is huge</td></tr>
+        <tr><td>Japan (2022–24)</td><td>The BoJ would have to give up yield curve control</td><td>Short JGBs, long yen, Nikkei puts</td><td>Right on policy isn't enough: timing and the other side of the pair decide the result</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The best trades share a shape: <strong>limited downside, large upside</strong>. Shorting a pegged currency risks little while the peg holds and pays a lot if it breaks. A CDS costs a small yearly premium and pays the whole bond if it defaults. Macro managers hunt for that lopsided payoff, because most of their ideas won't work.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "What Goes Wrong", "What are the big risks in macro?", "What goes wrong" %}
+  <div class="prose">
+    <h3>1. Timing</h3>
+    <p>Macro views can take quarters or years to play out. A manager can be right about where a currency or a bond yield will end up, and lose a fortune on the way there. "The market can stay irrational longer than you can stay solvent," as the saying goes. Shorting Japanese bonds was nicknamed the {% gl "widowmaker" %}widowmaker{% endgl %} because so many funds tried it, years too early, from the late 1990s on.</p>
+    <h3>2. Leverage and stop-losses</h3>
+    <p>Currencies and government bonds usually move a few percent a year, so macro funds borrow to make those moves matter. With leverage, a move the wrong way can hit a fund's {% gl "stop-loss" %}stop-loss{% endgl %} before the view has had time to work. This is why many managers use options: the most an option can lose is what it cost.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Right, but too early</h3><p>Your view is right on average: the price should end the year \(10\%\) higher. But it wobbles on the way. Compare a futures position with a stop-loss against a {% gl "call option" %}call option{% endgl %} that costs a premium up front. Each line is one possible year; the chart shows \(40\) of them, and the numbers come from \(1{,}000\).</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="te-vol">How bumpy</label><input type="range" id="te-vol" min="5" max="30" step="1" value="15"><output id="te-vol-out" for="te-vol">15%/yr</output></div>
+      <div class="ctrl"><label for="te-stop">Stop-loss at</label><input type="range" id="te-stop" min="2" max="20" step="1" value="5"><output id="te-stop-out" for="te-stop">−5%</output></div>
+      <div class="presets"><button type="button" id="te-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-te" viewBox="0 0 640 300" role="img" aria-label="Forty possible price paths over a year, with the stop-loss level marked and the paths that hit it shown in grey"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Never hit the stop</span><span><i class="sw grey"></i>Stopped out</span></div>
+    <div class="readout" id="te-read"></div>
+    <p class="look" id="te-story"></p>
+  </div>
+  <div class="prose">
+    <h3>3. Policy surprises</h3>
+    <p>Central banks and governments can change the rules overnight: a surprise rate move, intervention in the currency, capital controls. On 20 December 2022 the BoJ unexpectedly widened its yield band and the yen jumped about \(3.5\%\) against the dollar in minutes. In 2015 the Swiss National Bank dropped its cap on the franc and the currency jumped about \(30\%\). A carefully built position can be wrecked between one screen refresh and the next.</p>
+    <h3>4. Correlations jump in a crisis</h3>
+    <p>A macro book might hold FX, bonds, commodities and stock indices that normally move independently. In a panic they can all start moving together as everyone sells risky assets at once, and the "diversified" book behaves like one big bet on whether investors are calm or scared.</p>
+    <h3>5. Crowding</h3>
+    <p>When most macro funds hold the same view ("long the dollar", "short the yen"), the exit is narrow. For years investors borrowed cheap yen to buy higher-yielding assets, the {% gl "carry trade" %}carry trade{% endgl %}. When the BoJ raised rates on 31 July 2024 and weak US jobs data followed, everyone rushed out together: the dollar fell from about \(155\) to about \(143\) yen in days, and on 5 August the Nikkei dropped \(12.4\%\), its worst day since 1987.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "The People Who Made It Famous", "Who are the big names in macro?", "The big names" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm</th><th>Founder or key PM</th><th>Style</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td>Quantum Fund (now a family office)</td><td>George Soros</td><td>Discretionary</td><td>Breaking the Bank of England; {% gl "reflexivity" %}reflexivity{% endgl %}</td></tr>
+        <tr><td>Tudor Investment Corp.</td><td>Paul Tudor Jones</td><td>Discretionary</td><td>The 1987 crash trade; mixing macro with charts</td></tr>
+        <tr><td>Duquesne Capital (closed)</td><td>Stanley Druckenmiller</td><td>Discretionary</td><td>Soros's chief investment officer; about 30 years without a losing year</td></tr>
+        <tr><td>Bridgewater Associates</td><td>Ray Dalio</td><td>Systematic</td><td>All Weather and Pure Alpha; the largest hedge fund by assets</td></tr>
+        <tr><td>Brevan Howard</td><td>Alan Howard</td><td>Rates-focused</td><td>European rates trading; grew into a multi-PM firm</td></tr>
+        <tr><td>Caxton Associates</td><td>Bruce Kovner</td><td>Discretionary</td><td>FX and rates; a deeply analytical style</td></tr>
+        <tr><td>Moore Capital (closed)</td><td>Louis Bacon</td><td>Discretionary</td><td>Anticipated the market impact of the 1990 Gulf War</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Deltashark's reading list for this strategy: <em>The Alchemy of Finance</em> by George Soros (1987), his own trading diary and the theory behind it, and <em>Principles</em> by Ray Dalio (2017), on how Bridgewater makes decisions. <em>Inside the House of Money</em> by Steven Drobny collects interviews with macro traders.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Your Three Markets, Macro-Style", "How does a macro fund think about FX, gold and bonds?", "FX, gold and bonds" %}
+  <div class="prose">
+    <p>For most strategies this section is a side note. For macro, FX, gold and bonds are the main event.</p>
+    <h3>FX: every trade is two countries</h3>
+    <p>A macro FX view is always a view on a gap: between two central banks, two growth rates or two trade balances. The Japan trade shows why. Macro funds also run the carry trade deliberately (borrow in a low-rate currency, hold a high-rate one), knowing it earns steadily and then loses fast when it unwinds.</p>
+    <h3>Gold: the anti-currency</h3>
+    <p>Macro funds treat gold as money that no central bank can print. It tends to do well when real interest rates (after inflation) fall, when the dollar weakens, and when trust in governments wobbles. Central banks themselves have been buying gold heavily since 2022, after Russia's reserves held abroad were frozen, a demand that macro funds now watch closely.</p>
+    <h3>Bonds: betting on central banks</h3>
+    <p>Most rates trades are bets on what a central bank will do compared with what the market expects. A fund that thinks the Bank of England will cut faster than priced buys short-dated gilts or receives fixed on a swap. Macro funds also trade the shape of the yield curve: betting that long and short yields move closer together or further apart.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>The view</h3><span class="tag desk">Desk</span></div><p>The macro opinion behind a trade.</p><p class="eg">"What's your view on the BoJ?"</p></div>
+    <div class="term"><div class="term-top"><h3>Expression</h3><span class="tag desk">Desk</span></div><p>The instrument chosen to bet on a view.</p><p class="eg">"Good view, bad expression: the yen leg cost you."</p></div>
+    <div class="term"><div class="term-top"><h3>Priced in</h3><span class="tag desk">Desk</span></div><p>Already reflected in market prices.</p><p class="eg">"Two cuts are priced in; you need three to make money."</p></div>
+    <div class="term"><div class="term-top"><h3>Positioning</h3><span class="tag desk">Desk</span></div><p>How the market is already betting.</p><p class="eg">"Positioning's stretched; everyone's short yen."</p></div>
+    <div class="term"><div class="term-top"><h3>Carry</h3><span class="tag desk">Desk</span></div><p>What a position earns just by being held.</p><p class="eg">"The carry pays you to wait."</p></div>
+    <div class="term"><div class="term-top"><h3>Risk-off</h3><span class="tag desk">Desk</span></div><p>Investors selling risky assets and running to safe ones.</p><p class="eg">"Full risk-off: yen, Treasuries and gold all bid."</p></div>
+    <div class="term"><div class="term-top"><h3>Asymmetric</h3><span class="tag desk">Desk</span></div><p>Small possible loss, big possible gain.</p><p class="eg">"Puts on the peg: nicely asymmetric."</p></div>
+    <div class="term"><div class="term-top"><h3>Widowmaker</h3><span class="tag desk">Desk</span></div><p>A famous trade that has ruined many who tried it.</p><p class="eg">"Shorting JGBs was the widowmaker for 20 years."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 10, "How does this link to Trading, Real Estate and Fintech?", "Where macro thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: macro is your home strategy</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>FX, gold and bonds are macro markets, so this is the hedge fund strategy closest to your own trading. Borrow the framework: write the view, check whether it's priced in (central bank pricing, futures positioning in the CFTC's weekly report), then size by how much of your account you're willing to lose, not by how sure you feel. And keep a journal of being right too early; it happens more than being wrong.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: a macro bet with a building attached</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Buying a holiday villa in Europe with pounds is three bets at once: on local property prices, on interest rates (your mortgage and the buyers' mortgages) and on the euro against the pound. A macro investor would ask which of those she actually has a view on, and hedge or avoid the others, for example by borrowing in euros so the debt and the house share a currency.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: a peg breaking up close</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria lived through a textbook macro event: in June 2023 the central bank stopped holding the naira at an official rate far stronger than the street price, and the naira lost well over half its value against the dollar over the following months. That's the Black Wednesday pattern: a held price the economy couldn't support, then a sudden one-way move. Tools that help Nigerian businesses and savers see and hedge their currency exposure address exactly the risk macro funds trade.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 11, "The Maths Underneath", "How do you size a macro trade and work out its profit?" %}
+  <div class="formula"><span class="lbl">Sizing from a risk budget</span>\[ \text{Notional} = \frac{\text{Risk budget} \times \text{NAV}}{\text{Loss at your stop (as a fraction of notional)}} \]</div>
+  <div class="formula"><span class="lbl">A bond position's profit (short bonds gain when yields rise)</span>\[ \text{P\&L}_{\text{short bond}} \approx D \times \Delta y \times \text{Notional} \]</div>
+  <div class="formula"><span class="lbl">A currency position's profit (long yen against the dollar)</span>\[ \text{P\&L}_{\text{long JPY}} = \left(\frac{S_0}{S_1} - 1\right) \times \text{Notional} \quad (S = \text{yen per dollar}) \]</div>
+  <div class="formula"><span class="lbl">An option's payoff</span>\[ \text{Call: } \max(S_T - K,\,0) - \text{premium} \qquad \text{Put: } \max(K - S_T,\,0) - \text{premium} \]</div>
+  <div class="prose">
+    <p>\(D\) is the bond's {% gl "duration" %}duration{% endgl %}; \(\Delta y\) is the change in yield as a decimal. An at-the-money option on something with yearly volatility \(\sigma\) costs roughly \(0.4\,\sigma\sqrt{T}\) of the notional, a handy rule of thumb.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$1\) billion macro fund wants to risk \(2\%\) on shorting 10-year JGBs (duration \(8.5\)). It will close the trade if yields fall \(0.20\) percentage points.</h3>
+    <ol class="steps">
+      <li>Risk budget: \(2\% \times \$1\text{bn} = \$20\) million.</li>
+      <li>Loss at the stop: \(8.5 \times 0.002 = 1.7\%\) of notional.</li>
+      <li>Notional: \(\$20\text{m} \div 0.017 \approx \$1.18\) billion of bonds, more than the whole fund, which is why macro uses leverage.</li>
+      <li>If yields instead rise \(0.36\) points (roughly what happened in 2023): \(8.5 \times 0.0036 \times \$1.18\text{bn} \approx \$36\) million, or \(3.6\%\) of the fund.</li>
+    </ol>
+    <p class="answer">Sizing comes from the loss you'll accept at the stop, not from how big you'd like the win to be.</p>
+  </div>
+{% endsec %}
+
+{% sec 12, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Explain the difference between discretionary and systematic macro, with an example firm for each.</span></p>
+      <details><summary>Show answer</summary><div><span>Discretionary macro relies on a manager's judgement about the economy, with a few concentrated, high-conviction positions (Soros's Quantum Fund, Druckenmiller's Duquesne). Systematic macro and CTAs use models, mostly trend-following, to trade many markets without human calls (Man AHL, Winton, AQR).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Name the three steps of the macro framework, and say which one beginners most often skip.</span></p>
+      <details><summary>Show answer</summary><div><span>Macro analysis (what will happen), market analysis (is it priced in: positioning, flows, sentiment) and risk management (sizing, correlations, scenarios). Beginners skip market analysis: being right only pays if the market hasn't already priced the view.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>You're long the yen at \(150\) per dollar with \(\$50\) million notional. It moves to \(140\). What's your profit?</span></p>
+      <details><summary>Show answer</summary><div><span>\((150 \div 140 - 1) \times \$50\text{m} \approx 7.1\% \times \$50\text{m} \approx \$3.6\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A \(\$500\) million fund risks \(1.5\%\) on a trade with a stop \(4\%\) away. How big is the position?</span></p>
+      <details><summary>Show answer</summary><div><span>Risk budget \(= 1.5\% \times 500 = \$7.5\) million. Notional \(= 7.5 \div 0.04 = \$187.5\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why did shorting Japanese bonds earn the nickname "the widowmaker"?</span></p>
+      <details><summary>Show answer</summary><div><span>For decades, funds bet that Japan's huge debts would push its bond yields up, and for decades the BoJ and deflation kept yields near zero. Funds that were right in principle lost money year after year: a lesson in timing risk.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>What happened on 5 August 2024, and what does it teach about crowding?</span></p>
+      <details><summary>Show answer</summary><div><span>After the BoJ raised rates on 31 July and weak US jobs data, investors who had borrowed yen to buy other assets rushed to close the carry trade together. The yen jumped and the Nikkei fell \(12.4\%\) in a day. When everyone holds the same position, the exit is crowded, and the reversal is far faster than the build-up.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: give me a macro trade idea.</span></p>
+      <details><summary>Show answer</summary><div><span>Structure it in four parts: the view (what will happen and why), why it isn't priced in (what the market expects instead), the expression (which instrument, and why that one rather than others) and the risk (how much you'd lose, where you'd be wrong, and what would make you exit). Pick a market you follow, such as gold or a currency pair, and be ready to defend each part.</span></div></details></div>
+  </div>
+{% endsec %}
