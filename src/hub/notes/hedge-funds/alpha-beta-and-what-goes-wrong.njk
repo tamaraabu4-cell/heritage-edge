@@ -1,0 +1,250 @@
+---
+title: Alpha, Beta and What Goes Wrong
+shelf: hedge-funds
+chapter: strategies
+subtopic: Long/Short Equity
+order: 2
+summary: Where a long/short fund's return really comes from (market exposure, factor tilts, the short rebate and genuine skill), how allocators separate alpha from beta, how to test a "market-neutral" claim, the five big risks (crowding, squeezes, style rotations, net exposure, the short side's open-ended losses), and the strategy's typical risk and return.
+lede: 'A long/short fund that makes 12% hasn''t necessarily shown 12% of skill. Some of it came from the market rising, some from a style that happened to be in fashion, some from interest on cash. Allocators peel those layers off before they decide whether the manager is any good. Then they ask what could go wrong, because in this strategy the dangers are well known.'
+goals: [trading, realestate, fintech]
+themes: [trading, quant, markets, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/alpha-beta-and-what-goes-wrong.js]
+
+quiz:
+  - q: 'A fund returned \(12\%\) in a year the market rose \(20\%\). It ran \(40\%\) net long. Ignoring everything else, how much came from skill?'
+    opts: ['\(12\%\): the whole return', 'About \(4\%\)', 'About \(-8\%\)']
+    right: 1
+    why: 'Market exposure explains \(0.4 \times 20\% = 8\%\), leaving about \(4\%\). Allocators pay for that \(4\%\), not the \(12\%\).'
+  - q: 'Why does the short rebate matter more when interest rates are \(4\)–\(5\%\) than when they''re near zero?'
+    opts: ['Because shorting is cheaper when rates are high', 'Because regulators require funds to hold more cash', 'Because the cash from short sales earns interest, and at higher rates that adds a meaningful slice of return']
+    right: 2
+    why: 'A fund that''s \(60\%\) short earning a \(4\%\) rebate gets about \(2.4\%\) a year from interest alone. At near-zero rates that was close to nothing. It''s return, but it isn''t skill.'
+  - q: 'A manager says the fund is "market-neutral" because longs and shorts are equal in dollars. What''s the best follow-up question?'
+    opts: ['What''s your beta-adjusted net, and what are your factor exposures?', 'How many positions do you hold?', 'What''s your management fee?']
+    right: 0
+    why: 'Equal dollars can hide a big lean: jumpy longs against steady shorts, or a heavy tilt to one style. Beta-adjusted net and factor exposures show whether the book is really neutral.'
+
+connected:
+  - { label: Builds on, title: How a Long/Short Book Works, where: Hedge Funds · Strategies, url: /hub/hedge-funds/how-a-long-short-book-works/ }
+  - { label: Builds on, title: Short Selling and Securities Lending, where: Markets · How Markets Work, url: /hub/markets/short-selling-and-securities-lending/ }
+  - { label: Builds on, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/the-strategy-map/ }
+  - { label: Used in, title: Risk Metrics, where: Hedge Funds · Portfolio Construction and Risk, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .ab-run { align-self: center; }
+</style>
+
+{% sec 1, "Where the Return Comes From", "What's actually inside a long/short fund's return?", "Where the return comes from" %}
+  <div class="prose">
+    <p>Imagine a sailing race on a windy day. Every boat goes faster with the wind behind it, so a fast time doesn't prove a good sailor. To judge the sailor, you'd want to know how much of the speed came from the wind, how much from a current that happened to flow the right way, and how much from the sailor's own skill.</p>
+    <p>A long/short fund's return has the same kinds of parts:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Part</th><th>Where it comes from</th><th>Could an investor get it cheaply elsewhere?</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "beta" %}Beta{% endgl %} (the wind)</td><td>The fund's net exposure to the market. At \(40\%\) net long, it catches about \(40\%\) of the market's moves, up and down</td><td>Yes: an index fund</td></tr>
+        <tr><td>Factor tilts (the current)</td><td>Leaning towards a style, such as growth, quality or momentum, that happened to do well</td><td>Mostly: factor ETFs</td></tr>
+        <tr><td>Short rebate</td><td>Interest earned on the cash from short sales (the Short Selling note explains the {% gl "rebate rate" %}rebate{% endgl %})</td><td>Yes: cash in the bank</td></tr>
+        <tr><td>{% gl "alpha" %}Alpha{% endgl %} (the sailor)</td><td>Picking stocks that beat the market and shorting ones that lag it</td><td>No: this is what hedge fund fees pay for</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The short rebate was almost nothing when interest rates sat near zero after 2008. With rates at \(4\)–\(5\%\), it's real money: a fund that's \(60\%\) short earning \(4\%\) on the cash gets about \(2.4\%\) a year without doing anything clever.</p>
+    <p>An uncomfortable finding from research by AQR, among others, is that a large share of the average long/short fund's return can be copied with simple market and factor exposures. In other words, much of what the industry delivers on average is wind and current, not sailing. The best funds are the ones whose returns can't be copied that way.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Peel the return</h3><p>Start with the fund's total return for the year, then take away each part that isn't skill. Whatever is left is alpha. The defaults are Deltashark's example: \(12\%\) in a year the market rose \(20\%\), at \(40\%\) net long.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="pr-tot">Fund return</label><input type="range" id="pr-tot" min="-10" max="30" step="1" value="12"><output id="pr-tot-out" for="pr-tot">12%</output></div>
+      <div class="ctrl"><label for="pr-mkt">Market return</label><input type="range" id="pr-mkt" min="-30" max="30" step="1" value="20"><output id="pr-mkt-out" for="pr-mkt">20%</output></div>
+      <div class="ctrl"><label for="pr-net">Net exposure</label><input type="range" id="pr-net" min="0" max="100" step="5" value="40"><output id="pr-net-out" for="pr-net">40%</output></div>
+      <div class="ctrl"><label for="pr-short">Short book</label><input type="range" id="pr-short" min="0" max="100" step="5" value="0"><output id="pr-short-out" for="pr-short">0%</output></div>
+      <div class="ctrl"><label for="pr-rate">Rebate rate</label><input type="range" id="pr-rate" min="0" max="6" step="0.5" value="4"><output id="pr-rate-out" for="pr-rate">4%</output></div>
+      <div class="ctrl"><label for="pr-fac">Factor tailwind</label><input type="range" id="pr-fac" min="-5" max="5" step="0.5" value="0"><output id="pr-fac-out" for="pr-fac">0%</output></div>
+    </div>
+    <svg class="chart" id="chart-pr" viewBox="0 0 640 260" role="img" aria-label="Waterfall from the fund's total return down to alpha, taking off market exposure, the short rebate and factor tilts"></svg>
+    <div class="readout" id="pr-read"></div>
+    <p class="look" id="pr-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Alpha Separation", "How do allocators tell skill from luck and market exposure?", "Alpha separation" %}
+  <div class="prose">
+    <p>{% gl "alpha separation" %}Alpha separation{% endgl %} means splitting a fund's return into the part explained by the market (and factors) and the part that isn't. Allocators do it with a {% gl "regression" %}regression{% endgl %}: plot each month's fund return against the market's return for the same month, and fit a straight line through the dots.</p>
+    <ul>
+      <li>The line's <strong>slope</strong> is the fund's beta: how much it moves for each \(1\%\) the market moves.</li>
+      <li>Where the line <strong>crosses zero</strong> on the market axis (the intercept) is the fund's alpha: what it makes in a month when the market does nothing.</li>
+      <li>How tightly the dots hug the line ({% gl "R-squared" %}R-squared{% endgl %}) says how much of the fund's ups and downs are just the market. High R-squared and low alpha is an expensive index fund.</li>
+    </ul>
+    <p>Real allocators go further and add factors to the regression (value, momentum, quality, size), so a fund doesn't get credit for riding a style. But even the simple version reveals a lot, including how hard it is to be sure of alpha from a short record.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Skill or wind?</h3><p>Set a fund's true beta and true alpha, and how much luck there is each month. The chart draws three years of made-up monthly returns and fits a line, the way an allocator would. Compare what the line finds with the truth you set, then press "Run again".</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="sw-b">True beta</label><input type="range" id="sw-b" min="0" max="1.2" step="0.1" value="0.4"><output id="sw-b-out" for="sw-b">0.4</output></div>
+      <div class="ctrl"><label for="sw-a">True alpha</label><input type="range" id="sw-a" min="-4" max="8" step="1" value="4"><output id="sw-a-out" for="sw-a">4%/yr</output></div>
+      <div class="ctrl"><label for="sw-n">Luck</label><input type="range" id="sw-n" min="0.5" max="4" step="0.5" value="2"><output id="sw-n-out" for="sw-n">2%/mo</output></div>
+      <div class="presets ab-run"><button type="button" id="sw-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-sw" viewBox="0 0 640 300" role="img" aria-label="Scatter of 36 monthly fund returns against market returns with a fitted line whose slope is beta and intercept is alpha"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Fitted line</span><span><i class="sw grey"></i>True line you set</span></div>
+    <div class="readout" id="sw-read"></div>
+    <p class="look" id="sw-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Beta is cheap and easy to measure. Alpha is expensive and hard to prove: with a few years of noisy monthly returns, a skilled fund and a lucky one can look the same. That's why allocators want long track records, and why they keep checking after they invest.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Is It Really Market-Neutral?", "How do you test a manager who says the market doesn't matter?", "Testing a neutral claim" %}
+  <div class="prose">
+    <p>"Market-neutral" is one of the most stretched phrases in the industry. A book can be neutral in three increasingly demanding ways: <strong>dollar-neutral</strong> (equal money long and short), <strong>beta-neutral</strong> (equal market sensitivity, the beta-adjusted net from the last note) and <strong>factor-neutral</strong> (no leftover style bets). Deltashark's list of questions to ask a manager who claims it:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>What's your average net exposure?<span class="why">It should be near zero.</span></span></li>
+    <li><span class="n">2</span><span>What's your beta-adjusted net?<span class="why">Jumpy longs against steady shorts create hidden direction.</span></span></li>
+    <li><span class="n">3</span><span>What are your factor exposures?<span class="why">A dollar-neutral book can still be a big bet on value, momentum, size or a sector.</span></span></li>
+    <li><span class="n">4</span><span>How did you do in March 2020 and other sell-offs?<span class="why">A truly neutral fund shouldn't fall much when the market crashes.</span></span></li>
+    <li><span class="n">5</span><span>How much leverage do you use, and what happened when funds cut leverage together?<span class="why">Neutral books often borrow heavily, and suffer when everyone de-grosses at once.</span></span></li>
+    <li><span class="n">6</span><span>How much of your past return is explained by common factors?<span class="why">If most of it is, the fund is selling factor exposure at hedge fund prices.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 4, "What Goes Wrong", "What are the big risks in long/short equity?", "What goes wrong" %}
+  <div class="prose">
+    <p>Five risks account for most long/short disasters. None of them is a secret, which is what makes them so instructive.</p>
+    <h3>1. Crowding</h3>
+    <p>Funds fish in the same pond: liquid mid-sized companies with a clear catalyst coming. So they often end up owning, and shorting, the same names. When something forces some of them to sell, prices move against everyone in the trade, losses trigger stop-losses, and the selling feeds itself. It happened in the August 2007 "quant quake" and again in the March 2020 COVID sell-off (Single-Manager vs Multi-Manager explains the mechanics).</p>
+    <h3>2. Short squeezes</h3>
+    <p>A heavily shorted stock that starts rising forces short sellers to buy back, which pushes it higher still. In January 2021, retail buyers coordinating online drove GameStop up by more than \(1{,}500\%\) in a few weeks. Melvin Capital, one of the best-known funds with a large short, lost about \(53\%\) that month, took a \(\$2.75\) billion rescue from Citadel and Point72, and wound down the following year. The Short Selling note has a squeeze interactive and the metrics funds use to spot crowded shorts.</p>
+    <h3>3. Style and factor rotations</h3>
+    <p>Many managers carry quiet style tilts. A fund full of fast-growing tech companies is partly a bet on "growth" beating "value". In 2020 and 2021, growth stocks soared; in 2022, as interest rates rose, the market rotated sharply to value and the Nasdaq fell about a third. Managers who'd looked brilliant on growth suddenly looked terrible, even where their individual picks were sound. Factor hedges (the last note's "Build the book") exist for exactly this.</p>
+    <h3>4. Net exposure</h3>
+    <p>A fund that's \(60\%\) net long loses roughly \(60\%\) of the market's fall in a crash, however good its stock picking. Net exposure feels like a dial the manager sets, but in a crash it decides most of the result.</p>
+    <h3>5. The short side's open-ended loss</h3>
+    <p>A long can lose at most everything. A short can lose many times over, because there's no ceiling on a share price. That's why short positions are kept smaller than longs, with strict limits and stops, and why the best short sellers spend as much time on risk as on research.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Risk, Return and the Big Names", "What does a typical long/short fund deliver?", "Risk and return" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Measure</th><th>Typical range</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>Return after fees</td><td>\(8\)–\(18\%\) a year</td><td>Top-quartile funds aim for \(15\%+\)</td></tr>
+        <tr><td>{% gl "volatility" %}Volatility{% endgl %}</td><td>\(6\)–\(15\%\) a year</td><td>Lower than shares alone, thanks to hedging</td></tr>
+        <tr><td>{% gl "Sharpe ratio" %}Sharpe ratio{% endgl %}</td><td>\(0.6\)–\(1.5\)</td><td>Top funds \(1.0+\); the industry average is about \(0.5\)–\(0.7\)</td></tr>
+        <tr><td>Worst {% gl "drawdown" %}drawdown{% endgl %}</td><td>\(10\)–\(30\%\)</td><td>In a severe bear market; well-run funds keep it to \(10\)–\(15\%\)</td></tr>
+        <tr><td>Correlation with the S&amp;P 500</td><td>\(0.5\)–\(0.8\)</td><td>Higher for funds that run more net long</td></tr>
+        <tr><td>Beta to the S&amp;P 500</td><td>\(0.2\)–\(0.6\)</td><td>Depends on net exposure</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>A correlation of \(0.5\) to \(0.8\) is a reminder that most long/short funds are not market-neutral: they're hedged, not cancelled.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm</th><th>Founder or key PM</th><th>Style</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td>Tiger Global</td><td>Chase Coleman</td><td>Tech-focused generalist</td><td>Tiger Cub; early growth investing in tech</td></tr>
+        <tr><td>Viking Global</td><td>Andreas Halvorsen</td><td>Generalist fundamental</td><td>Tiger Cub; disciplined risk management</td></tr>
+        <tr><td>Lone Pine Capital</td><td>Stephen Mandel</td><td>Growth-oriented generalist</td><td>Tiger Cub; long-term compounders</td></tr>
+        <tr><td>Coatue</td><td>Philippe Laffont</td><td>Tech specialist</td><td>Tiger Cub; public and private companies</td></tr>
+        <tr><td>Maverick Capital</td><td>Lee Ainslie</td><td>Generalist fundamental</td><td>Tiger Cub; a low-volatility approach</td></tr>
+        <tr><td>D1 Capital</td><td>Dan Sundheim</td><td>Generalist, public and private</td><td>Ex-Viking</td></tr>
+        <tr><td>Melvin Capital</td><td>Gabe Plotkin</td><td>Consumer and tech long/short</td><td>The GameStop squeeze casualty (2021)</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Is there alpha and beta in my three markets too?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: carry is beta in disguise</h3>
+    <p>In currencies, much of what looks like skill can be copied cheaply. Buying high-interest currencies against low-interest ones (carry), riding trends, and buying cheap currencies against expensive ones are all well-known "FX risk premia" that banks package into indices. A currency manager's true alpha is what's left after those. A trader who only made money in years when carry worked had beta, not edge.</p>
+    <h3>Gold: miners are leveraged gold</h3>
+    <p>Gold mining shares often move about one and a half to two times as much as the gold price, because a miner's costs are mostly fixed: a rise in gold drops almost straight into profit. So a fund that "picked a great miner" in a gold rally may simply have owned high gold beta. Pairing the miner against gold, as in the last note, shows whether the pick added anything.</p>
+    <h3>Bonds: spread beta and the rebate's cousin</h3>
+    <p>Most of a credit fund's return is the extra yield from taking credit risk (spread beta), which an investor can buy through a cheap bond ETF. A credit manager's alpha is choosing which borrowers to own and which to avoid. And the short rebate's logic applies to bonds too: funds that short bonds through repo earn interest on the cash, which rose sharply with rates in 2022 and 2023.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Alpha</h3><span class="tag desk">Desk</span></div><p>Return from skill, after market and factors.</p><p class="eg">"Lots of beta, not much alpha."</p></div>
+    <div class="term"><div class="term-top"><h3>Beta</h3><span class="tag desk">Desk</span></div><p>Return from simply being in the market.</p><p class="eg">"You're paying 2 and 20 for beta."</p></div>
+    <div class="term"><div class="term-top"><h3>Rebate</h3><span class="tag desk">Desk</span></div><p>Interest earned on cash from short sales.</p><p class="eg">"At 4%, the rebate's a real line in the P&amp;L."</p></div>
+    <div class="term"><div class="term-top"><h3>Squeeze</h3><span class="tag desk">Desk</span></div><p>Shorts forced to buy back, pushing the price higher.</p><p class="eg">"Cover before it squeezes."</p></div>
+    <div class="term"><div class="term-top"><h3>Rotation</h3><span class="tag desk">Desk</span></div><p>Money moving from one style or sector to another.</p><p class="eg">"Brutal rotation into value today."</p></div>
+    <div class="term"><div class="term-top"><h3>De-gross</h3><span class="tag desk">Desk</span></div><p>Cutting both longs and shorts to reduce gross exposure.</p><p class="eg">"Everyone's de-grossing; crowded names are getting hit."</p></div>
+    <div class="term"><div class="term-top"><h3>Hit rate</h3><span class="tag desk">Desk</span></div><p>The share of positions that make money.</p><p class="eg">"Hit rate's only 52%, but winners are twice the size of losers."</p></div>
+    <div class="term"><div class="term-top"><h3>Up/down capture</h3><span class="tag desk">Desk</span></div><p>How much of the market's rises and falls a fund catches.</p><p class="eg">"60% upside capture, 25% downside: that's what we want."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where alpha and beta turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: measure your own beta</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>If you trade gold mostly from the long side and gold rises \(25\%\) in a year, a \(15\%\) return isn't evidence of skill: buying and holding would have beaten you. Compare your results with the simplest passive alternative for each market (holding gold, holding the currency with carry), and track your results in rising, falling and flat periods separately. Your edge is what survives that comparison.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: market beta versus adding value</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A villa that rose \(30\%\) in value while local prices rose \(25\%\) made a \(5\%\) "alpha" from buying well or improving it; the rest was the market. Property investors who bought with heavy borrowing in a rising market often mistake beta and leverage for skill, until the market turns. Judging each project against a local price index keeps the record honest.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: beta in an inflationary market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The NGX All-Share index rose about \(46\%\) in 2023 and nearly \(38\%\) in 2024, largely as investors moved out of naira cash into shares during high inflation and a falling currency. Almost any long-only fund looked good in naira. Measured against the market, and in dollars, many showed little alpha. Tools that show Nigerian investors their returns against the index and after inflation would make that obvious, and help them judge whether a manager earns its fee.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you split a return into alpha and beta?" %}
+  <div class="formula"><span class="lbl">The regression allocators run</span>\[ r_{\text{fund},t} = \alpha + \beta\, r_{\text{mkt},t} + \varepsilon_t \]</div>
+  <div class="formula"><span class="lbl">Beta from the data</span>\[ \beta = \frac{\operatorname{Cov}(r_{\text{fund}}, r_{\text{mkt}})}{\operatorname{Var}(r_{\text{mkt}})} \qquad \alpha = \bar r_{\text{fund}} - \beta\, \bar r_{\text{mkt}} \]</div>
+  <div class="formula"><span class="lbl">Peeling a year's return</span>\[ \alpha \approx r_{\text{fund}} - N_\beta\, r_{\text{mkt}} - S \times \text{rebate} - \text{factor tailwind} \]</div>
+  <div class="prose">
+    <p>With monthly data, multiply the monthly alpha by \(12\) to get a yearly figure. \(R^2\) is the share of the fund's monthly ups and downs explained by the market: \(0.8\) means \(80\%\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A fund made \(12\%\) in a year the market rose \(20\%\), at \(40\%\) net long. Now add that it was \(60\%\) short with a \(4\%\) rebate.</h3>
+    <ol class="steps">
+      <li>Beta part: \(0.4 \times 20\% = 8\%\). Left: \(4\%\).</li>
+      <li>Rebate: \(0.6 \times 4\% = 2.4\%\). Left: \(1.6\%\).</li>
+      <li>If its growth tilt added another \(2\%\) in a growth-led year, the alpha was about \(-0.4\%\).</li>
+    </ol>
+    <p class="answer">A "good" \(12\%\) year can contain no skill at all once every layer is peeled off.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Explain alpha separation and why allocators care about it.</span></p>
+      <details><summary>Show answer</summary><div><span>Splitting a fund's return into alpha (skill) and beta (market exposure, which is cheap through index funds). Allocators pay high fees for alpha, so they strip out beta, and usually factors too, using regressions. A fund that made \(12\%\) with \(40\%\) net long in a \(20\%\) market year showed only about \(4\%\) of alpha.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A manager claims to be market-neutral. List four questions you'd ask.</span></p>
+      <details><summary>Show answer</summary><div><span>Average net exposure; beta-adjusted net; factor exposures (value, momentum, size, sector); performance in the March 2020 sell-off and other crashes; use of leverage and behaviour when funds de-gross; how much of the return is explained by common factors.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A \(\$300\) million fund is \(80\%\) short. Cash earns a \(4.5\%\) rebate. How much does the rebate add in a year, in dollars and as a return?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.8 \times 300 \times 4.5\% = \$10.8\) million, or \(3.6\%\) of the fund.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A fund's regression against the market gives a beta of \(0.5\), a monthly alpha of \(0.3\%\) and an \(R^2\) of \(0.85\). What does each number tell you?</span></p>
+      <details><summary>Show answer</summary><div><span>It moves about \(0.5\%\) for each \(1\%\) the market moves; it makes about \(0.3\%\) a month (\(3.6\%\) a year) beyond that; and \(85\%\) of its monthly ups and downs are explained by the market, so most of its risk is market risk.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why can a fund with good stock picks still lose badly in a style rotation?</span></p>
+      <details><summary>Show answer</summary><div><span>If its longs share a style, such as growth, and its shorts share the opposite, the book carries a large factor bet. When money rotates from growth to value, as in 2022, that factor bet can swamp the stock-specific results.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>What happened to Melvin Capital, and what's the lesson for position sizing?</span></p>
+      <details><summary>Show answer</summary><div><span>A large short in GameStop was caught in the January 2021 squeeze; the fund lost about \(53\%\) that month, took a \(\$2.75\) billion rescue and wound down the next year. Lesson: a short's loss has no ceiling, so shorts must be smaller than longs, with hard limits, especially in heavily shorted, crowded names.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: a fund returned \(15\%\) last year. Is that good?</span></p>
+      <details><summary>Show answer</summary><div><span>It depends on how it was earned. Ask what the market did, the fund's net and beta-adjusted exposure, its factor tilts, the short rebate, and how much risk it took (volatility, drawdown, Sharpe). \(15\%\) in a year the market rose \(30\%\), at \(70\%\) net long, is weak; \(15\%\) with low beta in a flat market is excellent. Then say you'd want several years to separate skill from luck.</span></div></details></div>
+  </div>
+{% endsec %}

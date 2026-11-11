@@ -194,7 +194,7 @@
       { "title": "Strategies", "blurb": "The main ways hedge funds try to make money.",
         "subtopics": [
           "The Strategy Map",
-          { "name": "Long/Short Equity", "planned": ["How a Long/Short Book Works", "Alpha, Beta and What Goes Wrong"] },
+          "Long/Short Equity",
           { "name": "Global Macro", "planned": ["Global Macro"] },
           "Trend Following (CTAs)",
           { "name": "Relative Value", "planned": ["Relative Value"] },
