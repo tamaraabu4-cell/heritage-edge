@@ -1,0 +1,14 @@
+[
+  {
+    "key": "original",
+    "name": "The original list",
+    "note": "Five books recommended to me over coffee by a former head of FX at a global bank.",
+    "total": 5
+  },
+  {
+    "key": "deltashark",
+    "name": "Deltashark's reading list",
+    "note": "Books I'm choosing from the reading list on Deltashark's education hub.",
+    "total": 0
+  }
+]

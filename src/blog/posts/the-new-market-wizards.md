@@ -3,6 +3,12 @@ title: "The New Market Wizards: many ways to win, one way to survive"
 date: 2026-11-10
 category: Reading list
 summary: "Jack Schwager's interviews with top traders, grouped by style, and the one habit every one of them shared."
+book:
+  title: "The New Market Wizards"
+  author: "Jack D. Schwager"
+  year: 1992
+  list: original
+  takeaway: "Many ways to win, one way to survive: risk management and discipline."
 ---
 
 The next book on my reading list is Jack Schwager's *The New Market Wizards*, from 1992. It's different from the last two. [A Random Walk Down Wall Street](/blog/a-random-walk-down-wall-street.html) and [The Little Book That Beats the Market](/blog/the-little-book-that-beats-the-market.html) each make one argument. This book is a series of interviews with traders who had beaten the market for years, each in their own way. There's no single thesis to agree or disagree with, so I've grouped the traders by style and picked out what I took from each.

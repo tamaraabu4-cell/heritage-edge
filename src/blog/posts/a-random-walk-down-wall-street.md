@@ -3,6 +3,12 @@ title: "A Random Walk Down Wall Street: where an edge can still live"
 date: 2026-11-02
 category: Reading list
 summary: "Burton Malkiel's case that markets are hard to beat, chapter by chapter, and why it changed where I look for an edge rather than whether I look."
+book:
+  title: "A Random Walk Down Wall Street"
+  author: "Burton G. Malkiel"
+  year: 1973
+  list: original
+  takeaway: "Markets are very hard to beat, so look for an edge where others aren't looking."
 ---
 
 Over coffee a few weeks ago, a former head of FX at a global bank gave me a reading list. The first book on it was Burton Malkiel's *A Random Walk Down Wall Street*, first published in 1973 and still updated today. I expected a book about trading. It's closer to a book about why most trading doesn't work.

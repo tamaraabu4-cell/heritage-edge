@@ -3,6 +3,12 @@ title: "The Little Book That Beats the Market: when patience is the edge"
 date: 2026-11-09
 category: Reading list
 summary: "Joel Greenblatt's two-number formula for buying good businesses cheaply, chapter by chapter, and why its most interesting idea isn't the formula at all."
+book:
+  title: "The Little Book That Beats the Market"
+  author: "Joel Greenblatt"
+  year: 2005
+  list: original
+  takeaway: "Patience is an edge, because most people can't stick with a strategy through its bad years."
 ---
 
 Another book on the reading list I was given over coffee is Joel Greenblatt's *The Little Book That Beats the Market*, from 2005. After [A Random Walk Down Wall Street](/blog/a-random-walk-down-wall-street.html), it felt like reading the other side of the argument. Malkiel says you can't reliably beat the market. Greenblatt, who ran a hedge fund with famously strong returns, says you can, with a formula simple enough to explain to a child. He even wrote the book with his own children in mind.

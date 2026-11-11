@@ -3,6 +3,12 @@ title: "Reminiscences of a Stock Operator: a hundred years of the same mistakes"
 date: 2026-11-14
 category: Reading list
 summary: "Jesse Livermore's story, told through a fictional trader, is over a hundred years old. The markets have changed completely. The mistakes haven't."
+book:
+  title: "Reminiscences of a Stock Operator"
+  author: "Edwin Lefèvre"
+  year: 1923
+  list: original
+  takeaway: "The tools change completely. The mistakes don't, because people don't."
 ---
 
 The next book on my reading list is the oldest so far: *Reminiscences of a Stock Operator* by Edwin Lefèvre, published in 1923. It's a lightly fictionalised life of Jesse Livermore, one of the most famous speculators in history, told through a character called Larry Livingston. It reads more like a novel than a textbook: 24 short chapters that flow as one story. So instead of going chapter by chapter, I've split it into the stages of his career.

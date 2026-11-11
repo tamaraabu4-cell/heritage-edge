@@ -2,6 +2,7 @@
 layout: layouts/base.njk
 title: Blog
 permalink: /blog/blog.html
+scripts: ["/assets/js/blog.js"]
 ---
 <section class="page-header">
   <div class="container">
@@ -11,26 +12,106 @@ permalink: /blog/blog.html
   </div>
 </section>
 
-<section class="post-list">
+{% set allPosts = (collections.posts or []) | reverse %}
+{# Oldest first, so the bookshelf runs in the order I read the books #}
+{% set oldestFirst = collections.posts or [] %}
+
+{# Every category used by a post, Reading list first #}
+{% set cats = [] %}
+{% for post in allPosts %}
+  {% set c = post.data.category %}
+  {% if c and c != "Reading list" and cats.indexOf(c) == -1 %}{% set _ = cats.push(c) %}{% endif %}
+{% endfor %}
+
+<section class="post-list" data-blog>
   <div class="container">
-    {% set allPosts = (collections.posts or []) | reverse %}
     {% if allPosts.length %}
-      {% for post in allPosts %}
-      <a class="post-row" href="{{ post.url }}">
-        <time class="post-date" datetime="{{ post.date | htmlDate }}">{{ post.date | readableDate }}</time>
-        <div class="post-main">
-          {% if post.data.category %}<p class="post-tag">{{ post.data.category }}</p>{% endif %}
-          <h2 class="post-title">{{ post.data.title }}</h2>
-          {% if post.data.summary %}<p class="post-summary">{{ post.data.summary }}</p>{% endif %}
-        </div>
-        <span class="post-arrow" aria-hidden="true">›</span>
-      </a>
+
+    <div class="blog-filter" role="group" aria-label="Filter posts by topic">
+      <button type="button" class="blog-pill" data-filter-btn="all" aria-pressed="true">All <span class="blog-pill-count">{{ allPosts.length }}</span></button>
+      {% set readingPosts = [] %}
+      {% for post in allPosts %}{% if post.data.category == "Reading list" %}{% set _ = readingPosts.push(post) %}{% endif %}{% endfor %}
+      {% if readingPosts.length %}
+      <button type="button" class="blog-pill blog-pill-books" data-filter-btn="reading-list" aria-pressed="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5v-13ZM13 4h5.5c.8 0 1.5.7 1.5 1.5v13c0 .8-.7 1.5-1.5 1.5H13V4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        Reading list <span class="blog-pill-count">{{ readingPosts.length }}</span>
+      </button>
+      {% endif %}
+      {% for c in cats %}
+      {% set inCat = [] %}
+      {% for post in allPosts %}{% if post.data.category == c %}{% set _ = inCat.push(post) %}{% endif %}{% endfor %}
+      <button type="button" class="blog-pill" data-filter-btn="{{ c | slugify }}" aria-pressed="false">{{ c }} <span class="blog-pill-count">{{ inCat.length }}</span></button>
       {% endfor %}
-    {% else %}
-      <div class="post-empty">
-        <p class="post-empty-title">First post coming soon.</p>
-        <p class="post-empty-text">In the meantime, the <a href="/projects/projects.html">projects</a> show what I've been building.</p>
+    </div>
+
+    {# The bookshelf: only shown when "Reading list" is picked #}
+    <div class="bookshelf" data-shelf>
+      <div class="bookshelf-head">
+        <h2>The bookshelf</h2>
+        <p>Every trading and finance book I've reviewed, in the order I read them.</p>
       </div>
+
+      {% for list in readingLists %}
+      {% set books = [] %}
+      {% for post in oldestFirst %}{% if post.data.book and post.data.book.list == list.key %}{% set _ = books.push(post) %}{% endif %}{% endfor %}
+      <div class="shelf-list">
+        <div class="shelf-list-head">
+          <div>
+            <h3>{{ list.name }}</h3>
+            <p>{{ list.note }}</p>
+          </div>
+          {% if list.total %}<p class="shelf-progress"><strong>{{ books.length }}</strong> of {{ list.total }} read</p>
+          {% elif books.length %}<p class="shelf-progress"><strong>{{ books.length }}</strong> read</p>{% endif %}
+        </div>
+        <div class="shelf-row">
+          {% for post in books %}
+          {% set b = post.data.book %}
+          <a class="book{% if b.tone %} book-{{ b.tone }}{% endif %}" href="{{ post.url }}">
+            <span class="book-num">No. {{ loop.index }}</span>
+            <span class="book-title">{{ b.title }}</span>
+            <span class="book-author">{{ b.author }}{% if b.year %} · {{ b.year }}{% endif %}</span>
+            {% if b.takeaway %}<span class="book-take">{{ b.takeaway }}</span>{% endif %}
+            <span class="book-foot">
+              <time datetime="{{ post.date | htmlDate }}">{{ post.date | readableDate }}</time>
+              <span class="book-cta">Read review <span aria-hidden="true">›</span></span>
+            </span>
+          </a>
+          {% endfor %}
+          {% if list.total and books.length < list.total %}
+          <div class="book book-next" aria-hidden="true">
+            <span class="book-num">No. {{ books.length + 1 }}</span>
+            <span class="book-title">Up next</span>
+            <span class="book-author">Review coming soon</span>
+          </div>
+          {% elif not books.length %}
+          <div class="book book-next" aria-hidden="true">
+            <span class="book-num">No. 1</span>
+            <span class="book-title">First pick</span>
+            <span class="book-author">Coming soon</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% for post in allPosts %}
+    <a class="post-row" href="{{ post.url }}" data-cat="{{ (post.data.category or 'other') | slugify }}"{% if post.data.book %} data-onshelf{% endif %}>
+      <time class="post-date" datetime="{{ post.date | htmlDate }}">{{ post.date | readableDate }}</time>
+      <div class="post-main">
+        {% if post.data.category %}<p class="post-tag">{{ post.data.category }}</p>{% endif %}
+        <h2 class="post-title">{{ post.data.title }}</h2>
+        {% if post.data.summary %}<p class="post-summary">{{ post.data.summary }}</p>{% endif %}
+      </div>
+      <span class="post-arrow" aria-hidden="true">›</span>
+    </a>
+    {% endfor %}
+
+    {% else %}
+    <div class="post-empty">
+      <p class="post-empty-title">First post coming soon.</p>
+      <p class="post-empty-text">In the meantime, the <a href="/projects/projects.html">projects</a> show what I've been building.</p>
+    </div>
     {% endif %}
   </div>
 </section>

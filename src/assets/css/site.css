@@ -543,6 +543,112 @@ h1, h2, h3, p { margin: 0; }
   .post-arrow { display: none; }
 }
 
+/* 13b. Blog filter and bookshelf */
+.post-row[hidden] { display: none; }
+
+.blog-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.blog-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 980px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.blog-pill:hover { border-color: var(--accent); }
+.blog-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.blog-pill-count { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text-2); }
+.blog-pill-books { border-color: var(--accent); color: var(--accent); }
+.blog-pill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.blog-pill[aria-pressed="true"] .blog-pill-count { color: inherit; opacity: 0.75; }
+
+/* The shelf only shows once "Reading list" is picked */
+.bookshelf { display: flex; flex-direction: column; gap: 28px; padding: 4px 0 20px; }
+.post-list[data-filter]:not([data-filter="reading-list"]) .bookshelf { display: none; }
+
+.bookshelf-head h2 { font-size: clamp(24px, 3vw, 30px); letter-spacing: -0.02em; }
+.bookshelf-head p { margin-top: 4px; font-size: 16px; color: var(--text-2); }
+
+.shelf-list-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px 24px; flex-wrap: wrap; margin-bottom: 14px; }
+.shelf-list-head h3 { font-size: 19px; letter-spacing: -0.01em; }
+.shelf-list-head p { margin-top: 2px; font-size: 15px; color: var(--text-2); }
+.shelf-progress { font-family: var(--mono); font-size: 13px; white-space: nowrap; }
+.shelf-progress strong { color: var(--accent); font-weight: 500; }
+
+.shelf-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 16px; }
+
+/* Each book is drawn as a cover, with a darker spine down the left */
+.book {
+  --book-bg: var(--card-1);
+  --book-accent: var(--card-1-accent);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 270px;
+  padding: 20px 18px 18px 30px;
+  border-radius: 6px var(--radius-sm) var(--radius-sm) 6px;
+  background: var(--book-bg);
+  color: var(--card-text);
+  box-shadow: inset 10px 0 0 rgba(0, 0, 0, 0.22), inset 11px 0 0 rgba(255, 255, 255, 0.08);
+  transition: transform 0.2s ease;
+}
+a.book:hover { color: var(--card-text); transform: translateY(-4px) rotate(-0.6deg); }
+a.book:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.shelf-row > .book:nth-child(5n+2) { --book-bg: var(--card-2); --book-accent: var(--card-2-accent); }
+.shelf-row > .book:nth-child(5n+3) { --book-bg: var(--card-3); --book-accent: var(--card-3-accent); }
+.shelf-row > .book:nth-child(5n+4) { --book-bg: #2f4858; --book-accent: #a5c8dc; }
+.shelf-row > .book:nth-child(5n+5) { --book-bg: #5b4636; --book-accent: #e7cdb4; }
+/* Optional tone: in a post's book front matter picks a colour */
+.shelf-row > .book.book-forest   { --book-bg: var(--card-1); --book-accent: var(--card-1-accent); }
+.shelf-row > .book.book-navy     { --book-bg: var(--card-2); --book-accent: var(--card-2-accent); }
+.shelf-row > .book.book-burgundy { --book-bg: var(--card-3); --book-accent: var(--card-3-accent); }
+.shelf-row > .book.book-steel    { --book-bg: #2f4858; --book-accent: #a5c8dc; }
+.shelf-row > .book.book-walnut   { --book-bg: #5b4636; --book-accent: #e7cdb4; }
+
+.book-num { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--book-accent); }
+.book-title { font-size: 20px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+.book-author { font-size: 14px; opacity: 0.8; }
+.book-take {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 14px;
+  line-height: 1.45;
+}
+.book-foot { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.book-foot time { font-family: var(--mono); font-size: 12px; opacity: 0.7; }
+.book-cta { font-weight: 600; color: var(--book-accent); }
+
+/* The empty slot for the next book */
+.shelf-row > .book.book-next {
+  background: transparent;
+  color: var(--text-2);
+  border: 1.5px dashed var(--border);
+  box-shadow: none;
+  min-height: 160px;
+  --book-accent: var(--text-2);
+}
+.book-next .book-title { color: var(--text); }
+[data-theme="dark"] .shelf-row > .book.book-next { border-color: rgba(255, 255, 255, 0.18); }
+
+@media (max-width: 600px) {
+  .shelf-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .book { min-height: 230px; padding: 16px 12px 14px 22px; box-shadow: inset 7px 0 0 rgba(0, 0, 0, 0.22), inset 8px 0 0 rgba(255, 255, 255, 0.08); }
+  .book-title { font-size: 17px; }
+  .book-take { display: none; }
+  .blog-pill { padding: 8px 14px; font-size: 14px; }
+}
+
 /* 14. Blog post - ” a single post */
 .post .container { max-width: 720px; }
 
