@@ -199,7 +199,7 @@
           "Trend Following (CTAs)",
           "Relative Value",
           "Event-Driven",
-          { "name": "Credit and Distressed", "planned": ["Credit and Distressed"] },
+          "Credit and Distressed",
           { "name": "Quant Funds", "planned": ["Quant Funds"] }
         ] },
       { "title": "The Investment Process", "blurb": "From an idea to a position the portfolio manager will back.",

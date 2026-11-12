@@ -1,0 +1,250 @@
+---
+title: Credit and Distressed
+shelf: hedge-funds
+chapter: strategies
+subtopic: Credit and Distressed
+order: 1
+summary: How credit hedge funds make money from lending, from investment-grade bonds to defaulted debt; credit spreads, ratings, default and recovery; three ways to run a credit fund (long-biased with leverage, long/short with CDS, loan-to-own); why credit funds earn steadily then lose fast; distressed investing and forced sellers; Chapter 11 step by step; the fulcrum security; famous trades (Apollo and LyondellBasell, Elliott and Argentina, Hertz); and sovereign debt from Argentina to Ghana.
+lede: 'Lend money to a friend and you''ll want a little extra back for the risk they never repay you. Credit funds earn that extra on a vast scale, across a corporate bond market of more than $40 trillion. Most of the time it''s steady income. When companies start to fail, the same market becomes a hunting ground for investors who know exactly what a broken company''s debt is worth.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, macro, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/credit-and-distressed.js]
+alsoIn: [markets/rates-and-bonds/Credit Risk]
+
+quiz:
+  - q: 'What is the fulcrum security?'
+    opts: ['The layer of a company''s debt where its value runs out: layers above are paid in full, layers below get little or nothing', 'The most senior loan, which is always repaid first', 'The company''s ordinary shares']
+    right: 0
+    why: 'It''s where the company''s value "breaks". Because it''s only partly covered, it trades cheaply, and in a restructuring it''s usually swapped into the new company''s shares, so it carries the most upside and the most risk.'
+  - q: 'Why do distressed bonds often sell far below what they''ll eventually recover?'
+    opts: ['Because bankruptcy courts set low prices', 'Because distressed bonds stop paying interest forever', 'Because many holders, such as insurers and investment-grade funds, are forced to sell when a company is downgraded or defaults, whatever the price']
+    right: 2
+    why: 'Their rules don''t allow them to hold junk-rated or defaulted debt. That creates a crowd of sellers who don''t care about price, and specialist distressed funds are the buyers.'
+  - q: 'A long-biased credit fund borrows to own \(3\times\) its capital in high-yield bonds. Spreads widen sharply in a crisis. What happens?'
+    opts: ['Nothing, because bonds always repay at maturity', 'The fall in bond prices is multiplied by three, wiping out years of interest income in weeks', 'The fund gains because yields are now higher']
+    right: 1
+    why: 'Wider spreads mean lower bond prices. With leverage the loss is multiplied, and lenders may demand more margin at the worst moment. That''s what happened to many credit funds in 2008 and March 2020.'
+
+connected:
+  - { label: Builds on, title: Event-Driven, where: Hedge Funds · Strategies, url: /hub/hedge-funds/event-driven/ }
+  - { label: Builds on, title: Relative Value, where: Hedge Funds · Strategies, url: /hub/hedge-funds/relative-value/ }
+  - { label: Builds on, title: Bond Prices and Yields, where: Markets · Rates and Bonds, url: /hub/markets/bond-prices-and-yields/ }
+  - { label: Used in, title: Quant Funds, where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .cd-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .cd-steps { list-style: none; margin: 10px 0 6px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; counter-reset: s; }
+  .cd-steps li { border: 1px solid var(--border); border-top: 3px solid var(--tone); border-radius: 10px; padding: 10px 12px; background: var(--bg); font-size: 14px; color: var(--text-2); counter-increment: s; }
+  .cd-steps li strong { display: block; color: var(--text); font-size: 15px; margin-bottom: 3px; }
+  .cd-steps li strong::before { content: counter(s) ". "; font-family: var(--mono); color: var(--text-2); }
+  @media (max-width: 620px) { .cd-steps { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "Lending for a Living", "What is credit, and how do credit funds make money?", "Lending for a living" %}
+  <div class="prose">
+    <p>Lend £100 to a friend who always pays you back and you might ask for nothing extra. Lend it to a friend who sometimes forgets and you'd want a bit more. Lend it to someone who has already let you down twice and you'd want a lot more, or you wouldn't lend at all. That extra is the heart of credit.</p>
+    <p>A company's bond pays a higher yield than a government bond of the same length. The gap is the {% gl "credit spread" %}credit spread{% endgl %}: the reward for the risk the company doesn't pay. It covers two things:</p>
+    <ul>
+      <li><strong>The chance of {% gl "default" %}default{% endgl %}</strong>: the company failing to pay interest or repay the loan.</li>
+      <li><strong>How much you'd lose if it did.</strong> Lenders rarely lose everything; they usually get some of their money back, the {% gl "recovery rate" %}recovery rate{% endgl %}. The loss is what's left.</li>
+    </ul>
+    <p>Multiply the two and you have the <strong>expected loss</strong>. A bond with a \(2\%\) yearly chance of default and \(40\%\) recovery expects to lose \(2\% \times 60\% = 1.2\%\) a year. If its spread is \(4\%\), the investor is paid well for that risk; if it's \(1\%\), she isn't.</p>
+    <p>{% gl "credit rating" %}Credit ratings{% endgl %} from S&amp;P, Moody's and Fitch sort borrowers into two broad groups. <strong>Investment grade</strong> (BBB− and above) are the safer borrowers. Below that is {% gl "high yield" %}high yield{% endgl %}, also called junk: riskier companies paying higher spreads. The line matters enormously, because many pension funds and insurers may only hold investment grade. When a company is downgraded across it (a "fallen angel", like General Motors in 2005), they have to sell.</p>
+    <p>Credit markets often notice trouble before share prices do. A widening spread or a falling bond price can be an early warning for equity investors, which is one reason long/short equity analysts watch credit closely.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Credit Spectrum", "What can a credit fund buy?", "The credit spectrum" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Segment</th><th>Typical instruments</th><th>Yield range</th><th>Key risks</th></tr></thead>
+      <tbody>
+        <tr><td>Investment grade</td><td>Corporate bonds, IG CDS indices</td><td>\(3\)–\(6\%\)</td><td>Spread moves, sector concentration</td></tr>
+        <tr><td>High yield</td><td>HY bonds, leveraged loans, HY CDS</td><td>\(6\)–\(12\%\)</td><td>Default chance, recovery rate</td></tr>
+        <tr><td>{% gl "leveraged loan" %}Leveraged loans{% endgl %}</td><td>Senior secured loans with floating interest</td><td>\(6\)–\(10\%\)</td><td>Being repaid early, demand from CLOs</td></tr>
+        <tr><td>Structured credit</td><td>{% gl "collateralised loan obligation" %}CLOs{% endgl %}, mortgage and other asset-backed bonds</td><td>\(5\)–\(15\%+\)</td><td>Which slice you own, how much cushion sits below it</td></tr>
+        <tr><td>Distressed</td><td>Defaulted bonds, DIP loans, shares after a restructuring</td><td>\(15\)–\(50\%+\)</td><td>Recovery analysis, bankruptcy law, how long it takes</td></tr>
+        <tr><td>Sovereign</td><td>Emerging market government bonds, sovereign CDS</td><td>\(5\)–\(25\%+\)</td><td>Politics, currency, the country's history of restructuring</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Credit hedge funds differ from ordinary bond funds in four ways: they can borrow to amplify returns, they can bet against companies through {% gl "credit default swap" %}CDS{% endgl %}, they can hold hard-to-sell or defaulted debt that most institutions can't, and they can move from aggressive to defensive as the credit cycle turns.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Three Ways to Run a Credit Fund", "How do credit hedge funds actually invest?", "Three ways to run a credit fund" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Approach</th><th>How it makes money</th><th>The catch</th></tr></thead>
+      <tbody>
+        <tr><td>Long-biased credit</td><td>Owns bonds and loans for their interest (the carry), plus gains if spreads tighten. Borrows \(2\) to \(5\) times its capital to make modest yields worthwhile</td><td>Very exposed to credit downturns, when prices fall and leverage multiplies the loss</td></tr>
+        <tr><td>Long/short credit</td><td>Owns credits it thinks are undervalued and buys CDS protection on ones it thinks are weakening</td><td>Earns less in strong rallies, in exchange for protection in downturns</td></tr>
+        <tr><td>Distressed-for-control ({% gl "loan-to-own" %}loan-to-own{% endgl %})</td><td>Buys enough of a struggling company's debt, at the fulcrum, to steer the bankruptcy and end up owning the company</td><td>Needs huge capital, bankruptcy lawyers, operating skill and years of patience</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Loan-to-own blurs into private equity. Its best-known names, Apollo, Oaktree (Howard Marks's firm) and Elliott, all run both kinds of business.</p>
+    <p>The long-biased approach has a shape you've met before: steady income most of the time, then a sharp loss when the cycle turns. The interactive shows why leverage is the deciding factor.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Carry and the credit cycle</h3><p>A fund owns high-yield bonds yielding \(8\%\) (a \(4\%\) government yield plus a \(4\%\) spread) and borrows at \(5\%\) to own more. Pick the kind of period and the leverage, and see where the return comes from. The bonds' prices fall about \(4\%\) for every \(1\) percentage point the spread widens, and defaults lose \(60\%\) of what's owed.</p></div>
+    <div class="controls">
+      <div class="presets cd-pick" id="cc-period" aria-label="Kind of period"></div>
+      <div class="ctrl"><label for="cc-lev">Leverage</label><input type="range" id="cc-lev" min="1" max="5" step="0.5" value="3"><output id="cc-lev-out" for="cc-lev">3×</output></div>
+    </div>
+    <svg class="chart" id="chart-cc" viewBox="0 0 640 220" role="img" aria-label="Where the fund's return comes from: interest earned, defaults, the change in spreads, the cost of borrowing, and the total"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Adds to return</span><span><i class="sw grey"></i>Takes away</span></div>
+    <div class="readout" id="cc-read"></div>
+    <p class="look" id="cc-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Distressed Investing", "Why can a failing company's debt be a bargain?", "Distressed investing" %}
+  <div class="prose">
+    <p>Distressed investing means buying the debt, and sometimes the shares, of companies that are close to default or already in bankruptcy. A common rule of thumb calls a bond distressed when it yields more than \(10\) percentage points above government bonds, or trades below about \(70\) to \(80\) cents on the dollar.</p>
+    <p>The opportunity comes from <strong>forced sellers</strong>. As a company slides towards bankruptcy, many of its original lenders (insurers, pension funds, investment-grade funds) must sell, because their rules forbid holding junk-rated or defaulted debt. They sell whatever the price. Distressed funds are the buyers, often at a deep discount to what the debt will eventually recover.</p>
+    <p>The skills are unusual: deep credit analysis, bankruptcy law, valuing a business in chaos, and often the willingness to sit on creditor committees and fight for a better deal. Deltashark's reading here is Stephen Moyer's <em>Distressed Debt Analysis</em> (2004), the technical reference, and Howard Marks's <em>The Most Important Thing</em> (2011) on risk and cycles.</p>
+    <h3>Chapter 11, step by step</h3>
+    <p>Most large US restructurings happen under {% gl "Chapter 11" %}Chapter 11{% endgl %} of the US bankruptcy code, which lets a company keep running while it reorganises its debts.</p>
+  </div>
+  <ol class="cd-steps" aria-label="The Chapter 11 process">
+    <li><strong>Filing</strong>An {% gl "automatic stay" %}automatic stay{% endgl %} freezes debt payments and lawsuits, so creditors can't grab assets.</li>
+    <li><strong>DIP financing</strong>New lenders provide {% gl "DIP financing" %}debtor-in-possession{% endgl %} loans to keep the business running; they're paid first.</li>
+    <li><strong>Exclusivity</strong>The company has the sole right, at first for \(120\) days, to propose a plan.</li>
+    <li><strong>Plan of reorganisation</strong>Sets out what each class of creditor gets: cash, new debt or new shares.</li>
+    <li><strong>Confirmation</strong>Creditors vote by class, and the court confirms the plan.</li>
+    <li><strong>Emergence</strong>The company leaves bankruptcy with less debt and, often, new owners.</li>
+  </ol>
+  <div class="prose">
+    <p>The guiding principle is the {% gl "absolute priority rule" %}absolute priority rule{% endgl %}: each layer of the capital structure (the ladder in Relative Value) must be paid in full before the layer below gets anything. In practice, negotiations bend it, and junior creditors sometimes get a little to win their votes. The UK has its own tools, such as administration and court-approved restructuring plans, built on the same idea.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Fulcrum Security", "Which part of a broken company's debt holds the most opportunity?", "The fulcrum security" %}
+  <div class="prose">
+    <p>Line up a company's claims from most senior to most junior and pour its value in from the top, like water filling glasses. The first glasses fill completely; somewhere the water runs out. The layer where it runs out, partly full, is the {% gl "fulcrum security" %}fulcrum security{% endgl %}. Layers above it are paid in full; layers below get little or nothing.</p>
+    <p>The fulcrum is where distressed investors focus. It trades cheaply because it's only partly covered, but in a restructuring it's usually swapped into the new company's shares. If the business recovers, or the restructuring values it more generously than the market feared, the fulcrum's holders own the upside. Deltashark's example has \(\$600\) million of debt and preferred shares, plus the ordinary shares, against a company worth \(\$350\) million.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Find the fulcrum</h3><p>Deltashark's capital structure, from senior secured loans down to ordinary shares. Move the company's value and watch where it runs out. Then set the price you'd pay for the subordinated (sub) debt, and see your return if the restructuring values the company at that level.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="fu-ev">Company value</label><input type="range" id="fu-ev" min="100" max="800" step="10" value="350"><output id="fu-ev-out" for="fu-ev">$350m</output></div>
+      <div class="ctrl"><label for="fu-px">Sub debt price</label><input type="range" id="fu-px" min="5" max="90" step="1" value="20"><output id="fu-px-out" for="fu-px">20¢</output></div>
+    </div>
+    <svg class="chart" id="chart-fu" viewBox="0 0 640 250" role="img" aria-label="Each layer of the company's capital structure, filled to the share of its claim that the company's value covers"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Covered by the company's value</span><span><i class="sw grey"></i>Not covered</span></div>
+    <div class="readout" id="fu-read"></div>
+    <p class="look" id="fu-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>In distress, the question isn't "is this a good company?" but "how much is it worth, and who gets paid first?" Get the value roughly right and know exactly where you sit in the queue, and a bond bought at \(20\) cents can recover many times that.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Famous Credit and Distressed Trades", "What do the great distressed investments look like?", "Famous trades" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Trade</th><th>What happened</th><th>The lesson</th></tr></thead>
+      <tbody>
+        <tr><td>Apollo and LyondellBasell (2009–10)</td><td>Apollo bought up the chemical giant's debt as it went bankrupt in January 2009, helped fund its rescue, and swapped its debt for about a quarter of the company when it emerged in April 2010. Roughly \(\$2\) billion became about \(\$10\) billion of profit</td><td>Loan-to-own at its best: buy the fulcrum from panicked sellers, then own the recovery</td></tr>
+        <tr><td>Elliott and Argentina (2001–2016)</td><td>Elliott bought Argentine government bonds cheaply after the 2001 default and refused the restructuring. It sued for 15 years, even having an Argentine navy ship detained in Ghana in 2012, and settled in 2016 for a profit reported at about \(\$2.4\) billion</td><td>Sovereign distressed investing is as much about courts and contracts as about economics. Critics call such funds "vultures"</td></tr>
+        <tr><td>Hertz (2020–21)</td><td>Hertz filed for bankruptcy in May 2020 as travel collapsed. Used-car prices then soared, its fleet became valuable, and it emerged in June 2021 paying creditors in full and shareholders about \(\$7\) to \(\$8\) a share</td><td>The fulcrum can move: when the company's value rises, it climbs the ladder, here all the way to the shares</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Hertz is rare. Shareholders almost always get nothing in a bankruptcy. But it shows why a distressed analyst values the business under several scenarios rather than one.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "How does credit show up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: when a currency collapses, dollar debts follow</h3>
+    <p>Many emerging market governments and companies borrow in dollars. If their own currency falls sharply, the debt becomes far more expensive to repay in local money, and defaults follow. That's why sovereign credit and FX traders watch each other. Ghana defaulted on most of its foreign debt in December 2022 after the cedi lost about half its value that year, and restructured its dollar bonds in 2024 with large losses for holders. Zambia (2020) and Sri Lanka (2022) went through similar crises.</p>
+    <h3>Gold: miners' debt rises and falls with the metal</h3>
+    <p>A gold miner's ability to repay depends on the gold price. When gold fell sharply in 2013, several heavily indebted miners had to restructure, and their bonds traded as distressed. Credit funds lending to miners effectively take a view on gold. Some miners now raise money by selling future gold output in advance ("streaming"), a form of credit tied directly to the metal.</p>
+    <h3>Bonds: the home ground</h3>
+    <p>Credit is a bond market. The tools from Bond Prices and Yields (yield, duration, price) all apply; credit adds the second layer: will this borrower pay? Spread duration, how much a bond's price moves when its spread changes, is the credit version of duration.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Spreads in/out</h3><span class="tag desk">Desk</span></div><p>Credit spreads tightening (in) or widening (out).</p><p class="eg">"HY spreads are 50 out on the week."</p></div>
+    <div class="term"><div class="term-top"><h3>IG / HY</h3><span class="tag desk">Desk</span></div><p>Investment grade and high yield.</p><p class="eg">"We're moving up from HY into IG."</p></div>
+    <div class="term"><div class="term-top"><h3>Fallen angel</h3><span class="tag desk">Desk</span></div><p>A bond downgraded from investment grade to junk.</p><p class="eg">"Fallen angels get dumped by IG funds."</p></div>
+    <div class="term"><div class="term-top"><h3>Cents on the dollar</h3><span class="tag desk">Desk</span></div><p>How distressed debt is priced: per 100 of face value.</p><p class="eg">"The subs are trading at 20 cents."</p></div>
+    <div class="term"><div class="term-top"><h3>Fulcrum</h3><span class="tag desk">Desk</span></div><p>The layer where the company's value runs out.</p><p class="eg">"The unsecureds are the fulcrum."</p></div>
+    <div class="term"><div class="term-top"><h3>Loan-to-own</h3><span class="tag desk">Desk</span></div><p>Buying debt to end up owning the company.</p><p class="eg">"They're playing loan-to-own on this one."</p></div>
+    <div class="term"><div class="term-top"><h3>Haircut</h3><span class="tag desk">Desk</span></div><p>The loss creditors accept in a restructuring.</p><p class="eg">"Bondholders took a 40% haircut."</p></div>
+    <div class="term"><div class="term-top"><h3>Holdout</h3><span class="tag desk">Desk</span></div><p>A creditor who refuses a restructuring deal.</p><p class="eg">"The holdouts sued for full payment."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where credit thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: credit as an early warning</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>High-yield spreads are one of the best gauges of risk appetite. When they widen fast, investors are scared, and that usually means a stronger dollar and yen, firmer gold and falling government bond yields. Keep an eye on a high-yield spread index alongside your FX, gold and bond charts: it often moves first.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: where your lender sits in the queue</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A villa development is financed in layers too: a senior bank loan secured on the land, perhaps a more expensive mezzanine loan behind it, and your own equity at the bottom. If sales disappoint, the same waterfall applies: the bank is paid first and equity last. Understanding the fulcrum tells you how much a bad year can cost you, and it's also how distressed property investors find bargains when overstretched developers have to sell.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: credit is the missing market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has had its own distressed episode: after the 2009 banking crisis, the government created AMCON, a "bad bank" that bought banks' non-performing loans to clean up the system. Today, small businesses and individuals still struggle to borrow because lenders can't easily judge credit risk. Fintech lenders using better data on who repays are building the credit market, and with neighbours like Ghana restructuring their debts, investors pay close attention to sovereign credit risk across West Africa.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on credit risk and recovery?" %}
+  <div class="formula"><span class="lbl">Credit spread and expected loss</span>\[ s = y_{\text{corporate}} - y_{\text{government}} \qquad \text{Expected loss} = \text{PD} \times (1 - R) \]</div>
+  <div class="formula"><span class="lbl">A leveraged credit fund's return</span>\[ r \approx L\,\big(y - \text{EL} - D_s\,\Delta s\big) - (L - 1)\, f \]</div>
+  <div class="formula"><span class="lbl">Recovery by layer (absolute priority)</span>\[ \text{Recovery}_k = \min\!\Big(1,\; \max\!\Big(0,\; \frac{V - \text{claims senior to } k}{\text{claim}_k}\Big)\Big) \]</div>
+  <div class="formula"><span class="lbl">A distressed purchase</span>\[ \text{Return} = \frac{\text{Recovery}}{\text{Price}} - 1 \qquad \text{Yearly} = \Big(\frac{\text{Recovery}}{\text{Price}}\Big)^{1/t} - 1 \]</div>
+  <div class="prose">
+    <p>PD is the probability of default, \(R\) the recovery rate, \(L\) leverage, \(y\) the bonds' yield, \(D_s\) spread duration, \(\Delta s\) the change in spread, \(f\) the borrowing rate, \(V\) the company's value and \(t\) the years until you're paid.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Using Deltashark's capital structure, the restructuring values the company at \(\$450\) million. You bought the subordinated debt at \(20\) cents, and the process takes two years.</h3>
+    <ol class="steps">
+      <li>Senior secured (\(\$200\)m) and senior unsecured (\(\$150\)m) are paid in full: \(\$350\)m used, \(\$100\)m left.</li>
+      <li>Subordinated debt (\(\$200\)m) gets \(100 \div 200 = 50\) cents on the dollar. It's the fulcrum.</li>
+      <li>Return: \(50 \div 20 - 1 = 150\%\).</li>
+      <li>Over two years: \(2.5^{1/2} - 1 \approx 58\%\) a year.</li>
+    </ol>
+    <p class="answer">At \(\$350\)m the same bonds would recover nothing; at \(\$450\)m they make \(150\%\). Valuing the company is the whole trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A bond has a \(3\%\) yearly default probability and an expected recovery of \(40\%\). What's its expected loss, and is a \(2.5\%\) spread enough?</span></p>
+      <details><summary>Show answer</summary><div><span>Expected loss \(= 3\% \times 60\% = 1.8\%\) a year. A \(2.5\%\) spread more than covers it, leaving about \(0.7\%\) for the uncertainty and for tying up money. Whether that's enough depends on how confident you are in the default estimate.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Describe the three main approaches of credit hedge funds.</span></p>
+      <details><summary>Show answer</summary><div><span>Long-biased (own bonds and loans for carry and spread tightening, usually with \(2\)–\(5\times\) leverage); long/short (long undervalued credits, short weakening ones through CDS, less net exposure); distressed-for-control or loan-to-own (buy the fulcrum to steer a bankruptcy and end up owning the company).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Why do distressed bonds often sell below their likely recovery value?</span></p>
+      <details><summary>Show answer</summary><div><span>Forced selling: insurers, pension funds and investment-grade funds must sell downgraded or defaulted debt whatever the price, while few buyers have the skills, capital and patience for bankruptcy.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>List the six stages of Chapter 11.</span></p>
+      <details><summary>Show answer</summary><div><span>Filing (automatic stay); DIP financing; exclusivity period (initially \(120\) days); plan of reorganisation; confirmation (creditor vote and court approval); emergence with a new capital structure.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A company worth \(\$300\)m has \(\$150\)m of senior loans, \(\$100\)m of senior bonds and \(\$150\)m of subordinated bonds. Which is the fulcrum, and what does each layer recover?</span></p>
+      <details><summary>Show answer</summary><div><span>Senior loans \(100\%\) (\(\$150\)m used), senior bonds \(100\%\) (\(\$250\)m used), subordinated bonds get \(\$50\)m of \(\$150\)m \(= 33\) cents. The subordinated bonds are the fulcrum; the shares get nothing.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A credit fund at \(4\times\) leverage owns bonds with a spread duration of \(4\). Spreads widen by \(2\) percentage points. Roughly what does that do to the fund?</span></p>
+      <details><summary>Show answer</summary><div><span>Bond prices fall about \(4 \times 2\% = 8\%\); at \(4\times\) leverage, about \(32\%\) of the fund's capital, before any interest earned. That's why leveraged credit funds can lose years of income in weeks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question (Deltashark): what is the fulcrum security, and why is it attractive to distressed investors?</span></p>
+      <details><summary>Show answer</summary><div><span>It's the layer of the capital structure where the company's value is no longer enough to cover the claims: layers above are paid in full, layers below get little or nothing. It's attractive because it trades at a deep discount but is usually converted into the new company's equity, so if the business recovers or the restructuring is favourable it can be repaid at par or turn into shares worth far more than the purchase price.</span></div></details></div>
+  </div>
+{% endsec %}
