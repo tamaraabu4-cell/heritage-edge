@@ -197,7 +197,7 @@
           "Long/Short Equity",
           "Global Macro",
           "Trend Following (CTAs)",
-          { "name": "Relative Value", "planned": ["Relative Value"] },
+          "Relative Value",
           { "name": "Event-Driven", "planned": ["Event-Driven"] },
           { "name": "Credit and Distressed", "planned": ["Credit and Distressed"] },
           { "name": "Quant Funds", "planned": ["Quant Funds"] }

@@ -1,0 +1,287 @@
+---
+title: Relative Value
+shelf: hedge-funds
+chapter: strategies
+subtopic: Relative Value
+order: 1
+summary: How relative value funds profit when two closely related prices drift apart and come back together; why small spreads need big leverage and what happens when a spread widens first; convertible arbitrage (the bond floor, the hedge, gamma trading and its 2008 crash); capital structure arbitrage and the 2005 GM surprise; fixed income arbitrage (on-the-run versus off-the-run, curve trades, swap spreads, the basis trade); and the same idea in FX, gold and bonds.
+lede: 'Imagine the same chocolate bar selling for £1.00 in one shop and £1.05 next door. Buy it in the first, sell it in the second, and you make 5p without caring what chocolate costs. Relative value funds do this with bonds, shares and derivatives. The gaps are tiny, so they borrow heavily to make them worth having, and that is where the danger lives.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, macro, quant, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/relative-value.js]
+
+quiz:
+  - q: 'Why do relative value funds usually use a lot of leverage?'
+    opts: ['Because regulators require it', 'Because the price gaps they capture are tiny, often a fraction of a percent, so borrowing is needed to make the returns worthwhile', 'Because they bet on the direction of the market']
+    right: 1
+    why: 'A gap of \(0.5\%\) earns \(0.5\%\) on your own money. Borrow \(20\) times as much and it earns about \(10\%\). The same borrowing turns a small widening of the gap into a large loss.'
+  - q: 'A convertible arbitrage fund owns a convertible bond and is short the company''s shares. What is the short position for?'
+    opts: ['To cancel out most of the convertible''s sensitivity to the share price, leaving the coupon, the cheap option and the credit to earn money', 'To bet that the company will go bust', 'To avoid paying the coupon']
+    right: 0
+    why: 'The short hedge removes most of the equity risk. What''s left is the bond''s income, the chance to earn from rehedging as the shares move (gamma trading), and any gain if the option or the credit was priced too cheaply.'
+  - q: 'In May 2005, many funds were long General Motors'' bonds and short its shares. What went wrong?'
+    opts: ['GM paid off all its bonds early', 'The shares fell and the bonds rose', 'A downgrade to junk knocked the bonds while a takeover-style bid for shares lifted the stock, so both legs lost']
+    right: 2
+    why: 'Kirk Kerkorian''s bid for GM shares pushed the stock up \(18\%\) in a day, and Standard and Poor''s cut GM''s debt to junk the next day. Prices that "should" move together moved apart, against the trade on both sides.'
+
+connected:
+  - { label: Builds on, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/the-strategy-map/ }
+  - { label: Builds on, title: Margin and Leverage, where: Markets · How Markets Work, url: /hub/markets/margin-and-leverage/ }
+  - { label: Builds on, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/prime-brokerage/ }
+  - { label: Used in, title: LTCM, where: Hedge Funds · Famous Funds and Blow-ups, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .rv-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .rv-ladder { display: grid; gap: 6px; margin: 8px 0 4px; }
+  .rv-ladder > div { display: grid; grid-template-columns: 2.2rem 1fr auto; gap: 10px; align-items: center; border: 1px solid var(--border); border-left: 4px solid var(--tone); border-radius: 8px; padding: 9px 12px; background: var(--bg); }
+  .rv-ladder > div:nth-child(2) { border-left-color: color-mix(in srgb, var(--tone) 75%, var(--note-grey)); }
+  .rv-ladder > div:nth-child(3) { border-left-color: color-mix(in srgb, var(--tone) 50%, var(--note-grey)); }
+  .rv-ladder > div:nth-child(4) { border-left-color: color-mix(in srgb, var(--tone) 25%, var(--note-grey)); }
+  .rv-ladder > div:nth-child(5) { border-left-color: var(--note-grey); }
+  .rv-ladder .n { font: 600 14px var(--mono); color: var(--text-2); }
+  .rv-ladder strong { display: block; font-size: 15px; }
+  .rv-ladder span.d { font-size: 13px; color: var(--text-2); }
+  .rv-ladder .r { font-size: 13px; color: var(--text-2); text-align: right; }
+  @media (max-width: 520px) { .rv-ladder > div { grid-template-columns: 1.6rem 1fr; } .rv-ladder .r { grid-column: 2; text-align: left; } }
+</style>
+
+{% sec 1, "Two Things That Should Cost the Same", "What is relative value investing?", "What relative value is" %}
+  <div class="prose">
+    <p>Most strategies so far bet on a direction: this share will rise, that currency will fall. {% gl "relative value" %}Relative value{% endgl %} funds bet on a <strong>relationship</strong>. They look for two securities that should be priced consistently with each other, wait until the prices drift apart, then buy the cheap one, short the dear one, and profit when the gap closes.</p>
+    <p>Because they're long one thing and short something very similar, the market's direction mostly cancels out. If both prices rise, or both fall, the fund is roughly where it was. The profit, or loss, comes from the <strong>spread</strong>: the gap between the two prices.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Family</th><th>The two related things</th><th>Where it's covered</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "convertible arbitrage" %}Convertible arbitrage{% endgl %}</td><td>A company's convertible bond and its shares</td><td>Section 3</td></tr>
+        <tr><td>{% gl "capital structure arbitrage" %}Capital structure arbitrage{% endgl %}</td><td>Different securities issued by the same company: its bonds, loans, CDS and shares</td><td>Section 4</td></tr>
+        <tr><td>{% gl "fixed income arbitrage" %}Fixed income arbitrage{% endgl %}</td><td>Government bonds, futures, swaps and yield curves that should line up</td><td>Section 5</td></tr>
+        <tr><td>Statistical arbitrage</td><td>Shares whose prices usually move together, such as Coca-Cola and PepsiCo</td><td>The Quant Funds note, later in this chapter</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Allocators like relative value because its returns don't depend on the stock market rising. But the strategy has its own, sharper set of risks, and the next section shows the most important one.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Small Spreads, Big Leverage", "Why do relative value funds borrow so much, and what happens when a spread widens?", "Small spreads, big leverage" %}
+  <div class="prose">
+    <p>The gaps relative value funds capture are tiny: often less than half a percent, sometimes a few {% gl "basis point" %}basis points{% endgl %} (hundredths of a percent). Earning \(0.5\%\) a year isn't worth the effort, so funds borrow (through {% gl "repo" %}repo{% endgl %} and their prime broker) to hold positions many times their capital. At \(20\) times leverage, a \(0.5\%\) gap becomes a \(10\%\) return.</p>
+    <p>The catch: a gap that should close can first get <strong>wider</strong>, especially in a panic, when everyone wants the safer, more liquid of the two securities. Leverage multiplies that too. And if losses get big enough, lenders ask for more {% gl "margin call" %}margin{% endgl %} or pull the loan, forcing the fund to sell at the worst moment, just before the gap closes. Traders describe the strategy as "picking up pennies in front of a steamroller".</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Convergence or catastrophe?</h3><p>You buy the cheap bond and short the dear one when the gap between them is \(0.50\%\). You're confident it will close within a year. Choose how the year goes, how much you borrow, and the lenders' limit: how big a loss they'll tolerate before they force you to sell. Start with "Wobble", then try "Crisis".</p></div>
+    <div class="controls">
+      <div class="presets rv-pick" id="cv-path" aria-label="How the year goes"></div>
+      <div class="ctrl"><label for="cv-lev">Leverage</label><input type="range" id="cv-lev" min="1" max="50" step="1" value="25"><output id="cv-lev-out" for="cv-lev">25×</output></div>
+      <div class="ctrl"><label for="cv-lim">Lenders' limit</label><input type="range" id="cv-lim" min="10" max="90" step="5" value="40"><output id="cv-lim-out" for="cv-lim">40%</output></div>
+    </div>
+    <svg class="chart" id="chart-cv-s" viewBox="0 0 640 170" role="img" aria-label="The gap between the two bonds over the year, in percent"></svg>
+    <svg class="chart" id="chart-cv-e" viewBox="0 0 640 230" role="img" aria-label="Your capital over the year, with and without being forced to sell"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Your capital</span><span><i class="sw grey"></i>If you could have held on</span></div>
+    <div class="readout" id="cv-read"></div>
+    <p class="look" id="cv-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>In relative value, being right isn't enough: you have to survive until you're proved right. Leverage decides how big a wobble you can sit through, and your lenders decide when the waiting stops. That's what happened to LTCM in 1998 (Margin and Leverage tells the story).</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Convertible Arbitrage", "How do funds make money from convertible bonds?", "Convertible arbitrage" %}
+  <div class="prose">
+    <p>A {% gl "convertible bond" %}convertible bond{% endgl %} is a normal bond with a bonus: the holder can swap it for a fixed number of the company's shares. Companies issue them because the bonus lets them pay a lower interest rate. For the holder, it's two things in one:</p>
+    <ul>
+      <li><strong>A bond.</strong> It pays a coupon and returns its face value at the end, so its value can't fall much below what a plain bond from the same company would be worth. That level is the <strong>bond floor</strong>.</li>
+      <li><strong>An option on the shares.</strong> If the share price rises above the {% gl "conversion price" %}conversion price{% endgl %}, the holder can convert and keep the gain, like owning a {% gl "call option" %}call option{% endgl %}.</li>
+    </ul>
+    <p>A convertible arbitrage fund buys the convertible and <strong>shorts the company's shares</strong> to cancel most of the share-price risk. The number of shares to short is set by the convertible's {% gl "delta" %}delta{% endgl %}: how much its price moves for each move in the shares. What's left earns money in four ways.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Coupon income<span class="why">The bond pays interest, and the cash from the short sale earns interest too.</span></span></li>
+    <li><span class="n">2</span><span>Gamma trading<span class="why">As the shares move, the delta changes ({% gl "gamma" %}gamma{% endgl %}), so the fund keeps adjusting its short: selling more shares after rises and buying back after falls. That's buying low and selling high, again and again.</span></span></li>
+    <li><span class="n">3</span><span>Cheap volatility<span class="why">The option inside the convertible is priced on an assumed amount of share-price movement ({% gl "implied volatility" %}implied volatility{% endgl %}). If the shares actually move more, the fund earns more from rehedging than the option cost.</span></span></li>
+    <li><span class="n">4</span><span>Credit improving<span class="why">If the company becomes safer, its bonds, including the bond floor, are worth more.</span></span></li>
+  </ul>
+  <div class="lab">
+    <div class="lab-head"><h3>Inside a convertible</h3><p>A 3-year convertible with \(\$100\) face value, a \(3\%\) coupon, convertible into \(2\) shares (a conversion price of \(\$50\)). Move the share price and the volatility, and watch the convertible's value, its delta and the hedge. The test at the bottom moves the shares \(10\%\) up or down and shows what the hedged position makes.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="cb-s">Share price</label><input type="range" id="cb-s" min="15" max="95" step="1" value="45"><output id="cb-s-out" for="cb-s">$45</output></div>
+      <div class="ctrl"><label for="cb-v">Volatility</label><input type="range" id="cb-v" min="15" max="70" step="5" value="35"><output id="cb-v-out" for="cb-v">35%</output></div>
+    </div>
+    <svg class="chart" id="chart-cb" viewBox="0 0 640 300" role="img" aria-label="The convertible's value against the share price, above both its bond floor and the value of converting into shares"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Convertible's value</span><span><i class="sw grey"></i>Bond floor and conversion value</span></div>
+    <div class="readout" id="cb-read"></div>
+    <p class="look" id="cb-story"></p>
+  </div>
+  <div class="prose">
+    <h3>When it goes wrong</h3>
+    <p>Convertibles are hard to sell in a hurry, and by early 2008 the trade was crowded, with funds borrowing around \(8\) to \(10\) times their capital. Then Lehman Brothers, prime broker to many convertible funds, collapsed, lenders pulled financing, and in September 2008 regulators banned short selling of financial shares, which stopped funds hedging. Everyone sold the same bonds at once. The HFRI convertible arbitrage index lost about \(34\%\) in 2008, and the flagship funds at Citadel and Highbridge, two of the biggest names, each lost more than \(40\%\). The following year, as forced sellers disappeared, the strategy bounced back strongly: the cheap prices left behind by a fire sale are the relative value trader's opportunity.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Capital Structure Arbitrage", "How can one company's securities disagree with each other?", "Capital structure arbitrage" %}
+  <div class="prose">
+    <p>A company raises money in layers, and if it fails, the layers are paid in order, from the top down. Everyone is betting on the same business, so the prices of the layers should tell a consistent story.</p>
+  </div>
+  <div class="rv-ladder" aria-label="A company's capital structure, paid first at the top">
+    <div><span class="n">1</span><span><strong>Senior secured debt</strong><span class="d">Bank loans and bonds backed by specific assets</span></span><span class="r">Paid first, recovers most</span></div>
+    <div><span class="n">2</span><span><strong>Senior unsecured debt</strong><span class="d">Ordinary bonds, with no assets pledged</span></span><span class="r">Next in line</span></div>
+    <div><span class="n">3</span><span><strong>Subordinated debt</strong><span class="d">Bonds that agree to wait behind the senior ones</span></span><span class="r">Recovers less</span></div>
+    <div><span class="n">4</span><span><strong>Preferred shares</strong><span class="d">Shares with a fixed dividend, ahead of ordinary shares</span></span><span class="r">Often little left</span></div>
+    <div><span class="n">5</span><span><strong>Ordinary shares</strong><span class="d">Owners: all the upside, paid last</span></span><span class="r">Usually wiped out</span></div>
+  </div>
+  <div class="prose">
+    <p>{% gl "credit default swap" %}CDS{% endgl %} on the company's bonds sit alongside the ladder as insurance against default. Deltashark gives two examples of the layers disagreeing:</p>
+    <ul>
+      <li><strong>Shares versus CDS.</strong> The shares price a healthy company while the CDS prices a real chance of default. One market is wrong. A fund that trusts the credit market buys CDS protection and shorts the shares.</li>
+      <li><strong>Senior versus subordinated.</strong> Senior bonds trade at \(90\) cents on the dollar and subordinated bonds at \(80\). A gap of only \(10\) cents between layers with very different recoveries looks wrong. A fund that thinks the subordinated bonds will recover more than priced buys them and shorts the senior bonds.</li>
+    </ul>
+    <p>The strategy needs both a credit analyst's and an equity analyst's skills, and it's busiest when companies are under stress.</p>
+    <h3>When it goes wrong: General Motors, May 2005</h3>
+    <p>Many funds were long GM's bonds and short its shares, a trade that pays if the company's troubles hurt the shareholders more than the lenders. On 4 May 2005, the billionaire Kirk Kerkorian bid for GM shares and the stock jumped \(18\%\), its biggest one-day rise in 40 years. The next day Standard &amp; Poor's cut GM's debt to junk, and the bonds fell as investors who could only hold investment-grade debt were forced to sell. Both legs lost at once. The two prices were linked in theory, but in the short run they answered to different buyers and sellers.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Fixed Income Arbitrage", "What are the classic bond market relative value trades?", "Fixed income arbitrage" %}
+  <div class="prose">
+    <p>Government bond markets are the largest and most liquid in the world, and full of instruments that should line up almost exactly. The gaps are measured in basis points, so this is the most heavily borrowed corner of relative value. Deltashark lists four classic trades, and one more has become the biggest of all.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Trade</th><th>The idea</th><th>What can go wrong</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "on-the-run" %}On-the-run{% endgl %} versus off-the-run</td><td>The newest 10-year US Treasury is the most traded, so investors pay a little extra for it. An older bond with almost the same maturity is slightly cheaper. Buy the old one, short the new one, and wait for the newer one to age and lose its extra</td><td>In a panic, everyone wants the most liquid bond, so the gap widens. This was one of LTCM's trades</td></tr>
+        <tr><td>Curve trades</td><td>Bet on the <em>shape</em> of the {% gl "yield curve" %}yield curve{% endgl %}, not its level: a steepener profits if long yields rise relative to short ones, a flattener if they fall. Each leg is sized so a parallel move cancels out</td><td>Central bank surprises can move one end much more than the other</td></tr>
+        <tr><td>{% gl "swap spread" %}Swap spreads{% endgl %}</td><td>Trade the gap between government bond yields and {% gl "interest rate swap" %}swap{% endgl %} rates of the same maturity</td><td>Bank rules and balance sheet limits can push the gap to levels that "shouldn't" exist and keep it there; 30-year US swap spreads turned negative after 2008</td></tr>
+        <tr><td>Cross-country</td><td>Trade the gap between two countries' government bonds, such as German Bunds against Italian bonds, based on their economies</td><td>Politics: a crisis can blow the gap out for months, as in the euro crisis of 2010–12</td></tr>
+        <tr><td>{% gl "basis trade" %}Basis trade{% endgl %}</td><td>Buy Treasuries and sell Treasury futures against them, capturing the small gap between the two, borrowing \(20\) to \(50\) times or more through repo</td><td>Funding: in March 2020, margins rose and repo dried up, funds unwound together, and the Federal Reserve stepped in to buy Treasuries</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The basis trade is now one of the largest hedge fund positions anywhere, much of it run by fixed income pods at the big multi-manager firms (Single-Manager vs Multi-Manager and Prime Brokerage explain the plumbing). Regulators watch it closely for the same reason LTCM is still studied: small, "safe" spreads, enormous borrowing and many funds in the same trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "When Relative Value Works, and When It Doesn't", "Which conditions help or hurt the strategy?", "When it works" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Conditions</th><th>Effect on relative value</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Calm bull market, low volatility</td><td>Weak</td><td>Prices line up well, so spreads are thin and there's little to capture</td></tr>
+        <tr><td>Sharp crisis</td><td>Very bad at first</td><td>Spreads widen, lenders pull back, crowded trades unwind together</td></tr>
+        <tr><td>After a crisis</td><td>Often excellent</td><td>Forced sellers have left wide spreads behind; convertible arbitrage made about \(25\%\) in the first five months of 2009</td></tr>
+        <tr><td>Rising interest rates</td><td>Hard for fixed income arbitrage</td><td>Bond markets get volatile and curve relationships shift</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The pattern is a strategy that earns small, steady returns most of the time and occasionally suffers a large, sudden loss. Its return chart looks calm until the day it doesn't, which is why a long, smooth track record says little about relative value risk. Allocators look at leverage, financing terms and how crowded the trades are, not just past returns.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm or person</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td>Ed Thorp (Princeton Newport Partners)</td><td>A pioneer of convertible and warrant arbitrage; co-wrote <em>Beat the Market</em> (1967)</td></tr>
+        <tr><td>Citadel (Ken Griffin)</td><td>Began with Griffin trading convertible bonds as a student; now a multi-strategy giant</td></tr>
+        <tr><td>Highbridge Capital</td><td>Started in convertible arbitrage in the 1990s before broadening out</td></tr>
+        <tr><td>Long-Term Capital Management</td><td>Fixed income arbitrage on a huge scale; collapsed in 1998</td></tr>
+        <tr><td>Capula Investment Management</td><td>One of the largest fixed income relative value specialists</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Deltashark's reading for this strategy is John Hull's <em>Options, Futures, and Other Derivatives</em>, the standard textbook on pricing the instruments relative value funds trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "Where does relative value turn up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the forward should match the interest rates</h3>
+    <p>A currency forward's price is pinned to the two countries' interest rates (covered interest parity): if pounds earn more interest than dollars, pounds trade at a discount for future delivery, by exactly enough to cancel the gain. Since 2008 the match hasn't been perfect: the gap, called the cross-currency basis, opens up when dollars are scarce, such as at the end of each quarter, and banks and relative value funds trade it.</p>
+    <h3>Gold: one metal, two prices</h3>
+    <p>Gold in London and gold futures in New York should cost almost the same. In March 2020, with flights grounded and refineries shut, bars couldn't be moved between the two, and New York futures traded far above London. Funds that bought London gold and sold New York futures had a near-certain profit, if they could finance the position until the gap closed. Relative value traders also watch the gold-to-silver ratio, a classic pair.</p>
+    <h3>Bonds: the home ground</h3>
+    <p>Fixed income arbitrage is the bond market's version of this note. The same principles reach UK gilts: in the September 2022 gilt crisis, pension funds using leveraged hedges were forced to sell gilts to meet margin calls, pushing yields up and creating more margin calls, until the Bank of England stepped in. Leverage plus forced selling is the relative value nightmare, whoever is holding the position.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>RV</h3><span class="tag desk">Desk</span></div><p>Relative value.</p><p class="eg">"She runs an RV book at a pod shop."</p></div>
+    <div class="term"><div class="term-top"><h3>Spread</h3><span class="tag desk">Desk</span></div><p>The gap between two related prices or yields.</p><p class="eg">"The spread's out 15 basis points today."</p></div>
+    <div class="term"><div class="term-top"><h3>Converge</h3><span class="tag desk">Desk</span></div><p>When a spread closes, as the trade expects.</p><p class="eg">"It'll converge by the roll."</p></div>
+    <div class="term"><div class="term-top"><h3>Converts</h3><span class="tag desk">Desk</span></div><p>Convertible bonds.</p><p class="eg">"New converts from tech issuers this week."</p></div>
+    <div class="term"><div class="term-top"><h3>Bond floor</h3><span class="tag desk">Desk</span></div><p>What a convertible would be worth as a plain bond.</p><p class="eg">"Shares have collapsed; it's trading on its bond floor."</p></div>
+    <div class="term"><div class="term-top"><h3>Delta hedge</h3><span class="tag desk">Desk</span></div><p>Shorting enough shares to cancel the convertible's share-price risk.</p><p class="eg">"Rebalance the delta hedge after the move."</p></div>
+    <div class="term"><div class="term-top"><h3>On-the-run</h3><span class="tag desk">Desk</span></div><p>The most recently issued government bond of a maturity.</p><p class="eg">"Long the old tens, short on-the-runs."</p></div>
+    <div class="term"><div class="term-top"><h3>Steepener</h3><span class="tag desk">Desk</span></div><p>A trade that pays if long yields rise relative to short ones.</p><p class="eg">"Put on 2s10s steepeners into the cuts."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where relative value thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: trade the gap, respect the leverage</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Relative value gives you trades that don't need a view on direction: gold against silver, one bond against a similar one, a currency forward against the interest rates. The lesson for a prop or personal account is the convergence interactive: a small, "safe" spread only stays safe if your leverage lets you survive it widening first. Size so that your account's loss limit is never the thing that closes the trade.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: comparing like with like</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property investors run their own relative value: comparing rental yields on similar villas in neighbouring towns, or a property's yield against government bond yields. When property yields barely beat a risk-free bond, property is expensive relative to bonds. And the same warning applies: a cheap property bought with heavy borrowing has to survive a price dip, and a bank's loan-to-value limit can force a sale just as the gap was about to close.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: a gap you couldn't trade</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Before June 2023, Nigeria had an official naira rate and a much weaker parallel market rate for the same currency. In theory that's the biggest arbitrage around; in practice dollars at the official rate were rationed, so few could buy cheap and sell dear. Arbitrage only works when you can actually trade both sides. Platforms that widen fair access to FX and bond markets are what let gaps close.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you work out a spread trade and a convertible hedge?" %}
+  <div class="formula"><span class="lbl">A spread trade's return on your capital</span>\[ \text{Return} = L \times (s_0 - s_t) \]</div>
+  <div class="formula"><span class="lbl">A convertible's value (bond plus option)</span>\[ \text{CB} \approx \text{Bond floor} + n \times \text{Call}(S, K) \qquad \text{Conversion value} = n \times S \]</div>
+  <div class="formula"><span class="lbl">The hedge and the gamma profit</span>\[ \text{Shares to short} = n \times \Delta \qquad \text{P\&L}_{\text{hedged}} \approx \tfrac{1}{2}\, n\, \Gamma\, (\Delta S)^2 \]</div>
+  <div class="prose">
+    <p>\(L\) is leverage (position size divided by your capital), and \(s_0\) and \(s_t\) are the spread at the start and now, as decimals. \(n\) is the number of shares each bond converts into and \(K\) the conversion price. Because \((\Delta S)^2\) is positive whichever way the shares move, a delta-hedged convertible gains from moves in either direction, until the option's value draining away over time ({% gl "theta" %}theta{% endgl %}) outweighs it.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A fund with \(\$100\) million of capital buys \(\$2.5\) billion of an off-the-run bond and shorts the same amount of the on-the-run, at a spread of \(0.50\%\).</h3>
+    <ol class="steps">
+      <li>Leverage: \(2{,}500 \div 100 = 25\times\).</li>
+      <li>If the spread closes: \(25 \times 0.50\% = 12.5\%\), or \(\$12.5\) million.</li>
+      <li>If it first widens to \(1.50\%\): \(25 \times (0.50\% - 1.50\%) = -25\%\), or \(-\$25\) million.</li>
+      <li>If lenders force a sale at a \(20\%\) loss, the fund is out once the spread reaches \(0.50\% + 20\% \div 25 = 1.30\%\), and never gets the \(12.5\%\).</li>
+    </ol>
+    <p class="answer">The same leverage that turns a tiny spread into a good return decides how small a widening can end the trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>In one sentence, how does relative value differ from long/short equity and global macro?</span></p>
+      <details><summary>Show answer</summary><div><span>It bets on the gap between two closely related prices closing, not on the direction of a share, a currency or a rate, so it aims to be market-neutral.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Name the four sources of return in convertible arbitrage.</span></p>
+      <details><summary>Show answer</summary><div><span>Coupon income (plus interest on the short sale cash); gamma trading from rehedging as the shares move; cheap volatility, when the option inside the convertible is priced on less movement than actually happens; and credit improving, which lifts the bond floor.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A convertible converts into \(20\) shares and has a delta of \(0.6\). How many shares do you short per bond? If you hold \(5{,}000\) bonds?</span></p>
+      <details><summary>Show answer</summary><div><span>\(20 \times 0.6 = 12\) shares per bond, so \(60{,}000\) shares for \(5{,}000\) bonds.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A fund runs a spread trade at \(30\times\) leverage. The spread widens by \(0.4\) percentage points. What happens to its capital?</span></p>
+      <details><summary>Show answer</summary><div><span>\(30 \times 0.4\% = 12\%\) loss on capital, from a move of less than half a percent in the spread.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why did convertible arbitrage lose about a third of its value in 2008?</span></p>
+      <details><summary>Show answer</summary><div><span>The trade was crowded and borrowed at about \(8\) to \(10\) times; Lehman's collapse and nervous lenders cut financing; the ban on shorting financial shares stopped funds hedging; and everyone sold the same hard-to-sell bonds at once.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>A company's shares are near a record high but its 5-year CDS has doubled in a month. Describe a capital structure arbitrage trade and what would make it lose.</span></p>
+      <details><summary>Show answer</summary><div><span>If you trust the credit market, buy CDS protection and short the shares, sized so a fall in the company's fortunes pays on both. It loses if the CDS was overreacting and tightens while the shares keep rising, or if a takeover bid lifts the shares, as in GM in 2005.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: what's the biggest risk in fixed income arbitrage?</span></p>
+      <details><summary>Show answer</summary><div><span>Not the spreads themselves but leverage and funding: tiny spreads need heavy borrowing through repo, so a widening in a crisis, combined with higher margins and lenders pulling back, can force a fund to sell before the trade converges. Give LTCM in 1998 and the March 2020 basis trade unwind as examples, and mention crowding.</span></div></details></div>
+  </div>
+{% endsec %}
