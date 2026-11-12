@@ -1,0 +1,299 @@
+---
+title: Quant Funds
+shelf: hedge-funds
+chapter: strategies
+subtopic: Quant Funds
+order: 1
+summary: How quantitative hedge funds invest by rules tested on data; the five-step pipeline from data to risk; factor investing (value, momentum, quality, low volatility, size, growth) and why it works; statistical arbitrage from Morgan Stanley's 1980s desk to modern residual baskets, with cointegration, z-scores and half-lives; orthogonal alpha and why published signals decay; machine learning and the danger of overfitting; the August 2007 quant quake; the big names; and quant thinking in FX, gold and bonds.
+lede: 'A fundamental manager tastes the soup and adjusts. A quant fund writes down the recipe, tests it on twenty years of data, and lets computers cook thousands of portions a day. The best quant firms have produced some of the strongest returns in history. The hardest part isn''t the maths: it''s knowing whether a recipe that worked in the past is real or just luck.'
+goals: [trading, realestate, fintech]
+themes: [trading, quant, markets, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/quant-funds.js]
+alsoIn: [quant/quant-trading-firms/Firm Types]
+
+quiz:
+  - q: 'What does it mean for two prices to be cointegrated?'
+    opts: ['They always move by the same percentage each day', 'Each wanders on its own, but a particular combination of them (the spread) keeps returning to an average, so they can''t drift apart for long', 'They are both in the same index']
+    right: 1
+    why: 'Like a dog on a lead: owner and dog both wander, but the distance between them stays bounded. Stat arb trades that distance, betting it will come back when it stretches.'
+  - q: 'A researcher tests 500 trading rules on five years of data and picks the one with the best backtest. Why should she be suspicious of it?'
+    opts: ['With that many tries, the best rule can look excellent by pure luck; its live results are likely to be much worse', 'Five years is too much data', 'The best rule is always the most complicated one']
+    right: 0
+    why: 'That''s overfitting through selection. Even if every rule were random, the luckiest of 500 would show a strong backtest. Out-of-sample testing and a sound economic reason are the defences.'
+  - q: 'What happened in the August 2007 quant quake?'
+    opts: ['A computer glitch shut down the stock exchange', 'Regulators banned quantitative trading for a week', 'A large quant fund cut its positions fast, and because many quant funds held similar positions, prices moved against all of them at once, forcing more selling']
+    right: 2
+    why: 'Market-neutral books that looked independent turned out to be crowded into the same trades. Some funds lost \(10\)–\(30\%\) in a single week, while the stock market barely moved.'
+
+connected:
+  - { label: Builds on, title: Alpha, Beta and What Goes Wrong, where: Hedge Funds · Strategies, url: /hub/hedge-funds/alpha-beta-and-what-goes-wrong/ }
+  - { label: Builds on, title: How a Long/Short Book Works, where: Hedge Funds · Strategies, url: /hub/hedge-funds/how-a-long-short-book-works/ }
+  - { label: Builds on, title: Single-Manager vs Multi-Manager, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/single-manager-vs-multi-manager/ }
+  - { label: Used in, title: Factors and Neutrality, where: Quant · Factors and Neutrality, url: /hub/quant/ }
+---
+
+<style>
+  .qf-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .qf-pipe { list-style: none; margin: 10px 0 6px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; counter-reset: p; }
+  .qf-pipe li { position: relative; border: 1px solid var(--border); border-top: 3px solid var(--tone); border-radius: 10px; padding: 10px 11px; background: var(--bg); font-size: 13px; color: var(--text-2); counter-increment: p; }
+  .qf-pipe li strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 3px; }
+  .qf-pipe li strong::before { content: counter(p) ". "; font-family: var(--mono); color: var(--text-2); }
+  .qf-pipe li .who { display: block; margin-top: 6px; font-style: italic; }
+  @media (max-width: 760px) { .qf-pipe { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "Investing by Recipe", "What makes a hedge fund a quant fund?", "Investing by recipe" %}
+  <div class="prose">
+    <p>Picture two cooks. One tastes as she goes, adds a pinch here and there, and trusts years of experience. The other writes every recipe down, tests each one hundreds of times, and only keeps the ones that reliably come out well. Then she runs a factory that cooks thousands of portions a day, exactly to the recipe. The first is a discretionary manager. The second is a quant.</p>
+    <p>Quantitative funds use mathematical models, statistics and computers to decide what to buy and sell. In a <strong>pure quant</strong> fund, people design and test the models, but the models make the decisions: signals come from algorithms, portfolios are built by optimisers and trades are sent by automated systems. Some firms blend the two ("quantamental"), using models to support human decisions.</p>
+    <p>The most successful quant firms, such as Renaissance Technologies, Two Sigma, D.E. Shaw and Citadel's quant business, combine cutting-edge research, huge computing power and vast amounts of data. Quant funds now account for a large share of daily stock market trading, and their models influence the price of nearly every listed share. Even fundamental analysts need to understand them, because factor swings, crowding and systematic flows increasingly drive short-term moves in the stocks they own.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Pipeline", "How does a quant fund turn data into trades?", "The pipeline" %}
+  <div class="prose">
+    <p>Deltashark describes every systematic fund as a five-step pipeline. Each step is a whole job, which is why quant firms hire such a mix of people.</p>
+  </div>
+  <ol class="qf-pipe" aria-label="The systematic investment pipeline">
+    <li><strong>Data</strong>Collect, clean and line up prices, company accounts and alternative data.<span class="who">Data engineers</span></li>
+    <li><strong>Alpha</strong>Research and test {% gl "signal" %}signals{% endgl %} that predict returns.<span class="who">Quant researchers</span></li>
+    <li><strong>Portfolio</strong>Combine signals into positions with an optimiser, within risk limits.<span class="who">Portfolio managers</span></li>
+    <li><strong>Execution</strong>Trade with as little {% gl "market impact" %}market impact{% endgl %} as possible, using smart order routing.<span class="who">Execution quants, developers</span></li>
+    <li><strong>Risk</strong>Monitor exposures, factor tilts and losses in real time.<span class="who">Risk quants</span></li>
+  </ol>
+  <div class="prose">
+    <p>A great signal can be ruined by any later step: bad data, a portfolio that piles into one factor, or trading costs that eat the edge. Quant firms often say the edge is the whole machine, not any one model.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Factor Investing", "What are factors, and why do they pay?", "Factor investing" %}
+  <div class="prose">
+    <p>A {% gl "factor" %}factor{% endgl %} is a characteristic shared by many shares that has, over long periods, been linked to higher returns. Factor investing builds portfolios that systematically own shares with the characteristic and, in a long/short version, short those without it. Decades of research, starting with Eugene Fama and Kenneth French and developed by Cliff Asness and others, have found a handful that work across periods, countries and even other markets.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Factor</th><th>The idea</th><th>Why it might pay</th><th>Typical long/short version</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "value factor" %}Value{% endgl %}</td><td>Buy cheap shares, sell expensive ones</td><td>Investors overreact to bad news; cheap firms may be riskier</td><td>Long low price-to-book, short high</td></tr>
+        <tr><td>{% gl "momentum" %}Momentum{% endgl %}</td><td>Buy recent winners, sell recent losers</td><td>Investors are slow to react to news, then herd</td><td>Long the past 12 months' winners (skipping the latest month), short the losers</td></tr>
+        <tr><td>Quality</td><td>Buy profitable, stable companies</td><td>Investors underpay for steady, boring quality</td><td>Long high return on equity and low debt, short the opposite</td></tr>
+        <tr><td>Low volatility</td><td>Buy calm shares, sell jumpy ones</td><td>Investors overpay for "lottery ticket" shares; many can't borrow to buy safe ones</td><td>Long low-beta, short high-beta</td></tr>
+        <tr><td>Size</td><td>Buy small companies, sell large ones</td><td>Small firms are less liquid and less studied</td><td>Long small caps, short large caps</td></tr>
+        <tr><td>Growth</td><td>Buy fast-growing companies</td><td>Investors extrapolate growth</td><td>Long high revenue growth, short low growth</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The big debate is <strong>why</strong> factors pay. One camp says they're a reward for bearing risk that investors dislike (cheap companies really are more likely to struggle). The other says they come from human biases that don't go away. Both are probably partly true. The practical point is the one from Alpha, Beta and What Goes Wrong: every fund carries factor exposures, whether it means to or not, and an allocator will strip them out before crediting the manager with skill.</p>
+    <p>Factors can hurt for years. Value shares lagged for much of the 2010s and badly in 2018–2020, and value-focused quant firms shrank: AQR's assets fell by more than half. Then value came roaring back in 2022. A factor that always paid would be too popular to keep paying.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Statistical Arbitrage", "How do quant funds trade prices that wander apart and back?", "Statistical arbitrage" %}
+  <div class="prose">
+    <p>{% gl "statistical arbitrage" %}Statistical arbitrage{% endgl %} is a family of market-neutral strategies that bet on short-term gaps closing between securities that usually move together. Deltashark calls it one of the most technically demanding strategies in finance.</p>
+    <h3>Where it started</h3>
+    <p>In the mid-1980s, Gerry Bamberger, working with Morgan Stanley's block-trading desk, noticed that when one share absorbed a big order, it would drift away from similar shares for a while, then come back. He began trading those gaps by rule. Nunzio Tartaglia, a former physicist, scaled it up in Morgan Stanley's Automated Proprietary Trading group with a team of scientists. When people left, most famously David Shaw to found D.E. Shaw, the idea spread through the industry.</p>
+    <h3>The dog on a lead</h3>
+    <p>Imagine someone walking a dog on a long lead. Both wander unpredictably, but the dog can never get more than a lead's length away. Two share prices can behave the same way: each drifts, but a particular combination of them, the <strong>spread</strong>, keeps returning to its average. That's {% gl "cointegration" %}cointegration{% endgl %}. When the spread stretches unusually far, a stat arb fund shorts the expensive one and buys the cheap one, betting on {% gl "mean reversion" %}mean reversion{% endgl %}.</p>
+    <p>To decide when the spread is "unusually far", traders turn it into a {% gl "z-score" %}z-score{% endgl %}: how many standard deviations it sits from its average. A common rule is to enter at \(\pm 2\) and exit at \(0\). How fast the spread snaps back is measured by its <strong>half-life</strong>: a half-life of five days suggests holding for about a week; sixty days needs much more patience.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Trade the spread</h3><p>A spread between two related shares, shown as a z-score over one trading year. The rule: short the spread when it's above your entry level, buy it when it's below minus that level, close when it crosses zero, and cut the trade if it moves two more points against you. Each point of z-score is worth \(\$10{,}000\). Then break the relationship halfway through and see what happens.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="sa-hl">Half-life</label><input type="range" id="sa-hl" min="2" max="60" step="1" value="10"><output id="sa-hl-out" for="sa-hl">10 days</output></div>
+      <div class="ctrl"><label for="sa-e">Enter at</label><input type="range" id="sa-e" min="1" max="3" step="0.25" value="2"><output id="sa-e-out" for="sa-e">±2.00</output></div>
+      <div class="ctrl"><label for="sa-c">Cost per trade</label><input type="range" id="sa-c" min="0" max="0.6" step="0.05" value="0.1"><output id="sa-c-out" for="sa-c">$1,000</output></div>
+      <div class="presets qf-pick" id="sa-mode" aria-label="Relationship"></div>
+      <div class="presets"><button type="button" id="sa-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-sa" viewBox="0 0 640 280" role="img" aria-label="The spread's z-score over a year, with entry bands, entries and exits marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Spread (z-score) and entries</span><span><i class="sw grey"></i>Exits and entry bands</span></div>
+    <div class="readout" id="sa-read"></div>
+    <p class="look" id="sa-story"></p>
+  </div>
+  <div class="prose">
+    <h3>From pairs to baskets</h3>
+    <p>Pairs were the original version. Modern stat arb works at a different scale. Each share's return is split into the part explained by common factors (market, sector, size, value, momentum and so on) and the leftover, the residual. Signals are built on the residuals, and the fund holds a long/short basket matched on every factor at once, so the only risk left is the bet on residuals reverting. Funds find the common factors with {% gl "principal component analysis" %}principal component analysis{% endgl %}, run across thousands of shares. A modern stat arb book might hold \(1{,}000\) to \(5{,}000\) positions, each just \(0.01\) to \(0.10\%\) of the fund.</p>
+    <h3>How it fails</h3>
+    <p>Two ways. A <strong>regime change</strong> breaks the relationship: a merger turns two shares into one, an accounting restatement changes a company's story, or an industry reshapes. The spread that "must" come back simply walks away. And {% gl "signal decay" %}signal decay{% endgl %}: the same statistical methods on the same data give similar trades at different firms, so profits from any one signal shrink as more money chases it. The survivors treat signal research as never-ending.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Orthogonal Alpha", "How do quants prove their returns are real skill?", "Orthogonal alpha" %}
+  <div class="prose">
+    <p>Every quant eventually faces one question: is my return genuinely new, or is it a known factor in disguise? Return that can't be explained by any known factor is {% gl "orthogonal alpha" %}orthogonal alpha{% endgl %} (How a Long/Short Book Works introduced the idea). The trouble is that the list of known factors keeps growing, and each addition reclassifies some "skill" as plain exposure.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Year</th><th>Research</th><th>What it took away from "alpha"</th></tr></thead>
+      <tbody>
+        <tr><td>1968</td><td>Jensen</td><td>The market: alpha is return after adjusting for beta</td></tr>
+        <tr><td>1993</td><td>Fama and French</td><td>Size and value</td></tr>
+        <tr><td>1997</td><td>Carhart</td><td>Momentum</td></tr>
+        <tr><td>2015</td><td>Fama and French</td><td>Profitability and investment</td></tr>
+        <tr><td>2019</td><td>Asness, Frazzini and Pedersen</td><td>Quality ("quality minus junk")</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Published signals also fade. A 2016 study by McLean and Pontiff of \(97\) market anomalies found that returns fell by about \(58\%\) on average after the research was published, as quants built them into models and ETFs offered them cheaply. What was alpha becomes a factor, and then a commodity. Research by Asness, Krail and Liew in 2001 ("Do Hedge Funds Hedge?") showed that many hedge funds carried much more market exposure than they admitted, pushing allocators towards the factor-aware due diligence described in Alpha, Beta and What Goes Wrong.</p>
+    <p>So where does lasting edge come from? The biggest quant firms point to the details of how markets trade, alternative data, machine learning applied to residual returns, and above all a research process that keeps retiring old signals and finding new ones.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Machine Learning and Overfitting", "Can computers find patterns humans miss, and how do they fool themselves?", "Machine learning and overfitting" %}
+  <div class="prose">
+    <p>Quant funds use several kinds of machine learning:</p>
+    <ul>
+      <li><strong>Supervised learning</strong> (gradient-boosted trees, random forests, neural networks) predicts returns from thousands of inputs: company accounts, price and volume patterns, {% gl "alternative data" %}alternative data{% endgl %} such as satellite images, card spending and web traffic.</li>
+      <li><strong>Language models</strong> read earnings call transcripts, filings and news across thousands of companies, picking up shifts in tone and new risks.</li>
+      <li><strong>Reinforcement learning</strong> learns how to execute large orders with less market impact, and how to adjust portfolios as conditions change.</li>
+      <li><strong>Unsupervised learning</strong> groups companies into peer groups by their real behaviour rather than official sectors, and spots changes in market regime.</li>
+    </ul>
+    <p>The catch is that markets are a terrible place to learn from. The signal is tiny compared with the noise, relationships change over time, and other traders adapt to any pattern that's found. That makes {% gl "overfitting" %}overfitting{% endgl %}, a model that has learned the noise rather than the signal, the number one risk in quant investing. The warning signs: backtests far better than live results, too many settings for the amount of data, a strategy that only worked in one period, and no explanation of why it should work.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Find a signal, or fool yourself</h3><p>Every rule here is pure noise: none has any real edge. Choose how many rules you test and how many years of history you test them on. The fund then picks the rule with the best {% gl "backtest" %}backtest{% endgl %} and trades it for three years. Optionally, slip in one genuine signal with a true Sharpe ratio of \(0.5\).</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="of-n">Rules tested</label><input type="range" id="of-n" min="0" max="3" step="0.05" value="2.3"><output id="of-n-out" for="of-n">200</output></div>
+      <div class="ctrl"><label for="of-t">Years of history</label><input type="range" id="of-t" min="1" max="20" step="1" value="5"><output id="of-t-out" for="of-t">5</output></div>
+      <div class="presets qf-pick" id="of-real" aria-label="Include a real signal"></div>
+      <div class="presets"><button type="button" id="of-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-of" viewBox="0 0 640 260" role="img" aria-label="Histogram of the backtested Sharpe ratios of all the rules tested, with the best one and its live result marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Best backtest and its live result</span><span><i class="sw grey"></i>All rules tested</span></div>
+    <div class="readout" id="of-read"></div>
+    <p class="look" id="of-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>The more ideas you test, the better your best backtest looks, even if none of them works. Quant firms fight this with data the model has never seen (out-of-sample and walk-forward testing), by counting how many things they tried, and by insisting on an economic reason why a signal should keep working.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "When Quant Goes Wrong", "What happened in the quant quake, and what else can go wrong?", "When quant goes wrong" %}
+  <div class="prose">
+    <h3>The quant quake, August 2007</h3>
+    <p>In the second week of August 2007, a large quant fund had to cut its positions quickly, reportedly to raise cash after losses elsewhere. It sold shares that many other quant funds also held, because they were all running similar models on similar data. Prices moved against everyone, losses triggered risk limits at other funds, they sold too, and the spiral fed itself. Some funds lost \(10\) to \(30\%\) in a single week, while the stock market as a whole barely moved. When the selling stopped, many of the positions bounced back, too late for funds that had been forced out.</p>
+    <p>Deltashark draws three lessons:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Market-neutral isn't crowd-neutral<span class="why">Even hedged strategies are exposed when many funds hold the same positions.</span></span></li>
+    <li><span class="n">2</span><span>Liquidity risk is real<span class="why">Losses can come from forced selling, not from anything wrong with the positions.</span></span></li>
+    <li><span class="n">3</span><span>Correlations break in a crisis<span class="why">Relationships that held for years can fail exactly when they matter most.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The quake pushed the industry towards bigger, more varied signal libraries and machine learning, so firms would be less alike. Single-Manager vs Multi-Manager explains how the same crowding problem affects pod shops.</p>
+    <h3>Other ways quant goes wrong</h3>
+    <p><strong>Factor crashes.</strong> Momentum can reverse violently when markets turn: in the spring of 2009, as beaten-down shares rocketed, the momentum factor suffered one of its worst losses on record. <strong>Long factor droughts</strong>, like value's in 2018–2020, test investors' patience. <strong>Model and technology failures</strong> can be just as costly: in 2012, a software error at Knight Capital, a trading firm rather than a hedge fund, lost it about \(\$440\) million in 45 minutes.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Big Names", "Who are the leading quant firms?", "The big names" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm</th><th>Founder</th><th>Assets (approx.)</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td>Renaissance Technologies</td><td>Jim Simons</td><td>~\(\$130\)bn</td><td>The Medallion Fund: about \(66\%\) a year before fees since 1988</td></tr>
+        <tr><td>Two Sigma</td><td>John Overdeck, David Siegel</td><td>~\(\$60\)bn</td><td>Machine learning across many systematic strategies</td></tr>
+        <tr><td>D.E. Shaw</td><td>David E. Shaw</td><td>~\(\$60\)bn</td><td>A pioneer of computational finance; quant and discretionary together</td></tr>
+        <tr><td>Citadel (Wellington)</td><td>Ken Griffin</td><td>~\(\$65\)bn</td><td>Multi-strategy with huge quant capability</td></tr>
+        <tr><td>AQR Capital</td><td>Cliff Asness</td><td>~\(\$100\)bn</td><td>Academic factor research at scale</td></tr>
+        <tr><td>Man AHL</td><td>Various</td><td>~\(\$50\)bn+</td><td>One of the oldest systematic and trend-following firms</td></tr>
+        <tr><td>Winton Group</td><td>David Harding</td><td>~\(\$7\)bn</td><td>Trend following with a scientific research culture</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Medallion is closed to outside investors and is open only to Renaissance's own staff. Deltashark's reading for this strategy: Gregory Zuckerman's <em>The Man Who Solved the Market</em> (2019), on how Renaissance's edge came from a culture of constant research rather than any single model, and Antti Ilmanen's <em>Expected Returns</em> (2011), a dense but rewarding tour of what drives returns across markets.</p>
+    <p>For careers: quant firms hire heavily from physics, mathematics, statistics and computer science PhDs, but also software engineers, data engineers and execution specialists. Deltashark suggests working through the stat arb playbook (cointegration tests, spread modelling, factor neutralisation, cost-aware backtests) as the quant equivalent of a stock pitch.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "And in FX, Gold and Bonds?", "How do quants trade my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: factors work for currencies too</h3>
+    <p>The same factor ideas apply to currencies. <strong>Carry</strong> (own high-interest currencies, short low-interest ones), <strong>momentum</strong> (own currencies that have been rising) and <strong>value</strong> (own currencies that look cheap on purchasing power) are the three classic systematic FX strategies. Many quant funds and banks run portfolios of all three, because they tend to fail at different times.</p>
+    <h3>Gold: trend and the dollar</h3>
+    <p>Systematic funds mostly trade gold through futures, using trend signals (Trend Following covers these in its own note) and its relationships with real interest rates and the dollar. Pairs like gold against silver, or gold miners against gold, are classic stat arb candidates, though their relationships can break for long periods.</p>
+    <h3>Bonds: three factors explain the curve</h3>
+    <p>Run principal component analysis on daily changes in government bond yields across maturities and a famous result appears: three factors explain almost all the movement. The first is the <strong>level</strong> (all yields up or down together), the second the <strong>slope</strong> (short and long yields moving apart) and the third the <strong>curvature</strong> (the middle moving against the ends). Fixed income quants trade bonds that look rich or cheap after these three are accounted for, a residual approach just like equity stat arb.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Signal</h3><span class="tag desk">Desk</span></div><p>A measurable input that predicts returns.</p><p class="eg">"The new signal adds 0.2 to the Sharpe."</p></div>
+    <div class="term"><div class="term-top"><h3>Backtest</h3><span class="tag desk">Desk</span></div><p>Testing a strategy on past data.</p><p class="eg">"Looks great in the backtest. What about live?"</p></div>
+    <div class="term"><div class="term-top"><h3>Out-of-sample</h3><span class="tag desk">Desk</span></div><p>Data the model never saw while being built.</p><p class="eg">"Hold back 2020 onwards as out-of-sample."</p></div>
+    <div class="term"><div class="term-top"><h3>Decay</h3><span class="tag desk">Desk</span></div><p>A signal's returns fading as others find it.</p><p class="eg">"That signal's decayed to nothing since the paper came out."</p></div>
+    <div class="term"><div class="term-top"><h3>Neutralise</h3><span class="tag desk">Desk</span></div><p>Remove a factor exposure from a portfolio.</p><p class="eg">"Neutralise for sector and beta before you look at it."</p></div>
+    <div class="term"><div class="term-top"><h3>Capacity</h3><span class="tag desk">Desk</span></div><p>How much money a strategy can run before costs eat the edge.</p><p class="eg">"Great Sharpe, but capacity's only 200 million."</p></div>
+    <div class="term"><div class="term-top"><h3>Half-life</h3><span class="tag desk">Desk</span></div><p>How long a spread takes to close half its gap.</p><p class="eg">"Half-life's about a week; size it for that."</p></div>
+    <div class="term"><div class="term-top"><h3>Factor zoo</h3><span class="tag desk">Desk</span></div><p>The hundreds of published "factors", most of which don't survive.</p><p class="eg">"Is that real, or another animal from the factor zoo?"</p></div>
+  </div>
+{% endsec %}
+
+{% sec 11, "How does this link to Trading, Real Estate and Fintech?", "Where quant thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your own systematic rules</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every strategy you code in Pine Script or Python is a small quant pipeline: data, signal, sizing, execution, risk. The overfitting interactive is the most important lesson for it. Write down every variation you test, keep a stretch of data you never look at until the end, and prefer simple rules with a reason behind them, such as carry or trend in FX, over a tuned rule with ten settings.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: valuation by model</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has its own quant tools. Automated valuation models price a home from its size, location, bedrooms and recent sales nearby, the same factor thinking applied to houses. For villas, a simple model of nightly rates against location, size, pool and distance to the beach shows which properties are cheap relative to what they could earn.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: alternative data where data is scarce</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The Nigerian Exchange is too small and thinly traded for large quant funds: a few stocks dominate, and trading costs would swallow most signals. But quant thinking is thriving in Nigerian fintech, where lenders score borrowers using alternative data such as mobile money and phone usage instead of credit histories most people don't have. The same disciplines apply: test out-of-sample, and watch for relationships that break when conditions change.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 12, "The Maths Underneath", "What are the key formulas behind quant strategies?" %}
+  <div class="formula"><span class="lbl">The multi-factor model</span>\[ r_i = \alpha_i + \sum_k \beta_{i,k}\, f_k + \varepsilon_i \]</div>
+  <div class="formula"><span class="lbl">The cointegrated spread and its z-score</span>\[ Z_t = Y_t - \beta X_t \qquad z_t = \frac{Z_t - \mu}{\sigma_Z} \]</div>
+  <div class="formula"><span class="lbl">Mean reversion and the half-life (Ornstein–Uhlenbeck)</span>\[ dZ_t = -\theta\,(Z_t - \mu)\,dt + \sigma\, dW_t \qquad \text{half-life} = \frac{\ln 2}{\theta} \]</div>
+  <div class="formula"><span class="lbl">How lucky can a backtest look?</span>\[ \text{SE}(\widehat{SR}) \approx \frac{1}{\sqrt{T}} \qquad \text{best of } N \text{ noise Sharpes} \lesssim \frac{\sqrt{2 \ln N}}{\sqrt{T}} \]</div>
+  <div class="prose">
+    <p>\(f_k\) are factor returns and \(\beta_{i,k}\) the share's loadings on them; \(\varepsilon_i\) is the residual that stat arb trades. \(\theta\) is the speed of mean reversion. \(T\) is years of data and \(N\) the number of rules tried; the second is a rough upper guide to how good the luckiest of \(N\) useless rules will look (the interactive uses a more precise version).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A researcher tests \(400\) rules on \(4\) years of data. The best shows a Sharpe ratio of \(1.6\). How impressed should she be?</h3>
+    <ol class="steps">
+      <li>Uncertainty in any one Sharpe: \(1 \div \sqrt{4} = 0.5\).</li>
+      <li>Best of \(400\) pure-noise rules: up to about \(\sqrt{2 \ln 400} \div \sqrt{4} = \sqrt{12.0} \div 2 \approx 1.7\); more precisely, typically around \(1.4\).</li>
+      <li>Her best, \(1.6\), is within the range luck alone produces.</li>
+    </ol>
+    <p class="answer">Not at all. She needs out-of-sample results, or a much smaller number of well-motivated ideas.</p>
+  </div>
+{% endsec %}
+
+{% sec 13, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name the five steps of the systematic investment pipeline, and who works on each.</span></p>
+      <details><summary>Show answer</summary><div><span>Data (data engineers), alpha or signal research (quant researchers), portfolio construction (portfolio managers, optimisers), execution (execution quants, developers) and risk (risk quants).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Pick two factors and give the two competing explanations for why each pays.</span></p>
+      <details><summary>Show answer</summary><div><span>Value: a risk reward (cheap firms are more fragile) or a bias (investors overreact to bad news). Momentum: a bias (investors underreact, then herd) or, less convincingly, risk (momentum can crash suddenly, as in 2009). Low volatility: lottery preference and investors who can't borrow to buy safe shares.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A spread has a mean-reversion speed of \(\theta = 0.07\) per day. What's its half-life, and how long would you expect to hold a trade?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\ln 2 \div 0.07 \approx 9.9\) days, so roughly two weeks per trade.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Give two ways a stat arb strategy fails.</span></p>
+      <details><summary>Show answer</summary><div><span>Regime change, where the relationship breaks (a merger, a restatement, an industry shift) and the spread never comes back; and signal decay, where crowding by firms using similar methods shrinks the returns.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>What did McLean and Pontiff find, and what does it mean for quant funds?</span></p>
+      <details><summary>Show answer</summary><div><span>Across \(97\) published anomalies, returns fell by about \(58\%\) on average after publication. Public signals get crowded and turned into cheap factor products, so lasting edge has to come from continuous research into new, unpublished signals.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question (Deltashark): explain the August 2007 quant quake and what it reveals.</span></p>
+      <details><summary>Show answer</summary><div><span>A large quant fund de-leveraged fast, selling positions many other quant funds held because of similar models. That pushed prices against all of them, triggering more de-leveraging in a self-reinforcing spiral; some funds lost \(10\)–\(30\%\) in a week. It showed that market-neutral strategies are still exposed to crowding, that liquidity risk can cause losses unrelated to the merit of positions, and that historical correlations break down under stress.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question (Deltashark): what is overfitting, why is it the main risk for systematic strategies, and how do firms fight it?</span></p>
+      <details><summary>Show answer</summary><div><span>Overfitting is tuning a model to past data so well that it captures noise rather than repeatable signal, so it disappoints live. It's the main risk because financial data is noisy, changes over time and is fought over by other traders, and because testing many ideas guarantees some look good by luck. Defences: out-of-sample and walk-forward testing on data the model never saw, and requiring an economic reason (a behavioural bias or a structural constraint) for why a signal should persist. Counting how many ideas were tried and penalising for it helps too.</span></div></details></div>
+  </div>
+{% endsec %}

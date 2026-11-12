@@ -200,7 +200,7 @@
           "Relative Value",
           "Event-Driven",
           "Credit and Distressed",
-          { "name": "Quant Funds", "planned": ["Quant Funds"] }
+          "Quant Funds"
         ] },
       { "title": "The Investment Process", "blurb": "From an idea to a position the portfolio manager will back.",
         "subtopics": ["Idea Generation", "Variant Perception", "The Investment Memo", "Pitching an Idea"] },
