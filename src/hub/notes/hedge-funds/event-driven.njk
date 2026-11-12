@@ -1,0 +1,291 @@
+---
+title: Event-Driven
+shelf: hedge-funds
+chapter: strategies
+subtopic: Event-Driven
+order: 1
+summary: How event-driven funds profit from corporate events such as mergers, spin-offs, rights offerings, lawsuits and restructurings; merger arbitrage in depth (the deal timeline, what drives the spread, cash versus stock deals, pricing a deal against your own odds); why a book of deals behaves like selling insurance, and what happens when breaks come together (2008, the 2014 "Arbageddon"); special situations; insider-trading risk; and the same events seen from FX, gold and bonds.
+lede: 'When one company agrees to buy another, the target''s shares jump, but usually not all the way to the offer price. That small gap is the market''s price for the chance the deal falls apart. Event-driven funds make a living pricing that chance, and the chances hidden in every other corporate event, better than everyone else.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, fintech]
+noteScripts: [/assets/js/notes/hedge-funds/event-driven.js]
+
+quiz:
+  - q: 'Company A offers \(\$50\) cash for Company B, which now trades at \(\$47\). Before the offer it traded at \(\$35\). You think there''s an \(85\%\) chance the deal closes. What''s your expected profit per share?'
+    opts: ['\(\$3.00\)', '\(\$1.80\)', '\(\$0.75\)']
+    right: 2
+    why: '\(85\% \times \$3 - 15\% \times \$12 = \$2.55 - \$1.80 = \$0.75\). The headline spread is \(\$3\), but the chance of a \(\$12\) loss eats most of it.'
+  - q: 'In a stock-for-stock merger, why does a merger arbitrage fund short the acquirer''s shares?'
+    opts: ['To bet the acquirer is overpaying', 'To lock in the deal spread: the target will be paid in acquirer shares, so the short cancels moves in the acquirer''s price', 'Because regulators require it']
+    right: 1
+    why: 'Each target share will become a fixed number of acquirer shares. Shorting that number of acquirer shares now removes the risk of the acquirer''s price moving, leaving a pure bet on the deal closing.'
+  - q: 'Why do spin-offs often start life underpriced?'
+    opts: ['Many holders of the parent company sell the new shares automatically, because the company is too small, in the wrong index or not covered by their analysts', 'Because spin-offs are always worse businesses', 'Because the parent company sets a low price']
+    right: 0
+    why: 'That selling has nothing to do with value. Investors who do the work on the new company can buy from forced sellers, which is why Joel Greenblatt called spin-offs one of the most reliable special situations.'
+
+connected:
+  - { label: Builds on, title: Corporate Actions, where: Markets · Equities, url: /hub/markets/corporate-actions/ }
+  - { label: Builds on, title: The Strategy Map, where: Hedge Funds · Strategies, url: /hub/hedge-funds/the-strategy-map/ }
+  - { label: Builds on, title: How a Long/Short Book Works, where: Hedge Funds · Strategies, url: /hub/hedge-funds/how-a-long-short-book-works/ }
+  - { label: Used in, title: Credit and Distressed, where: Hedge Funds · Strategies, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .ed-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .ed-time { list-style: none; margin: 10px 0 6px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; position: relative; }
+  .ed-time::before { content: ""; position: absolute; left: 4%; right: 4%; top: 13px; height: 3px; background: var(--tone-mid); border-radius: 2px; }
+  .ed-time li { position: relative; padding-top: 30px; font-size: 13px; color: var(--text-2); }
+  .ed-time li::before { content: attr(data-n); position: absolute; top: 0; left: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--tone); color: var(--on-tone); font: 600 13px/28px var(--mono); text-align: center; }
+  .ed-time strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+  @media (max-width: 620px) {
+    .ed-time { grid-template-columns: 1fr; gap: 12px; }
+    .ed-time::before { left: 13px; right: auto; top: 6px; bottom: 6px; width: 3px; height: auto; }
+    .ed-time li { padding: 2px 0 0 42px; }
+  }
+</style>
+
+{% sec 1, "Profiting From the Event", "What does an event-driven fund look for?", "What event-driven funds do" %}
+  <div class="prose">
+    <p>Think of a house sale that's agreed but not yet completed. Everyone knows the price, but there are still surveys, mortgages and solicitors, and any of them could make it fall through. Until it completes, a little uncertainty hangs over the price. Corporate events are the same, but bigger and more complicated.</p>
+    <p>Event-driven funds look for moments when a company is going through a specific {% gl "catalyst" %}catalyst{% endgl %}: a takeover, a split, a bankruptcy, a lawsuit, a campaign by an activist. Those events create three things that skilled analysts can exploit:</p>
+    <ul>
+      <li><strong>Complexity.</strong> Deal terms, legal documents and regulators take real work to understand, and many investors don't bother.</li>
+      <li><strong>Uncertainty.</strong> The outcome is a yes-or-no question (will the deal close? will the court rule for the company?), and the price reflects a rough guess at the odds.</li>
+      <li><strong>Forced selling.</strong> Some investors must sell for reasons unrelated to value: their fund can't hold the new shares, or can't hold a company in bankruptcy.</li>
+    </ul>
+    <p>The analyst's job is to estimate the odds, the timing and the downside better than the market, and to take positions that pay if that estimate is right.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Event</th><th>The trade</th><th>Where it's covered</th></tr></thead>
+      <tbody>
+        <tr><td>Mergers and acquisitions</td><td>Buy the target, earn the gap to the offer price</td><td>Sections 2 to 4</td></tr>
+        <tr><td>Spin-offs, rights offerings, lawsuits, holding companies</td><td>Buy what forced or lazy sellers are dumping; price binary outcomes</td><td>Section 5</td></tr>
+        <tr><td>Bankruptcies and restructurings</td><td>Buy the debt that becomes the new owners</td><td>The next note, Credit and Distressed</td></tr>
+        <tr><td>Activist campaigns</td><td>Buy a stake and push for change</td><td>How a Long/Short Book Works</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Corporate Actions in the Markets topic explains the basic mechanics of these events. This note is about how funds trade them.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "How a Deal Works", "What happens between a merger being announced and closing?", "How a deal works" %}
+  <div class="prose">
+    <p>{% gl "merger arbitrage" %}Merger arbitrage{% endgl %}, or "risk arb", is the most systematic event-driven strategy. Between announcement and closing, a deal has to clear a series of hurdles, and the target's share price moves with each one.</p>
+  </div>
+  <ol class="ed-time" aria-label="The life of a merger">
+    <li data-n="1"><strong>Announcement</strong>The target jumps towards the offer price but stops short.</li>
+    <li data-n="2"><strong>Filings</strong>Documents go to regulators and shareholders.</li>
+    <li data-n="3"><strong>Shareholder vote</strong>The target's owners, sometimes the buyer's too, approve or reject.</li>
+    <li data-n="4"><strong>Regulators</strong>Competition authorities (the US FTC and DOJ, the UK CMA, the EU) and national security reviews (CFIUS in the US).</li>
+    <li data-n="5"><strong>Closing</strong>Shareholders are paid and the spread disappears.</li>
+  </ol>
+  <div class="prose">
+    <p>This usually takes three to twelve months, longer for big deals that regulators fight. The gap between the target's price and the offer, the {% gl "deal spread" %}deal spread{% endgl %}, is set by:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>What widens the spread</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Regulatory risk</td><td>Competition authorities may block the deal or demand the buyer sells parts of the business</td></tr>
+        <tr><td>Financing risk</td><td>The buyer may not raise the money, especially in leveraged buyouts when credit markets seize up</td></tr>
+        <tr><td>Shareholder vote risk</td><td>Owners may think the price is too low and vote no</td></tr>
+        <tr><td>Material adverse change</td><td>A {% gl "MAC clause" %}MAC clause{% endgl %} may let the buyer walk away if the target's business collapses before closing</td></tr>
+        <tr><td>Time</td><td>The longer the wait, the bigger the spread needed to make it worthwhile</td></tr>
+        <tr><td>Interest rates</td><td>The money tied up could have earned interest elsewhere; at \(5\%\) rates, spreads must be wider than at \(0\%\)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Reading the deal is where the edge comes from: the merger agreement, the {% gl "break fee" %}break fee{% endgl %} one side pays if it walks away, the regulators' past decisions in that industry, and the politics. Many merger arbitrage teams include lawyers and former regulators.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Pricing a Deal", "Is a deal spread worth taking?", "Pricing a deal" %}
+  <div class="prose">
+    <p>A spread always looks attractive at first. Deltashark's example: Company A offers \(\$50\) cash for Company B, which trades at \(\$47\). That's a \(\$3\) spread, \(6.4\%\), and if the deal closes in four months, about \(19\%\) a year.</p>
+    <p>But if the deal breaks, B probably falls back towards its {% gl "undisturbed price" %}undisturbed price{% endgl %}, where it traded before the offer: say \(\$35\), a \(\$12\) loss. The trade risks \(\$12\) to make \(\$3\). Whether that's a good bet depends entirely on the odds.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Price a deal</h3><p>The offer is \(\$50\) cash. Set where the target trades now, where it would fall if the deal broke, how long until it closes, and your own estimate of the odds. The line shows what you could win and lose; the marker shows what the shares are worth on your odds.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="pd-p">Price now</label><input type="range" id="pd-p" min="38" max="49.75" step="0.25" value="47"><output id="pd-p-out" for="pd-p">$47.00</output></div>
+      <div class="ctrl"><label for="pd-f">If it breaks</label><input type="range" id="pd-f" min="25" max="45" step="1" value="35"><output id="pd-f-out" for="pd-f">$35</output></div>
+      <div class="ctrl"><label for="pd-m">Months to close</label><input type="range" id="pd-m" min="1" max="18" step="1" value="4"><output id="pd-m-out" for="pd-m">4</output></div>
+      <div class="ctrl"><label for="pd-q">Your odds</label><input type="range" id="pd-q" min="50" max="100" step="1" value="85"><output id="pd-q-out" for="pd-q">85%</output></div>
+    </div>
+    <svg class="chart" id="chart-pd" viewBox="0 0 640 150" role="img" aria-label="A price line from the break price to the offer price, showing the possible gain and loss from today's price and the value on your odds"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Gain if it closes</span><span><i class="sw grey"></i>Loss if it breaks</span></div>
+    <div class="readout" id="pd-read"></div>
+    <p class="look" id="pd-story"></p>
+  </div>
+  <div class="prose">
+    <p>The market's own odds are hidden in the price: if you know the offer and the likely break price, you can work out the probability the market is assuming (Corporate Actions shows the formula). A merger arbitrage analyst's whole job is to disagree with that number, carefully, and only when she has a reason.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Cash Deals, Stock Deals and When Deals Break", "How do funds hedge a deal, and what happens when it fails?", "Stock deals and breaks" %}
+  <div class="prose">
+    <h3>Cash versus stock</h3>
+    <p>In a <strong>cash deal</strong>, the trade is simple: buy the target and wait. In a <strong>stock-for-stock deal</strong>, target shareholders are paid in the buyer's shares, at a fixed {% gl "exchange ratio" %}exchange ratio{% endgl %}. If the buyer's price falls before closing, so does the value of the offer. So the fund buys the target and <strong>shorts the buyer</strong> in that ratio. If the buyer offers \(0.5\) of its shares for each target share, the fund shorts \(500\) buyer shares for every \(1{,}000\) target shares it owns. When the deal closes, the target shares turn into exactly the buyer shares needed to close the short. Market moves cancel out, and what's left is a pure bet on the deal closing.</p>
+    <h3>When deals break</h3>
+    <p>Deals don't fail at random. They tend to fail for the same reasons at the same time, which is what makes the strategy dangerous.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>When</th><th>What happened</th><th>The lesson</th></tr></thead>
+      <tbody>
+        <tr><td>2008</td><td>Banks backed away from financing buyouts, buyers looked for ways out, and funds that had to cut risk sold together. Spreads blew out across the board</td><td>Financing risk and forced selling hit every deal at once</td></tr>
+        <tr><td>October 2014, "Arbageddon"</td><td>AbbVie walked away from its \(\$55\) billion bid for Shire after the US Treasury changed the tax rules the deal relied on. Shire fell about \(30\%\) in a day; deals worth about \(\$580\) billion were pulled that year, the most since 2008</td><td>A rule change can break a whole category of deals; John Paulson's Advantage fund lost \(13.6\%\) that month</td></tr>
+        <tr><td>April 2023, Microsoft and Activision</td><td>The UK's CMA blocked Microsoft's \(\$95\)-a-share takeover. Activision fell \(11\%\) to \(\$76.81\), and the spread jumped from \(\$8.26\) to \(\$18.19\). After Microsoft restructured the deal, it closed that October</td><td>Regulators can surprise even after positive signals; funds that held on were paid, those who sold weren't</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The pattern is a strategy that wins small and often and loses big and rarely, like an insurance company. Over 1990 to mid-2016, the HFRI merger arbitrage index returned about \(7.8\%\) a year with volatility of about \(3.9\%\), which looks very safe until several deals break together.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Run a deal book</h3><p>Your fund spreads its money across several deals at a time. Each deal earns a \(5\%\) spread if it closes and loses \(25\%\) if it breaks, and the book turns over three times a year. Choose how many deals you hold, how often deals break, and whether breaks happen one at a time or in clusters. The chart shows \(2{,}000\) simulated years.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="db-n">Deals at a time</label><input type="range" id="db-n" min="3" max="40" step="1" value="20"><output id="db-n-out" for="db-n">20</output></div>
+      <div class="ctrl"><label for="db-p">Break chance</label><input type="range" id="db-p" min="2" max="20" step="1" value="6"><output id="db-p-out" for="db-p">6%</output></div>
+      <div class="presets ed-pick" id="db-mode" aria-label="How breaks happen"></div>
+      <div class="presets"><button type="button" id="db-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-db" viewBox="0 0 640 260" role="img" aria-label="Histogram of the fund's yearly return over 2,000 simulated years"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Years that made money</span><span><i class="sw grey"></i>Years that lost money</span></div>
+    <div class="readout" id="db-read"></div>
+    <p class="look" id="db-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Holding many deals only protects you if they fail independently. In a crisis or a rule change, breaks arrive together, so a book that looked diversified behaves like one big bet. The average return stays the same; the bad years get much worse.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Special Situations", "What other events create mispricings?", "Special situations" %}
+  <div class="prose">
+    <p>{% gl "special situations" %}Special situations{% endgl %} cover every corporate event beyond mergers and bankruptcies. Deltashark lists five classics. What links them is that the price is set by people who either can't or won't do the work.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Situation</th><th>Why it's mispriced</th><th>What the fund does</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "spin-off" %}Spin-offs{% endgl %}</td><td>Holders of the parent dump the new shares because they're too small, in the wrong sector or uncovered</td><td>Values the new company on its own and buys from forced sellers</td></tr>
+        <tr><td>{% gl "rights issue" %}Rights offerings{% endgl %}</td><td>Many institutions sell their rights automatically instead of taking them up</td><td>Buys rights cheaply and takes up the discounted shares</td></tr>
+        <tr><td>Litigation</td><td>A big lawsuit makes the share worth much more if the company wins and much less if it loses</td><td>Uses legal expertise to price the odds better than the market</td></tr>
+        <tr><td>{% gl "stub trade" %}Stub trades{% endgl %}</td><td>A holding company trades below the market value of the listed companies it owns</td><td>Buys the holding company and shorts the listed stakes, owning the rest for less than nothing</td></tr>
+        <tr><td>NOL shells</td><td>A company with little business left but large past tax losses that a buyer could use</td><td>Buys it as a likely takeover target, with the tax losses as a floor value</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>A famous stub example: for long stretches in 2015 and 2016, Yahoo's market value was below the value of its stakes in Alibaba and Yahoo Japan alone, implying its own web business was worth less than nothing. Index changes are another reliable event: when a share joins or leaves a major index, tracker funds must buy or sell on a known day, and event-driven funds position ahead of them.</p>
+    <p>Deltashark's reading here is Joel Greenblatt's <em>You Can Be a Stock Market Genius</em> (1997), the classic on spin-offs, rights offerings and restructurings. The structural reasons for the mispricings it describes still exist.</p>
+    <h3>A warning: inside information</h3>
+    <p>Event-driven investing lives next to secret information: deals that haven't been announced, regulators' decisions, court rulings. Trading on {% gl "material non-public information" %}material non-public information{% endgl %} is a crime. The most famous arbitrageur of the 1980s, Ivan Boesky, went to prison for trading on tips about upcoming deals. Event-driven funds run strict compliance controls on who analysts talk to and what they can trade, and in interviews you'll be expected to know where the line is.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm</th><th>Known for</th></tr></thead>
+      <tbody>
+        <tr><td>Paulson &amp; Co.</td><td>Began as a merger arbitrage firm in 1994; its merger fund remained a core strategy</td></tr>
+        <tr><td>Elliott Management</td><td>Activism and event-driven investing across shares and debt</td></tr>
+        <tr><td>Davidson Kempner</td><td>Merger arbitrage, special situations and distressed debt</td></tr>
+        <tr><td>Pentwater Capital</td><td>Concentrated merger arbitrage and event-driven trading</td></tr>
+        <tr><td>Gotham Capital</td><td>Joel Greenblatt's fund; special situations</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How do corporate events show up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: deals move money across borders</h3>
+    <p>When a company buys a foreign target for cash, it has to buy the target's currency, sometimes billions of it, on a known date. Banks sell buyers {% gl "deal-contingent hedge" %}deal-contingent hedges{% endgl %}: currency forwards that only take effect if the deal closes. FX traders watch big cross-border deals because the closing can move a currency on the day.</p>
+    <h3>Gold: miners merge</h3>
+    <p>Gold mining has had waves of mergers, such as Barrick and Randgold in 2019 and Newmont's purchase of Newcrest in 2023, often paid in shares. A merger arbitrage fund on a miner deal has to handle the gold price too: both companies' shares move with gold, so the short on the buyer does double duty, hedging gold as well as the market.</p>
+    <h3>Bonds: event risk</h3>
+    <p>Bondholders care about events too, often from the losing side. When a company is bought with lots of borrowed money (a leveraged buyout), its existing bonds can fall sharply because the company suddenly carries far more debt. This was the shock in the RJR Nabisco buyout of 1988. Many bonds now include a <strong>change of control</strong> clause, letting holders sell back at \(101\%\) of face value if the company is taken over, and event-driven credit funds trade on whether that protection applies.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Risk arb</h3><span class="tag desk">Desk</span></div><p>Merger arbitrage.</p><p class="eg">"She's on the risk arb team."</p></div>
+    <div class="term"><div class="term-top"><h3>The spread</h3><span class="tag desk">Desk</span></div><p>The gap between the target's price and the offer.</p><p class="eg">"The spread's out to 8% on the FTC headline."</p></div>
+    <div class="term"><div class="term-top"><h3>Deal break</h3><span class="tag desk">Desk</span></div><p>A deal that fails to close.</p><p class="eg">"If it breaks, we're back at 35."</p></div>
+    <div class="term"><div class="term-top"><h3>Undisturbed</h3><span class="tag desk">Desk</span></div><p>The share price before any bid was rumoured or announced.</p><p class="eg">"Undisturbed was 35, so the downside's 12."</p></div>
+    <div class="term"><div class="term-top"><h3>Topping bid</h3><span class="tag desk">Desk</span></div><p>A higher offer from a rival buyer.</p><p class="eg">"We're long in case of a topping bid."</p></div>
+    <div class="term"><div class="term-top"><h3>Second request</h3><span class="tag desk">Desk</span></div><p>A US regulator's demand for more information, meaning a deeper, slower review.</p><p class="eg">"They got a second request; add three months."</p></div>
+    <div class="term"><div class="term-top"><h3>Catalyst</h3><span class="tag desk">Desk</span></div><p>The event that should make the price move.</p><p class="eg">"What's the catalyst, and when?"</p></div>
+    <div class="term"><div class="term-top"><h3>Wall-crossed</h3><span class="tag desk">Desk</span></div><p>Given inside information, so barred from trading.</p><p class="eg">"I've been wall-crossed on the deal; I can't touch it."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where event-driven thinking turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: put odds on the event</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Your markets have scheduled events too: central bank meetings, inflation and jobs releases. The event-driven habit is to write down the possible outcomes, your odds for each and what the price would do, then compare with what's priced in, exactly as in "Price a deal". If the market's odds and yours are the same, there's no trade, however exciting the event.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: buy from forced sellers</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has its own special situations: sales by receivers, estates and funds that must wind down by a date, or developers whose loans are due. These sellers care about speed and certainty more than price, just like the index fund dumping a spin-off. Being the buyer who can move quickly, with financing ready, is the property version of event-driven investing.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the bank recapitalisation</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>In March 2024 the Central Bank of Nigeria told banks to raise their minimum capital sharply, with a deadline of March 2026. Banks responded with rights issues, public offers and mergers: a two-year wave of corporate events on the Nigerian Exchange. That's an event-driven opportunity set in its own right, with rights to price, dilution to weigh and smaller banks that might be bought. Platforms that make taking part in rights issues easy for ordinary Nigerian shareholders would stop many of them losing out by doing nothing.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on a deal?" %}
+  <div class="formula"><span class="lbl">The deal spread</span>\[ \text{Spread} = \frac{O - P}{P} \qquad \text{Annualised} \approx \text{Spread} \times \frac{12}{\text{months to close}} \]</div>
+  <div class="formula"><span class="lbl">Expected profit with your odds \(q\)</span>\[ \mathbb{E}[\text{profit}] = q\,(O - P) - (1 - q)\,(P - F) \]</div>
+  <div class="formula"><span class="lbl">The odds the market is assuming</span>\[ q_{\text{market}} = \frac{P - F}{O - F} \]</div>
+  <div class="formula"><span class="lbl">The hedge in a stock deal</span>\[ \text{Acquirer shares to short} = \text{target shares held} \times \text{exchange ratio} \]</div>
+  <div class="prose">
+    <p>\(O\) is the offer, \(P\) today's price and \(F\) the price if the deal fails, usually near the undisturbed price. For a book of many deals, each with spread \(s\), break loss \(L\) and break chance \(p\), the expected return per round is \((1 - p)\,s - p\,L\), which is only positive if \(p < s \div (s + L)\).</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark knowledge check)</span>
+    <h3>Company A is buying Company B for \(\$75\) cash. B trades at \(\$72\), the deal should close in \(3\) months, and B's undisturbed price was \(\$55\).</h3>
+    <ol class="steps">
+      <li>Spread: \(\$75 - \$72 = \$3.00\), or \(3 \div 72 = 4.2\%\).</li>
+      <li>Annualised: \(4.2\% \times 12 \div 3 = 16.7\%\).</li>
+      <li>If it breaks: \(\$72 - \$55 = \$17\), a \(23.6\%\) loss.</li>
+      <li>Market's odds: \((72 - 55) \div (75 - 55) = 85\%\).</li>
+    </ol>
+    <p class="answer">Small gains if it closes, large losses if it breaks: you need to be more confident than \(85\%\) to want this trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Name three things corporate events create that event-driven funds exploit.</span></p>
+      <details><summary>Show answer</summary><div><span>Complexity (documents and rules many investors won't study), uncertainty (yes-or-no outcomes priced on rough odds) and forced selling (holders who must sell regardless of value).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>List five things that widen a merger arbitrage spread.</span></p>
+      <details><summary>Show answer</summary><div><span>Regulatory risk (antitrust, national security), financing risk, shareholder vote risk, material adverse change clauses, a long timeline, and higher interest rates.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A target trades at \(\$28.50\) against a \(\$30\) cash offer. The deal closes in \(6\) months and the undisturbed price was \(\$22\). Work out the spread, the annualised return and the market's implied odds.</span></p>
+      <details><summary>Show answer</summary><div><span>Spread \(= 1.50 \div 28.50 = 5.3\%\). Annualised \(\approx 5.3\% \times 2 = 10.5\%\). Implied odds \(= (28.50 - 22) \div (30 - 22) = 81\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A buyer offers \(0.8\) of its shares for each target share. You buy \(10{,}000\) target shares. What's your hedge, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>Short \(8{,}000\) buyer shares. At closing your target shares become exactly \(8{,}000\) buyer shares, which close the short, so the buyer's price moves cancel out and you keep the spread.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why did "Arbageddon" in October 2014 hurt so many merger arbitrage funds at once?</span></p>
+      <details><summary>Show answer</summary><div><span>A US tax rule change hit a whole category of deals (tax inversions) together. AbbVie dropped Shire, Shire fell about \(30\%\), and funds selling to cut risk widened spreads on other deals too. The breaks weren't independent, so diversification across deals didn't help.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Explain a stub trade with an example.</span></p>
+      <details><summary>Show answer</summary><div><span>A holding company trades below the market value of the listed stakes it owns. Buy the holding company and short the stakes in proportion, and you own the rest of its business for less than nothing. Yahoo in 2015–16, trading below the value of its Alibaba and Yahoo Japan stakes, is the classic case.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: pick a pending deal and tell me whether you'd buy the target.</span></p>
+      <details><summary>Show answer</summary><div><span>Give the terms (cash or stock, offer, current price, undisturbed price), work out the spread, annualised return and market-implied odds, then argue your own odds from the risks: regulators and their record in that industry, financing, the vote, timing. Finish with the expected value, your position size given the downside, and what news would make you exit.</span></div></details></div>
+  </div>
+{% endsec %}

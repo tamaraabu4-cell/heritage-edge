@@ -198,7 +198,7 @@
           "Global Macro",
           "Trend Following (CTAs)",
           "Relative Value",
-          { "name": "Event-Driven", "planned": ["Event-Driven"] },
+          "Event-Driven",
           { "name": "Credit and Distressed", "planned": ["Credit and Distressed"] },
           { "name": "Quant Funds", "planned": ["Quant Funds"] }
         ] },
