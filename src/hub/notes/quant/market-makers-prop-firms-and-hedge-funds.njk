@@ -1,0 +1,265 @@
+---
+title: Market Makers, Prop Firms and Hedge Funds
+shelf: quant
+chapter: quant-trading-firms
+subtopic: Firm Types
+order: 1
+summary: The three kinds of firm where quant trading happens, told apart by whose money they trade, how they earn and how long they hold; the two business shapes in numbers (a market making desk paid per contract vs a fund paid fees on capital) and how capital source, horizon and risk shape follow; where these firms sit between the sell side and the buy side, and why market makers are called non-bank liquidity providers; how the two sides pay each other for services; the difference between institutional prop trading firms and retail "prop firm" challenges; and the same three shapes in FX, gold and bonds.
+lede: 'Quant trading happens in three kinds of firm. A market maker is paid for being there, every second, to buy and sell. A proprietary trading firm bets only its own partners'' money and keeps every pound it makes or loses. A hedge fund invests other people''s money and charges them for it. The same maths and the same kind of people can end up in very different businesses, and knowing which one you''re looking at tells you how it earns, what it fears and what it would hire you to do.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/market-makers-prop-firms-and-hedge-funds.js]
+
+quiz:
+  - q: 'Which question best tells a proprietary trading firm apart from a hedge fund?'
+    opts: ['Whose money does it trade?', 'Does it use computers?', 'Does it trade shares or currencies?']
+    right: 0
+    why: 'A prop firm trades only its own (its partners'') capital, keeps all the profit and bears all the losses. A hedge fund manages outside investors'' money and earns fees on it. Both can be fully quantitative and trade anything.'
+  - q: 'Why are firms like Citadel Securities, Jane Street and XTX Markets often called non-bank liquidity providers?'
+    opts: ['Because they are banks that have stopped lending', 'Because they only trade cryptocurrencies', 'Because they do work that bank trading desks used to do, making prices for others, but with their own capital and without being a bank']
+    right: 2
+    why: 'Market making used to be a sell-side bank service. After 2008, capital rules made holding risk expensive for banks, and specialist firms trading their own money took over much of it. They do sell-side-shaped work without the bank around it.'
+  - q: 'A popular retail "prop firm" lets you pay a fee to take a trading challenge. What are you actually buying?'
+    opts: ['A job at a firm like Jane Street or Optiver', 'An evaluation: many of these firms say even funded traders trade a simulated account, with rewards paid out of simulated profits', 'A share of the firm''s real trading capital to invest however you like']
+    right: 1
+    why: 'Institutional prop firms hire traders through graduate programmes and interviews; they never charge you to apply. Retail challenge firms earn from fees, and FTMO, the best known, says its funded accounts are simulated, with real-money rewards based on simulated profits.'
+
+connected:
+  - { label: Builds on, title: The Players, where: Markets · What Markets Are, url: /hub/markets/the-players/ }
+  - { label: Builds on, title: Fees and the High-Water Mark, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/fees-and-the-high-water-mark/ }
+  - { label: Builds on, title: Prime Brokerage, where: Markets · How Markets Work, url: /hub/markets/prime-brokerage/ }
+  - { label: Used in, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/ }
+---
+
+<style>
+  .mp-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .mp-group { font-size: 13px; font-weight: 600; color: var(--text-2); margin: 4px 0 2px; width: 100%; }
+  .sf-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+  .sf-row { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--bg); }
+  .sf-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .sf-name { font-weight: 600; min-width: 170px; }
+  .sf-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sf-opts button { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--hub-card, transparent); color: var(--text); cursor: pointer; }
+  .sf-opts button.right { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .sf-opts button.wrong { text-decoration: line-through; color: var(--text-2); }
+  .sf-why { margin: 8px 0 0; font-size: 14px; color: var(--text-2); }
+  .sf-why strong { color: var(--text); }
+  .sf-score { margin-top: 10px; font-weight: 600; }
+</style>
+
+{% sec 1, "Three Kinds of Firm", "Where does quant trading actually happen?", "Three kinds of firm" %}
+  <div class="prose">
+    <p>Think of three people who make money from currencies. The first runs a bureau de change at the airport. She'll buy your dollars and sell you euros all day, at two slightly different prices, and she doesn't care whether the euro rises or falls: she earns the gap on every swap. The second is a professional trader with his own savings. Nobody tells him what to do; every profit is his, and so is every loss. The third manages a pot of money for other people, invests it in currencies, and charges them a fee for doing it well.</p>
+    <p>Those are the three templates Deltashark uses for quant firms: the {% gl "market maker" %}market maker{% endgl %}, the {% gl "proprietary trading" %}proprietary trading{% endgl %} firm and the hedge fund. They differ in three ways: <strong>whose money</strong> they trade, <strong>how they earn</strong>, and <strong>how long they hold</strong> a position.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Market making firm</th><th>Proprietary trading firm</th><th>Quant hedge fund</th></tr></thead>
+      <tbody>
+        <tr><td>Whose money?</td><td>Its own</td><td>Its own (the partners' and the firm's)</td><td>Outside investors', plus some of its own</td></tr>
+        <tr><td>How it earns</td><td>The spread, on every trade it serves</td><td>Trading profits from market making, arbitrage and short-term models</td><td>Management and performance fees on the money it runs</td></tr>
+        <tr><td>Typical holding period</td><td>Seconds to hours</td><td>Seconds to days</td><td>Days to months</td></tr>
+        <tr><td>What limits its size?</td><td>How much flow there is to serve</td><td>Its own balance sheet and appetite for risk</td><td>How much it can raise, and how much the strategy can absorb</td></tr>
+        <tr><td>Who it answers to</td><td>Its own risk limits</td><td>Its own risk limits</td><td>Investors, mandates and redemption terms</td></tr>
+        <tr><td>Examples</td><td>Citadel Securities, Virtu, Optiver, IMC, XTX Markets</td><td>Jane Street, Jump Trading, Hudson River Trading, DRW, Susquehanna (SIG)</td><td>Renaissance, Two Sigma, D.E. Shaw, AQR, Man AHL</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The lines blur in practice. Most market making firms trade their own capital, so they are prop firms too, and most prop firms make markets: Jane Street is a privately owned firm trading its own money whose biggest business is market making. Large firms also run several models under one roof. And one name can hide two companies: Citadel, the multi-strategy hedge fund, and Citadel Securities, the market maker, are separate firms that share a founder, Ken Griffin. The Quant Funds note in Hedge Funds covers the third column in depth.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Two Business Shapes", "How differently do these firms make their money?", "Two business shapes" %}
+  <div class="prose">
+    <p>Deltashark puts numbers on the two extremes. A market making desk earns a sliver on each contract it trades. A fund earns a percentage of the money it manages, plus a share of the profit. Same skills underneath, very different businesses.</p>
+  </div>
+  <div class="worked-grid">
+    <div class="worked">
+      <span class="lbl">Worked example (Deltashark)</span>
+      <h3>A market making desk</h3>
+      <ol class="steps">
+        <li>It nets \(0.2\) ticks per futures contract, each tick worth \(\$12.50\).</li>
+        <li>It trades \(40{,}000\) contracts a day.</li>
+        <li>\(0.2 \times 12.50 \times 40{,}000 = \$100{,}000\) a day.</li>
+      </ol>
+      <p class="answer">High frequency, tiny margin per trade, and capped by how much flow there is.</p>
+    </div>
+    <div class="worked">
+      <span class="lbl">Worked example (Deltashark)</span>
+      <h3>A fund at "2 and 20"</h3>
+      <ol class="steps">
+        <li>It manages \(\$2\)bn and makes \(9\%\) before fees.</li>
+        <li>Management fee: \(2\% \times 2\text{bn} = \$40\)m.</li>
+        <li>Performance fee on the return above the management fee: \(20\% \times (9\% - 2\%) \times 2\text{bn} = \$28\)m.</li>
+      </ol>
+      <p class="answer">\(\$68\)m in fees: capital deployment, sold by the year.</p>
+    </div>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Two ways to earn</h3><p>Change each business and compare a year's revenue. The desk earns its edge (in ticks, worth \(\$12.50\) each) on every contract on \(252\) trading days; the fund earns its fees once a year. These are revenues before costs: the desk still has to pay for technology, data and people, and the fund's investors keep the returns after fees.</p></div>
+    <div class="controls">
+      <span class="mp-group">The market making desk</span>
+      <div class="ctrl"><label for="tw-e">Edge, ticks</label><input type="range" id="tw-e" min="0.05" max="0.5" step="0.05" value="0.2"><output id="tw-e-out" for="tw-e">0.20</output></div>
+      <div class="ctrl"><label for="tw-v">Daily volume</label><input type="range" id="tw-v" min="5000" max="100000" step="1000" value="40000"><output id="tw-v-out" for="tw-v">40,000</output></div>
+      <span class="mp-group">The fund</span>
+      <div class="ctrl"><label for="tw-a">Fund size</label><input type="range" id="tw-a" min="0.5" max="5" step="0.25" value="2"><output id="tw-a-out" for="tw-a">$2.0bn</output></div>
+      <div class="ctrl"><label for="tw-g">Fund return</label><input type="range" id="tw-g" min="-10" max="25" step="1" value="9"><output id="tw-g-out" for="tw-g">9%</output></div>
+      <div class="presets mp-pick" id="tw-fees" aria-label="Fee terms"></div>
+    </div>
+    <svg class="chart" id="chart-tw" viewBox="0 0 640 160" role="img" aria-label="A year's revenue for the market making desk and for the fund, split into management and performance fees"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Desk revenue and the fund's performance fee</span><span><i class="sw grey"></i>The fund's management fee</span></div>
+    <div class="readout" id="tw-read"></div>
+    <p class="look" id="tw-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Everything else follows from the shape</h3>
+    <p>Deltashark traces three knock-on differences:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Whose money sets the rules<span class="why">A firm trading its own capital answers only to its own limits, and can choose to hold nothing overnight. A fund answers to investors, their mandates and the terms on which they can take their money out (What a Hedge Fund Is).</span></span></li>
+    <li><span class="n">2</span><span>The horizon sets the toolkit<span class="why">Trading over seconds is mostly market microstructure and technology. Trading over months is mostly statistics, managing how much money a strategy can absorb, and keeping costs down.</span></span></li>
+    <li><span class="n">3</span><span>The risk has a different shape<span class="why">Flow businesses earn steadily, with occasional sharp losses when markets dislocate. Virtu, a US market maker, said when it filed to go public in 2014 that it had lost money on just one day in more than five years. Multi-month strategies rise and fall with markets and are judged by their drawdowns.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 3, "Sell Side, Buy Side, or Neither?", "Where do quant firms sit on the old map of finance?", "Sell side or buy side?" %}
+  <div class="prose">
+    <p>The Players drew the classic map: the {% gl "sell side" %}sell side{% endgl %} (banks and brokers) sells services around markets and earns on <strong>activity</strong>, largely whichever way markets move; the {% gl "buy side" %}buy side{% endgl %} (asset managers, pension funds, hedge funds) deploys capital and earns on <strong>performance</strong>. That map is older than the quant industry, and quant firms don't fit it neatly.</p>
+    <p>Quant hedge funds are buy side by definition: outside money, performance is the product. Market makers and prop firms are the awkward ones. They trade their own capital, which sounds buy side, but market making is a service that sell-side bank desks used to provide. That's why they're called {% gl "non-bank liquidity provider" %}non-bank liquidity providers{% endgl %}: firms doing sell-side-shaped work without a bank wrapped around them.</p>
+    <p>Their rise is one of the biggest changes in modern markets. After 2008, capital rules made it expensive for banks to hold inventory, and the Volcker Rule stopped big US banks trading for their own account (Regulation covers both). Specialist firms with cheap, fast technology and no deposits to protect stepped in. In US shares, retail orders from apps are now mostly filled by these firms, which pay brokers for it: {% gl "payment for order flow" %}payment for order flow{% endgl %}, which The Order Book explains and which is banned in the UK.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Sort the firms</h3><p>For each firm, pick the box it fits best. Some fit two boxes, and the explanation says why.</p></div>
+    <ul class="sf-list" id="sf-list"></ul>
+    <p class="sf-score" id="sf-score" aria-live="polite"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "How the Two Sides Pay Each Other", "What does a fund pay the sell side, and for what?", "How the sides pay each other" %}
+  <div class="prose">
+    <p>The buy side runs its strategies <em>through</em> sell-side plumbing. A fund pays a broker to execute its trades, and pays a {% gl "prime broker" %}prime broker{% endgl %} to finance its positions, lend it shares to short, hold its assets and clear its trades. Deltashark calls prime brokerage the load-bearing service, and Prime Brokerage covers it in detail.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A fund trades \(\$40\)m of shares through a broker at \(2\) basis points, and finances a \(\$300\)m leveraged book through a prime broker at \(60\) basis points over the funding rate. What does it pay?</h3>
+    <ol class="steps">
+      <li>Execution: \(40\text{m} \times 0.0002 = \$8{,}000\).</li>
+      <li>Financing spread for a year: \(300\text{m} \times 0.006 = \$1.8\)m.</li>
+    </ol>
+    <p class="answer">The plumbing has a price, and the financing is by far the bigger bill.</p>
+  </div>
+  <div class="prose">
+    <p>Read the incentives neutrally, as Deltashark does: revenue from activity rewards volume, revenue from performance rewards returns, and each side behaves according to how it's paid. Neither is good or bad. The two need each other, because flow needs someone to warehouse it and warehouses need flow, and the price of every service between them is bargained over and squeezed by competition like any other market.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Two Things Called a Prop Firm", "Is a trading challenge company the same as Jane Street?", "Two kinds of prop firm" %}
+  <div class="prose">
+    <p>"Prop firm" now means two very different things, and it's worth being precise in an interview.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Institutional prop trading firm</th><th>Retail "prop firm" challenge</th></tr></thead>
+      <tbody>
+        <tr><td>Examples</td><td>Jane Street, Optiver, IMC, Jump, Hudson River Trading</td><td>FTMO and many similar online firms</td></tr>
+        <tr><td>How you join</td><td>Applications, maths and probability tests, market making games, interviews; internships and graduate schemes</td><td>Pay a fee and pass a trading challenge with profit targets and loss limits</td></tr>
+        <tr><td>Whose money is traded</td><td>The firm's own capital, in real markets</td><td>FTMO says its challenge and funded accounts are simulated: real prices, but no trades placed in the market</td></tr>
+        <tr><td>How the firm earns</td><td>Trading profits</td><td>Challenge fees, with rewards paid to successful traders out of simulated profits</td></tr>
+        <tr><td>What you're paid</td><td>Salary and bonus</td><td>A share (up to \(90\%\) at FTMO) of simulated profits</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>{% gl "prop firm challenge" %}Retail challenges{% endgl %} can be a structured way to practise under strict risk rules, and the best traders do get paid. But they're an evaluation product, not a seat at a trading firm, and they aren't regulated as investment firms. Section 3's arithmetic from What Quant Trading Is applies too: a month-long challenge is far too few trades to prove an edge either way.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>To understand any trading firm, ask three questions: whose money is it, how does it get paid, and how long does it hold? The answers predict its strategies, its risks, its culture and what it would hire you to do.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Who makes the prices in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: banks and non-banks side by side</h3>
+    <p>In spot FX, non-bank liquidity providers such as XTX Markets, Citadel Securities and Jump now stream prices alongside the big dealing banks, often to the same platforms. Banks still dominate where a balance sheet and credit lines matter most: FX forwards and swaps that last weeks or months, and large trades with corporate clients. Quant hedge funds and CTAs are on the other side, running carry, momentum and trend strategies over days to months.</p>
+    <h3>Gold: a bank-run market with fast futures</h3>
+    <p>London's over-the-counter gold market, where the physical metal changes hands, is still made mainly by banks, because it needs vaults, metal accounts and credit. Gold futures on COMEX are fully electronic, so there electronic market makers quote alongside banks, and systematic funds trade the trend.</p>
+    <h3>Bonds: dealers, prop firms and funds</h3>
+    <p>Banks act as {% gl "primary dealer" %}primary dealers{% endgl %}, buying government bonds at auction and making markets for clients. Proprietary trading firms trade the newest US Treasuries and Treasury futures at high speed. Hedge funds run relative value trades such as the Treasury basis trade, financed through prime brokers and repo (Relative Value).</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>LP</h3><span class="tag desk">Desk</span></div><p>Liquidity provider: a firm streaming prices others can trade on. (Not the same as a fund's limited partner.)</p><p class="eg">"Three new LPs on the platform this quarter."</p></div>
+    <div class="term"><div class="term-top"><h3>Non-bank</h3><span class="tag desk">Desk</span></div><p>A liquidity provider that isn't a bank, such as XTX or Citadel Securities.</p><p class="eg">"The non-banks are tighter in EUR/USD than we are."</p></div>
+    <div class="term"><div class="term-top"><h3>Flow</h3><span class="tag desk">Desk</span></div><p>The stream of client orders a market maker serves.</p><p class="eg">"Retail flow is the best flow to trade against."</p></div>
+    <div class="term"><div class="term-top"><h3>Prop</h3><span class="tag desk">Desk</span></div><p>Trading with the firm's own money, not clients'.</p><p class="eg">"He left the bank to trade prop."</p></div>
+    <div class="term"><div class="term-top"><h3>Own book</h3><span class="tag desk">Desk</span></div><p>The firm's own positions and risk.</p><p class="eg">"We took the trade onto our own book."</p></div>
+    <div class="term"><div class="term-top"><h3>AUM</h3><span class="tag desk">Desk</span></div><p>Assets under management: the money a fund runs for its investors.</p><p class="eg">"They're at twelve billion AUM and closed to new money."</p></div>
+    <div class="term"><div class="term-top"><h3>The Street</h3><span class="tag desk">Desk</span></div><p>The sell side: the banks and brokers as a group.</p><p class="eg">"The Street's all positioned the same way."</p></div>
+    <div class="term"><div class="term-top"><h3>Payout</h3><span class="tag desk">Desk</span></div><p>The share of profits a trader or fund manager is paid.</p><p class="eg">"Payout's twenty percent of net P&amp;L."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the three business shapes turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: know which door you're knocking on</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>If you try a retail prop challenge, treat it as what it is: a paid evaluation with strict daily and total loss limits, usually on simulated money. Read the rules on news trading, holding over weekends and payouts before paying. The institutional route is completely different: London is a hub for Optiver, IMC, Jane Street, XTX and others, and they recruit through trading internships and graduate programmes that test mental maths, probability and market making games, the subject of the Interview Prep chapter.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same three shapes</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has all three businesses. An estate or letting agent is the market maker: paid a fee on every transaction, whichever way prices go. A developer building with her own money is the prop firm: she keeps the upside and carries the losses. A property fund raising money from investors is the hedge fund: it earns a management fee and a share of the profits (carried interest, in Fees and the High-Water Mark). Heritage Edge Properties could start as the second and grow into the third once it has a track record.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: who makes Nigerian prices?</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>The Nigerian Exchange began a market making programme in 2012, appointing dealing members to quote two-way prices in selected shares, but there are no large electronic market makers of the Citadel Securities kind, and trading in most shares is thin. In naira, banks and the authorised bureaux de change, the airport booth from section 1, are the market makers, and since December 2024 interbank trading runs on the central bank's EFEMS screens. A non-bank liquidity provider for African currencies is the kind of fintech idea this note points to: it needs capital, technology and regulators' trust, the same three things XTX needed in London.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on each business model?" %}
+  <div class="formula"><span class="lbl">A market making desk's revenue</span>\[ \text{revenue per day} = \text{edge per contract (ticks)} \times \text{tick value} \times \text{contracts} \]</div>
+  <div class="formula"><span class="lbl">A fund's fees for the year</span>\[ \text{fees} = m A + p \cdot \max(0,\; g - m) \cdot A \]</div>
+  <div class="formula"><span class="lbl">Service costs</span>\[ \text{commission} = \text{volume} \times \text{bps} \div 10{,}000 \qquad \text{financing} = \text{financed amount} \times \text{spread} \times \tfrac{\text{days}}{360} \]</div>
+  <div class="prose">
+    <p>\(A\) is the money managed, \(g\) the return before fees, \(m\) the management fee and \(p\) the performance fee, charged here on the return above the management fee, as in Deltashark's examples (terms vary in practice). Financing uses a \(360\)-day year in dollars, as in Prime Brokerage.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A fund runs \(\$1\)bn at \(1.5\) and \(20\) and makes \(3\%\) before fees. A desk nets \(0.1\) ticks on \(30{,}000\) contracts a day at \(\$12.50\). Which earns more this year?</h3>
+    <ol class="steps">
+      <li>Fund: \(1.5\% \times 1\text{bn} = \$15\)m, plus \(20\% \times (3\% - 1.5\%) \times 1\text{bn} = \$3\)m, so \(\$18\)m.</li>
+      <li>Desk: \(0.1 \times 12.50 \times 30{,}000 = \$37{,}500\) a day, \(\times 252 = \$9.45\)m.</li>
+      <li>In a poor year for returns, the fund still collects its management fee; in a quiet year for volume, the desk earns less however good its prices are.</li>
+    </ol>
+    <p class="answer">The fund: \(\$18\)m against \(\$9.45\)m, and most of the fund's comes from the management fee.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A fund manages \(\$500\)m at a \(2\%\) management fee and a \(20\%\) performance fee on gross returns above the management fee. Gross return is \(12\%\). What are total fees, in millions?</span></p>
+      <details><summary>Show answer</summary><div><span>Management \(2\% \times 500 = 10\); performance \(20\% \times (12\% - 2\%) \times 500 = 10\). Total \(\$20\)m.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A making desk nets \(0.15\) ticks per contract at a \(\$12.50\) tick value on \(24{,}000\) contracts. What is its daily revenue?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.15 \times 12.50 \times 24{,}000 = \$45{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>(Deltashark quick check) A fund pays \(2\) basis points commission on \(\$75\)m of executed volume. What is the commission?</span></p>
+      <details><summary>Show answer</summary><div><span>\(75{,}000{,}000 \times 0.0002 = \$15{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>(Deltashark quick check) A prime broker charges \(50\) basis points a year on \(\$200\)m of financed positions. What is the annual financing spread cost, in millions?</span></p>
+      <details><summary>Show answer</summary><div><span>\(200 \times 0.005 = \$1\)m.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Markets go completely flat for a year: prices barely move and trading volumes halve. Which business suffers more, the market making desk or the fund?</span></p>
+      <details><summary>Show answer</summary><div><span>The desk's revenue roughly halves with the volume, because it's paid per trade. The fund still earns its management fee on the money it manages, though its performance fee may disappear if it can't make returns. Activity-based and performance-based businesses are hurt by different kinds of bad year.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why are firms like Jane Street and Citadel Securities described as non-bank liquidity providers, and why did they grow after 2008?</span></p>
+      <details><summary>Show answer</summary><div><span>They provide liquidity (two-way prices) for others, a service bank desks used to supply, but they trade their own capital and aren't banks. After 2008, capital rules made holding inventory expensive for banks and the Volcker Rule banned US banks' proprietary trading, while technology made fast, automated market making cheaper. Specialist firms with no deposits to protect and strong technology took over a large share.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: give three ways a prop firm and a hedge fund differ, even if both run the same quant strategy.</span></p>
+      <details><summary>Show answer</summary><div><span>Whose money: own capital vs outside investors'. How they're paid: trading profits kept in full vs management and performance fees. Constraints: own risk limits only vs investor mandates, redemption terms and the need to raise and keep capital. Usually horizon too: prop firms lean shorter-term, where capacity is small, and funds longer-term, where more money can be put to work.</span></div></details></div>
+  </div>
+{% endsec %}

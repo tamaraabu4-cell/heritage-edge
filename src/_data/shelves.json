@@ -221,7 +221,7 @@
     "chapters": [
       { "title": "Quant Trading Firms", "blurb": "Jane Street, XTX and the firms that trade only their own money.",
         "subtopics": ["The Industry",
-          { "name": "Firm Types", "planned": ["Market Makers, Prop Firms and Hedge Funds"] },
+          "Firm Types",
           { "name": "Traders, Researchers and Developers", "planned": ["The Three Seats", "Inside a Trading Desk"] },
           { "name": "How Firms Make Money", "planned": ["The Four Engines"] },
           { "name": "Speed vs Prediction", "planned": ["Competition, Speed and Edge"] },
