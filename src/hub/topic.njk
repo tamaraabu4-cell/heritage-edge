@@ -34,9 +34,9 @@ styles: [hub.css]
 
   {# Header: icon, name, progress, and where to pick up #}
   <section class="topic-hello">
-    <span class="topic-icon">{{ hubIcon(shelf.icon, 48) }}</span>
+    <span class="topic-icon" style="view-transition-name: hub-icon-{{ shelf.slug }}">{{ hubIcon(shelf.icon, 48) }}</span>
     <div class="topic-hello-text">
-      <h1 class="hub-title">{{ shelf.name }}</h1>
+      <h1 class="hub-title vt-title" style="view-transition-name: hub-name-{{ shelf.slug }}">{{ shelf.name }}</h1>
       <p class="hub-intro">{{ shelf.description }}</p>
       <div class="topic-progress">
         <span class="topic-bar"><span class="topic-bar-done" data-bar-done></span><span class="topic-bar-reading" data-bar-reading></span></span>

@@ -20,7 +20,7 @@ styles: [hub.css, projects/projects-home.css]
 <article class="proj" data-project data-topic="{{ p.topic }}" data-markets="{{ p.marketSlugs }}"{% if newest %} data-latest{% else %} hidden{% endif %}>
   {% if p.firm %}<p class="proj-firm">{{ p.firm }}</p>{% endif %}
   <div class="proj-top">
-    <a class="proj-title" href="{{ p.url }}">{{ p.title }}</a>
+    <a class="proj-title vt-title" href="{{ p.url }}" style="view-transition-name: {{ p.url | slugify }}">{{ p.title }}</a>
     <span class="proj-status{% if p.status == 'live' %} is-live{% endif %}"><i aria-hidden="true"></i>{% if p.status == "live" %}Live{% else %}Finished{% endif %}</span>
   </div>
   <p class="proj-sum">{{ p.headline }}</p>
@@ -111,9 +111,9 @@ styles: [hub.css, projects/projects-home.css]
     {% for shelf in pp.shelves %}
     <article class="shelf proj-shelf{% if shelf.colour %} tone-{{ shelf.colour }}{% endif %}" data-shelf>
       <div class="shelf-head">
-        <span class="shelf-icon">{{ hubIcon(shelf.icon) }}</span>
+        <span class="shelf-icon" style="view-transition-name: proj-icon-{{ shelf.slug }}">{{ hubIcon(shelf.icon) }}</span>
         <div class="shelf-title">
-          <h2 class="shelf-name"><a href="{{ shelf.url }}">{{ shelf.name }}</a></h2>
+          <h2 class="shelf-name vt-title" style="view-transition-name: proj-name-{{ shelf.slug }}"><a href="{{ shelf.url }}">{{ shelf.name }}</a></h2>
           <p class="proj-blurb">{{ shelf.blurb }}</p>
         </div>
         <span class="proj-count">{{ shelf.count }} project{% if shelf.count != 1 %}s{% endif %}</span>
@@ -130,9 +130,9 @@ styles: [hub.css, projects/projects-home.css]
   {% if sims %}
   <section class="sims tone-walnut" aria-label="Simulations" data-shelf>
     <div class="sims-head">
-      <span class="shelf-icon">{{ hubIcon("simulations") }}</span>
+      <span class="shelf-icon" style="view-transition-name: proj-icon-simulations">{{ hubIcon("simulations") }}</span>
       <div class="sims-title">
-        <h2><a href="{{ sims.url }}">Simulations</a></h2>
+        <h2 class="vt-title" style="view-transition-name: proj-name-simulations"><a href="{{ sims.url }}">Simulations</a></h2>
         <p>{{ sims.blurb }}</p>
       </div>
       <span class="proj-count">{{ sims.count }} project{% if sims.count != 1 %}s{% endif %}</span>

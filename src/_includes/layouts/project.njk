@@ -54,7 +54,7 @@ layout: layouts/base.njk
 
         <header class="pj-head">
           {% if ctx %}<p class="pj-kicker">{{ ctx.topic.name }}{% if p.kind %} · {{ p.kind }}{% endif %}{% for m in p.markets %} · {{ m }}{% endfor %}</p>{% endif %}
-          <h1 class="pj-title">{{ title }}</h1>
+          <h1 class="pj-title vt-title" style="view-transition-name: {{ page.url | slugify }}">{{ title }}</h1>
           {% if lede or p.headline %}<p class="pj-lede">{{ (lede or p.headline) | safe }}</p>{% endif %}
           <div class="pj-meta">
             {% if p.status == "live" %}<span class="pj-chip is-live"><i aria-hidden="true"></i>Live</span>

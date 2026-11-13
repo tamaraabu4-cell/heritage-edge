@@ -100,7 +100,7 @@ scripts: ["/assets/js/blog.js"]
       <time class="post-date" datetime="{{ post.date | htmlDate }}">{{ post.date | readableDate }}</time>
       <div class="post-main">
         {% if post.data.category %}<p class="post-tag">{{ post.data.category }}</p>{% endif %}
-        <h2 class="post-title">{{ post.data.title }}</h2>
+        <h2 class="post-title vt-title" style="view-transition-name: {{ post.url | slugify }}">{{ post.data.title }}</h2>
         {% if post.data.summary %}<p class="post-summary">{{ post.data.summary }}</p>{% endif %}
       </div>
       <span class="post-arrow" aria-hidden="true">›</span>

@@ -1586,3 +1586,28 @@ a.book:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .is-locking .unlock-emblem { animation: none; background: transparent; transform: none; }
   .is-locking .unlock-emblem::after { animation: none; }
 }
+
+
+
+/* 21. Page transitions: every page change lifts out and rises in, the top bar stays put,
+   and named pieces (topic icons and names, project and post titles) glide between pages.
+   The names are set in the templates with style="view-transition-name: ...".
+   Chrome, Edge and Safari animate it; other browsers just load the page as normal. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+
+/* The top bar stays still while the page underneath changes */
+.site-nav { view-transition-name: site-nav; }
+
+/* The old page lifts away, the new one rises in */
+::view-transition-old(root) { animation: 240ms cubic-bezier(0.4, 0, 1, 1) both page-out; }
+::view-transition-new(root) { animation: 440ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both page-in; }
+@keyframes page-out { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes page-in { from { opacity: 0; transform: translateY(16px); } }
+
+/* How fast the named pieces glide from their old spot to their new one */
+::view-transition-group(*) { animation-duration: 460ms; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* A gliding title hugs its text, so it grows and shrinks without stretching */
+.vt-title { display: block; width: fit-content; }

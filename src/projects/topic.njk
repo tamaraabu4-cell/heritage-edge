@@ -27,9 +27,9 @@ styles: [hub.css, projects/projects-home.css]
 
   {# Header: big icon beside the name, as on the hub's topic homes #}
   <section class="topic-hello">
-    <span class="topic-icon">{{ hubIcon(topic.icon, 48) }}</span>
+    <span class="topic-icon" style="view-transition-name: proj-icon-{{ topic.slug }}">{{ hubIcon(topic.icon, 48) }}</span>
     <div class="topic-hello-text">
-      <h1 class="hub-title">{{ topic.name }}</h1>
+      <h1 class="hub-title vt-title" style="view-transition-name: proj-name-{{ topic.slug }}">{{ topic.name }}</h1>
       <p class="hub-intro">{{ topic.blurb }}</p>
       <div class="th-chips">
         <span class="th-chip is-tone">{{ topic.count }} project{% if topic.count != 1 %}s{% endif %}</span>
@@ -69,7 +69,7 @@ styles: [hub.css, projects/projects-home.css]
     <article class="th-row" data-project data-topic="{{ p.topic }}" data-markets="{{ p.marketSlugs }}">
       <div class="th-main">
         {% if p.firm %}<p class="proj-firm">{{ p.firm }}</p>{% endif %}
-        <a class="proj-title" href="{{ p.url }}">{{ p.title }}</a>
+        <a class="proj-title vt-title" href="{{ p.url }}" style="view-transition-name: {{ p.url | slugify }}">{{ p.title }}</a>
         <p class="proj-sum">{{ p.headline }}</p>
         {% if p.result %}<p class="proj-result"><b>Result</b><span>{{ p.result }}</span></p>{% endif %}
       </div>

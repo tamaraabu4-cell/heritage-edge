@@ -70,9 +70,9 @@ styles: [hub.css]
       {% for shelf in shelves %}{% if shelf.open %}
       <article class="shelf{% if shelf.colour %} tone-{{ shelf.colour }}{% endif %}" data-shelf="{{ shelf.slug }}">
         <div class="shelf-head">
-          <span class="shelf-icon">{{ hubIcon(shelf.icon) }}</span>
+          <span class="shelf-icon" style="view-transition-name: hub-icon-{{ shelf.slug }}">{{ hubIcon(shelf.icon) }}</span>
           <div class="shelf-title">
-            <a class="shelf-name" href="/hub/{{ shelf.slug }}/">{{ shelf.name }}</a>
+            <a class="shelf-name vt-title" href="/hub/{{ shelf.slug }}/" style="view-transition-name: hub-name-{{ shelf.slug }}">{{ shelf.name }}</a>
             <div class="shelf-progress">
               <span class="shelf-bar"><span data-bar></span></span>
               <span class="shelf-count" data-count>No notes yet</span>
