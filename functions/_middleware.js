@@ -22,7 +22,7 @@ const LOCKED_PAGE = "/locked/";             // ...then plays the locking animati
 const PASSKEY_API = "/api/passkey/";        // Face ID / Touch ID (passkeys)
 const COOKIE = "hub_pass";
 
-const PASS_HOURS = 24;     // a correct passcode keeps you signed in this long
+const PASS_HOURS = 3;     // a correct passcode keeps you signed in this long
 const MAX_TRIES = 5;       // wrong passcodes allowed within an hour...
 const LOCK_MINUTES = 60;   // ...before the hub locks for this long
 const MAX_DEVICES = 10;    // most Face ID / Touch ID devices you can add
