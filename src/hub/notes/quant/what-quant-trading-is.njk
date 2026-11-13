@@ -1,0 +1,264 @@
+---
+title: What Quant Trading Is
+shelf: quant
+chapter: quant-trading-firms
+subtopic: The Industry
+order: 1
+summary: What quantitative trading is and how it differs from discretionary trading; algorithmic execution vs quant strategies vs high-frequency trading; how markets moved from trading pits to servers (screens, decimalisation in 2001, the speed race, pits closing in 2015); why tiny edges become a business through many independent trades (expected profit grows with n, swings with the square root of n); what it takes to find, execute and size an edge; and quant trading in FX, gold and bonds.
+lede: 'A casino doesn''t know who will win the next spin, and it doesn''t need to. It has a small edge on every bet and millions of bets. Quant trading firms run the same arithmetic on markets: models find small edges, machines trade them thousands of times a day, and the law of large numbers turns "slightly better than a coin" into a business. The hard part is that, unlike a casino, a trading firm has to find its edge, prove it''s real, and keep it from being copied.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, fintech]
+noteScripts: [/assets/js/notes/quant/what-quant-trading-is.js]
+
+quiz:
+  - q: 'A strategy has a small edge per trade. What happens to its total result as it makes more and more independent trades?'
+    opts: ['The expected profit and the swings grow at the same rate, so the result never gets more certain', 'The expected profit grows in proportion to the number of trades but the swings only grow with its square root, so a profit becomes more and more certain', 'The edge wears off after a few thousand trades, so more trades make no difference']
+    right: 1
+    why: 'Expected profit is \(n \times\) edge, but the typical swing is about \(\sqrt{n}\) times the swing of one trade. Multiply the trades by \(100\) and the profit grows \(100\times\) while the swings grow only \(10\times\). That''s the law of large numbers at work, and it''s the reason quant firms trade so often.'
+  - q: 'Which of these is algorithmic execution rather than a quant trading strategy?'
+    opts: ['A rule that buys currencies whose prices have risen over the past year and sells those that have fallen', 'A computer that holds positions for a few seconds at a time to earn the bid-ask spread', 'A broker''s computer slicing a pension fund''s decided purchase of 2 million shares into small orders through the day']
+    right: 2
+    why: 'Execution algorithms decide how to carry out an order a person has already chosen. A quant strategy decides what to buy or sell in the first place. The second option is high-frequency market making, a kind of quant strategy.'
+  - q: 'Why did the US switch to prices in cents in 2001 help quant trading grow?'
+    opts: ['Smaller price steps squeezed spreads, so each trade earned less and the business rewarded trading a huge number of times very cheaply, which only machines can do', 'It made trading free for everyone', 'It banned human traders from the stock exchanges']
+    right: 0
+    why: 'The smallest price step fell from \(1/16\) of a dollar (\(6.25\) cents) to \(1\) cent. A spread worth a few cents a share can only pay for a business if you capture it millions of times, at low cost and with fast reactions: a job for software.'
+
+connected:
+  - { label: Builds on, title: Algorithmic Execution, where: Markets · How Markets Work, url: /hub/markets/algorithmic-execution/ }
+  - { label: Builds on, title: Quant Funds, where: Hedge Funds · Strategies, url: /hub/hedge-funds/quant-funds/ }
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Used in, title: Backtesting without Fooling Yourself, where: Quant · Backtesting without Fooling Yourself, url: /hub/quant/ }
+---
+
+<style>
+  .qt-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .qt-era { margin-top: 4px; border: 1px solid var(--border); border-left: 4px solid var(--tone); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .qt-era h4 { margin: 0 0 8px; font-size: 16px; }
+  .qt-era dl { margin: 0; display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 14px; }
+  .qt-era dt { color: var(--text-2); font-weight: 600; }
+  .qt-era dd { margin: 0; }
+  @media (max-width: 600px) { .qt-era dl { grid-template-columns: 1fr; gap: 2px; } .qt-era dd { margin-bottom: 8px; } }
+  .qt-map { list-style: none; margin: 10px 0 6px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .qt-map li { border: 1px solid var(--border); border-top: 3px solid var(--tone); border-radius: 10px; padding: 10px 11px; background: var(--bg); font-size: 13px; color: var(--text-2); }
+  .qt-map li strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 3px; }
+  @media (max-width: 760px) { .qt-map { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "Decisions Made by Models", "What is quant trading, and how is it different from ordinary trading?", "Decisions made by models" %}
+  <div class="prose">
+    <p>Picture two football scouts. The first travels to matches, watches players and trusts years of experience to spot talent. The second has a computer rate every player in every league from data, checks whether those ratings would have picked out the stars of past seasons, and then recommends the players the ratings like. Both are trying to find underrated players. The second has turned judgement into a tested method that can run across thousands of players at once. Brentford, in west London, became famous for working this way.</p>
+    <p>{% gl "quantitative trading" %}Quantitative trading{% endgl %} is the second scout, applied to markets. The decisions (what to buy or sell, at what price, how much and when) come from models, and machines carry most of them out. Ideas about prices are written down as precise rules, tested on data, and then run by software. People still matter enormously, but their job changes: they design the system, watch it run and improve it, rather than making the call on each trade.</p>
+    <p>This isn't a corner of the market any more. In the most liquid electronic markets, most trading volume now comes from algorithms, and the industry built around that employs mathematicians, statisticians and engineers to do what floor traders once did by voice and instinct.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Discretionary trader</th><th>Quant trader</th></tr></thead>
+      <tbody>
+        <tr><td>Who decides each trade?</td><td>A person, using judgement</td><td>A model, following rules people wrote</td></tr>
+        <tr><td>How is an idea checked?</td><td>Experience, research, conviction</td><td>Tested on years of data, then on live money in small size</td></tr>
+        <tr><td>How many decisions a day?</td><td>A handful to dozens</td><td>Thousands to millions</td></tr>
+        <tr><td>Edge per decision</td><td>Usually larger, on fewer trades</td><td>Usually tiny, on very many trades</td></tr>
+        <tr><td>What goes wrong?</td><td>Emotions, overconfidence, one big bad call</td><td>A model that learned noise, a broken relationship, a software bug</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <h3>Three phrases that get mixed up</h3>
+    <p>People use "algo trading", "quant trading" and "high-frequency trading" as if they mean the same thing. They overlap, but they answer different questions:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Phrase</th><th>The question it answers</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Algorithmic execution</td><td><strong>How</strong> do I carry out an order someone has already decided on?</td><td>A broker's VWAP algorithm slicing a pension fund's purchase into small pieces through the day (Algorithmic Execution)</td></tr>
+        <tr><td>Quant (systematic) trading</td><td><strong>What</strong> should I buy or sell, and how much, according to tested rules?</td><td>A trend-following fund buying currencies that have been rising; a stat arb fund trading pairs of shares (Quant Funds)</td></tr>
+        <tr><td>{% gl "high-frequency trading" %}High-frequency trading{% endgl %}</td><td>Can I win by reacting faster than everyone else?</td><td>A market maker updating its quotes thousands of times a second and holding positions for seconds</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>All high-frequency trading is quant trading, but most quant trading isn't high-frequency: a quant hedge fund might hold positions for weeks. And almost everyone, quant or not, now uses execution algorithms, so "{% gl "algorithmic trading" %}algo trading{% endgl %}" on its own says very little.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "How the Industry Got Here", "How did trading move from shouting in pits to servers?", "How it got here" %}
+  <div class="prose">
+    <p>Deltashark points to three changes, each of which you've met in the Markets topic:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Markets went electronic<span class="why">Order books became data that a computer can read and answer. The floor trader's advantage of standing next to the action disappeared into data feeds anyone connected could buy.</span></span></li>
+    <li><span class="n">2</span><span>Trading got cheap<span class="why">Smaller price steps and competition between venues squeezed spreads. Strategies that earn a tiny amount per trade, many times a day, started to add up.</span></span></li>
+    <li><span class="n">3</span><span>Computing and data got cheap<span class="why">Strategies that estimate thousands of numbers or scan every listed instrument every second became normal.</span></span></li>
+  </ul>
+  <div class="lab">
+    <div class="lab-head"><h3>From the pit to the server</h3><p>Step through how a trade got done in each era, how small the price steps were, and who had the advantage.</p></div>
+    <div class="controls">
+      <div class="presets qt-pick" id="qt-era-pick" aria-label="Era"></div>
+    </div>
+    <div class="qt-era" id="qt-era-card" aria-live="polite"></div>
+  </div>
+  <div class="prose">
+    <p>The result is a market where, in most liquid instruments most of the time, the trader setting the price at the margin is an algorithm. Estimates vary with how you count, but roughly half of US share trading is high-frequency, and once execution algorithms are included, well over half is algorithmic. The same is true of the big futures markets and the main currency pairs.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Small Edges, Many Trials", "How can being right only slightly more than half the time be a business?", "Small edges, many trials" %}
+  <div class="prose">
+    <p>Go back to the casino. A European roulette wheel has \(37\) slots: \(18\) red, \(18\) black and a green zero. Bet on red and the casino wins whenever the ball lands on black or zero, \(19\) times out of \(37\), or \(51.35\%\) of the time. On any single spin, the casino might easily lose. But over millions of spins, an {% gl "edge" %}edge{% endgl %} of just over one percentage point turns into a profit the casino can practically bank on.</p>
+    <p>Deltashark calls this the statistical heart of the whole industry. If each trade has a small positive {% gl "expected value" %}expected value{% endgl %} and the trades are independent, then:</p>
+  </div>
+  <div class="formula"><span class="lbl">Small edges, many trials</span>\[ \mathbb{E}[\text{P\&L}] = n \times \text{edge per trade} \qquad \sigma_{\text{P\&L}} \propto \sqrt{n} \]</div>
+  <div class="prose">
+    <p>The expected profit grows in line with the number of trades \(n\), but the typical swing (the {% gl "standard deviation" %}standard deviation{% endgl %}) grows only with \(\sqrt{n}\). Do \(100\) times as many trades and your expected profit is \(100\) times bigger, but the swings are only \(10\) times bigger. Keep going and the profit pulls away from the noise. That's the {% gl "law of large numbers" %}law of large numbers{% endgl %}, and Deltashark calls it the industry's production function.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A strategy wins \(1\) unit or loses \(1\) unit, with a \(51\%\) chance of winning, \(10{,}000\) independent times. What happens?</h3>
+    <ol class="steps">
+      <li>Expected profit per bet: \(0.51 \times 1 - 0.49 \times 1 = 0.02\) units.</li>
+      <li>Expected total: \(10{,}000 \times 0.02 = 200\) units.</li>
+      <li>Each bet swings by about \(1\) unit, so the total swings by about \(\sqrt{10{,}000} \times 1 = 100\) units.</li>
+      <li>The expected profit is two standard deviations above zero: you'd end with a loss only about \(2\%\) of the time.</li>
+    </ol>
+    <p class="answer">A coin that is barely better than fair becomes a reliable business, purely through repetition.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>A hundred small bets</h3><p>Each bet wins or loses one unit. Choose the chance of winning, how many bets you make and what each bet costs you, then watch 40 traders run the same strategy with different luck. The shaded band is where about \(95\%\) of results should land.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="sb-p">Win rate</label><input type="range" id="sb-p" min="50" max="55" step="0.05" value="51"><output id="sb-p-out" for="sb-p">51.00%</output></div>
+      <div class="ctrl"><label for="sb-n">Number of bets</label><input type="range" id="sb-n" min="1" max="5" step="0.05" value="4"><output id="sb-n-out" for="sb-n">10,000</output></div>
+      <div class="ctrl"><label for="sb-c">Cost per bet</label><input type="range" id="sb-c" min="0" max="0.05" step="0.005" value="0"><output id="sb-c-out" for="sb-c">0.000 units</output></div>
+      <div class="presets qt-pick" id="sb-pick" aria-label="Examples"></div>
+      <div class="presets"><button type="button" id="sb-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-sb" viewBox="0 0 640 300" role="img" aria-label="Forty simulated running totals of profit, with the expected profit line and a band two standard deviations either side"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Expected profit and the 95% band</span><span><i class="sw grey"></i>40 traders' running totals</span></div>
+    <div class="readout" id="sb-read"></div>
+    <p class="look" id="sb-story"></p>
+  </div>
+  <div class="prose">
+    <p>The smaller the edge, the more bets you need before the profit stands clear of the luck. Halve the edge and you need four times as many bets. Here's roughly how many even-money bets it takes, with no costs, before you'd finish ahead about \(98\%\) of the time (two standard deviations):</p>
+  </div>
+  <div class="tiles" aria-label="Bets needed to be about 98 percent sure of a profit, by chance of winning">
+    <div class="tile"><span class="d">Win \(55\%\)</span><span>\(\approx 400\) bets</span></div>
+    <div class="tile"><span class="d">Win \(52\%\)</span><span>\(\approx 2{,}500\)</span></div>
+    <div class="tile"><span class="d">Win \(51\%\)</span><span>\(\approx 10{,}000\)</span></div>
+    <div class="tile"><span class="d">Win \(50.5\%\)</span><span>\(\approx 40{,}000\)</span></div>
+    <div class="tile hot"><span class="d">Win \(50.1\%\)</span><span>\(\approx 1\) million</span></div>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Quant firms don't need to be right most of the time. They need a small, real edge, a huge number of independent bets, and costs low enough not to swallow the edge. A quant firm is a casino that has to find its own edge, and the rest of this chapter is about how they do it.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Turning the Coin into a Business", "What does it actually take to make the arithmetic work?", "Turning the coin into a business" %}
+  <div class="prose">
+    <p>The worked example makes it sound easy. Deltashark's point is that the same arithmetic explains everything a quant firm has to be good at. There are three hard parts:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Find the edge honestly<span class="why">A real \(51\%\) coin is buried in noise, and if you test enough ideas, some will look brilliant by luck. That needs statistics done honestly: Quant Funds' overfitting interactive, and later Backtesting without Fooling Yourself.</span></span></li>
+    <li><span class="n">2</span><span>Trade it without leaking it<span class="why">Making \(10{,}000\) trades without the edge disappearing into spreads, market impact and slow reactions needs market structure and technology: The Order Book, Algorithmic Execution, and the Microstructure chapter.</span></span></li>
+    <li><span class="n">3</span><span>Size it without blowing up<span class="why">Even a good coin can ruin you if you bet too much on each flip. That needs risk maths: the Kelly rule from Life on a Desk, drawdowns, and margin from Margin and Leverage.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>Put together, quant trading is maths, markets and engineering, run as a business. This chapter looks at the business itself:</p>
+  </div>
+  <ol class="qt-map" aria-label="The rest of this chapter">
+    <li><strong>Who does it</strong>Market makers, proprietary trading firms and quant hedge funds, and where they sit between the sell side and the buy side.</li>
+    <li><strong>The jobs</strong>Quant traders, researchers and developers, and how a trading desk is organised and controlled.</li>
+    <li><strong>The money</strong>The four engines that earn trading profits, and the costs that eat them.</li>
+    <li><strong>The race</strong>Why every edge wears out, and when speed matters.</li>
+    <li><strong>The firms</strong>Jane Street, XTX, Citadel Securities, Optiver, IMC, Hudson River Trading, Jump and Susquehanna.</li>
+    <li><strong>Case studies</strong>XTX's rise, Knight Capital's 45 minutes, and Jane Street in India.</li>
+  </ol>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "How far have the machines got in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the biggest electronic market</h3>
+    <p>Currencies are the largest market in the world: the Bank for International Settlements' 2025 survey found about \(\$9.6\) trillion traded a day in April 2025, up \(28\%\) from 2022. Major pairs like EUR/USD and USD/JPY trade on electronic platforms (Where Trades Happen covers EBS, LSEG FX Matching and the multi-dealer platforms), and much of the pricing comes from algorithms at banks and at non-bank firms such as XTX Markets, which has grown into one of the largest liquidity providers in spot FX. Because currencies trade around the clock and there's no single exchange, speed and smart routing between venues matter a great deal. Quant hedge funds also run slower FX strategies (carry, momentum and value) that the Quant Funds note describes.</p>
+    <h3>Gold: from a phone call to an auction</h3>
+    <p>For almost a century, the London gold price was set by a handful of banks on a conference call, the "gold fix", which began in 1919. In March 2015 it was replaced by the LBMA Gold Price, an electronic auction run by ICE Benchmark Administration. The same year, CME Group closed most of its futures trading pits, including those for gold and silver at COMEX in New York, because shouting in the pit had fallen to about \(1\%\) of futures volume. Gold futures are now traded almost entirely on screens, which is where trend-following and other systematic funds trade them.</p>
+    <h3>Bonds: fast in government bonds, slower in corporate</h3>
+    <p>Government bonds have gone a long way towards the equity model. In US Treasuries, trading between dealers happens on electronic order books, and a US official report on the sudden price spike of 15 October 2014 found that high-speed proprietary trading firms accounted for more than half of that trading. Corporate bonds are different: there are thousands of separate bonds and each trades rarely, so much of it still happens by request-for-quote and phone, though electronic platforms and portfolio trading are growing.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Quant</h3><span class="tag desk">Desk</span></div><p>A person who builds or runs trading models, or the style itself.</p><p class="eg">"She's a quant on the FX options desk."</p></div>
+    <div class="term"><div class="term-top"><h3>Systematic</h3><span class="tag desk">Desk</span></div><p>Trading where rules, not people, make each decision.</p><p class="eg">"We're fully systematic: nobody overrides the model."</p></div>
+    <div class="term"><div class="term-top"><h3>Algo</h3><span class="tag desk">Desk</span></div><p>Short for algorithm: any computer program that sends orders.</p><p class="eg">"Put it in the VWAP algo and leave it."</p></div>
+    <div class="term"><div class="term-top"><h3>HFT</h3><span class="tag desk">Desk</span></div><p>High-frequency trading: strategies where speed is the edge.</p><p class="eg">"The HFTs have already moved the quote."</p></div>
+    <div class="term"><div class="term-top"><h3>Edge</h3><span class="tag desk">Desk</span></div><p>The reason a trade should make money on average.</p><p class="eg">"What's the edge, before costs?"</p></div>
+    <div class="term"><div class="term-top"><h3>EV</h3><span class="tag desk">Desk</span></div><p>Expected value: the average result if you made the same bet many times.</p><p class="eg">"It's positive EV, so take it."</p></div>
+    <div class="term"><div class="term-top"><h3>Sigma</h3><span class="tag desk">Desk</span></div><p>One standard deviation, the size of a typical swing.</p><p class="eg">"That was a three-sigma day for the book."</p></div>
+    <div class="term"><div class="term-top"><h3>Live</h3><span class="tag desk">Desk</span></div><p>Trading real money, as opposed to a backtest or paper trading.</p><p class="eg">"It's been live for six months and matches the backtest."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where the many-small-bets idea turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: count your bets</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>The tiles in section 3 are sobering for your own strategies. A swing-trading rule that takes two trades a month makes about \(24\) bets a year. Even with a \(55\%\) win rate and equal-sized wins and losses, it would take around \(400\) trades, about \(16\) years, before you could be fairly sure the edge is real rather than luck. That's why a good month on a prop firm challenge proves very little, and why it helps to log every trade, to test one rule across several markets (several currency pairs, gold) to build up evidence faster, and to remember that costs grow with the number of trades.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the opposite business</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property is a business of a few big bets. A villa developer might complete ten projects in a career, so the law of large numbers never gets going. Each deal has to carry a large margin of safety on its own, because there won't be thousands of other deals to average out a bad one. Where quant thinking does help is in the many small, repeated decisions inside a property business, such as setting nightly rates for holiday lets from demand data, which is what tools like Airbnb's Smart Pricing do.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: from call-over to screens</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria followed the same path, later. The Nigerian Stock Exchange traded by "call-over" for decades: a clerk called out each share and dealers shouted bids and offers. On 27 April 1999 it switched to an Automated Trading System. In 2012 it signed with Nasdaq OMX for a new trading platform and began a market making programme. But electronic screens alone don't create a quant industry: the many-small-bets arithmetic needs deep, cheap, active markets, and most Nigerian shares trade thinly. The more promising ground is FX, where the Central Bank of Nigeria's electronic matching system (EFEMS, from December 2024) puts interbank naira trading on screens, and fintech, where lenders make thousands of small, data-driven credit decisions a day.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you put numbers on an edge and on luck?" %}
+  <div class="formula"><span class="lbl">One even-money bet: average and swing</span>\[ \mu = (2p - 1) - c \qquad \sigma = 2\sqrt{p(1-p)} \approx 1 \]</div>
+  <div class="formula"><span class="lbl">After \(n\) independent bets</span>\[ \mathbb{E}[\text{total}] = n\mu \qquad \text{SD}(\text{total}) = \sigma\sqrt{n} \qquad z = \frac{n\mu}{\sigma\sqrt{n}} = \frac{\mu}{\sigma}\sqrt{n} \]</div>
+  <div class="formula"><span class="lbl">Chance of ending with a loss, and bets needed</span>\[ P(\text{loss}) \approx \Phi(-z) \qquad n \approx \left(\frac{z\,\sigma}{\mu}\right)^{2} \]</div>
+  <div class="formula"><span class="lbl">Breakeven win rate</span>\[ \text{even-money bets with cost } c\text{:}\;\; p^{*} = \frac{1 + c}{2} \qquad \text{wins } W\text{, losses } L\text{:}\;\; p^{*} = \frac{L}{W + L} \]</div>
+  <div class="prose">
+    <p>\(p\) is the chance of winning, \(c\) the cost per bet in units of the stake, and \(\Phi\) the normal distribution's cumulative probability (the bell curve's area to the left). The \(\sqrt{n}\) in \(z\) is the whole story: the edge-to-noise ratio of a single bet is fixed, but repetition multiplies it by \(\sqrt{n}\). The same \(\sqrt{n}\) appears in the Sharpe ratio, which is why a strategy that trades more often (with independent bets) can have a much higher yearly Sharpe from the same edge per trade.</p>
+  </div>
+
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A strategy wins \(52\%\) of even-money bets and pays \(0.01\) units in costs per bet. How sure are you of a profit after \(1{,}000\) bets, and how many bets do you need to be \(98\%\) sure?</h3>
+    <ol class="steps">
+      <li>Edge after costs: \(\mu = 0.04 - 0.01 = 0.03\) units a bet. Swing: \(\sigma = 2\sqrt{0.52 \times 0.48} \approx 0.999\).</li>
+      <li>After \(1{,}000\) bets: expected \(30\) units, standard deviation \(0.999 \times \sqrt{1{,}000} \approx 31.6\), so \(z \approx 0.95\).</li>
+      <li>Chance of a loss: \(\Phi(-0.95) \approx 17\%\). About one trader in six would end down despite a real edge.</li>
+      <li>For \(z = 2\): \(n \approx (2 \times 0.999 \div 0.03)^2 \approx 4{,}400\) bets.</li>
+    </ol>
+    <p class="answer">After \(1{,}000\) bets there's still a one-in-six chance of a loss. You need roughly \(4{,}400\) bets to be about \(98\%\) sure, and a cost of \(0.04\) would wipe the edge out completely.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A strategy makes \(10{,}000\) independent unit bets at a \(51\%\) win rate. What is its expected total profit in units?</span></p>
+      <details><summary>Show answer</summary><div><span>\(10{,}000 \times (0.51 - 0.49) = 10{,}000 \times 0.02 = 200\) units.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Same strategy: what is the standard deviation of the total, in units?</span></p>
+      <details><summary>Show answer</summary><div><span>Each bet has standard deviation \(2\sqrt{0.51 \times 0.49} \approx 0.9998\), so the total's is \(0.9998 \times \sqrt{10{,}000} \approx 100\) units.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Each even-money bet costs \(0.02\) units in fees and spread. What win rate do you need just to break even?</span></p>
+      <details><summary>Show answer</summary><div><span>\(p^{*} = (1 + 0.02) \div 2 = 51\%\). Deltashark's \(51\%\) coin would make nothing at all with these costs.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>With no costs, roughly how many bets at a \(52.5\%\) win rate do you need to be about \(98\%\) sure of a profit?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\mu = 0.05\), \(\sigma = 2\sqrt{0.525 \times 0.475} \approx 0.999\). For \(z = 2\): \(n \approx (2 \times 0.999 \div 0.05)^2 \approx 1{,}600\) bets.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A strategy wins \(70\%\) of its trades. The average win is \(\text{£}100\) and the average loss is \(\text{£}300\). Is it any good?</span></p>
+      <details><summary>Show answer</summary><div><span>No. Expected value per trade: \(0.7 \times 100 - 0.3 \times 300 = 70 - 90 = -\text{£}20\). Its breakeven win rate is \(300 \div (100 + 300) = 75\%\). A high win rate means nothing without the sizes of the wins and losses.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: what's the difference between algorithmic execution, quant trading and high-frequency trading?</span></p>
+      <details><summary>Show answer</summary><div><span>Algorithmic execution decides how to carry out an order that's already been decided (for example, a VWAP algorithm). Quant or systematic trading decides what to buy or sell, and how much, using rules tested on data, over any holding period. High-frequency trading is a kind of quant trading where speed is the edge and positions last seconds or less, as in electronic market making. All HFT is quant, not all quant is HFT, and nearly everyone uses execution algorithms.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: why would a trading firm rather make many small independent bets than a few big ones with the same total expected profit?</span></p>
+      <details><summary>Show answer</summary><div><span>Expected profit adds up in proportion to the number of bets, but the swings add up only with the square root, so many small independent bets give the same expected profit with far less risk: a higher Sharpe ratio and a much lower chance of a losing year. The catch is the word "independent": bets that all depend on the same thing (one market, one crowded signal) behave like one big bet and don't diversify.</span></div></details></div>
+  </div>
+{% endsec %}
