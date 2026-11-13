@@ -1,0 +1,275 @@
+---
+title: The Three Seats
+shelf: quant
+chapter: quant-trading-firms
+subtopic: Traders, Researchers and Developers
+order: 1
+summary: The three jobs behind every running strategy (quant trader, quant researcher, quant developer) as one production line; what a quant trader actually does all day (supervise, intervene, improve) and how desk telemetry such as realised spread by venue reveals leaks; why trader interviews test mental maths, probability and market making games; the researcher's loop and the base-rate arithmetic that means nearly half of "validated" signals can be noise; the developer's craft, hot paths, correctness and latency budgets; how firms draw the lines between the seats; and the same seats on FX, gold and bond desks.
+lede: 'Behind every strategy a quant firm runs sit three kinds of people. Researchers find edges and prove they''re real. Developers build the machines that trade them in microseconds. Traders watch those machines against the live market and step in when the world does something the model never saw. It''s one production line, and the weakest station decides how good the whole thing is.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, code, fintech]
+noteScripts: [/assets/js/notes/quant/the-three-seats.js]
+
+quiz:
+  - q: 'A market maker''s morning report shows most venues earning a small positive realised spread, but one venue earning \(-0.4\) ticks per fill. What is the quant trader''s job here?'
+    opts: ['Ignore it: the desk is profitable overall', 'Manually place better trades at that venue for the rest of the day', 'Size the leak, form a hypothesis about why quotes there are being picked off (faster counterparties, a stale feed, a change in flow), and fix the settings or send it to research']
+    right: 2
+    why: 'The systems do the trading. The trader owns everything they can''t: noticing the leak in the breakdown, putting a number on it (\(600 \times -0.4 \times 12.50 = -3{,}000\) a day), working out why, and changing the configuration or handing a hypothesis to research.'
+  - q: 'A research team tests 150 ideas a year. About 10 are real. Tests catch 80% of real signals and wrongly pass 5% of useless ones. Roughly what share of the signals that pass are real?'
+    opts: ['About half', 'About 95%', 'About 80%']
+    right: 0
+    why: 'Real finds: \(10 \times 0.8 = 8\). False finds: \(140 \times 0.05 = 7\). So \(8\) of the \(15\) passes are real, just over half. Because most ideas are useless, even a strict-sounding test lets through nearly as much noise as signal.'
+  - q: 'Why do fast trading firms write their "hot path" in languages like C++ or Rust, but do research in Python?'
+    opts: ['Python is not allowed in production by regulators', 'The hot path is the code between seeing a price and sending an order, where microseconds matter; research needs ideas tested quickly, where the speed of writing code matters more than the speed of running it', 'C++ and Rust make strategies more profitable on their own']
+    right: 1
+    why: 'Different parts of the system have different bottlenecks. On the hot path, every microsecond costs money, so engineers use systems languages (and sometimes custom hardware). In research, the bottleneck is how fast a person can try ideas, so expressive languages win.'
+
+connected:
+  - { label: Builds on, title: Life on a Desk, where: Markets · What Markets Are, url: /hub/markets/life-on-a-desk/ }
+  - { label: Builds on, title: Quant Funds, where: Hedge Funds · Strategies, url: /hub/hedge-funds/quant-funds/ }
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Used in, title: Overfitting, where: Quant · Backtesting without Fooling Yourself, url: /hub/quant/ }
+---
+
+<style>
+  .ts-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .lk-venues { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 6px 0 4px; }
+  .lk-venue { border: 1px solid var(--border); border-radius: 10px; padding: 9px 10px; background: var(--bg); font-size: 13px; }
+  .lk-venue strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .lk-venue .lk-stats { color: var(--text-2); margin-bottom: 6px; }
+  .lk-venue .presets { gap: 4px; }
+  .lk-venue .presets button { font-size: 12px; padding: 3px 8px; }
+  @media (max-width: 700px) { .lk-venues { grid-template-columns: repeat(2, 1fr); } }
+  .lat-bar { display: flex; height: 38px; border-radius: 8px; overflow: hidden; margin: 10px 0 6px; font-size: 12px; font-weight: 600; }
+  .lat-bar span { display: flex; align-items: center; justify-content: center; padding: 0 4px; text-align: center; line-height: 1.1; }
+  .lat-bar .in { background: var(--tone); color: var(--on-tone); border-right: 1px solid var(--bg); }
+  .lat-bar .out { background: var(--tone-bg); color: var(--text); }
+  .lat-key { font-size: 13px; color: var(--text-2); }
+</style>
+
+{% sec 1, "One Production Line", "Who are the three people behind every running strategy?", "One production line" %}
+  <div class="prose">
+    <p>Think of a Formula 1 team. Aerodynamicists spend months in the wind tunnel and simulator, testing ideas that might make the car a tenth of a second faster, and throwing most of them away. Engineers build the car, its engine and its software, where a single fault can end a race. And on race day, the strategists on the pit wall watch every reading live, call the pit stops and react when it rains. Nobody on the pit wall steers the car, but the race is won or lost there too.</p>
+    <p>A quant firm has the same three stations. Deltashark describes them as one production line:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Quant researcher</th><th>Quant developer</th><th>Quant trader</th></tr></thead>
+      <tbody>
+        <tr><td>The F1 job</td><td>The wind tunnel</td><td>Building the car</td><td>The pit wall</td></tr>
+        <tr><td>The question</td><td>Is this edge real, and how big is it?</td><td>Can we trade it fast and safely?</td><td>Is the live strategy behaving as it should?</td></tr>
+        <tr><td>A typical day</td><td>Clean data, test ideas, check results on data the model hasn't seen</td><td>Write and test trading systems, data feeds and research tools</td><td>Watch positions and P&amp;L, handle problems, feed lessons back to research</td></tr>
+        <tr><td>Main tools</td><td>Python, statistics, large datasets</td><td>C++, Rust, OCaml, Python; sometimes custom hardware</td><td>Dashboards, risk systems, a lot of mental arithmetic</td></tr>
+        <tr><td>Interviews test</td><td>Probability, statistics, research projects</td><td>Algorithms, systems design, coding under time pressure</td><td>Mental maths, probability, expected value, market making games</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The important point is that each station limits the whole line. An edge that's badly built leaks its profit through slow reactions. A perfect system will happily trade whatever research let through, including noise. And a good strategy without a trader watching it can lose money for hours because a data feed broke. The rest of this note takes each seat in turn.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Trader's Seat", "If computers place the trades, what does a quant trader actually do?", "The trader's seat" %}
+  <div class="prose">
+    <p>Deltashark calls the quant trader the human in the loop of an automated business: the person responsible for a book of strategies as they run against the live market. The job isn't clicking buy and sell. It's owning everything the systems can't. A working day splits three ways:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Supervision<span class="why">Watching positions, P&amp;L and the desk's health numbers for anything drifting away from what the model expects: how often quotes get filled, the {% gl "realised spread" %}realised spread{% endgl %} earned per fill, how long inventory sits, and {% gl "adverse selection" %}adverse selection{% endgl %} broken down by counterparty and venue.</span></span></li>
+    <li><span class="n">2</span><span>Intervention<span class="why">Acting when the world leaves the model's comfort zone: a data feed misbehaves, a headline changes the market, a risk limit gets close. That includes the authority to widen quotes, cut size or flatten the whole book.</span></span></li>
+    <li><span class="n">3</span><span>Improvement<span class="why">Turning the gap between what the model expected and what really happened into ideas for the researchers to test.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The mix depends on speed. On the fastest desks, supervision and infrastructure take most of the day. On slower ones, analysis does.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A market maker's morning report: \(4{,}200\) fills at an average realised spread of \(+0.3\) ticks. But one venue shows \(-0.4\) ticks over \(600\) fills. Tick value \(\$12.50\).</h3>
+    <ol class="steps">
+      <li>That venue's P&amp;L: \(600 \times (-0.4) \times 12.50 = -\$3{,}000\) a day.</li>
+      <li>Something there is consistently {% gl "picked off" %}picking off{% endgl %} the quotes: faster counterparties, a stale price feed, or a change in who is sending orders.</li>
+      <li>The trader's job: spot it in the breakdown, put a number on the leak, form a hypothesis, then fix the configuration or send it to research.</li>
+    </ol>
+    <p class="answer">The vocabulary comes from The Order Book; the job is applying it every hour.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Find the leak</h3><p>Here's that morning report split by venue, \(4{,}200\) fills in all. For each venue, choose whether to keep quoting as normal, widen your quotes (fewer fills, but each one safer) or switch the venue off. Can you stop the leak without giving away good business?</p></div>
+    <div class="lk-venues" id="lk-venues"></div>
+    <svg class="chart" id="chart-lk" viewBox="0 0 640 220" role="img" aria-label="Daily profit or loss from each venue and in total, under the settings you chose"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Daily P&amp;L with your settings</span><span><i class="sw grey"></i>Before any changes</span></div>
+    <div class="readout" id="lk-read"></div>
+    <p class="look" id="lk-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Why Trader Interviews Look the Way They Do", "Why do trading firms ask mental maths and betting questions?", "Why interviews look like this" %}
+  <div class="prose">
+    <p>The seat rewards three things: fast, accurate reasoning about probability under pressure (pricing, sizing and expected-value calls made in seconds), calibrated instincts for risk (knowing what a two-sigma day does to the book before it happens), and staying calm with numbers when the systems misbehave.</p>
+    <p>Trading interviews test exactly these. Expect mental arithmetic against the clock, probability and expected-value puzzles, sequences and estimation, and market making games where you quote prices, manage your position and get picked off by an interviewer who knows more than you. Deltashark's point is that this isn't random: <strong>the interview is a low-fidelity simulation of the seat</strong>. Its own mental maths trainer, market making games and trader question bank are built to match.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A book is long \(30{,}000\) shares of a stock at \(\$40\), and the stock moves about \(2.5\%\) on a typical day. What is a one-sigma day for the book?</h3>
+    <ol class="steps">
+      <li>Position value: \(30{,}000 \times 40 = \$1.2\)m.</li>
+      <li>One-sigma move: \(1.2\text{m} \times 2.5\% = \$30{,}000\).</li>
+      <li>A two-sigma day, roughly one trading day in twenty, is about \(\pm\$60{,}000\).</li>
+    </ol>
+    <p class="answer">A trader should know this number before the day starts, not work it out during a sell-off.</p>
+  </div>
+  <div class="prose">
+    <p>Life on a Desk covers what interviewers look for more generally, and the Interview Prep chapter will drill the formats.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Researcher's Loop", "How does a quant researcher find an edge, and why is it so easy to fool yourself?", "The researcher's loop" %}
+  <div class="prose">
+    <p>Deltashark calls research "applied statistics with adversarial stakes": the data is noisy, and other firms are hunting the same patterns. The loop goes like this:</p>
+  </div>
+  <ol class="steps">
+    <li><strong>Hypothesise</strong> a relationship: from how the market is built, from a pattern in the data, or from a cost the desk keeps paying.</li>
+    <li><strong>Assemble clean data</strong>: adjusted for corporate actions, and including companies that no longer exist, so the past isn't made to look rosier than it was.</li>
+    <li><strong>{% gl "backtest" %}Backtest{% endgl %} honestly</strong>, charging realistic costs and market impact.</li>
+    <li><strong>Validate {% gl "out-of-sample" %}out-of-sample{% endgl %}</strong>, correcting for how many ideas were tried, because the researcher's occupational hazard is {% gl "overfitting" %}overfitting{% endgl %}: test enough variations and noise will hand you a beautiful backtest on schedule.</li>
+    <li><strong>Ask the deployment questions</strong>: how much money can it take before impact eats it (capacity), how fast will it decay, and is it really new? A strategy that moves with the book's existing ones isn't another bet, just a bigger version of the same bet.</li>
+  </ol>
+  <div class="prose">
+    <h3>The base-rate trap</h3>
+    <p>Here's the arithmetic that shapes how research teams work. Most ideas are useless, so even a strict test lets a surprising amount of noise through. A test's {% gl "statistical power" %}power{% endgl %} is how often it catches a real signal; its false-positive rate is how often it wrongly passes a useless one. What matters is the {% gl "false discovery rate" %}false discovery rate{% endgl %}: the share of everything that passes that's actually noise.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Which signals are real?</h3><p>Each dot is an idea the team tested this year. Filled dots are genuinely real; the rest are noise. Dots with a ring passed the test. Deltashark's example: \(150\) ideas, \(10\) real, \(80\%\) power, a \(5\%\) false-positive rate.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="fd-n">Ideas tested</label><input type="range" id="fd-n" min="50" max="400" step="10" value="150"><output id="fd-n-out" for="fd-n">150</output></div>
+      <div class="ctrl"><label for="fd-r">Real ideas</label><input type="range" id="fd-r" min="0" max="40" step="1" value="10"><output id="fd-r-out" for="fd-r">10</output></div>
+      <div class="ctrl"><label for="fd-p">Test power</label><input type="range" id="fd-p" min="30" max="99" step="1" value="80"><output id="fd-p-out" for="fd-p">80%</output></div>
+      <div class="ctrl"><label for="fd-a">False passes</label><input type="range" id="fd-a" min="0.5" max="20" step="0.5" value="5"><output id="fd-a-out" for="fd-a">5.0%</output></div>
+      <div class="presets"><button type="button" id="fd-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-fd" viewBox="0 0 640 260" role="img" aria-label="A grid of dots, one per idea tested, showing which are real and which passed the test"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Real ideas, and passes (ringed)</span><span><i class="sw grey"></i>Noise</span></div>
+    <div class="readout" id="fd-read"></div>
+    <p class="look" id="fd-story"></p>
+  </div>
+  <div class="prose">
+    <p>This is why no single passed test is trusted. Research processes demand confirmation on data the model has never seen, a spell of {% gl "paper trading" %}paper trading{% endgl %} on live prices without real money, and then small initial sizes that grow only as live results match the research. Quant Funds' "Find a signal, or fool yourself" interactive shows the other half of the problem: the more ideas you test, the better the luckiest one looks.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Developer's Craft", "What do quant developers build, and why does every microsecond count?", "The developer's craft" %}
+  <div class="prose">
+    <p>Developers build the machinery: market data handlers that read exchange feeds in microseconds, order gateways that speak each exchange's protocol, the strategy engines between them, and the research platform (data pipelines, backtesting engines, simulators) that decides how fast an idea can get from a hypothesis to live trading.</p>
+    <p>Different parts have different bottlenecks. The <strong>hot path</strong>, the code between seeing a price and sending an order, is written in systems languages such as C++ and Rust by engineers who think about how the hardware actually runs it; the fastest firms put parts of it onto custom chips (FPGAs). Research tools are written in expressive languages like Python, because there the bottleneck is how quickly a person can try ideas. Some firms make distinctive choices: Jane Street is known for writing most of its systems in OCaml.</p>
+    <p>Correctness matters more than in most software. A faulty trading system can trade its way into huge losses in seconds (Knight Capital, in Case Studies, lost about \(\$440\) million in 45 minutes). So testing, limits written into the code and careful, staged releases are safety engineering, not bureaucracy.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A system's {% gl "tick-to-trade" %}tick-to-trade{% endgl %} path: feed handler \(4\) microseconds, strategy logic \(3\), order gateway \(5\), wire and exchange \(28\). Where should the engineers spend their effort?</h3>
+    <div class="lat-bar" role="img" aria-label="Latency budget: 4, 3 and 5 microseconds in-house, 28 in the wire and exchange">
+      <span class="in" style="flex: 4">Feed 4</span><span class="in" style="flex: 3">Logic 3</span><span class="in" style="flex: 5">Gateway 5</span><span class="out" style="flex: 28">Wire and exchange 28 μs</span>
+    </div>
+    <p class="lat-key">The first three blocks are the firm's own code and hardware; the last is distance and the exchange.</p>
+    <ol class="steps">
+      <li>Total: \(4 + 3 + 5 + 28 = 40\) microseconds.</li>
+      <li>In-house: \(12\) of \(40\), or \(30\%\). Better code and hardware can attack this part.</li>
+      <li>The other \(28\) is distance and the exchange itself: it shrinks only through {% gl "colocation" %}colocation{% endgl %} and faster network links.</li>
+    </ol>
+    <p class="answer">A latency budget turns "be faster" into a work plan: code for the \(12\), location and connectivity for the \(28\).</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Where the Lines Fall", "Is every firm organised into three separate jobs?", "Where the lines fall" %}
+  <div class="prose">
+    <p>No. Firms differ mainly in how sharply they separate the stations. Some run researcher-traders who own a strategy from idea to live trading. Others keep discovery, building and supervision completely apart. Titles vary more than the work: quant hedge funds often call researchers "research scientists" and organise around research teams rather than analysts and portfolio managers; banks have called their quants "strats"; a "quant developer" at one firm is a "software engineer" at another.</p>
+    <p>What stays the same is the pipeline itself: ideas, systems, live supervision. When you read a job advert, work out which station it really is, whatever it's called.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Research decides what gets traded, development decides how well it's traded, and trading decides what happens when reality disagrees with both. Each station caps the quality of the whole line.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "What do the three seats look like on the desks I'm aiming for?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: e-trading desks</h3>
+    <p>On a bank's FX e-trading desk, algorithms price spot currencies to clients across platforms all day. The traders supervise those pricing engines and their risk, quants (the bank's "strats") model how to price and when to hold or offload positions, and developers keep the pricing fast and stable. At non-bank firms like XTX the same three jobs exist, often with a heavier research team. The "find the leak" problem is everyday life: some clients or platforms consistently pick off your prices, and the desk adjusts how it prices them.</p>
+    <h3>Gold: a smaller, mixed desk</h3>
+    <p>Precious metals desks are smaller and more mixed. Electronic pricing covers spot gold and futures, while the physical side (vaulting, metal accounts, lending) still needs traders who manage relationships and inventory by hand. A quant on a metals desk might model lease rates, the gold-silver relationship or futures rolls.</p>
+    <h3>Bonds: from voice to algorithms</h3>
+    <p>Government bond desks price the newest US Treasuries and gilts with algorithms, much like FX. Corporate bond desks are moving the same way: quants build models that price thousands of bonds which rarely trade, so the desk can answer requests for quotes, and whole baskets of bonds, automatically.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Fill</h3><span class="tag desk">Desk</span></div><p>A trade that actually happened against one of your orders.</p><p class="eg">"Fills are down forty percent on that venue."</p></div>
+    <div class="term"><div class="term-top"><h3>Picked off</h3><span class="tag desk">Desk</span></div><p>Traded against at a stale price by someone who knew it was about to move.</p><p class="eg">"We got picked off on the CPI print."</p></div>
+    <div class="term"><div class="term-top"><h3>Realised spread</h3><span class="tag desk">Desk</span></div><p>What a fill actually earned once the price had moved on a few seconds later.</p><p class="eg">"Realised spread's negative there: someone's faster."</p></div>
+    <div class="term"><div class="term-top"><h3>Flatten</h3><span class="tag desk">Desk</span></div><p>Close every position so the book holds nothing.</p><p class="eg">"Feed's down. Flatten and pull the quotes."</p></div>
+    <div class="term"><div class="term-top"><h3>Hot path</h3><span class="tag desk">Desk</span></div><p>The code between receiving a price and sending an order.</p><p class="eg">"No logging on the hot path."</p></div>
+    <div class="term"><div class="term-top"><h3>Tick-to-trade</h3><span class="tag desk">Desk</span></div><p>The time from a market update to your order leaving.</p><p class="eg">"Tick-to-trade's under ten micros now."</p></div>
+    <div class="term"><div class="term-top"><h3>Out-of-sample</h3><span class="tag desk">Desk</span></div><p>Data the model was never tuned on.</p><p class="eg">"Show me the out-of-sample, not the backtest."</p></div>
+    <div class="term"><div class="term-top"><h3>Paper trade</h3><span class="tag desk">Desk</span></div><p>Run a strategy on live prices without real money.</p><p class="eg">"Paper trade it for a month, then start small."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where the three seats turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: you are all three seats</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>When you build your own strategies, you're the researcher, the developer and the trader at once, which makes the discipline of each seat even more important. As researcher, keep a log of every idea you test so you can count them, and hold back data you never look at. As developer, your Python is the research platform, and your Rust order book project is practice for a hot path. As trader, keep a "morning report": your slippage and results split by market and time of day, to find your own leaks.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the same three jobs</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A villa rental business has the same production line. Someone finds and tests the deals: which locations, what rents, what the numbers say (research). Someone builds the systems: booking, pricing and payments (development). And someone runs the properties day to day and reacts when a booking falls through or a storm hits (trading). The base-rate trap applies too: most "great deals" don't survive due diligence, so judge a deal by checks it could fail, not by how exciting it looks.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: the developer seat travels</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria has few quant trading firms, but its fintech industry runs on the same three seats under different names: data scientists building credit and fraud models (research), engineers building payment systems where correctness and uptime matter as much as on a trading desk (development), and risk and operations teams watching live transactions (trading). Skills built in one transfer to the others, which matters for a plan that runs from trading into fintech.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on the desk, the research and the latency?" %}
+  <div class="formula"><span class="lbl">A venue's daily P&amp;L</span>\[ \text{P\&L} = \text{fills} \times \text{realised spread (ticks)} \times \text{tick value} \]</div>
+  <div class="formula"><span class="lbl">A one-sigma day for a position</span>\[ \sigma_{\text{P\&L}} = \text{position value} \times \sigma_{\text{daily}} \]</div>
+  <div class="formula"><span class="lbl">The base-rate arithmetic</span>\[ \text{true passes} = R \times \text{power} \qquad \text{false passes} = (N - R) \times \alpha \qquad \text{FDR} = \frac{\text{false passes}}{\text{true passes} + \text{false passes}} \]</div>
+  <div class="formula"><span class="lbl">Latency budget</span>\[ \text{tick-to-trade} = \sum_i t_i \qquad \text{in-house share} = \frac{\sum_{\text{in-house}} t_i}{\text{tick-to-trade}} \]</div>
+  <div class="prose">
+    <p>\(N\) is the number of ideas tested, \(R\) how many are real, power the chance a real one passes and \(\alpha\) the chance a useless one does. Notice the FDR depends heavily on \(R/N\), the base rate: the rarer real ideas are, the more of what passes is noise, however good the test.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A team tests \(300\) ideas, of which \(6\) are real, with \(90\%\) power and a \(5\%\) false-positive rate. What share of passes is noise?</h3>
+    <ol class="steps">
+      <li>True passes: \(6 \times 0.9 = 5.4\).</li>
+      <li>False passes: \(294 \times 0.05 = 14.7\).</li>
+      <li>FDR: \(14.7 \div (5.4 + 14.7) \approx 73\%\).</li>
+    </ol>
+    <p class="answer">Nearly three passes in four are noise. Testing more ideas without finding more real ones makes the problem worse, not better.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A venue produces \(600\) fills at an average realised spread of \(-0.4\) ticks, tick value \(\$12.50\). What is the daily P&amp;L from that venue?</span></p>
+      <details><summary>Show answer</summary><div><span>\(600 \times (-0.4) \times 12.50 = -\$3{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A book is long \(30{,}000\) shares of a stock at \(\$40\) with daily volatility \(2.5\%\). What is the one-sigma daily P&amp;L swing?</span></p>
+      <details><summary>Show answer</summary><div><span>\(30{,}000 \times 40 \times 0.025 = \$30{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>(Deltashark quick check) Of \(150\) candidate signals, \(10\) are real. Tests have \(80\%\) power and a \(5\%\) false-positive rate. How many signals pass validation, in expectation?</span></p>
+      <details><summary>Show answer</summary><div><span>\(10 \times 0.8 + 140 \times 0.05 = 8 + 7 = 15\), of which only \(8\) are real.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>(Deltashark quick check) A tick-to-trade path spends \(4\), \(3\) and \(5\) microseconds in-house plus \(28\) in the wire and exchange. What fraction of total latency is in-house?</span></p>
+      <details><summary>Show answer</summary><div><span>\(12 \div 40 = 0.3\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Interview question: you're a junior trader on a market making desk, and P&amp;L at one venue has turned negative over the past week. Talk me through what you'd do.</span></p>
+      <details><summary>Show answer</summary><div><span>Size it first: fills times realised spread times tick value, compared with before. Then break it down: by time of day, by counterparty or client type, by product, around news. Form hypotheses: a faster competitor, a stale or delayed feed from that venue, a new type of flow, a change in the venue's rules or fees. Act within your authority (widen quotes or cut size there) to stop the bleeding, and pass the evidence to research or the developers to find and fix the cause.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: a researcher shows you a strategy that passed a significance test at the \(5\%\) level. Why might you still not trust it?</span></p>
+      <details><summary>Show answer</summary><div><span>A \(5\%\) test still passes one useless idea in twenty, and most ideas are useless, so among things that pass, a large share can be noise (with Deltashark's numbers, almost half). It also matters how many variations were tried before this one. I'd want to see results on data it was never tuned on, a period of paper trading, a reason it should work, and a small starting size.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>A tick-to-trade path is \(6\) microseconds of feed handling, \(2\) of logic, \(4\) of gateway and \(18\) of wire and exchange. Your team can cut the in-house time by half. How much faster is the whole path, in percent?</span></p>
+      <details><summary>Show answer</summary><div><span>Total \(30\) microseconds, in-house \(12\). Halving it saves \(6\), so the path drops to \(24\): \(20\%\) faster. The remaining \(18\) can only be cut by colocation and connectivity.</span></div></details></div>
+  </div>
+{% endsec %}
