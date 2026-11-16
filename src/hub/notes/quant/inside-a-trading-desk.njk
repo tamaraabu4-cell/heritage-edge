@@ -1,0 +1,301 @@
+---
+title: Inside a Trading Desk
+shelf: quant
+chapter: quant-trading-firms
+subtopic: Traders, Researchers and Developers
+order: 2
+summary: How a trading desk works as the operating unit of a firm (mandate, limit stack, risk budget and P&L attribution); seat economics, and why a desk that grosses 12 million can keep only 2; the independent functions around the desk (risk, compliance, operations, treasury, technology) and why famous failures are mostly failures of these controls; compliance as software, with pre-trade checks such as position limits and price collars coded into the trading loop; escalation and kill switches on a bad day; and the same controls in FX, gold and bonds.
+lede: 'A trading desk is a small business inside a bigger one. It has a menu of what it may trade, a budget for how much risk it may take, and a bill for every screen, data feed and salary it uses. Around it sit people who never make a penny of revenue (risk, compliance, operations, treasury, technology) but whose job is to let the desk take risk without the firm taking risks it never meant to. Most of the great trading disasters happened when that ring of controls failed, not because someone made a bad trade.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, fintech]
+noteScripts: [/assets/js/notes/quant/inside-a-trading-desk.js]
+
+quiz:
+  - q: 'Two desks each report their year. Desk A grossed 12 million with 7 million of allocated costs; Desk B grossed 8 million with 2 million of costs. Which is the better business?'
+    opts: ['Desk A, because it grossed more', 'Desk B: it keeps 6 million against Desk A''s 5 million, and spends far less to earn each pound', 'They are the same, because both made a profit']
+    right: 1
+    why: 'Gross P&amp;L hides the costs. Net is \(12 - 7 = 5\) for A and \(8 - 2 = 6\) for B, and B''s costs are \(25\%\) of gross against A''s \(58\%\). That''s exactly the comparison P&amp;L attribution exists to make.'
+  - q: 'Why does the risk team set and monitor a desk''s limits independently, with authority that doesn''t pass through the desk''s own managers?'
+    opts: ['So that nobody whose positions are being limited can loosen or overrule the limits, especially under pressure', 'Because traders don''t understand risk', 'To slow the desk down so it trades less']
+    right: 0
+    why: 'A limit the desk can bend is no limit. Independence means the people constrained can''t change the constraint on a bad day. Several famous losses happened when this broke down, for example when one person controlled both the trading and the records of it.'
+  - q: 'A firm holds 4,700 contracts against a 5,000-contract position limit and a strategy tries to buy 500 more. What should happen, and where?'
+    opts: ['The order is sent, and compliance reviews it at the end of the day', 'The exchange rejects the whole order', 'A pre-trade check in the firm''s own code caps the order at 300 before any exchange sees it']
+    right: 2
+    why: '\(4{,}700 + 500 = 5{,}200 > 5{,}000\), so only \(300\) fit. At machine speeds a rule enforced after the fact is a rule broken first, so the check runs in software, before the order leaves the building.'
+
+connected:
+  - { label: Builds on, title: The Three Seats, where: Quant · Quant Trading Firms, url: /hub/quant/the-three-seats/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Builds on, title: Crashes That Changed the Rules, where: Markets · How Markets Work, url: /hub/markets/crashes-that-changed-the-rules/ }
+  - { label: Used in, title: The Risk Team, where: Hedge Funds · Portfolio Construction and Risk, url: /hub/hedge-funds/ }
+---
+
+<style>
+  .id-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .ot-gates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0 6px; }
+  .ot-gate { border: 1px solid var(--border); border-top: 4px solid var(--note-grey); border-radius: 10px; padding: 9px 10px; background: var(--bg); font-size: 13px; color: var(--text-2); }
+  .ot-gate strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+  .ot-gate .st { display: inline-block; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+  .ot-gate.pass { border-top-color: var(--tone); }
+  .ot-gate.cap { border-top-color: var(--tone); background: var(--tone-bg); }
+  .ot-gate.fail { border-top-color: var(--danger, #dc2626); }
+  .ot-gate.fail .st { color: var(--danger, #dc2626); }
+  .ot-gate.skip { opacity: 0.5; }
+  @media (max-width: 700px) { .ot-gates { grid-template-columns: repeat(2, 1fr); } }
+  .ot-pos { margin: 8px 0 2px; font-size: 13px; color: var(--text-2); }
+  .ot-track { position: relative; height: 16px; border-radius: 8px; background: var(--tone-bg); overflow: hidden; margin-top: 4px; }
+  .ot-track .now { position: absolute; left: 0; top: 0; bottom: 0; background: var(--tone); opacity: 0.55; }
+  .ot-track .add { position: absolute; top: 0; bottom: 0; background: var(--tone); }
+  .ot-track .lim { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text); }
+  .ot-result { margin: 10px 0 0; font-weight: 700; font-size: 16px; }
+  .cf-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+  .cf-row { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--bg); }
+  .cf-case { font-size: 14px; margin: 0 0 6px; }
+  .cf-case strong { color: var(--text); }
+  .cf-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cf-opts button { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--hub-card, transparent); color: var(--text); cursor: pointer; }
+  .cf-opts button.right { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .cf-opts button.wrong { text-decoration: line-through; color: var(--text-2); }
+  .cf-why { margin: 8px 0 0; font-size: 14px; color: var(--text-2); }
+  .cf-why strong { color: var(--text); }
+  .cf-score { margin-top: 10px; font-weight: 600; }
+</style>
+
+{% sec 1, "A Desk Is a Small Business", "What exactly is a trading desk?", "A desk is a small business" %}
+  <div class="prose">
+    <p>Think of the kitchen in a big hotel. The kitchen cooks and earns money, but it doesn't own the building, pay its own electricity directly or check its own hygiene. It has a menu it's allowed to cook, a budget it mustn't overspend, and at the end of the month the hotel charges it for the space, the gas and the staff, so everyone can see whether the kitchen really makes money. And the health inspector doesn't report to the head chef.</p>
+    <p>A trading desk works the same way. Deltashark calls it the operating unit of a trading firm: a group of strategies with a book of positions, a risk budget, and people accountable for it. Desks are organised by asset class, by strategy family, or both: an index options desk, a statistical arbitrage desk, an energy market making desk. Each one comes with three things:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>A {% gl "mandate" %}mandate{% endgl %}<span class="why">What it may trade: which instruments, markets and strategies. The menu.</span></span></li>
+    <li><span class="n">2</span><span>A {% gl "limit stack" %}limit stack{% endgl %}<span class="why">The layers of limits that cap its risk, sized to the risk budget the firm gives it.</span></span></li>
+    <li><span class="n">3</span><span>{% gl "p&l attribution" %}P&amp;L attribution{% endgl %}<span class="why">Revenue split by strategy, and every cost (seats, technology, data, financing, clearing) charged back to the desk, so its real economics are visible, not just its gross P&amp;L.</span></span></li>
+  </ul>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Limit</th><th>What it caps</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "position limit" %}Position limit{% endgl %}</td><td>How much of one thing the desk can hold</td><td>No more than \(5{,}000\) contracts of one future</td></tr>
+        <tr><td>Loss limit</td><td>How much it can lose in a day, or from its peak</td><td>Cut risk at \(-\$1\)m on the day; stop at \(-\$3\)m for the month</td></tr>
+        <tr><td>{% gl "value at risk" %}Value at risk{% endgl %} (VaR)</td><td>How much the whole book could lose on a bad day, statistically</td><td>One-day \(99\%\) VaR under \(\$5\)m</td></tr>
+        <tr><td>Concentration</td><td>How much rides on one name, sector or theme</td><td>No single share more than \(10\%\) of gross</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A desk has a \(\$5\)m VaR limit and is currently using \(\$3.8\)m. A proposed trade adds \(\$1.5\)m of VaR, with no diversification offset. Does it fit?</h3>
+    <ol class="steps">
+      <li>Headroom: \(5 - 3.8 = \$1.2\)m.</li>
+      <li>The trade needs \(\$1.5\)m, which is more than the headroom: \(3.8 + 1.5 = 5.3 > 5\).</li>
+    </ol>
+    <p class="answer">No. The desk could do a smaller version (up to about \(80\%\) of the size), or first cut something else.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "What the Desk Really Keeps", "If a desk makes 12 million, how much of it is profit?", "What the desk keeps" %}
+  <div class="prose">
+    <p>Modern trading is expensive to run. Exchange connections, market data, servers in data centres, clearing fees, financing and people all cost money whether or not the desk has a good year. Deltashark's point is that a desk is judged on what's left, and that two desks with similar gross numbers can be completely different businesses.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A six-person desk grosses \(\$12\)m. Allocated costs: technology and data \(3.0\)m, clearing and financing \(2.2\)m, compensation \(4.0\)m, overhead \(0.8\)m. What does it keep?</h3>
+    <ol class="steps">
+      <li>Total costs: \(3.0 + 2.2 + 4.0 + 0.8 = \$10\)m.</li>
+      <li>Net: \(12 - 10 = \$2\)m.</li>
+      <li>Cost as a share of gross: \(10 \div 12 \approx 0.83\), or \(83\%\).</li>
+    </ol>
+    <p class="answer">The desk keeps a sixth of what it grosses. Every decision about a new venue connection, a data purchase or another hire is priced against this ledger.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>What does the desk keep?</h3><p>Start from the gross and take away each cost. Try Deltashark's two desks: one grossing 12 against 7 of costs, the other 8 against 2. All figures are in millions a year, for a six-person desk.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="dk-g">Gross P&amp;L</label><input type="range" id="dk-g" min="2" max="20" step="0.5" value="12"><output id="dk-g-out" for="dk-g">12.0</output></div>
+      <div class="ctrl"><label for="dk-t">Tech and data</label><input type="range" id="dk-t" min="0" max="6" step="0.1" value="3"><output id="dk-t-out" for="dk-t">3.0</output></div>
+      <div class="ctrl"><label for="dk-c">Clearing</label><input type="range" id="dk-c" min="0" max="4" step="0.1" value="2.2"><output id="dk-c-out" for="dk-c">2.2</output></div>
+      <div class="ctrl"><label for="dk-p">Pay</label><input type="range" id="dk-p" min="0.5" max="8" step="0.1" value="4"><output id="dk-p-out" for="dk-p">4.0</output></div>
+      <div class="ctrl"><label for="dk-o">Overhead</label><input type="range" id="dk-o" min="0" max="2" step="0.1" value="0.8"><output id="dk-o-out" for="dk-o">0.8</output></div>
+      <div class="presets id-pick" id="dk-pick" aria-label="Example desks"></div>
+    </div>
+    <svg class="chart" id="chart-dk" viewBox="0 0 640 260" role="img" aria-label="A waterfall from gross P&amp;L down through each cost to the net the desk keeps"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Gross and what's kept</span><span><i class="sw grey"></i>Costs taken away</span></div>
+    <div class="readout" id="dk-read"></div>
+    <p class="look" id="dk-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Functions Around the Desk", "Who else is involved, and why don't they report to the traders?", "The functions around the desk" %}
+  <div class="prose">
+    <p>Deltashark describes the desk as sitting inside a lattice of functions whose job is to let it take risk without the firm taking <em>unintended</em> risk. None of them earns revenue. All of them are load-bearing.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Function</th><th>Its job</th><th>What goes wrong without it</th></tr></thead>
+      <tbody>
+        <tr><td>Risk management</td><td>Sets and monitors the limit stack, <strong>independently</strong> of the desk: its authority doesn't run through the people whose positions it limits</td><td>Limits get bent when the desk is losing and wants to win it back</td></tr>
+        <tr><td>Compliance</td><td>Owns the regulatory rules: surveillance of the firm's own orders, approvals, how the firm may behave in markets</td><td>Market abuse, fines, losing the licence to trade</td></tr>
+        <tr><td>Operations (middle and back office)</td><td>Confirms, settles and reconciles every trade, chasing {% gl "trade break" %}breaks{% endgl %} between what the desk thinks it did and what counterparties and clearing houses recorded</td><td>Positions nobody knows about, or losses hidden in the records</td></tr>
+        <tr><td>Treasury</td><td>Manages the firm's cash and collateral: where the margin calls from Margin and Leverage actually get paid</td><td>A profitable firm that can't meet a margin call by the deadline</td></tr>
+        <tr><td>Technology</td><td>Runs the trading platform, data and infrastructure</td><td>A faulty release, a frozen feed, a system trading on its own</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Deltashark makes a striking point: trading history's notable failures are disproportionately failures of <em>these</em> controls rather than of trading judgement. Try matching some of the most famous ones to the control that broke.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Which control failed?</h3><p>Five real cases. For each, pick the function whose control broke down first. Some involve more than one, and the explanation says why.</p></div>
+    <ul class="cf-list" id="cf-list"></ul>
+    <p class="cf-score" id="cf-score" aria-live="polite"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Compliance as Software", "How do the rules actually get enforced on a machine trading in microseconds?", "Compliance as software" %}
+  <div class="prose">
+    <p>Regulation (in the Markets topic) covers who the regulators are and what the big rules say. Deltashark sums up their purpose in three goals: <strong>market integrity</strong> (prices should form from genuine supply and demand, so spoofing, painting prices and insider dealing are banned), <strong>stability</strong> (firms must be able to absorb their own losses, hence capital, margin and clearing rules, plus controls on algorithms), and <strong>investor protection</strong> (best execution, disclosure and fair treatment wherever client money is involved).</p>
+    <p>What matters for a quant firm is how that rulebook shows up in daily work:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Registration and licensing<span class="why">Of the firm and of individuals.</span></span></li>
+    <li><span class="n">2</span><span>{% gl "pre-trade check" %}Pre-trade checks{% endgl %} written into the systems<span class="why">{% gl "price collar" %}Price collars{% endgl %}, order size limits and message throttles (a cap on how many orders per second can be sent), checked on every single order.</span></span></li>
+    <li><span class="n">3</span><span>Position limits in derivatives<span class="why">Hard caps per instrument that risk systems must track in real time.</span></span></li>
+    <li><span class="n">4</span><span>Trade and transaction reporting<span class="why">Complete and on time, to regulators.</span></span></li>
+    <li><span class="n">5</span><span>Surveillance<span class="why">Firms must monitor their own order flow for abusive patterns, a job that itself employs quants.</span></span></li>
+    <li><span class="n">6</span><span>Record-keeping<span class="why">Of communications and decisions, including chat messages and calls.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The key word is <em>before</em>. Deltashark's line is that at machine speeds, a rule enforced after the fact is a rule broken first. So compliance in a quant firm is largely software, tested like the rest of the system, and run on every order before any exchange sees it.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A firm holds \(4{,}700\) contracts in a future with a \(5{,}000\)-contract position limit. A strategy tries to buy \(500\) more.</h3>
+    <ol class="steps">
+      <li>\(4{,}700 + 500 = 5{,}200 > 5{,}000\): the full order would breach the limit.</li>
+      <li>Room left: \(5{,}000 - 4{,}700 = 300\). The pre-trade check caps the order at \(300\).</li>
+    </ol>
+    <p class="answer">The same code checks price collars and size on every message.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Will this order get through?</h3><p>You're the strategy. The desk holds \(4{,}700\) contracts long, the position limit is \(5{,}000\), the last trade was at \(50.00\), the price collar is \(\pm 2\%\) and no single order may be bigger than \(1{,}000\) contracts. Build an order and watch it pass, or fail, each check in turn.</p></div>
+    <div class="controls">
+      <div class="presets id-pick" id="ot-side" aria-label="Buy or sell"></div>
+      <div class="ctrl"><label for="ot-q">Contracts</label><input type="range" id="ot-q" min="50" max="1500" step="50" value="500"><output id="ot-q-out" for="ot-q">500</output></div>
+      <div class="ctrl"><label for="ot-p">Limit price</label><input type="range" id="ot-p" min="48" max="52" step="0.05" value="50.1"><output id="ot-p-out" for="ot-p">50.10</output></div>
+      <div class="presets id-pick" id="ot-kill" aria-label="Kill switch"></div>
+    </div>
+    <div class="ot-gates" id="ot-gates"></div>
+    <div class="ot-pos" id="ot-pos-label"></div>
+    <div class="ot-track" aria-hidden="true"><div class="now" id="ot-now"></div><div class="add" id="ot-add"></div><div class="lim" id="ot-lim"></div></div>
+    <p class="ot-result" id="ot-result" aria-live="polite"></p>
+    <p class="look" id="ot-story"></p>
+  </div>
+  <div class="prose">
+    <p>Deltashark ends the course on the professional attitude this implies. The rules bind conduct, not curiosity: pricing, microstructure and statistical edge are all legitimate craft, and the forbidden zone is specifically deception and misuse of privileged information. Firms that last treat compliance as part of the machine's specification, defined in calm and enforced mechanically, "so that no one improvises ethics under P&amp;L pressure."</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Bad Day", "What happens when something goes wrong?", "The bad day" %}
+  <div class="prose">
+    <p>The whole structure exists for the bad day, and Deltashark stresses that its behaviour is decided <em>in advance</em>, not invented in the moment:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>What happens</th><th>The pre-agreed response</th></tr></thead>
+      <tbody>
+        <tr><td>A limit is breached</td><td>Defined actions (reduce, flatten, halt) on defined authority. Nobody negotiates in the moment.</td></tr>
+        <tr><td>An incident: a runaway algorithm, a feed outage, a clearing failure</td><td>{% gl "kill switch" %}Kill switches{% endgl %} that stop all trading at once, an on-call rota so someone is always responsible, and a {% gl "post-mortem" %}post-mortem{% endgl %} afterwards</td></tr>
+        <tr><td>Losses pass a threshold</td><td>Escalation to management, with <strong>the position</strong>, not the trader, as the thing being discussed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>No single person's judgement under pressure should be the only thing standing between the firm and an unlimited loss. Limits, checks and escalation are decided in calm, written into code and run by people independent of the desk.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Which limits and rules matter in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: rules by code of conduct</h3>
+    <p>Spot FX has no single regulator or exchange, so there are no exchange position limits: a desk's limits are its own, set by its risk team (net open position per currency, overnight limits, stop-loss limits). Conduct is shaped by the FX Global Code, which covers things like how "last look" (a liquidity provider's brief chance to reject a trade) must be disclosed and used. The 2013 to 2015 benchmark-rigging scandals, where traders shared client information in chat rooms to move the 4pm fix, are why chat records and surveillance on FX desks are now so strict.</p>
+    <h3>Gold: limits on the futures, surveillance for spoofing</h3>
+    <p>Gold futures on COMEX carry exchange position limits and accountability levels, and US federal limits for the spot month were extended to metals by a CFTC rule in 2020. Precious metals are also where one of the biggest spoofing cases landed: in September 2020, JPMorgan agreed to pay about \(\$920\) million to settle claims that traders had placed and cancelled fake orders in precious metals and Treasury futures over several years.</p>
+    <h3>Bonds: risk limits in bond language</h3>
+    <p>Bond desks write their limit stack in bond terms: limits on {% gl "dv01" %}DV01{% endgl %} (how much the book gains or loses per basis point move in yields), on positions along the yield curve, and on credit exposure to each issuer. Treasury futures carry exchange position rules too, and trades in US Treasuries are reported to regulators through TRACE.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Mandate</h3><span class="tag desk">Desk</span></div><p>What a desk or fund is allowed to trade.</p><p class="eg">"Single stocks are outside our mandate."</p></div>
+    <div class="term"><div class="term-top"><h3>Headroom</h3><span class="tag desk">Desk</span></div><p>How much of a limit is still unused.</p><p class="eg">"We've only got a million of VaR headroom."</p></div>
+    <div class="term"><div class="term-top"><h3>Breach</h3><span class="tag desk">Desk</span></div><p>Going over a limit.</p><p class="eg">"That's a hard breach. Cut it now."</p></div>
+    <div class="term"><div class="term-top"><h3>VaR</h3><span class="tag desk">Desk</span></div><p>Value at risk: a statistical estimate of a bad day's loss.</p><p class="eg">"Ninety-nine percent one-day VaR is four point two."</p></div>
+    <div class="term"><div class="term-top"><h3>Attribution</h3><span class="tag desk">Desk</span></div><p>Splitting P&amp;L into where it came from, and charging costs back.</p><p class="eg">"Attribution says it was all the carry trade."</p></div>
+    <div class="term"><div class="term-top"><h3>Break</h3><span class="tag desk">Desk</span></div><p>A difference between your records of a trade and someone else's.</p><p class="eg">"Ops flagged three breaks with the clearer."</p></div>
+    <div class="term"><div class="term-top"><h3>Collar</h3><span class="tag desk">Desk</span></div><p>A pre-trade band that rejects orders priced too far from the market.</p><p class="eg">"The collar caught a fat-finger sell."</p></div>
+    <div class="term"><div class="term-top"><h3>Post-mortem</h3><span class="tag desk">Desk</span></div><p>A written review of what went wrong and how to stop it happening again.</p><p class="eg">"Post-mortem on the feed outage is due Friday."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the desk's controls turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: build your own limit stack</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>A one-person trading business needs the same controls, because there's nobody else to provide them. Write your mandate (which markets, which strategies), a limit stack (largest position, daily loss limit, maximum drawdown before you stop) and your own P&amp;L attribution including costs (data, platform fees, spreads). If you automate a strategy in Python, put pre-trade checks in the code: a maximum order size, a price collar against the last price, a position cap and a kill switch that flattens everything. A prop firm challenge is really just someone else's limit stack, enforced by their software.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the functions around the project</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A property development has its own ring of controls. An independent valuer and the lender's monitoring surveyor play the risk team, checking that costs and values are what the developer says they are. Solicitors and planning consultants are compliance. The accountant reconciles the books, and treasury is making sure cash is there for each stage payment. Seat economics applies too: a villa that grosses well but carries heavy management, cleaning, platform and financing costs may keep far less than one with a lower headline rent.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: compliance in the code</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian payment and banking apps live by the same idea. Central Bank of Nigeria rules set tiered account limits depending on how much identity checking a customer has passed, and anti-money-laundering rules require transactions to be monitored. Fintechs enforce these as pre-trade checks in software: a transfer above a tier's limit is blocked before it happens, and unusual patterns are flagged automatically. Building that machinery well is a large part of what regulators look at when granting licences.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on a desk and its checks?" %}
+  <div class="formula"><span class="lbl">Seat economics</span>\[ \text{net} = \text{gross} - \sum \text{allocated costs} \qquad \text{cost ratio} = \frac{\sum \text{costs}}{\text{gross}} \]</div>
+  <div class="formula"><span class="lbl">Limit headroom</span>\[ \text{headroom} = \text{limit} - \text{usage} \qquad \text{a trade fits if } \Delta \le \text{headroom} \]</div>
+  <div class="formula"><span class="lbl">Position-limit cap on a buy</span>\[ q_{\text{allowed}} = \min\big(q,\; L - p\big) \]</div>
+  <div class="formula"><span class="lbl">Price collar</span>\[ P_0(1 - c) \;\le\; \text{order price} \;\le\; P_0(1 + c) \]</div>
+  <div class="prose">
+    <p>\(L\) is the position limit, \(p\) the current position, \(q\) the order size, \(P_0\) the last trade price and \(c\) the collar width. The VaR check assumes no diversification offset; in practice a new trade that hedges existing positions can add less than its stand-alone VaR, or even reduce it.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A desk is short \(1{,}200\) contracts with a limit of \(\pm 2{,}000\). The last trade was \(80.00\) and the collar is \(1.5\%\). A strategy sends a sell order for \(1{,}000\) at \(78.50\). What happens?</h3>
+    <ol class="steps">
+      <li>Collar: \(80 \times (1 - 0.015) = 78.80\). A sell at \(78.50\) is below the band, so the order is rejected.</li>
+      <li>Even at an allowed price, the position check caps it: room to the short limit is \(2{,}000 - 1{,}200 = 800\).</li>
+    </ol>
+    <p class="answer">Rejected by the collar. Re-priced at or above \(78.80\), only \(800\) would get through.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A desk grosses \(12\) million against \(10\) million allocated costs. What is cost as a fraction of gross, to two decimal places?</span></p>
+      <details><summary>Show answer</summary><div><span>\(10 \div 12 = 0.83\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A desk has a \(5\) million VaR limit and uses \(3.8\) million. A proposed trade adds \(1.5\) million of VaR, with no diversification offset. Does it fit?</span></p>
+      <details><summary>Show answer</summary><div><span>No: \(3.8 + 1.5 = 5.3 > 5\). Headroom is only \(1.2\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>(Deltashark quick check) A firm holds \(4{,}700\) contracts against a \(5{,}000\) position limit. What is the maximum additional purchase the pre-trade check allows?</span></p>
+      <details><summary>Show answer</summary><div><span>\(5{,}000 - 4{,}700 = 300\) contracts.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>(Deltashark quick check) A pre-trade collar rejects orders priced more than \(2\%\) from the last trade at \(50.00\). What is the highest permissible buy price?</span></p>
+      <details><summary>Show answer</summary><div><span>\(50.00 \times 1.02 = 51.00\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A four-person desk grosses \(\$6\)m. Technology and data cost \(\$1.5\)m, clearing \(\$0.6\)m, pay \(\$2.4\)m and overhead \(\$0.3\)m. What does it keep, and what is net per head?</span></p>
+      <details><summary>Show answer</summary><div><span>Costs \(\$4.8\)m, net \(\$1.2\)m (cost ratio \(80\%\)), so \(\$0.3\)m per head.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why should the risk function be independent of the trading desk?</span></p>
+      <details><summary>Show answer</summary><div><span>Because the people whose positions are being limited have the strongest incentive to loosen the limits, especially when they're losing and want to win it back. If risk reports through the desk, limits bend exactly when they matter most. Independence means limits are set in calm and enforced by people who don't share the desk's P&amp;L. Several famous losses, from Barings to the London Whale, involved this separation breaking down.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you've written a trading bot. What pre-trade checks would you put in it before letting it trade real money?</span></p>
+      <details><summary>Show answer</summary><div><span>A maximum order size; a price collar against the last trade or mid; a position limit per instrument and overall; a cap on orders per second (throttle); a daily loss limit that stops new orders; checks that market data is fresh (no trading on a stale feed); and a kill switch that cancels all orders and flattens positions. Each check should run before the order is sent, and be tested like the rest of the code.</span></div></details></div>
+  </div>
+{% endsec %}
