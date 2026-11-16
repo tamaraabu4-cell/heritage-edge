@@ -1,0 +1,228 @@
+---
+title: The Firms
+shelf: quant
+chapter: quant-trading-firms
+subtopic: The Firms
+order: 1
+summary: Profiles of eight leading quant trading firms (Jane Street, XTX Markets, Citadel Securities, Optiver, IMC, Hudson River Trading, Jump Trading and Susquehanna), with when and where each started, what it trades, how big it is and what sets it apart; their reported 2025 revenues, headcounts and revenue per employee; four families of firm (the options houses, the all-rounders, the engineering-led speed shops and the machine-learning newcomer); how to get in from London; which firms matter in FX, gold and bonds; and what this means for the plan.
+lede: 'Eight firms dominate the conversation about quant trading. Some began as a few traders on an options floor in Amsterdam or Philadelphia; one started in a London office in 2015 and now trades about $250 billion a day with a few hundred people. They''re all private and publish little, so most of what''s known comes from company filings and press reports. Read together, they''re the chapter in action: the four engines, the speed race, and moats built by compounding.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, fintech]
+noteScripts: [/assets/js/notes/quant/the-firms.js]
+
+quiz:
+  - q: 'Which firm reported the highest net trading revenue in 2025, according to Reuters?'
+    opts: ['Citadel Securities', 'Hudson River Trading', 'Jane Street, with about $39.6 billion, more than JPMorgan''s trading desks']
+    right: 2
+    why: 'Reuters reported Jane Street''s 2025 net trading revenue at a record \(\$39.6\)bn, with about \(3{,}500\) employees, well ahead of Citadel Securities (about \(\$12.2\)bn) and Hudson River Trading (about \(\$12.3\)bn).'
+  - q: 'What is unusual about XTX Markets compared with the other firms in this note?'
+    opts: ['It''s a bank', 'It was founded in London in 2015, runs on machine learning, and trades about $250 billion a day with only a few hundred employees', 'It only trades options on one exchange']
+    right: 1
+    why: 'XTX is the youngest firm here and by far the smallest by headcount, so its revenue per employee is the highest. It''s one of the largest liquidity providers in FX, which makes it especially relevant if you''re aiming for FX.'
+  - q: 'Optiver, IMC and Susquehanna have something in common. What is it?'
+    opts: ['All three grew out of options trading floors in the 1980s and are still best known for options market making', 'All three are hedge funds managing outside money', 'All three are owned by banks']
+    right: 0
+    why: 'Optiver (Amsterdam, 1986), Susquehanna (Philadelphia, 1987) and IMC (Amsterdam, 1989) all began with traders on options floors. Pricing options is still at the heart of how they trade and how they interview.'
+
+connected:
+  - { label: Builds on, title: Market Makers, Prop Firms and Hedge Funds, where: Quant · Quant Trading Firms, url: /hub/quant/market-makers-prop-firms-and-hedge-funds/ }
+  - { label: Builds on, title: Competition, Speed and Edge, where: Quant · Quant Trading Firms, url: /hub/quant/competition-speed-and-edge/ }
+  - { label: Builds on, title: The Three Seats, where: Quant · Quant Trading Firms, url: /hub/quant/the-three-seats/ }
+  - { label: Used in, title: Interview Prep, where: Quant · Interview Prep, url: /hub/quant/ }
+---
+
+<style>
+  .tf-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .tf-filters { display: grid; gap: 6px; }
+  .tf-filters .mp-group { font-size: 13px; font-weight: 600; color: var(--text-2); }
+  .tf-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+  @media (max-width: 760px) { .tf-cards { grid-template-columns: 1fr; } }
+  .tf-card { border: 1px solid var(--border); border-top: 4px solid var(--tone); border-radius: 12px; padding: 12px 14px; background: var(--bg); transition: opacity 0.2s; }
+  .tf-card.dim { opacity: 0.28; }
+  .tf-card h4 { margin: 0; font-size: 17px; }
+  .tf-card .tf-sub { margin: 2px 0 8px; font-size: 13px; color: var(--text-2); }
+  .tf-card dl { margin: 0; display: grid; grid-template-columns: 112px 1fr; gap: 4px 10px; font-size: 13.5px; }
+  .tf-card dt { color: var(--text-2); font-weight: 600; }
+  .tf-card dd { margin: 0; }
+  .tf-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .tf-tags span { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--tone-bg); color: var(--text); }
+  .tf-count { margin-top: 8px; font-size: 14px; color: var(--text-2); }
+</style>
+
+{% sec 1, "Eight Firms, One Industry", "Who are the big names, and how should I read them?", "Eight firms" %}
+  <div class="prose">
+    <p>Think of these eight firms like the big teams in a sport. They all play the same game, but each has its own history, home ground and style: one is famous for its defence, another for speed, another for a youth academy. Knowing who's who, and why, is part of speaking the language of the industry, and interviewers notice when you can tell them apart.</p>
+    <p>Four things to keep in mind as you read:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>They're all private<span class="why">None is listed on a stock exchange, so revenue figures mostly come from press reports citing people familiar with the results, or from accounts filed by their UK and Dutch companies. Treat them as good estimates, not audited totals.</span></span></li>
+    <li><span class="n">2</span><span>They trade their own money<span class="why">All eight are market makers or proprietary trading firms (often both), not hedge funds. Market Makers, Prop Firms and Hedge Funds explains the difference.</span></span></li>
+    <li><span class="n">3</span><span>2025 was a record year for most<span class="why">Volatile markets mean more trading and wider spreads, which suits market makers. Their results swing with the market, so one year doesn't define a firm.</span></span></li>
+    <li><span class="n">4</span><span>Figures are as reported by November 2026<span class="why">Currencies are converted to dollars at rough 2025 averages where needed.</span></span></li>
+  </ul>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Firm</th><th>Founded</th><th>Home</th><th>Best known for</th></tr></thead>
+      <tbody>
+        <tr><td>Jane Street</td><td>2000</td><td>New York</td><td>ETFs, bonds, options; the industry's largest by revenue</td></tr>
+        <tr><td>XTX Markets</td><td>2015</td><td>London</td><td>Machine learning; one of the biggest liquidity providers in FX</td></tr>
+        <tr><td>Citadel Securities</td><td>2002</td><td>Miami</td><td>US shares and options, especially retail orders; Treasuries</td></tr>
+        <tr><td>Optiver</td><td>1986</td><td>Amsterdam</td><td>Options market making worldwide</td></tr>
+        <tr><td>IMC</td><td>1989</td><td>Amsterdam</td><td>Options and ETF market making</td></tr>
+        <tr><td>Hudson River Trading</td><td>2002</td><td>New York</td><td>Engineering-led, high-speed trading across many markets</td></tr>
+        <tr><td>Jump Trading</td><td>1999</td><td>Chicago</td><td>High-speed futures trading; crypto</td></tr>
+        <tr><td>Susquehanna (SIG)</td><td>1987</td><td>Philadelphia area</td><td>Options, decision-making and poker culture</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Firms, Card by Card", "What should I know about each one?", "Card by card" %}
+  <div class="lab">
+    <div class="lab-head"><h3>Meet the firms</h3><p>Filter by what you care about: the markets you want to trade, or where the firm is based. Cards that don't match fade out.</p></div>
+    <div class="controls tf-filters">
+      <span class="mp-group">Strong in</span>
+      <div class="presets tf-pick" id="tf-mkt" aria-label="Market"></div>
+      <span class="mp-group">Based in</span>
+      <div class="presets tf-pick" id="tf-home" aria-label="Home"></div>
+    </div>
+    <p class="tf-count" id="tf-count" aria-live="polite"></p>
+    <div class="tf-cards" id="tf-cards"></div>
+  </div>
+{% endsec %}
+
+{% sec 3, "How Big Are They?", "How do these firms compare with each other, and with banks?", "How big are they?" %}
+  <div class="prose">
+    <p>The headline is how far the biggest firms have outgrown the banks' trading desks. Reuters reported that Jane Street's 2025 net trading revenue of about \(\$39.6\)bn was more than JPMorgan's markets business, with around \(3{,}500\) employees against a bank of hundreds of thousands. And 2026 has been bigger still: Citadel Securities reportedly made about \(\$7.3\)bn in the second quarter alone, and Hudson River Trading about \(\$11.4\)bn.</p>
+    <p>Revenue per employee shows the other story: these are tiny organisations for the money they handle. A firm that grosses billions with a few hundred or a few thousand people is mostly technology and capital, which is the scale moat from Competition, Speed and Edge.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Revenue and people</h3><p>Reported 2025 figures. Switch between total revenue and revenue per employee (shown only where both revenue and headcount have been reported). Jump and Susquehanna don't appear because their results aren't public.</p></div>
+    <div class="controls">
+      <div class="presets tf-pick" id="rp-view" aria-label="View"></div>
+    </div>
+    <svg class="chart" id="chart-rp" viewBox="0 0 640 260" role="img" aria-label="Bar chart of reported 2025 revenue, or revenue per employee, for each firm"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Reported 2025 figure, in US dollars</span></div>
+    <p class="look" id="rp-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Four Families of Firm", "What really sets them apart?", "Four families" %}
+  <div class="prose">
+    <p>The eight firms fall into four rough families, by where they came from and what they're built around. Each family has a different moat, in the sense of Competition, Speed and Edge.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Family</th><th>Firms</th><th>Where they came from</th><th>Their moat</th><th>What it means for you</th></tr></thead>
+      <tbody>
+        <tr><td>The options houses</td><td>Optiver, IMC, Susquehanna</td><td>Traders on options floors in Amsterdam and Philadelphia in the 1980s</td><td>Decades of pricing and risk-managing options, worldwide exchange presence</td><td>Interviews lean on probability, betting games and options intuition</td></tr>
+        <tr><td>The all-rounders</td><td>Jane Street, Citadel Securities</td><td>Built across asset classes from the start</td><td>Scale: huge flow in ETFs, bonds, shares and options, and the capital to hold big positions</td><td>The widest range of desks and roles; very competitive entry</td></tr>
+        <tr><td>The engineering-led speed shops</td><td>Hudson River Trading, Jump Trading</td><td>Programmers and ex-pit traders building automated systems in the 2000s</td><td>Infrastructure: fast, reliable systems across many markets</td><td>Software engineering and systems skills matter most</td></tr>
+        <tr><td>The machine-learning newcomer</td><td>XTX Markets</td><td>A mathematician's start-up in London in 2015</td><td>Research process and compute: models trained on huge datasets</td><td>Research and engineering roles; very few people for its size</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The families overlap and change. Jane Street has grown a large business in "medium-frequency" strategies that hold positions for minutes to days. Optiver's 2025 report highlights systematic, research-led trading and artificial intelligence. And every firm now invests heavily in computing power: XTX is building data centres in Finland. The direction of travel is the same everywhere: more research, more data, more compute.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Each firm is a different answer to the same question: which engine to run, and which moat to build around it. Know each firm's origin, what it's strongest in and what its interviews test, and you can tailor every application.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Getting In from London", "How would I actually apply to these firms?", "Getting in from London" %}
+  <div class="prose">
+    <p>London is one of the two big European hubs for these firms, with Amsterdam, and Dublin matters too. All eight have a presence in London, but the size and the roles vary: XTX is headquartered there, while Optiver and IMC do most of their European hiring in Amsterdam, and Susquehanna's European headquarters is in Dublin.</p>
+    <p>The routes in are similar everywhere:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Internships come first<span class="why">Most firms hire graduates mainly from their summer internships, so applications open many months ahead, often a year before the start date.</span></span></li>
+    <li><span class="n">2</span><span>Three tracks<span class="why">Trader, researcher and software engineer: the three seats from The Three Seats. Pick the track that matches your strongest evidence.</span></span></li>
+    <li><span class="n">3</span><span>Online tests, then interviews<span class="why">Mental maths against the clock, probability and expected-value questions, sequences, and for traders, market making games. Engineers get coding and systems problems.</span></span></li>
+    <li><span class="n">4</span><span>Projects count<span class="why">A well-explained project (an order book in Rust, a tested strategy with honest costs) shows the habits these firms hire for, and gives interviewers something real to ask about.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Which of these firms matter most in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>XTX Markets is the standout: one of the largest liquidity providers in spot FX, alongside the big banks. Citadel Securities, Jump and Jane Street are also active currency traders, and the non-bank firms' growth in FX is one of the market's biggest changes since 2010 (Market Makers, Prop Firms and Hedge Funds).</p>
+    <h3>Gold</h3>
+    <p>Gold trading at these firms is mostly in futures and options on exchanges, and in gold ETFs, which the big ETF market makers quote all day. The London over-the-counter market in physical gold is still dominated by banks.</p>
+    <h3>Bonds</h3>
+    <p>Jane Street is one of the largest market makers in bond ETFs, which turn thousands of individual bonds into a single tradeable price. Citadel Securities has made markets in US Treasuries and interest rate swaps for years and launched a European fixed income business in 2015. Hudson River Trading and Jump trade Treasuries and Treasury futures at high speed.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Prop shop</h3><span class="tag desk">Desk</span></div><p>A proprietary trading firm.</p><p class="eg">"She left the bank for a prop shop in Amsterdam."</p></div>
+    <div class="term"><div class="term-top"><h3>HFT shop</h3><span class="tag desk">Desk</span></div><p>A firm whose edge is mostly speed.</p><p class="eg">"It's a pure HFT shop; nothing's held overnight."</p></div>
+    <div class="term"><div class="term-top"><h3>MFT</h3><span class="tag desk">Desk</span></div><p>Medium-frequency trading: holding for minutes to days.</p><p class="eg">"Most of their growth has been MFT."</p></div>
+    <div class="term"><div class="term-top"><h3>NBLP</h3><span class="tag desk">Desk</span></div><p>Non-bank liquidity provider.</p><p class="eg">"The NBLPs are tighter than the banks in cable."</p></div>
+    <div class="term"><div class="term-top"><h3>Wholesaler</h3><span class="tag desk">Desk</span></div><p>A market maker that fills retail brokers' orders.</p><p class="eg">"The wholesalers internalise most retail flow."</p></div>
+    <div class="term"><div class="term-top"><h3>Partnership</h3><span class="tag desk">Desk</span></div><p>A firm owned by its senior people, who share its profits.</p><p class="eg">"Making partner there is the real prize."</p></div>
+    <div class="term"><div class="term-top"><h3>Return offer</h3><span class="tag desk">Desk</span></div><p>A graduate job offered at the end of an internship.</p><p class="eg">"Most of their grads come from return offers."</p></div>
+    <div class="term"><div class="term-top"><h3>OA</h3><span class="tag desk">Desk</span></div><p>Online assessment: the first test in an application.</p><p class="eg">"The OA was eighty mental maths questions in eight minutes."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where these firms turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: a target list with reasons</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>For an FX, gold and bonds focus, XTX (FX, London), Citadel Securities (Treasuries, FX) and Jane Street (bond ETFs, commodities) line up most closely, with the options houses if you want to build options intuition first. For each application, name the firm's family, its strongest markets and one thing from its history, and connect it to a project of yours. That's the "fund-specific opening" rule from your cover letter guides, applied to trading firms.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: where the profits go</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Trading firm profits flow to their partners, and some of that wealth ends up in property and family offices, the kind of capital a villa or development business might one day raise money from (Raising Capital, in Hedge Funds). The firms themselves also show the advantage of owning a business outright: these partnerships compound their capital privately, as a family property business can.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: a gap on the map</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>None of these firms is headquartered in Africa, and Nigerian markets are too thin for them to trade much. That is the gap: XTX showed that a mathematician's start-up could become a major FX liquidity provider within a decade by being better at research and technology. African currency markets moving onto electronic screens, such as Nigeria's EFEMS, are where a smaller version of that story could happen.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you compare firms of very different sizes?" %}
+  <div class="formula"><span class="lbl">Revenue per employee</span>\[ \text{revenue per employee} = \frac{\text{revenue}}{\text{headcount}} \]</div>
+  <div class="formula"><span class="lbl">Profit margin</span>\[ \text{margin} = \frac{\text{profit}}{\text{revenue}} \]</div>
+  <div class="formula"><span class="lbl">Converting currencies</span>\[ \text{value in \$} = \text{value in £ or €} \times \text{exchange rate (\$ per £ or €)} \]</div>
+  <div class="prose">
+    <p>Comparing firms that report in pounds, euros and dollars needs care: the exchange rate you choose changes the ranking at the margin, and different firms count revenue slightly differently (net trading revenue, net trading income, combined UK entities).</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Optiver reported 2025 net trading income of €4.556bn and net profit of €1.769bn, with 2,233 full-time employees. IMC reported $3.12bn of net trading revenue and $968m of profit. Compare their margins and Optiver's revenue per employee.</h3>
+    <ol class="steps">
+      <li>Optiver margin: \(1.769 \div 4.556 \approx 39\%\).</li>
+      <li>IMC margin: \(0.968 \div 3.12 \approx 31\%\).</li>
+      <li>Optiver per employee: \(4{,}556\text{m} \div 2{,}233 \approx €2.0\)m, about \(\$2.3\)m at \(\$1.13\) per euro.</li>
+    </ol>
+    <p class="answer">Optiver kept about 39 cents of profit from each euro of revenue, IMC about 31. Both make around \(\$2\)m of revenue per person, a fifth of Jane Street's figure.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Jane Street reportedly made \(\$39.6\)bn of net trading revenue in 2025 with about \(3{,}500\) employees. What's that per employee?</span></p>
+      <details><summary>Show answer</summary><div><span>\(39{,}600\text{m} \div 3{,}500 \approx \$11.3\)m per person.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>XTX's UK companies reported combined net revenue of about £3.93bn and profit after tax of about £1.71bn for 2025. What's the profit margin?</span></p>
+      <details><summary>Show answer</summary><div><span>\(1.71 \div 3.93 \approx 44\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Name the three firms in this note that grew out of options trading floors, and the city each started in.</span></p>
+      <details><summary>Show answer</summary><div><span>Optiver (Amsterdam, 1986), Susquehanna (Philadelphia area, 1987) and IMC (Amsterdam, 1989).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Why is "Citadel" ambiguous in a conversation about trading firms?</span></p>
+      <details><summary>Show answer</summary><div><span>Citadel is a multi-strategy hedge fund managing outside money; Citadel Securities is a separate market making firm trading its own capital. Both were founded by Ken Griffin.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Interview question: why do you want to work at this firm rather than its competitors? (Pick one firm from this note and answer in under a minute.)</span></p>
+      <details><summary>Show answer</summary><div><span>A strong answer names something specific and true about the firm (its family, markets or history), connects it to what you've done, and says what you'd learn there. For example, for XTX: "You've built one of the largest FX liquidity businesses from London in a decade on machine learning and research; I trade and build FX tools myself, and I want to work where research process is the core product." Avoid answers that would fit any firm.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why do market makers' revenues rise in volatile years?</span></p>
+      <details><summary>Show answer</summary><div><span>Volatility brings more trading (more flow to serve) and wider spreads (more earned per trade), and creates more temporary mispricings between related instruments. The risk also rises, through adverse selection and inventory moves, so firms with the best pricing and risk control gain most. That's why 2025 and 2026 were record years for most of these firms.</span></div></details></div>
+  </div>
+{% endsec %}
