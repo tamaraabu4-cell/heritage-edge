@@ -1,6 +1,6 @@
 # Heritage Edge
 
-**My personal vault for trading, markets and the technology behind them. It's a portfolio and a knowledge hub in one site.**
+**Heritage Edge is my long-term project: markets, code and a plan, built in public. It acts as both a portfolio and a knowledge hub on markets, trading and the technology changing how both work.**
 
 🌐 **Live site:** [theheritageedge.com](https://theheritageedge.com)
 
@@ -12,14 +12,14 @@
 
 I'm Tamara, a London-based graduate in Business, Computing & IT (Aston University, 2026). I research trade ideas across FX, rates and commodities, and I write the code to test them.
 
-Heritage Edge is where all of that lives. It does two jobs:
+Heritage Edge is where all of that lives. It does three jobs:
 
 - **A portfolio**: finished, documented projects that show how I think about markets and how I use code to test an idea. Every project follows the same four steps: **Thesis → Method → Tech → Result**.
 - **A knowledge hub**: an organised vault of everything I learn about the industry, written in my own words with interactive charts. It ties each idea back to how trading and finance actually work, not just the theory.
-
+- **A foundation**: the starting point for a long-term plan. Every trade, project and lesson here builds the capital, skills and track record needed to turn my ideas into real ventures, one step at a time.
 The name has a story. *Heritage* comes from Heritage Oil, the first company I worked for. *Edge* is what every trade is looking for.
 
-The site is built around a long-term plan: **trade → use trading capital to move into real estate → bring fintech to Nigeria.** That's why the projects and the hub cover all three.
+The site is built around a long-term plan: **trade → use trading capital to move into real estate and other business ventures** That's why the projects and the hub cover all three.
 
 ---
 
@@ -98,31 +98,8 @@ npx @11ty/eleventy # build the site into _site/
 
 *(The hub lock only runs on Cloudflare, so the hub is unlocked when previewing locally.)*
 
-### Repository structure
-
-```
-heritage-edge/
-├── eleventy.config.js        # Eleventy setup: filters, shortcodes, collections
-├── functions/
-│   └── _middleware.js        # Knowledge Hub lock (runs on Cloudflare)
-└── src/
-    ├── _data/                # Site content as data: projects, hub topics, glossary, about page
-    ├── _includes/
-    │   ├── layouts/          # Base, project, note and blog post layouts
-    │   ├── partials/         # Nav, sidebar, footer, icons
-    │   └── home/             # Homepage sections
-    ├── assets/
-    │   ├── css/              # site.css, hub.css, note.css, per-project styles
-    │   ├── js/               # Theme, sidebar, highlights, hub progress, charts
-    │   └── data/             # Data behind project charts
-    ├── projects/             # Project pages, notebooks and code
-    ├── hub/                  # Vault home, topic homes and notes
-    ├── blog/                 # Blog page and posts (Markdown)
-    ├── about.njk
-    └── index.njk
-```
-
 ---
+
 
 ## What I'm looking for
 
