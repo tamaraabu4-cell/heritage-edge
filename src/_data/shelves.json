@@ -223,7 +223,7 @@
         "subtopics": ["The Industry",
           "Firm Types",
           "Traders, Researchers and Developers",
-          { "name": "How Firms Make Money", "planned": ["The Four Engines"] },
+          "How Firms Make Money",
           { "name": "Speed vs Prediction", "planned": ["Competition, Speed and Edge"] },
           { "name": "The Firms", "planned": ["The Firms"] },
           { "name": "Case Studies", "planned": ["Case Studies"] }] },

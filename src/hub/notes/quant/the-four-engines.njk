@@ -1,0 +1,250 @@
+---
+title: The Four Engines
+shelf: quant
+chapter: quant-trading-firms
+subtopic: How Firms Make Money
+order: 1
+summary: The four engines that earn trading profits (liquidity provision, arbitrage and relative value, statistical edges and risk premia), each with its own risk shape and capacity; gross edge, net edge and capacity as three different numbers, with the square-root impact law that can make a bigger strategy earn less; the cost meters every engine must pay; a firm as a portfolio of engines whose risks add in quadrature, and why that diversification can vanish in a crisis; why risk premia are payment for bearing risk, not free money; and the four engines in FX, gold and bonds.
+lede: 'Trading profit doesn''t come from one place. Deltashark counts four engines: being paid for being there to trade (liquidity provision), keeping identical things at the same price (arbitrage), small statistical patterns repeated many times, and being paid to hold risks other people want rid of. Every strategy runs on one of them. A trading firm is really a portfolio of engines, judged not on what each one grosses but on what''s left after costs and how they behave together on the worst day.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/the-four-engines.js]
+
+quiz:
+  - q: 'A strategy nets 0.4 basis points on 30 million a day. The firm doubles its volume to 60 million. What happens to its daily profit?'
+    opts: ['It doubles, because profit is edge times volume', 'It could fall: bigger trades push prices further, so impact cost per trade rises and can eat more than the extra volume adds', 'It stays exactly the same']
+    right: 1
+    why: 'Market impact grows roughly with the square root of size (the square-root law). With Deltashark''s numbers, impact rises from \(0.5\) to about \(0.71\) basis points, net edge falls from \(0.4\) to about \(0.19\), and \(60\text{m} \times 0.19\) bp is about \(1{,}160\) a day, less than the \(1{,}200\) at \(30\)m. Gross edge, net edge and capacity are three different numbers.'
+  - q: 'Four uncorrelated strategies each have a daily P&amp;L standard deviation of 10,000. What is the standard deviation of their combined P&amp;L?'
+    opts: ['40,000', '10,000', '20,000']
+    right: 2
+    why: 'Uncorrelated risks add in quadrature, like the sides of a right-angled triangle: \(\sqrt{4 \times 10{,}000^2} = 20{,}000\). Expected profits add up in full, but risk only grows with the square root, which is why a portfolio of small independent edges beats any one of them.'
+  - q: 'Which engine is a carry trade (borrowing in a low-interest currency to hold a high-interest one) running on?'
+    opts: ['Risk premia: you''re paid for holding a risk others want to avoid, a sudden currency crash, so returns are steady most of the time with occasional large losses', 'Arbitrage: it''s a risk-free price difference', 'Liquidity provision: you earn the bid-ask spread']
+    right: 0
+    why: 'The interest-rate gap is compensation for taking the risk that the high-yield currency collapses. It feels like free money until it isn''t, as in the August 2024 yen carry unwind. That steady-gains, sudden-loss pattern is called negative skew.'
+
+connected:
+  - { label: Builds on, title: What Quant Trading Is, where: Quant · Quant Trading Firms, url: /hub/quant/what-quant-trading-is/ }
+  - { label: Builds on, title: Algorithmic Execution, where: Markets · How Markets Work, url: /hub/markets/algorithmic-execution/ }
+  - { label: Builds on, title: Relative Value, where: Hedge Funds · Strategies, url: /hub/hedge-funds/relative-value/ }
+  - { label: Builds on, title: Single-Manager vs Multi-Manager, where: Hedge Funds · The Hedge Fund Business, url: /hub/hedge-funds/single-manager-vs-multi-manager/ }
+---
+
+<style>
+  .fe-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .ne-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+  .ne-row { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--bg); }
+  .ne-case { font-size: 14px; margin: 0 0 6px; }
+  .ne-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ne-opts button { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--hub-card, transparent); color: var(--text); cursor: pointer; }
+  .ne-opts button.right { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .ne-opts button.wrong { text-decoration: line-through; color: var(--text-2); }
+  .ne-why { margin: 8px 0 0; font-size: 14px; color: var(--text-2); }
+  .ne-why strong { color: var(--text); }
+  .ne-score { margin-top: 10px; font-weight: 600; }
+</style>
+
+{% sec 1, "Four Ways to Make Money", "Where does trading profit actually come from?", "Four ways to make money" %}
+  <div class="prose">
+    <p>Picture a corner shop. It makes money in four quite different ways. It charges a little more than the supermarket for being open at 11pm when you've run out of milk: you pay for convenience. It buys crisps from the wholesaler for less than the supermarket's shelf price and sells them in between: a price gap between two places. It notices that umbrellas sell when rain is forecast and stocks more on cloudy days: a small pattern that pays off over many sales. And it sells extended warranties on kettles, collecting a small fee every time and occasionally paying out for a broken one: being paid to carry someone else's risk.</p>
+    <p>Trading firms have the same four engines. Deltashark's point is that reading any strategy starts with asking which engine it runs on, because each has its own risk shape and its own limit on size:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Engine</th><th>Paid for</th><th>Examples</th><th>Risk shape</th><th>What limits its size</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "liquidity provision" %}Liquidity provision{% endgl %}</td><td>Being there to trade immediately: the spread</td><td>Market making in shares, options, FX</td><td>Steady, with sharp losses when informed traders pick you off or inventory moves against you</td><td>How much flow there is to serve</td></tr>
+        <tr><td>{% gl "arbitrage" %}Arbitrage{% endgl %} and relative value</td><td>Enforcing the {% gl "law of one price" %}law of one price{% endgl %}</td><td>An index against its shares, futures against spot, related bonds against each other</td><td>Small, nearly certain margins, with the tail risk that "identical" things drift apart in a crisis</td><td>How many mispricings there are, and the leverage needed to make them worth it</td></tr>
+        <tr><td>Statistical edges</td><td>Being slightly right, many times</td><td>Momentum, short-term reversal, order-flow signals</td><td>Noisy, roughly symmetric; the 51% coin from What Quant Trading Is</td><td>Market impact as trades get bigger</td></tr>
+        <tr><td>{% gl "risk premium" %}Risk premia{% endgl %}</td><td>Holding risks others want to get rid of</td><td>Carry, credit spreads, selling options</td><td>Steady gains with occasional large losses: {% gl "negative skew" %}negative skew{% endgl %}</td><td>How much of the risk the firm can survive</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Name the engine</h3><p>Nine strategies. For each one, pick the engine it runs on. One fits two, and the explanation says why.</p></div>
+    <ul class="ne-list" id="ne-list"></ul>
+    <p class="ne-score" id="ne-score" aria-live="polite"></p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Gross, Net and Capacity", "If a strategy makes money, why not just trade it bigger?", "Gross, net and capacity" %}
+  <div class="prose">
+    <p>Every edge is measured three ways. <strong>Gross edge</strong> is what the signal earns before costs. <strong>Net edge</strong> is what's left after fees and {% gl "market impact" %}market impact{% endgl %}. And <strong>{% gl "capacity" %}capacity{% endgl %}</strong> is how much money the strategy can trade before costs eat the edge. Deltashark's line: businesses are built on the third.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A statistical strategy earns \(1.5\) basis points gross per trade on \(\$30\)m of daily volume. It pays \(0.6\) bp in fees and \(0.5\) bp in market impact. What does it net?</h3>
+    <ol class="steps">
+      <li>Costs: \(0.6 + 0.5 = 1.1\) bp. Net edge: \(1.5 - 1.1 = 0.4\) bp.</li>
+      <li>Net per day: \(0.4 \times 0.0001 \times 30\text{m} = \$1{,}200\).</li>
+      <li>Nearly three-quarters of the gross edge went to costs, which is normal for thin edges.</li>
+    </ol>
+    <p class="answer">And doubling the volume could net <em>less</em>, because impact per trade grows with size.</p>
+  </div>
+  <div class="prose">
+    <p>Why would bigger be worse? Algorithmic Execution introduced the {% gl "square-root law" %}square-root law{% endgl %}: the price impact of trading grows roughly with the square root of how much you trade. So doubling volume multiplies impact per trade by about \(\sqrt{2} \approx 1.41\). Fees stay the same per trade, but impact keeps climbing, and eventually it swallows the edge.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Gross, net and capacity</h3><p>Deltashark's strategy, with impact growing with the square root of volume. Slide the volume and watch daily profit rise, peak and fall. The peak is the strategy's capacity.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="gc-v">Daily volume</label><input type="range" id="gc-v" min="1" max="150" step="1" value="30"><output id="gc-v-out" for="gc-v">$30m</output></div>
+      <div class="ctrl"><label for="gc-g">Gross edge</label><input type="range" id="gc-g" min="0.5" max="3" step="0.1" value="1.5"><output id="gc-g-out" for="gc-g">1.5 bp</output></div>
+      <div class="ctrl"><label for="gc-f">Fees</label><input type="range" id="gc-f" min="0" max="1.5" step="0.1" value="0.6"><output id="gc-f-out" for="gc-f">0.6 bp</output></div>
+      <div class="ctrl"><label for="gc-i">Impact at $30m</label><input type="range" id="gc-i" min="0.1" max="1.5" step="0.1" value="0.5"><output id="gc-i-out" for="gc-i">0.5 bp</output></div>
+    </div>
+    <svg class="chart" id="chart-gc" viewBox="0 0 640 280" role="img" aria-label="Daily net profit against daily volume, rising to a peak and then falling as impact grows"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Net profit a day</span><span><i class="sw grey"></i>What it would be with no impact</span></div>
+    <div class="readout" id="gc-read"></div>
+    <p class="look" id="gc-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Meters Are Always Running", "What costs does every engine have to pay for?", "The meters" %}
+  <div class="prose">
+    <p>Against the engines, Deltashark lists the meters that never stop: exchange and clearing fees, market data (a major bill at scale), technology and connectivity, financing and margin, and people. Inside a Trading Desk did this arithmetic for one desk; the same applies to the whole firm. It disciplines which strategies run at all: <strong>an edge that can't pay for its own infrastructure doesn't run</strong>, however clever it is.</p>
+    <p>What survives the costs is then judged on risk-adjusted terms: the return compared with the ups and downs and the drawdowns it took to earn it, usually through the {% gl "sharpe ratio" %}Sharpe ratio{% endgl %}. That matters because capital is limited: money given to one engine can't be given to another.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "A Firm Is a Portfolio of Engines", "Why do trading firms run many small edges rather than one big one?", "A portfolio of engines" %}
+  <div class="prose">
+    <p>Here's the maths that turns a collection of strategies into a business. When engines are uncorrelated, their expected profits add up in full, but their risks add like the sides of a right-angled triangle: in quadrature.</p>
+  </div>
+  <div class="formula"><span class="lbl">The firm as a portfolio of engines (Deltashark)</span>\[ \text{firm P\&L} = \sum_{\text{engines}} \text{net edge}_i - \text{fixed costs} \qquad \sigma_{\text{firm}} = \sqrt{\sum_i \sigma_i^2} \;\ll\; \sum_i \sigma_i \;\text{ when uncorrelated} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>Four uncorrelated strategies each have a daily P&amp;L standard deviation of \(\$10{,}000\). What's the standard deviation of the total?</h3>
+    <ol class="steps">
+      <li>Add the variances: \(4 \times 10{,}000^2 = 400{,}000{,}000\).</li>
+      <li>Take the square root: \(\sqrt{400{,}000{,}000} = \$20{,}000\), not \(\$40{,}000\).</li>
+      <li>If each made the same expected profit, the total profit is \(4\times\) one strategy's but the risk only \(2\times\): the firm's Sharpe ratio is double any single one.</li>
+    </ol>
+    <p class="answer">With \(N\) equal, independent engines, the firm's Sharpe is \(\sqrt{N}\) times one engine's. A portfolio of small edges is the actual product of a trading firm.</p>
+  </div>
+  <div class="prose">
+    <p>Single-Manager vs Multi-Manager showed the same idea with hedge fund pods. The catch is the word <em>uncorrelated</em>. In calm markets, a market making book, an arbitrage book, a statistical strategy and a carry trade really do move independently. In a crisis, three of the four engines can lose on the same day: spreads blow out, "identical" prices drift apart, and everyone who was paid to hold risk tries to sell at once.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Build a firm from engines</h3><p>A year of daily P&amp;L (in thousands of dollars) for four engines, each with a Sharpe ratio of about 1.5 to 2.5 on its own. Switch engines on and off, then add a crisis and see what happens to the diversification.</p></div>
+    <div class="controls">
+      <div class="presets fe-pick" id="bf-on" aria-label="Engines in the firm"></div>
+      <div class="presets fe-pick" id="bf-year" aria-label="Which year"></div>
+      <div class="presets"><button type="button" id="bf-again">Run again</button></div>
+    </div>
+    <svg class="chart" id="chart-bf" viewBox="0 0 640 300" role="img" aria-label="Running total of profit over a year for each engine and for the whole firm"></svg>
+    <div class="legend"><span><i class="sw tone"></i>The whole firm</span><span><i class="sw grey"></i>Each engine on its own</span></div>
+    <div class="readout" id="bf-read"></div>
+    <p class="look" id="bf-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Profits from independent engines add up; their risks don't, so a firm of many small edges is steadier than any one of them. But the diversification is measured in calm markets and tested in a crisis, when engines that looked independent can all lose at once.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Risk Premia: Paid, Not Free", "If an engine earns steadily for years, is it skill?", "Risk premia" %}
+  <div class="prose">
+    <p>Deltashark is careful about the fourth engine. Carry, credit spreads above expected default losses, and {% gl "implied volatility" %}implied volatility{% endgl %} above the {% gl "realised volatility" %}realised volatility{% endgl %} that follows all pay steadily, year after year. The revenue is real, but it's <strong>compensation, not free money</strong>: payment for holding a risk that others pay to get rid of.</p>
+    <p>Think of the warranty from the corner shop, or an insurance company. Most months, nobody claims and the premiums roll in. Then a flood hits a whole town at once. The pattern of many small gains and rare large losses is negative skew, and it's dangerous precisely because a long run of good years makes the strategy look safe and tempts people to add leverage. Traders call it picking up pennies in front of a steamroller.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Selling volatility, February 2018<span class="why">Products that profited from calm markets by betting volatility would stay low had made steady gains for years. On 5 February 2018 the VIX, Wall Street's "fear index", roughly doubled in a day, and XIV, an exchange-traded note betting against it, lost over 90% of its value and was shut down.</span></span></li>
+    <li><span class="n">2</span><span>Carry, August 2024<span class="why">Borrowing cheaply in yen to hold higher-yielding assets paid steadily, until a Bank of Japan rate rise and weak US data reversed it in days (Global Macro covers the unwind).</span></span></li>
+    <li><span class="n">3</span><span>Credit, 2008<span class="why">High-yield bonds pay a spread above expected defaults. In a recession, defaults and spreads jump together (Credit and Distressed).</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>None of this makes risk premia bad. Pension funds, insurers and trading firms earn them deliberately. The professional habit is simply to know which engine you're running, size it for the bad year, and never mistake a premium for skill.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Which engines run in my three markets?", "FX, gold and bonds" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Engine</th><th>FX</th><th>Gold</th><th>Bonds</th></tr></thead>
+      <tbody>
+        <tr><td>Liquidity provision</td><td>Streaming spot prices to clients and platforms (banks, XTX, Citadel Securities)</td><td>Quoting spot gold and COMEX futures</td><td>Dealers quoting government and corporate bonds</td></tr>
+        <tr><td>Arbitrage</td><td>Triangular arbitrage (EUR/USD × USD/JPY against EUR/JPY); covered interest parity between spot, forwards and interest rates</td><td>Futures against spot (the "exchange for physical"); London against New York, as in March 2020 (Relative Value)</td><td>Cash bonds against futures (the basis trade); on-the-run against off-the-run</td></tr>
+        <tr><td>Statistical edges</td><td>Short-term order-flow signals; momentum across currency pairs</td><td>Trend following in futures</td><td>Curve and momentum signals across maturities</td></tr>
+        <tr><td>Risk premia</td><td>Carry: borrowing low-yield currencies to hold high-yield ones</td><td>Lending gold out at the lease rate; selling options on gold</td><td>The term premium for lending long; credit spreads</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>FX arbitrage is the clearest example of an engine almost fully used up: triangular mispricings in major pairs last for milliseconds, so only the fastest firms earn them. FX carry is the opposite: open to anyone with a trading account, and paid precisely because it can crash.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Gross</h3><span class="tag desk">Desk</span></div><p>Profit before costs.</p><p class="eg">"Great gross, but what's it net of impact?"</p></div>
+    <div class="term"><div class="term-top"><h3>Capacity</h3><span class="tag desk">Desk</span></div><p>How much money a strategy can trade before costs eat its edge.</p><p class="eg">"Lovely signal, but capacity's maybe fifty million."</p></div>
+    <div class="term"><div class="term-top"><h3>Bips</h3><span class="tag desk">Desk</span></div><p>Basis points: hundredths of a percent.</p><p class="eg">"We're netting half a bip a trade."</p></div>
+    <div class="term"><div class="term-top"><h3>Arb</h3><span class="tag desk">Desk</span></div><p>Arbitrage, or the trade itself.</p><p class="eg">"The arb's gone: everyone's on it."</p></div>
+    <div class="term"><div class="term-top"><h3>Carry</h3><span class="tag desk">Desk</span></div><p>What a position earns just by being held, such as an interest-rate gap.</p><p class="eg">"Positive carry, so we're paid to wait."</p></div>
+    <div class="term"><div class="term-top"><h3>Short vol</h3><span class="tag desk">Desk</span></div><p>Positioned to profit if markets stay calm, usually by selling options.</p><p class="eg">"The whole street was short vol going into February."</p></div>
+    <div class="term"><div class="term-top"><h3>Negative skew</h3><span class="tag desk">Desk</span></div><p>Many small gains, occasional large losses.</p><p class="eg">"It's a lovely Sharpe, but it's negatively skewed."</p></div>
+    <div class="term"><div class="term-top"><h3>Steamroller</h3><span class="tag desk">Desk</span></div><p>Short for "picking up pennies in front of a steamroller": small, steady gains with a rare large loss.</p><p class="eg">"Selling those puts is a steamroller trade."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the four engines turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: which engine is your strategy?</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Label every strategy you test with its engine. A price-pattern rule (a breakout, a liquidity sweep) is a claimed statistical edge, so it needs many trades and honest costs to prove. Holding a high-yield currency pair overnight for the positive swap is a risk premium: expect steady gains and the occasional gap. At retail size, capacity is rarely your limit, but costs are: the spread, commission and overnight swap play the role of the meters, and the gross, net and capacity interactive works just as well with your own numbers.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: property's engines</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Rental yield is mostly a risk premium: payment for tying money up in something hard to sell, with tenant and maintenance risk. Buying below market value from a forced seller is closer to arbitrage. Development profit is paid for taking on construction and sales risk. And a portfolio of villas across several countries diversifies in normal years but, as the build-a-firm interactive shows, can lose everywhere at once in a shock that hits all tourism, as the pandemic did in 2020.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: engines in a fintech</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian fintechs run the same engines under other names. Payments businesses earn a small fee on every transaction, like liquidity provision: revenue grows with flow, and fraud plays the role of being picked off. Digital lenders earn a risk premium, interest above expected defaults, with negative skew when a downturn hits many borrowers at once. Before the naira's exchange rates were unified in 2023, the gap between official and parallel rates looked like an arbitrage, but with no reliable way to close it, it was really a bet on access and policy.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on edges, capacity and a portfolio of engines?" %}
+  <div class="formula"><span class="lbl">Net profit with square-root impact</span>\[ \text{net per day} = \big(g - f - i(V)\big) \times 10^{-4} \times V \qquad i(V) = i_0 \sqrt{V / V_0} \]</div>
+  <div class="formula"><span class="lbl">Capacity (the most profitable volume) and breakeven volume</span>\[ V^{*} = V_0 \left(\frac{2(g - f)}{3\, i_0}\right)^{2} \qquad V_{\text{break-even}} = V_0 \left(\frac{g - f}{i_0}\right)^{2} \]</div>
+  <div class="formula"><span class="lbl">Combining engines</span>\[ \sigma_{\text{firm}}^2 = \sum_i \sigma_i^2 + \sum_{i \ne j} \rho_{ij}\, \sigma_i \sigma_j \qquad \text{Sharpe}_{\text{firm}} = \sqrt{N} \times \text{Sharpe}_{\text{one}} \;\text{ (equal, independent)} \]</div>
+  <div class="prose">
+    <p>\(g\) is the gross edge and \(f\) the fees, both in basis points; \(i_0\) is impact at a reference volume \(V_0\). The capacity formula comes from making the slope of net profit zero. When the correlations \(\rho_{ij}\) jump towards \(1\) in a crisis, the second term in \(\sigma_{\text{firm}}^2\) takes over and the diversification disappears.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>For Deltashark's strategy (\(g = 1.5\), \(f = 0.6\), \(i_0 = 0.5\) at \(V_0 = \$30\)m), what volume earns the most, and where does it stop making money?</h3>
+    <ol class="steps">
+      <li>Capacity: \(V^{*} = 30 \times \left(\frac{2 \times 0.9}{3 \times 0.5}\right)^2 = 30 \times 1.2^2 = \$43.2\)m.</li>
+      <li>At \(V^{*}\): impact \(= 0.5 \times 1.2 = 0.6\) bp, net edge \(= 0.3\) bp, so \(0.3 \times 0.0001 \times 43.2\text{m} \approx \$1{,}296\) a day.</li>
+      <li>Breakeven: \(V = 30 \times (0.9 \div 0.5)^2 = 30 \times 3.24 = \$97.2\)m. Beyond that, the strategy loses money.</li>
+    </ol>
+    <p class="answer">The best this strategy can do is about \(\$1{,}300\) a day at \(\$43\)m. Its capacity, not its gross edge, sets the size of the business.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A strategy earns \(1.5\) bp gross per unit of volume and pays \(1.1\) bp in total costs, on \(\$50\)m daily volume. What is daily net P&amp;L?</span></p>
+      <details><summary>Show answer</summary><div><span>\((1.5 - 1.1) \times 0.0001 \times 50{,}000{,}000 = \$2{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Four uncorrelated strategies each have daily P&amp;L standard deviation \(10{,}000\). What is the standard deviation of their combined P&amp;L?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\sqrt{4} \times 10{,}000 = 20{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Deltashark's strategy nets \(\$1{,}200\) a day at \(\$30\)m. If impact grows with the square root of volume, what does it net at \(\$60\)m?</span></p>
+      <details><summary>Show answer</summary><div><span>Impact \(= 0.5\sqrt{2} \approx 0.71\) bp, so net edge \(\approx 1.5 - 0.6 - 0.71 = 0.19\) bp, and \(0.19 \times 0.0001 \times 60\text{m} \approx \$1{,}160\). Doubling the volume earns slightly less.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A firm runs nine independent strategies, each with a Sharpe ratio of \(0.8\) and equal risk. What is the firm's Sharpe ratio, before fixed costs?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\sqrt{9} \times 0.8 = 2.4\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Two strategies each have a daily standard deviation of \(\$10{,}000\). What is the combined standard deviation if their correlation is \(0\), and if it is \(0.9\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\rho = 0\): \(\sqrt{10{,}000^2 + 10{,}000^2} \approx \$14{,}100\). \(\rho = 0.9\): \(\sqrt{2 \times 10{,}000^2 (1 + 0.9)} \approx \$19{,}500\), nearly the \(\$20{,}000\) of simply adding them.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: a strategy has made money every month for three years with a Sharpe ratio of \(3\). What would you want to know before adding to it?</span></p>
+      <details><summary>Show answer</summary><div><span>Which engine it runs on. If it's a risk premium (selling options, carry, credit), steady returns are exactly what negative skew looks like before the big loss, so I'd want its worst-case scenario, how it did in past stress periods (or how it would have), its leverage, and how correlated it is with the firm's other risk-premium books in a crisis. I'd also check capacity and whether costs at the bigger size still leave an edge.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: why do trading firms run many small, uncorrelated strategies instead of putting everything into their best one?</span></p>
+      <details><summary>Show answer</summary><div><span>Each strategy's capacity is limited, so the best one can't absorb all the capital without costs eating its edge. And independent profits add up in full while their risks add in quadrature, so the firm's Sharpe ratio grows roughly with the square root of the number of strategies. The firm gets steadier returns, can use more capital, and isn't ruined if one edge decays. The caveat is that correlations rise in crises, so they also stress-test the combined book.</span></div></details></div>
+  </div>
+{% endsec %}
