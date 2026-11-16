@@ -1,0 +1,231 @@
+---
+title: Case Studies
+shelf: quant
+chapter: quant-trading-firms
+subtopic: Case Studies
+order: 1
+summary: Three stories that put the chapter to work. XTX Markets' rise from a hedge fund's FX desk in 2015 to the world's largest spot FX liquidity provider by 2019 (research process, compute and the non-bank shift); Knight Capital's 45 minutes on 1 August 2012, when a faulty software release sent millions of orders and lost more than $460 million (controls, deployment and the market access rule); and SEBI's July 2025 interim order against Jane Street over Indian index options, with the regulator's allegations, the firm's response and the unresolved appeal, told neutrally. What the three share, the same lessons in FX, gold and bonds, and what they mean for the plan.
+lede: 'Three stories, three lessons. A London start-up that out-researched the banks and became the biggest name in spot FX within four years. An American market maker that nearly disappeared in 45 minutes because one server out of eight was running old code. And the largest action India''s market regulator has ever taken, against the industry''s most profitable firm, over where clever trading ends and manipulation begins. That last case is still being argued, so it''s told here as both sides tell it.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, fintech]
+noteScripts: [/assets/js/notes/quant/case-studies.js]
+
+quiz:
+  - q: 'What ultimately caused Knight Capital''s losses on 1 August 2012?'
+    opts: ['A rogue trader hiding positions', 'A new software release that reached only seven of eight servers, so old code on the eighth was switched on and sent millions of orders that never stopped', 'An exchange outage']
+    right: 1
+    why: 'A reused flag meant to turn on the new code instead activated an old function on the server that missed the update. It kept sending orders because the code that counted fills had been moved years earlier. In 45 minutes Knight traded over \(397\) million shares and lost more than \(\$460\) million.'
+  - q: 'What did XTX Markets do in 2016 that no firm had done before?'
+    opts: ['It became the first firm that wasn''t a bank to make the top ten of Euromoney''s annual FX survey', 'It became the first firm to trade gold electronically', 'It became a bank']
+    right: 0
+    why: 'In its first full year, XTX ranked ninth in Euromoney''s FX survey with about \(3.9\%\) of volume. By 2018 it was third, and by 2019 it was the largest spot FX liquidity provider in the world.'
+  - q: 'What is the status of SEBI''s case against Jane Street, as of November 2026?'
+    opts: ['Jane Street was convicted of fraud in 2025', 'The case was dropped in 2025', 'SEBI''s July 2025 order is interim: Jane Street paid the disputed amount into escrow, resumed trading, denies wrongdoing and is challenging the order at the Securities Appellate Tribunal']
+    right: 2
+    why: 'SEBI alleged manipulation and impounded about ₹4,844 crore (around \(\$567\) million). Jane Street disputes the findings. In October 2026 the tribunal reserved its decision on the firm''s request for more of SEBI''s evidence; no final finding has been made.'
+
+connected:
+  - { label: Builds on, title: Inside a Trading Desk, where: Quant · Quant Trading Firms, url: /hub/quant/inside-a-trading-desk/ }
+  - { label: Builds on, title: The Firms, where: Quant · Quant Trading Firms, url: /hub/quant/the-firms/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Next, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/ }
+---
+
+<style>
+  .cs8-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .xt-card { margin-top: 4px; border: 1px solid var(--border); border-left: 4px solid var(--tone); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .xt-card h4 { margin: 0 0 6px; font-size: 16px; }
+  .xt-card p { margin: 0 0 8px; font-size: 14.5px; }
+  .xt-meter { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); }
+  .xt-meter .bar { flex: 1; height: 10px; border-radius: 6px; background: var(--tone-bg); overflow: hidden; }
+  .xt-meter .bar i { display: block; height: 100%; background: var(--tone); }
+  .two-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0; }
+  .two-sides > div { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .two-sides h4 { margin: 0 0 6px; font-size: 15px; }
+  .two-sides ul { margin: 0; padding-left: 18px; font-size: 14px; }
+  .two-sides li { margin-bottom: 5px; }
+  @media (max-width: 700px) { .two-sides { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "Three Stories, Three Lessons", "Why end the chapter with case studies?", "Three stories" %}
+  <div class="prose">
+    <p>Rules of thumb are easier to remember when they come with a story. Each of these three illustrates a different part of the chapter, and each comes up in interviews and industry conversation:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Story</th><th>When</th><th>The lesson</th><th>From the chapter</th></tr></thead>
+      <tbody>
+        <tr><td>XTX's rise</td><td>2015 onwards</td><td>A research process and computing power can beat incumbents' size and history</td><td>Competition, Speed and Edge; The Firms</td></tr>
+        <tr><td>Knight Capital</td><td>1 August 2012</td><td>One untested change, with no automatic brake, can end a firm in under an hour</td><td>Inside a Trading Desk; The Three Seats</td></tr>
+        <tr><td>Jane Street in India</td><td>2023 to now</td><td>Where legitimate trading ends and manipulation begins is decided by regulators and courts, and the line matters most where small investors crowd in</td><td>Inside a Trading Desk (compliance); Regulation</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "XTX: From a Hedge Fund Desk to the Top of FX", "How did a London start-up overtake the banks in currencies?", "XTX's rise" %}
+  <div class="prose">
+    <p>Alex Gerko, who has a PhD in mathematics from Moscow State University, traded at Deutsche Bank before joining GSA Capital, a London quant hedge fund, where from 2009 he spent five years building its FX market making business. In 2015 he spun that business out as XTX Markets. The bet was that FX liquidity provision was "unbundling" from the big banks, and that a firm built purely on research and code could price currencies better than dealers carrying the costs of a bank.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Ten years of XTX</h3><p>Step through the milestones. Where a share of the FX market was published, the bar shows it.</p></div>
+    <div class="controls">
+      <div class="presets cs8-pick" id="xt-pick" aria-label="Milestone"></div>
+    </div>
+    <div class="xt-card" id="xt-card" aria-live="polite"></div>
+  </div>
+  <div class="prose">
+    <p>What does the story show? First, the non-bank shift from Market Makers, Prop Firms and Hedge Funds in action: banks were weighed down by post-2008 capital rules, while XTX's costs scaled with computing rather than balance sheet. Second, the moats from Competition, Speed and Edge: XTX's edge is usually described as research and computation rather than raw speed, and it's spending heavily on computing (including data centres in Finland) to keep it. Third, scale: a few hundred people trading around \(\$250\) billion a day is the revenue-per-employee chart from The Firms.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Knight Capital: 45 Minutes", "How can a firm lose $460 million before breakfast?", "Knight Capital" %}
+  <div class="prose">
+    <p>In 2012 Knight Capital was one of the biggest market makers in US shares, handling a large share of retail orders. On 1 August, the New York Stock Exchange launched a new programme for retail orders, and Knight had written new code for it. What happened next is set out in detail in the US Securities and Exchange Commission's 2013 order:</p>
+  </div>
+  <ol class="steps">
+    <li><strong>A manual release missed a server.</strong> A technician copied the new code onto seven of Knight's eight order-routing servers. Nobody checked the eighth, and no second person reviewed the release.</li>
+    <li><strong>An old switch was reused.</strong> The new code was turned on with a flag that had once switched on "Power Peg", a function unused for years but never deleted. On the eighth server, the flag woke Power Peg up.</li>
+    <li><strong>Nothing told it to stop.</strong> Back in 2005, the part of the code that counted how much of an order had been filled was moved, and Power Peg was never retested. So it never knew when it was done.</li>
+    <li><strong>The warnings went unread.</strong> Before the market opened, Knight's systems sent 97 automated emails flagging an error. No one acted on them.</li>
+    <li><strong>45 minutes.</strong> Trying to fill 212 small retail orders, the system sent millions of orders and got over 4 million executions in 154 stocks, more than 397 million shares. By the time it was stopped, Knight was long about \(\$3.5\) billion of 80 stocks and short about \(\$3.15\) billion of 74 others.</li>
+  </ol>
+  <div class="prose">
+    <p>Unwinding the positions cost more than \(\$460\) million, far more than Knight could absorb. Within days it raised about \(\$400\) million from a group of investors to survive, and in 2013 it merged with Getco to form KCG (which Virtu Financial later bought). The SEC fined Knight \(\$12\) million in its first enforcement action under the market access rule, which requires firms to have controls that check orders before they reach the market.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>45 minutes</h3><p>Slide through the morning, then try the controls from Inside a Trading Desk. This is an illustration: it assumes the orders, the positions and the eventual loss built up at a steady pace, which the real morning didn't quite do.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="kn-t">Minute</label><input type="range" id="kn-t" min="0" max="45" step="1" value="45"><output id="kn-t-out" for="kn-t">45</output></div>
+      <div class="presets cs8-pick" id="kn-ctl" aria-label="Controls"></div>
+    </div>
+    <svg class="chart" id="chart-kn" viewBox="0 0 640 280" role="img" aria-label="Knight's gross position and estimated loss over the 45 minutes, with and without controls"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Estimated loss</span><span><i class="sw grey"></i>Gross position, shaded (longs plus shorts)</span></div>
+    <div class="readout" id="kn-read"></div>
+    <p class="look" id="kn-story"></p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Knight didn't lose money on a bad idea. It lost it on a release process with no second check, dead code left lying around, ignored alerts and no automatic brake. In an automated firm, deployment and controls are risk management.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Jane Street in India: Both Sides", "What is SEBI's case, and what does Jane Street say?", "Jane Street in India" %}
+  <div class="prose">
+    <p><strong>The setting.</strong> India became the world's busiest market for index options, measured by number of contracts, much of it driven by individual traders buying cheap options that expire weekly. A SEBI study in September 2024 found that 93% of more than a crore (ten million) individual traders in equity futures and options lost money between 2021–22 and 2023–24, with combined losses of over ₹1.8 lakh crore (₹1.8 trillion). In the same study, proprietary traders and foreign portfolio investors as groups made gross trading profits in 2023–24.</p>
+    <p><strong>The order.</strong> On 3 July 2025, the Securities and Exchange Board of India (SEBI) issued an interim, <em>ex parte</em> order (made without first hearing the firm) against four Jane Street entities. It barred them from Indian securities markets and impounded ₹4,843.57 crore, about \(\$567\) million, which it described as prima facie unlawful gains. It was the largest such action SEBI had taken.</p>
+  </div>
+  <div class="two-sides">
+    <div>
+      <h4>What SEBI alleges</h4>
+      <ul>
+        <li>On Bank Nifty expiry days between January 2023 and March 2025, the group bought large amounts of the index's shares and futures early in the day, pushing the index up, while holding much larger options positions that gained if the index later fell.</li>
+        <li>Later the same day it sold those shares and futures, pushing the index down, so its options profits far exceeded any losses on the cash trades.</li>
+        <li>SEBI called this a coordinated, deliberate pattern that used the firm's "immense trading, financial and technological prowess" to distort the index, misleading other traders.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>What Jane Street says</h4>
+      <ul>
+        <li>It disputes the findings and denies wrongdoing.</li>
+        <li>It says its trades were part of normal trading strategies, such as index arbitrage between related instruments, which help keep prices aligned.</li>
+        <li>It argues it needs the detailed trading records and exchange data behind SEBI's analysis to respond properly, which is what its appeal has focused on.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="prose">
+    <p><strong>What has happened since.</strong> On 14 July 2025, Jane Street paid the full amount into an escrow account, meeting the order's main condition, and was allowed to resume trading while reserving the right to challenge it. It appealed to the Securities Appellate Tribunal (SAT). On 21 October 2026, the tribunal reserved its order on Jane Street's request for more of SEBI's documents; that decision, and any final ruling on the allegations themselves, were still to come.</p>
+    <p><strong>Why it matters beyond one firm.</strong> The case sits exactly where Inside a Trading Desk's compliance section said the line is: pricing, speed and size are legitimate craft; deception is not. Whether a large trade in one market that moves the price of another is hedging, arbitrage or manipulation depends on intent and pattern, which is why it takes regulators and tribunals to decide. SEBI has also tightened rules on weekly options expiries and on monitoring large intraday positions in index options, part of a wider effort to cool the retail options boom.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "What the Three Stories Share", "Is there one lesson that ties them together?", "What they share" %}
+  <div class="prose">
+    <p>Each story is about a firm's systems outgrowing, or not, the controls and judgement around them. XTX built its research and technology faster than banks could respond. Knight's systems ran faster than its controls could stop them. And the India case asks whether a firm's trading size and speed, in a market full of small traders, crossed a line regulators were watching for. In every case the outcome turned on things built in calm: research process, release discipline, compliance.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Edges, systems and size are powerful in both directions. What separates XTX's decade from Knight's 45 minutes is process: how ideas are tested, how code is released and how the rules are written into the machine.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Have my three markets had their own versions of these stories?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: rise of the non-banks, and runaway moves</h3>
+    <p>XTX is itself the FX story. FX has had its Knight-style moments too, though usually from markets rather than one firm's code: on 15 January 2015 the Swiss franc jumped about 30% in minutes when the Swiss National Bank dropped its cap, and in October 2016 the pound fell about 6% in minutes during thin Asian trading. Both showed how quickly automated pricing can withdraw when something unexpected happens.</p>
+    <h3>Gold: benchmark rules</h3>
+    <p>Gold has had its line-drawing cases. In 2014 the UK's Financial Conduct Authority fined Barclays £26 million after a trader exploited the old phone-based gold fix to avoid paying out on a client's option, one of the cases that led to the fix being replaced by an electronic auction in 2015 (What Quant Trading Is).</p>
+    <h3>Bonds: the flash rally</h3>
+    <p>On 15 October 2014, the yield on 10-year US Treasuries traded in a range of about \(0.37\) percentage points, with most of the move inside about a quarter of an hour and no obvious news. The official report found high-speed trading firms were a large share of the activity, and the episode pushed regulators to collect better data on Treasury trading.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Spin-out</h3><span class="tag desk">Desk</span></div><p>A team leaving a firm to become its own company, often with the parent's blessing.</p><p class="eg">"They spun the FX desk out in 2015."</p></div>
+    <div class="term"><div class="term-top"><h3>Release</h3><span class="tag desk">Desk</span></div><p>Putting new code into the live trading system.</p><p class="eg">"No releases on payrolls day."</p></div>
+    <div class="term"><div class="term-top"><h3>Rollback</h3><span class="tag desk">Desk</span></div><p>Undoing a release and going back to the last working version.</p><p class="eg">"Fills look wrong: roll it back."</p></div>
+    <div class="term"><div class="term-top"><h3>Runaway algo</h3><span class="tag desk">Desk</span></div><p>An algorithm trading out of control.</p><p class="eg">"Kill it: we've got a runaway algo in the open."</p></div>
+    <div class="term"><div class="term-top"><h3>Dead code</h3><span class="tag desk">Desk</span></div><p>Old code that's no longer used but hasn't been deleted.</p><p class="eg">"Knight is why we delete dead code."</p></div>
+    <div class="term"><div class="term-top"><h3>Interim order</h3><span class="tag desk">Desk</span></div><p>A regulator's temporary order made before a final decision.</p><p class="eg">"It's only an interim order; the appeal's pending."</p></div>
+    <div class="term"><div class="term-top"><h3>Expiry day</h3><span class="tag desk">Desk</span></div><p>The day options or futures expire and settle.</p><p class="eg">"Expiry days are where the gamma is."</p></div>
+    <div class="term"><div class="term-top"><h3>Escrow</h3><span class="tag desk">Desk</span></div><p>Money held by a third party until a dispute is settled.</p><p class="eg">"The amount's sitting in escrow until the tribunal rules."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the three stories turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: release discipline and the retail side</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>If you run your own bots, Knight's lessons scale down perfectly: keep your code under version control, test every change on paper first, delete code you no longer use, make alerts impossible to ignore, and have a kill switch that flattens everything. And the SEBI study is a sobering reminder of the other side of the market: buying short-dated options as an individual has been a losing game for nine in ten traders in India, with professional firms on the other side.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: spin-outs and sign-offs</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>XTX's story is a model for leaving an employer with a skill and a track record and building something of your own, which is how many property developers start too. Knight's story maps onto construction: work that isn't signed off by a second person, old wiring left in place, and warnings nobody reads are how projects fail as well.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: lessons for a new market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>India's experience is directly relevant as Nigerian apps offer more trading products to individuals. Regulators there are likely to watch retail losses and the role of large professional firms closely, and a fintech that builds strong controls and clear risk warnings from the start will find licences easier to win. XTX shows the opportunity side: as African currency trading moves onto screens, a research-led non-bank liquidity provider is the kind of business that can grow fast.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on these stories?" %}
+  <div class="formula"><span class="lbl">Rates over a period</span>\[ \text{rate} = \frac{\text{total}}{\text{time}} \qquad \text{e.g. shares a minute} = \frac{397\text{m}}{45} \]</div>
+  <div class="formula"><span class="lbl">Loss as a share of gross position</span>\[ \frac{\text{loss}}{\text{gross position}} = \frac{\text{loss}}{\text{longs} + \text{shorts}} \]</div>
+  <div class="formula"><span class="lbl">Indian number words</span>\[ 1 \text{ lakh} = 100{,}000 \qquad 1 \text{ crore} = 10{,}000{,}000 \qquad 1 \text{ lakh crore} = 10^{12} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Put Knight's morning and SEBI's figure into everyday units.</h3>
+    <ol class="steps">
+      <li>Shares a minute: \(397\text{m} \div 45 \approx 8.8\) million.</li>
+      <li>Gross position: \(3.5 + 3.15 = \$6.65\)bn. Loss as a share of it: \(0.46 \div 6.65 \approx 7\%\).</li>
+      <li>Loss a minute, if spread evenly: \(460 \div 45 \approx \$10\)m.</li>
+      <li>₹4,843.57 crore \(= 4{,}843.57 \times 10^{7} \approx ₹48.4\)bn, about \(\$567\)m at the time (roughly ₹85 per dollar).</li>
+    </ol>
+    <p class="answer">Knight was losing about \(\$10\) million a minute. A pre-trade limit that stopped it after five minutes would have saved most of the loss.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>Knight was long \(\$3.5\)bn and short \(\$3.15\)bn when it stopped. What was its net position, and why does the gross matter more here?</span></p>
+      <details><summary>Show answer</summary><div><span>Net \(\$0.35\)bn long, gross \(\$6.65\)bn. The longs and shorts were in different stocks, so they didn't cancel out: each had to be unwound separately, and the gross size is what created the loss.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>XTX had about \(3.9\%\) of FX volume in Euromoney's 2016 survey and about \(7.4\%\) in 2018. By what factor did its share grow?</span></p>
+      <details><summary>Show answer</summary><div><span>\(7.36 \div 3.87 \approx 1.9\): it nearly doubled in two years.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Convert ₹1.81 lakh crore into rupees and, at about ₹83 per dollar, into dollars.</span></p>
+      <details><summary>Show answer</summary><div><span>\(1.81 \times 10^{12}\) rupees, about \(\$21.8\)bn.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Interview question: name three controls that would have stopped or limited Knight's loss.</span></p>
+      <details><summary>Show answer</summary><div><span>Any three of: an automated, checked deployment (so all eight servers got the same code, with a second person reviewing); deleting dead code instead of reusing its flag; alerts that force action before the open; pre-trade limits on order counts and gross position; a kill switch that automatically stops trading when positions or losses pass a threshold.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Interview question: how would you explain the difference between index arbitrage and market manipulation?</span></p>
+      <details><summary>Show answer</summary><div><span>Index arbitrage trades related instruments (an index's shares, its futures and its options) to profit from price gaps between them, and in doing so pulls their prices back into line. Manipulation is trading intended to move a price away from where genuine supply and demand would put it, so as to profit somewhere else, such as on a large options position. The same trades can look similar; regulators look at intent, pattern, size relative to the market and timing. That's why cases like SEBI and Jane Street turn on detailed evidence.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: what can a new firm do to compete with much bigger, older ones, as XTX did?</span></p>
+      <details><summary>Show answer</summary><div><span>Pick a market where incumbents are held back by costs or rules (banks in spot FX after 2008), compete on research and technology rather than balance sheet, focus narrowly at first, and reinvest in the things that compound, such as computing, data and research process, so the lead grows rather than being copied.</span></div></details></div>
+  </div>
+{% endsec %}

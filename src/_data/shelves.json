@@ -226,7 +226,7 @@
           "How Firms Make Money",
           "Speed vs Prediction",
           "The Firms",
-          { "name": "Case Studies", "planned": ["Case Studies"] }] },
+          "Case Studies"] },
       { "title": "Market Making", "blurb": "Always ready to buy or sell, and how that pays.",
         "subtopics": ["The Market Maker's Job", "Spread Capture", "Adverse Selection", "Inventory Risk", "Quote Skewing"] },
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
