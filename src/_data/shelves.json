@@ -224,7 +224,7 @@
           "Firm Types",
           "Traders, Researchers and Developers",
           "How Firms Make Money",
-          { "name": "Speed vs Prediction", "planned": ["Competition, Speed and Edge"] },
+          "Speed vs Prediction",
           { "name": "The Firms", "planned": ["The Firms"] },
           { "name": "Case Studies", "planned": ["Case Studies"] }] },
       { "title": "Market Making", "blurb": "Always ready to buy or sell, and how that pays.",

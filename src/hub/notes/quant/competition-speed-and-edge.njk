@@ -1,0 +1,247 @@
+---
+title: Competition, Speed and Edge
+shelf: quant
+chapter: quant-trading-firms
+subtopic: Speed vs Prediction
+order: 1
+summary: Why every trading edge decays (trading it advertises it, others rediscover it, capital crowds in) and how fast each engine decays; pricing a decaying signal as a geometric series and seeing research as the maintenance spending that replaces it; the speed race, where winner-take-all payoffs and relative returns drive an arms race in microseconds, with fibre and microwave links, speed bumps, latency floors and batch auctions; why speed matters at the shortest horizons and hardly at all at monthly ones; the structural advantages that last (scale, flow relationships, infrastructure and research process); and edge decay and the speed race in FX, gold and bonds.
+lede: 'Every way of making money in trading is being hunted by every other firm. The moment you trade an edge, you start giving it away: your trades move prices that others watch, and clever people elsewhere find the same pattern in the same data. So edges wear out, firms race to be fastest where speed decides who wins, and the advantages that last are not secret formulas but things that are slow to build: scale, relationships, infrastructure and a research process that keeps finding new edges.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/competition-speed-and-edge.js]
+
+quiz:
+  - q: 'A signal earns 4 million in its first year, and competition cuts that by 30% each year after. What is it worth over its whole life?'
+    opts: ['4 million', '12 million, because it lasts about three years', 'About 13.3 million: 4 + 2.8 + 1.96 + … adds up to 4 ÷ 0.3']
+    right: 2
+    why: 'Each year earns \(70\%\) of the year before, so the total is a geometric series: \(4 \times (1 + 0.7 + 0.7^2 + \dots) = 4 \div 0.3 \approx 13.3\) million. A research team producing one such signal a year exactly replaces what competition wears away.'
+  - q: 'Two firms race for stale quotes worth 5,000 each, winner takes all. Firm A wins 60% of races. Why might both firms keep spending more on speed even though the total prize doesn''t grow?'
+    opts: ['Because faster computers make the prize bigger', 'Because winning depends on being faster than the rival, not on any absolute speed, so each firm''s spending is driven by the other''s, and much of the prize ends up spent on the race itself', 'Because regulators require it']
+    right: 1
+    why: 'A''s expected revenue is \(0.6 \times 5{,}000 = 3{,}000\) per race, but that share depends only on being faster than B. If B upgrades, A must too just to stand still. That relative race is why firms laid a \(\$300\) million fibre line and then built microwave networks.'
+  - q: 'Which of these advantages is hardest for a rival to copy?'
+    opts: ['A firm''s research process: the discipline that keeps finding new edges and keeps false discoveries out', 'A single profitable signal', 'Knowing which exchange has the most volume']
+    right: 0
+    why: 'A signal can be rediscovered or leaked; a list of exchanges is public. A research process, like scale, client relationships and infrastructure, builds up over years. Deltashark''s point: each is a moat built by compounding, not secrecy, and none would be in a leaked strategy file.'
+
+connected:
+  - { label: Builds on, title: The Four Engines, where: Quant · Quant Trading Firms, url: /hub/quant/the-four-engines/ }
+  - { label: Builds on, title: Quant Funds, where: Hedge Funds · Strategies, url: /hub/hedge-funds/quant-funds/ }
+  - { label: Builds on, title: The Three Seats, where: Quant · Quant Trading Firms, url: /hub/quant/the-three-seats/ }
+  - { label: Used in, title: Latency and Speed, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .cs-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Every Edge Is Being Hunted", "Why can't a profitable strategy just keep making money forever?", "Every edge is hunted" %}
+  <div class="prose">
+    <p>Imagine you find a secret fishing spot. For a while you come home every day with a full net. But people notice: they see your boat heading out, they see the catch at the market, and other fishers studying the same charts of the river find the same spot on their own. Soon there are ten boats, and everyone's nets are lighter.</p>
+    <p>Deltashark calls competition the industry's weather. An edge is a gap between price and value that nobody else has closed yet, and <strong>trading it advertises it</strong>, in three ways:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Your trades move prices<span class="why">Market impact shows a pattern to anyone watching the order book.</span></span></li>
+    <li><span class="n">2</span><span>Your fills tell your counterparties something<span class="why">Every firm that trades with you learns a little about what you want, and when.</span></span></li>
+    <li><span class="n">3</span><span>Others find it independently<span class="why">Researchers elsewhere have the same data and the same tools. Whatever the data supports gets rediscovered.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>As more money chases the same pattern, its returns shrink: {% gl "signal decay" %}signal decay{% endgl %}. Quant Funds described the best-known evidence, a 2016 study by McLean and Pontiff finding that published market anomalies earned about \(58\%\) less after publication. But decay speed depends heavily on the engine:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Engine</th><th>How fast it decays</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Liquidity provision</td><td>Slowly</td><td>It's a service: the market needs someone to trade with as long as it exists. Competition squeezes the spread, but the business persists.</td></tr>
+        <tr><td>Arbitrage</td><td>Very fast, down to milliseconds</td><td>Mechanical gaps that everyone can see. The fastest firm takes them.</td></tr>
+        <tr><td>Statistical edges</td><td>Months to a few years</td><td>Purely informational: once enough firms know, the pattern gets traded away.</td></tr>
+        <tr><td>Risk premia</td><td>Persist, but get crowded</td><td>They're payment for bearing risk, so they don't vanish; but crowding makes the crashes worse.</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "Edges Wear Out", "How do you value something that's shrinking every year?", "Edges wear out" %}
+  <div class="prose">
+    <p>Deltashark treats a signal like a machine that slowly wears out: it has value, but that value depreciates. If each year it earns a fixed fraction of the year before, its total lifetime value is a geometric series, a sum where each term is the last one multiplied by the same number.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A signal earns \(\$4\)m a year, decaying \(30\%\) a year as competition arrives. What is it worth over its whole life?</h3>
+    <ol class="steps">
+      <li>Each year earns \(70\%\) of the last: \(4,\; 2.8,\; 1.96,\; 1.37,\; \dots\)</li>
+      <li>Geometric sum: \(4 \times (1 + 0.7 + 0.7^2 + \dots) = \dfrac{4}{1 - 0.7} = \dfrac{4}{0.3} \approx \$13.3\)m.</li>
+      <li>Half the lifetime value arrives in under two years.</li>
+    </ol>
+    <p class="answer">A research team producing one such signal a year is, in the long run, replacing exactly what competition uses up. That, Deltashark says, is the honest description of what quant research departments are <em>for</em>.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Edges wear out</h3><p>Each band is one year's new signals, shrinking as competition finds them. Change how fast edges decay and how many new ones research delivers each year, and watch the firm's revenue settle, grow or drain away.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="ew-r">First-year revenue</label><input type="range" id="ew-r" min="1" max="10" step="0.5" value="4"><output id="ew-r-out" for="ew-r">$4.0m</output></div>
+      <div class="ctrl"><label for="ew-d">Decay a year</label><input type="range" id="ew-d" min="5" max="80" step="5" value="30"><output id="ew-d-out" for="ew-d">30%</output></div>
+      <div class="ctrl"><label for="ew-n">New signals a year</label><input type="range" id="ew-n" min="0" max="3" step="0.5" value="1"><output id="ew-n-out" for="ew-n">1</output></div>
+    </div>
+    <svg class="chart" id="chart-ew" viewBox="0 0 640 280" role="img" aria-label="Revenue each year, stacked by the year each signal was found, with the long-run level marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Revenue from each year's signals (alternate shades)</span><span><i class="sw grey"></i>Long-run level</span></div>
+    <div class="readout" id="ew-read"></div>
+    <p class="look" id="ew-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Speed Race", "When does being fastest decide everything?", "The speed race" %}
+  <div class="prose">
+    <p>Some edges are fast, obvious and visible to many firms at once: a quote that's gone stale the instant news breaks, or a future in Chicago that has moved while the shares in New York haven't caught up yet. Everyone sees the same gap, so the only question is who gets there first. Here competition turns into a race on {% gl "latency" %}latency{% endgl %}, and Deltashark picks out three features:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Winner takes all<span class="why">Only the first order hits the {% gl "stale quote" %}stale quote{% endgl %}. Second place earns nothing.</span></span></li>
+    <li><span class="n">2</span><span>An arms race in microseconds<span class="why">Firms pay for colocation, custom chips, and shorter, straighter cables.</span></span></li>
+    <li><span class="n">3</span><span>Returns to speed are relative<span class="why">What matters is being faster than your rivals, not fast in absolute terms. So each firm's spending is driven by the others'.</span></span></li>
+  </ul>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>Two firms race for a stale quote worth \(\$5{,}000\), winner takes all. Firm A wins \(60\%\) of races. What does A expect per race?</h3>
+    <ol class="steps">
+      <li>Expected revenue: \(0.6 \times 5{,}000 = \$3{,}000\). B expects \(0.4 \times 5{,}000 = \$2{,}000\).</li>
+      <li>If B spends to become slightly faster, A's \(60\%\) can flip to \(40\%\) without A changing anything.</li>
+    </ol>
+    <p class="answer">A's revenue depends on B's spending, which is exactly what makes it an arms race.</p>
+  </div>
+  <div class="prose">
+    <p>The most famous example is the line between Chicago, where US futures trade, and the New Jersey data centres that host share trading. In 2010 a company called Spread Networks unveiled an 827-mile fibre cable, built at a cost of about \(\$300\) million along the straightest route it could dig, cutting the round trip to about \(13.3\) milliseconds. Within a few years microwave networks had beaten it, because signals travel faster through air than through glass. Every firm in that race had to pay up just to stay level.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>The arms race</h3><p>You and one rival compete for a \(\$20\)m-a-year pool of stale quotes. Whoever spends more on speed wins more of the races, but it's the gap between you that counts. Set both budgets, then let each firm keep responding to the other.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="ar-a">You spend</label><input type="range" id="ar-a" min="0" max="15" step="0.5" value="2"><output id="ar-a-out" for="ar-a">$2.0m</output></div>
+      <div class="ctrl"><label for="ar-b">Rival spends</label><input type="range" id="ar-b" min="0" max="15" step="0.5" value="2"><output id="ar-b-out" for="ar-b">$2.0m</output></div>
+      <div class="presets"><button type="button" id="ar-you">You respond</button><button type="button" id="ar-them">Rival responds</button><button type="button" id="ar-run">Run the arms race</button><button type="button" id="ar-reset">Reset</button></div>
+    </div>
+    <svg class="chart" id="chart-ar" viewBox="0 0 640 260" role="img" aria-label="Each firm's yearly race winnings, split into what it spends on speed and what it keeps"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Kept as profit</span><span><i class="sw grey"></i>Spent on speed</span></div>
+    <div class="readout" id="ar-read"></div>
+    <p class="look" id="ar-story"></p>
+  </div>
+  <div class="prose">
+    <h3>Two things that soften the picture</h3>
+    <p>Deltashark adds two factual moderations. First, <strong>speed is also defensive</strong>. A market maker that can update its quotes quickly gets picked off less (the venue C problem from The Three Seats), which is valuable even if it never wins a race. Second, <strong>markets are being redesigned</strong> to blunt the race where it's judged wasteful. IEX, a US stock exchange, delays every order by \(350\) microseconds with a \(38\)-mile coil of fibre, a {% gl "speed bump" %}speed bump{% endgl %}. In FX, EBS introduced a {% gl "latency floor" %}latency floor{% endgl %} in 2013 that collects orders arriving within a few milliseconds into a batch and shuffles them, so the very fastest no longer always come first. Economists have proposed going further with {% gl "frequent batch auction" %}frequent batch auctions{% endgl %} that match orders many times a second rather than continuously.</p>
+    <p>And speed is just one way to compete. It dominates at the shortest horizons and hardly matters at monthly ones:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Holding period</th><th>Does speed matter?</th><th>What wins instead</th></tr></thead>
+      <tbody>
+        <tr><td>Microseconds to seconds</td><td>Decisively</td><td>Hardware, colocation, network links</td></tr>
+        <tr><td>Seconds to minutes</td><td>Somewhat, mostly defensively</td><td>Pricing models, inventory management, flow</td></tr>
+        <tr><td>Hours to days</td><td>Barely</td><td>Better signals, execution quality, costs</td></tr>
+        <tr><td>Weeks to months</td><td>Not at all</td><td>Research, risk management, capacity</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 4, "What Lasts", "If every edge decays, what makes some firms win for decades?", "What lasts" %}
+  <div class="prose">
+    <p>Deltashark's answer is factual: the advantages that decay slowest are structural, not informational. Each is a {% gl "moat" %}moat{% endgl %} built by compounding over years rather than by keeping a secret, and each is exactly what a single leaked strategy file wouldn't contain.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Lasting advantage</th><th>What it means</th><th>Why it's hard to copy</th></tr></thead>
+      <tbody>
+        <tr><td>Scale</td><td>Fixed technology and data costs spread over more trading</td><td>A small rival pays the same bills on less volume, so thin edges that pay for a big firm don't pay for it</td></tr>
+        <tr><td>Flow relationships and venue presence</td><td>Access to the steady, mixed flow every market maker wants</td><td>Clients and platforms take years to trust you, and the flow goes to whoever already prices it best</td></tr>
+        <tr><td>Accumulated infrastructure</td><td>Execution so good that thin edges become tradeable at all</td><td>Built release by release over many years, like the controls in Inside a Trading Desk</td></tr>
+        <tr><td>Research process</td><td>The discipline that keeps the pipeline full and the false discovery rate honest</td><td>It lives in people, habits and tools, not in any one file</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>Edges are perishable: price them like a wearing-out asset and keep replacing them. Where everyone sees the same gap, speed decides and the race eats the prize. What lasts is what compounds: scale, flow, infrastructure and a research process good enough to keep finding the next edge.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "How do decay and the speed race play out in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: the race and the rules against it</h3>
+    <p>FX has had some of the fiercest speed races, because the same currency pair trades on many platforms and in many cities at once, and price gaps between them last only milliseconds. It has also tried hardest to tame them: EBS's latency floor, randomised order handling on other platforms, and {% gl "last look" %}last look{% endgl %}, a brief window in which a liquidity provider can reject a trade at a price that has just gone stale. Slower FX edges decay too: carry and momentum are now so widely known that much of their return is treated as a risk premium rather than skill.</p>
+    <h3>Gold: fast futures, slow fundamentals</h3>
+    <p>Speed matters between gold futures in New York and other gold markets, where the same metal trades in several places. But the edges that pay over months, such as trends, central bank buying and real interest rates, depend on research and patience, not microseconds.</p>
+    <h3>Bonds: a race in Treasuries, a relationship business elsewhere</h3>
+    <p>Trading between dealers in the newest US Treasuries is a speed race dominated by proprietary trading firms. Further out (older government bonds, corporate bonds), trades are rarer and done by request for quote, so the lasting advantages are the structural ones: dealer relationships, balance sheet and models that price thousands of rarely traded bonds. Old edges have decayed here too: the gap between newly issued and older Treasuries that LTCM traded in the 1990s is far smaller today.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Decay</h3><span class="tag desk">Desk</span></div><p>A signal earning less over time as others find it.</p><p class="eg">"That signal's decaying fast: half the Sharpe it had last year."</p></div>
+    <div class="term"><div class="term-top"><h3>Crowded</h3><span class="tag desk">Desk</span></div><p>Too many firms in the same trade.</p><p class="eg">"Momentum's crowded right now."</p></div>
+    <div class="term"><div class="term-top"><h3>Latency arb</h3><span class="tag desk">Desk</span></div><p>Profiting by reacting to a price change before slower quotes catch up.</p><p class="eg">"That flow is pure latency arb."</p></div>
+    <div class="term"><div class="term-top"><h3>Stale</h3><span class="tag desk">Desk</span></div><p>A quote that hasn't caught up with the market.</p><p class="eg">"Our quote was stale for two micros."</p></div>
+    <div class="term"><div class="term-top"><h3>Arms race</h3><span class="tag desk">Desk</span></div><p>Spending more on speed because rivals do.</p><p class="eg">"It's an arms race: nobody's getting richer, just faster."</p></div>
+    <div class="term"><div class="term-top"><h3>Speed bump</h3><span class="tag desk">Desk</span></div><p>A deliberate delay a venue adds to every order.</p><p class="eg">"With the speed bump, our colo advantage is gone."</p></div>
+    <div class="term"><div class="term-top"><h3>Pipeline</h3><span class="tag desk">Desk</span></div><p>The research work in progress that will replace today's signals.</p><p class="eg">"The pipeline's thin this year."</p></div>
+    <div class="term"><div class="term-top"><h3>Moat</h3><span class="tag desk">Desk</span></div><p>An advantage that's hard for rivals to copy.</p><p class="eg">"Their moat is the flow, not the models."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where edge decay and lasting advantages turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: don't race, and expect decay</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>As an individual trader you will never win a microsecond race, so trade horizons where speed barely matters: hours, days, weeks. Expect decay: a pattern taught in popular videos to millions of traders is about the most crowded edge there is, and edges you find and test yourself tend to last longer. Re-test your strategies regularly and track whether their results are fading, the way a research team watches its pipeline.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: locations decay too</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A cheap, undiscovered area is an informational edge: once investors and holiday-let operators pile in, prices rise and yields shrink. The lasting advantages in property are structural: relationships with local agents, builders and lawyers that bring you deals first, a reputation that lets you raise money, and a process for checking deals that you repeat every time. Those are moats a competitor can't download.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: moats from compounding</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian fintech shows the same pattern. Features get copied quickly, so the lasting advantages are structural: large networks of agents who handle cash for customers, licences from the central bank, and trust built transaction by transaction. A new app can copy a design in weeks; it can't copy years of agent relationships or a regulator's confidence.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you put numbers on decay and on a race?" %}
+  <div class="formula"><span class="lbl">Lifetime value of a decaying signal</span>\[ V = R\,(1 + q + q^2 + \dots) = \frac{R}{1 - q} = \frac{R}{d} \qquad q = 1 - d \]</div>
+  <div class="formula"><span class="lbl">Half-life of a signal's earnings</span>\[ t_{1/2} = \frac{\ln 2}{-\ln(1 - d)} \]</div>
+  <div class="formula"><span class="lbl">Long-run revenue with a steady research pipeline</span>\[ \text{revenue}_{\infty} = \frac{n R}{d} \]</div>
+  <div class="formula"><span class="lbl">Expected winnings from a race</span>\[ \mathbb{E}[\text{winnings}] = p_{\text{win}} \times \text{prize} \qquad p_A = \frac{s_A^{\,r}}{s_A^{\,r} + s_B^{\,r}} \]</div>
+  <div class="prose">
+    <p>\(R\) is the first-year revenue, \(d\) the yearly decay and \(n\) the new signals added each year. The race formula, used in the arms race interactive, is a standard way economists model contests: \(s\) is each firm's spending and \(r\) how sharply a small spending lead turns into a big share of the wins (\(r = 1.5\) in the interactive). With two firms, each ends up spending \(r/4\) of the prize, so \(75\%\) of it disappears into the race.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A firm wants steady revenue of \(\$20\)m a year from signals that each earn \(\$4\)m in year one and decay \(30\%\) a year. How many new signals does research need each year, and how long does each take to lose half its earnings?</h3>
+    <ol class="steps">
+      <li>Long-run revenue \(= nR/d\), so \(n = 20 \times 0.3 \div 4 = 1.5\) signals a year.</li>
+      <li>Half-life: \(\ln 2 \div -\ln 0.7 \approx 0.693 \div 0.357 \approx 1.9\) years.</li>
+    </ol>
+    <p class="answer">One and a half new signals every year, just to stay level. Each one is earning half its first-year amount within about two years.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A signal earns \(4\) million in year one and decays \(30\%\) per year. What is its total lifetime revenue in millions?</span></p>
+      <details><summary>Show answer</summary><div><span>\(4 \div 0.3 \approx 13.3\) million.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Two firms race for a stale quote worth \(5{,}000\), winner takes all. Firm A wins \(60\%\) of races. What is A's expected revenue per race?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.6 \times 5{,}000 = 3{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A signal earns \(\$6\)m in year one and decays \(50\%\) a year. What's its lifetime value, and how much of it arrives in the first two years?</span></p>
+      <details><summary>Show answer</summary><div><span>Lifetime \(6 \div 0.5 = \$12\)m. First two years: \(6 + 3 = \$9\)m, three-quarters of the total.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A research team stops producing new signals. Its book earns \(\$15\)m this year and decays \(25\%\) a year. Roughly what will it earn in four years' time?</span></p>
+      <details><summary>Show answer</summary><div><span>\(15 \times 0.75^4 \approx 15 \times 0.32 \approx \$4.7\)m. Without research, a trading firm is a business in run-off.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>In a winner-take-all race for \(\$20\)m a year, two equally matched firms each end up spending \(\$7.5\)m on speed. How much does each keep, and what share of the prize went on the race?</span></p>
+      <details><summary>Show answer</summary><div><span>Each wins half, \(\$10\)m, and keeps \(\$2.5\)m. Together they spent \(\$15\)m of the \(\$20\)m prize: \(75\%\) went on the race itself.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why do some exchanges add deliberate delays to orders? Who benefits and who loses?</span></p>
+      <details><summary>Show answer</summary><div><span>To blunt latency races judged wasteful: a speed bump or batching window means the very fastest firms can't always pick off slightly slower quotes. Market makers who quote on the venue benefit, since they get picked off less and can quote tighter, and so can investors trading against those tighter quotes. The losers are firms whose edge was pure speed. The debate is whether that speed was providing anything useful, such as faster price updates, or just taking money from slower participants.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: if a competitor stole your firm's best strategy tomorrow, what would you still have?</span></p>
+      <details><summary>Show answer</summary><div><span>The things that compound: scale (costs spread over a lot of volume), relationships with clients and venues that bring flow, infrastructure that makes thin edges tradeable, and the research process that will produce the next strategy. A single strategy also decays anyway, so its value is limited; the machine that produces strategies is the real asset.</span></div></details></div>
+  </div>
+{% endsec %}
