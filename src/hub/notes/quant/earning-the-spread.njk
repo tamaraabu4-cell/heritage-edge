@@ -1,0 +1,234 @@
+---
+title: Earning the Spread
+shelf: quant
+chapter: market-making
+subtopic: Spread Capture
+order: 1
+summary: The market maker's revenue in one line (half the spread per fill, times the number of fills) and the fills-versus-round-trips trap that doubles revenue by mistake; why revenue is hump-shaped in the quoted width, because wider quotes earn more per fill but lose flow to competitors, with Deltashark's 4-tick versus 6-tick book and the exponential fill model behind it; why balanced, predictable, uninformed flow is the most valuable thing a maker can get (payment for order flow, client tiering, venue competition); the three ways to measure a spread (quoted, effective and realised) and how the gap between them measures adverse selection; the maker's P&amp;L identity from gross to net; and spreads in FX, gold and bonds.
+lede: 'Market makers are said to "earn the spread", but that phrase hides almost everything interesting. How much of it do they earn per trade? How many trades do they get if they ask for more? And how much of the spread on the screen is really theirs once the price has moved? This note builds the maker''s revenue line carefully, finds the width that earns the most, and shows how to measure a spread three different ways.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/earning-the-spread.js]
+
+quiz:
+  - q: 'A maker quotes 0.10 wide and is filled 1,000 times in a day, half on its bid and half on its offer, ending flat. What is its gross spread revenue per share of size?'
+    opts: ['100: each fill earns the full spread of 0.10', '50: each fill earns half the spread against the mid, or equivalently 500 round trips earn 0.10 each', '25: the spread is shared with the taker']
+    right: 1
+    why: 'A fill earns half the spread against the mid; a matched pair of fills (one round trip) earns the whole spread once. Counting the full spread on every fill is the classic double count, and it inflates revenue by exactly two.'
+  - q: 'Why can quoting a wider spread make a market maker less money?'
+    opts: ['Because fewer counterparties trade with a wider quote and competitors with tighter quotes take the flow, so fills fall faster than the margin per fill rises', 'Because exchanges fine makers whose spreads are too wide', 'Because a wider spread means more adverse selection']
+    right: 0
+    why: 'Revenue is margin per fill times the number of fills. The maker is a price-setter facing a demand curve: Deltashark''s book earns 20,000 a day at 4 ticks but only 16,500 at 6 ticks, because round trips fall from 400 to 220.'
+  - q: 'A maker sells at 40.04 when the mid is 40.02. Five minutes later the mid is 40.05. What does that say about the trade?'
+    opts: ['It was a good trade: the effective spread was positive', 'Nothing: realised spreads are random', 'The buyer was probably informed: the effective spread was 0.04 but the realised spread was −0.02, so the maker lost on the trade once the price moved']
+    right: 2
+    why: 'Effective spread = 2 × (40.04 − 40.02) = 0.04. Realised spread = 2 × (40.04 − 40.05) = −0.02. The gap of 0.06 is the adverse selection: the information in the buyer''s order. A segment of flow with negative realised spreads is picking the maker off.'
+
+connected:
+  - { label: Builds on, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/the-market-makers-job/ }
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: "Designated Makers, Fees and Special Markets", where: Quant · Market Making, url: /hub/quant/designated-makers-fees-and-special-markets/ }
+  - { label: Used in, title: Edge and Costs, where: "Quant · What Makes a Strategy Systematic?", url: /hub/quant/ }
+---
+
+<style>
+  .es-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "One Line of Revenue", "How much does a market maker actually earn from the spread?", "One line of revenue" %}
+  <div class="prose">
+    <p>Picture a coffee cart outside a train station. Its takings are simple: the profit on each cup times the number of cups. Charge more per cup and each sale earns more, but some commuters walk on to the café next door. Charge less and the queue grows, but each cup earns less. Somewhere in between is the price that takes the most money.</p>
+    <p>A market maker's revenue works the same way, and Deltashark writes it in one line:</p>
+  </div>
+  <div class="formula"><span class="lbl">Gross spread revenue (Deltashark)</span>\[ R = \frac{s}{2} \times N \]</div>
+  <div class="prose">
+    <p>\(s\) is the quoted spread and \(N\) the number of fills. Each {% gl "fill" %}fill{% endgl %} is measured against the {% gl "mid" %}mid{% endgl %}: buying at the bid banks half a spread of edge, selling at the offer banks the other half. A matched pair, one {% gl "round trip" %}round trip{% endgl %}, banks the whole spread once and leaves inventory at zero. So \(N\) balanced fills make \(N/2\) round trips at the full spread, which is the same number.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The trap Deltashark warns about</span>
+    <p>Counting both fills of a round trip as "earning the spread" double counts: the pair earns the spread <em>once</em>. Mixing up fills and round trips inflates revenue by exactly a factor of two, and the mistake survives because both ways of counting are in use. Fix one convention (per fill, against the mid) and stick to it.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): a day in round trips</span>
+    <h3>A maker quotes 4 ticks wide in a future worth \(\$12.50\) a tick and completes \(800\) balanced fills. What does it gross?</h3>
+    <ol class="steps">
+      <li>\(800\) fills make \(400\) round trips.</li>
+      <li>Each round trip earns the full spread: \(4 \times \$12.50 = \$50\).</li>
+      <li>\(R = 400 \times 4 \times 12.50 = \$20{,}000\). Per fill: \(2\) ticks, \(\times 800 \times 12.50\), the same \(\$20{,}000\).</li>
+    </ol>
+    <p class="answer">The two levers are visible straight away: how wide to quote, and how much flow you capture. They pull against each other.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Wider Is Not Richer", "Why doesn't a market maker just quote a wider spread?", "Wider is not richer" %}
+  <div class="prose">
+    <p>Deltashark's book again: at 4 ticks wide it does 400 round trips. At 6 ticks, flow moves to tighter competitors and it only does 220. Revenue falls from \(\$20{,}000\) to \(220 \times 6 \times 12.50 = \$16{,}500\). The maker is a <strong>price-setter facing a demand curve</strong>: fills fall as the width rises, for two reasons. Some traders balk at paying more, and competitors' quotes sit inside the wide one and get the flow first.</p>
+    <p>So revenue is <strong>hump-shaped</strong> in the width: too tight earns nothing per fill, too wide gets no fills. A standard way to model the demand curve, used in the Avellaneda–Stoikov model you'll meet in Setting the Width, is to let fills fall away exponentially as the width grows. Fitting it to Deltashark's two points gives the curve below.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Find the peak</h3><p>Daily spread revenue against the width you quote. Fills fall away exponentially as you widen; how quickly depends on how much competition there is. Drag the width to find the most profitable quote.</p></div>
+    <div class="controls">
+      <div class="presets es-pick" id="fp-pick" aria-label="Kind of market"></div>
+      <div class="ctrl"><label for="fp-s">Your width</label><input type="range" id="fp-s" min="0.5" max="12" step="0.5" value="4"><output id="fp-s-out" for="fp-s">4 ticks</output></div>
+      <div class="ctrl"><label for="fp-k">Flow leaves</label><input type="range" id="fp-k" min="0.1" max="1" step="0.02" value="0.3"><output id="fp-k-out" for="fp-k">0.30</output></div>
+    </div>
+    <svg class="chart" id="chart-fp" viewBox="0 0 640 280" role="img" aria-label="Revenue rising then falling as the quoted width increases, with round trips falling steadily"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Revenue a day</span><span><i class="sw grey"></i>Round trips a day (right-hand scale)</span></div>
+    <div class="readout" id="fp-read"></div>
+    <p class="look" id="fp-story"></p>
+  </div>
+  <div class="prose">
+    <p>"Flow leaves" is how fast fills drop for each extra tick of width. In a crowded, competitive market it's high: widen by one tick and most of the flow goes elsewhere, so the best width is very tight. In a thin market with few rivals it's low: customers have nowhere else to go, so the best width is wide. That's why spreads differ more across instruments than any of the costs behind them, a point Setting the Width returns to. This curve is still only gross revenue. The next notes subtract what the gross hides.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "What Flow Is Worth", "Why do market makers care so much about who they trade with?", "What flow is worth" %}
+  <div class="prose">
+    <p>Because revenue is margin times flow, Deltashark says makers value <strong>predictable, balanced, two-sided flow</strong> above almost anything else: it turns inventory over quickly at full margin. Bridging Time showed the alternatives. One-sided flow builds up inventory (Inventory Risk's problem), and sporadic flow leaves the maker's quotes sitting out for long, risky gaps between fills.</p>
+    <p>This one idea explains a lot of how markets are organised:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Feature of the market</th><th>Why it exists</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "payment for order flow" %}Payment for order flow{% endgl %}</td><td>Retail orders are small, balanced and carry little information: the cheapest flow to serve. Wholesalers pay brokers to get it, as Designated Makers, Fees and Special Markets described.</td></tr>
+        <tr><td>{% gl "client tiering" %}Client tiering{% endgl %}</td><td>Dealers sort clients by how toxic their flow has been and quote each tier a different spread. A pension fund rebalancing gets a tighter price than a fast hedge fund that keeps buying just before prices rise.</td></tr>
+        <tr><td>Venues competing for flow</td><td>Exchanges and dark pools design rules (minimum sizes, speed bumps, retail-only programmes) to attract the kind of flow makers want to trade with, because makers then quote tighter there.</td></tr>
+        <tr><td>{% gl "price improvement" %}Price improvement{% endgl %}</td><td>Makers share part of the spread they save on uninformed flow by filling it at slightly better than the quoted price.</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 4, "Three Ways to Measure a Spread", "If the screen shows one spread, why are there three?", "Three spreads" %}
+  <div class="prose">
+    <p>Deltashark's Market Making vs. Taking module separates three spreads, and the gaps between them are where the interesting information is:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Spread</th><th>What it measures</th><th>How it's worked out</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "quoted spread" %}Quoted{% endgl %}</td><td>What the screen shows</td><td>Best offer minus best bid</td></tr>
+        <tr><td>{% gl "effective spread" %}Effective{% endgl %}</td><td>What the taker actually paid</td><td>\(2 \times |P_{\text{trade}} - m_0|\), where \(m_0\) is the mid at the time of the trade</td></tr>
+        <tr><td>{% gl "realised spread" %}Realised{% endgl %}</td><td>What the maker actually kept once the price had moved</td><td>\(2 \times D \times (P_{\text{trade}} - m_{+5})\), where \(m_{+5}\) is the mid five minutes later, and \(D = +1\) if the taker bought, \(-1\) if they sold</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The effective spread can be smaller than the quoted one (a wholesaler filled the order at better than the quote) or bigger (a large order walked through several price levels). The realised spread is the market maker's real scorecard. If the price keeps moving in the taker's direction after the trade, the maker's realised spread shrinks, and it can turn negative. <strong>The gap between the effective and the realised spread is the adverse selection</strong>: the information that was in the order. The Free Option builds on this.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Three spreads, one trade</h3><p>A share is quoted \(150.00 / 150.02\), so the mid is \(150.01\). A customer buys from a market maker. Choose the price they pay and where the mid is five minutes later.</p></div>
+    <div class="controls">
+      <div class="presets es-pick" id="ts-pick" aria-label="Trade price"></div>
+      <div class="ctrl"><label for="ts-m">Mid 5 min later</label><input type="range" id="ts-m" min="149.99" max="150.05" step="0.005" value="150.01"><output id="ts-m-out" for="ts-m">150.010</output></div>
+    </div>
+    <svg class="chart" id="chart-ts" viewBox="0 0 640 230" role="img" aria-label="Bars comparing the quoted, effective and realised spreads, and the adverse selection between them"></svg>
+    <div class="readout" id="ts-read"></div>
+    <p class="look" id="ts-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "From Gross to Net", "What comes out of the spread before it's profit?", "From gross to net" %}
+  <div class="prose">
+    <p>Deltashark's organising equation for the rest of the chapter:</p>
+  </div>
+  <div class="formula"><span class="lbl">The maker's P&amp;L identity (Deltashark)</span>\[ \pi = \underbrace{\frac{s}{2} N}_{\text{spread}} - \underbrace{AS}_{\text{adverse selection}} - \underbrace{IC}_{\text{inventory cost}} - \text{fees} \]</div>
+  <div class="prose">
+    <p>Each subtraction gets its own note. <strong>Adverse selection</strong> (The Free Option): some fills come from traders who know the price is about to move through the quote, and those lose more than the half-spread earned. <strong>Inventory cost</strong> (Inventory Risk, Quote Skewing): one-sided flow leaves positions that have to be carried at risk and often sold at worse prices. <strong>Fees</strong> (Designated Makers, Fees and Special Markets): exchange fees, or rebates that add to revenue. The maker's whole job is to make the first term as big as possible while keeping the other three under control, using three levers: width, quote size and skew. And every lever also changes how much flow arrives.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: where the \(\$20{,}000\) goes</span>
+    <h3>Deltashark's book grosses \(\$20{,}000\) from \(800\) fills at 4 ticks wide (\(2\) ticks a fill). Suppose adverse selection costs \(0.9\) ticks a fill on average, inventory \(0.4\) ticks, and fees \(0.3\) ticks. What's left?</h3>
+    <ol class="steps">
+      <li>Costs per fill: \(0.9 + 0.4 + 0.3 = 1.6\) ticks, out of \(2\) earned.</li>
+      <li>Net per fill: \(0.4\) ticks, so \(800 \times 0.4 \times 12.50 = \$4{,}000\).</li>
+      <li>Four-fifths of the gross went on the three subtractions.</li>
+    </ol>
+    <p class="answer">Thin net margins are normal. That's why a small rise in adverse selection, say from \(0.9\) to \(1.3\) ticks, can wipe out the whole day.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How are spreads quoted and earned in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>FX spreads are quoted in {% gl "pip" %}pips{% endgl %}. In EUR/USD a pip is \(0.0001\), worth \(\$100\) on €1 million. So a dealer quoting a client 0.4 pips wide earns 0.2 pips, \(\$20\) per million, against the mid on each fill, and needs huge volumes to make it pay. FX is also where client tiering is most explicit: dealers stream different prices to different clients, tightest to the corporate treasurer paying an invoice and widest (or with last look) to the fast trader whose flow has been toxic.</p>
+    <h3>Gold</h3>
+    <p>Spot gold is quoted in dollars per troy ounce, and for large trades in normal markets the spread is a small fraction of a dollar an ounce. For coins and small bars sold to the public it's far wider. The retail gold spread is a good real-world example of the hump: a dealer selling sovereigns can charge a wide spread because the buyer has few alternatives.</p>
+    <h3>Bonds</h3>
+    <p>US Treasuries are quoted in fractions of a point (32nds and their halves and quarters), and the most recently issued ones trade on electronic order books with very tight spreads. Older Treasuries and corporate bonds trade rarely, by request for quote, with much wider spreads. That's the quiet-stock end of Bridging Time: the dealer may hold the bond for days, so it charges more per trade.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Capture</h3><span class="tag desk">Desk</span></div><p>The share of the quoted spread the maker actually earns.</p><p class="eg">"Capture's down to 30% in that name."</p></div>
+    <div class="term"><div class="term-top"><h3>Edge</h3><span class="tag desk">Desk</span></div><p>Profit per fill against fair value or the mid.</p><p class="eg">"We're making half a tick of edge a fill."</p></div>
+    <div class="term"><div class="term-top"><h3>Print</h3><span class="tag desk">Desk</span></div><p>A trade, as it appears on the tape.</p><p class="eg">"Big print on the offer just now."</p></div>
+    <div class="term"><div class="term-top"><h3>Inside</h3><span class="tag desk">Desk</span></div><p>A quote better than the current best price.</p><p class="eg">"Someone's showing inside us, we're not getting filled."</p></div>
+    <div class="term"><div class="term-top"><h3>PI</h3><span class="tag desk">Desk</span></div><p>Price improvement: filling a client at better than the quoted price.</p><p class="eg">"We gave retail a tenth of a cent PI."</p></div>
+    <div class="term"><div class="term-top"><h3>Tier</h3><span class="tag desk">Desk</span></div><p>A group of clients quoted the same spread, based on how their flow behaves.</p><p class="eg">"Move them down a tier, their flow's gone toxic."</p></div>
+    <div class="term"><div class="term-top"><h3>Pips</h3><span class="tag desk">Desk</span></div><p>The unit of FX prices: \(0.0001\) in most pairs.</p><p class="eg">"Show them half a pip wide in a yard."</p></div>
+    <div class="term"><div class="term-top"><h3>Yard</h3><span class="tag desk">Desk</span></div><p>A billion, in FX.</p><p class="eg">"Client wants a price in a yard of dollar-yen."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where spread revenue turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your spread is someone's revenue</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every time you open and close a retail trade, you pay the spread once (half on the way in, half on the way out, against the mid). Turn it into a yearly cost: one round trip most trading days at 0.8 pips in EUR/USD is about \(250\) a year, or \(200\) pips of cost before you've made a single good call. And when your broker's spread widens around news or at the daily rollover, that's the hump moving: the broker is protecting itself from informed flow, and you're paying for it. Check your realised trading costs against the quoted spread, just as a market maker checks its realised spread.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: margin times turnover</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A property trader buying and reselling homes faces the same hump. Offer sellers a big discount and few accept, because they'll go to an estate agent instead. Offer a small one and you buy lots of houses but earn too little on each to cover the costs of holding them. The best discount depends on how much competition there is for distressed sellers in that area. For holiday villas, turnover is slow, so the margin on each sale has to be wide.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: pricing a naira–dollar app</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A Nigerian app that converts naira to dollars for users earns exactly this: half its spread on each conversion against the market rate, times the number of conversions. Quote too wide and users go back to a bureau de change or a rival app; too tight and the margin can't cover the cost of holding dollars while flows are one-sided. Client tiering applies too: small, regular remittances are the "retail flow" worth competing for, while large, well-timed conversions just before the naira moves are the toxic flow to price carefully.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you find the best width and measure the spread you kept?" %}
+  <div class="formula"><span class="lbl">Revenue with an exponential fill curve, and the best width</span>\[ N(s) = A\, e^{-\kappa s} \qquad R(s) = \frac{s}{2}\, A\, e^{-\kappa s} \qquad \frac{dR}{ds} = 0 \;\Rightarrow\; s^{*} = \frac{1}{\kappa} \]</div>
+  <div class="formula"><span class="lbl">Effective spread, realised spread and adverse selection</span>\[ \text{ES} = 2\,|P - m_0| \qquad \text{RS} = 2D\,(P - m_{+5}) \qquad \text{AS} = \text{ES} - \text{RS} = 2D\,(m_{+5} - m_0) \]</div>
+  <div class="prose">
+    <p>\(A\) is how many fills you'd get at zero width and \(\kappa\) ("flow leaves" in the interactive) how fast fills fall per tick. Differentiating \(R(s)\) gives \(\tfrac{A}{2}e^{-\kappa s}(1 - \kappa s)\), which is zero when \(s = 1/\kappa\): the more sensitive the flow, the tighter the best quote. \(D = +1\) when the taker bought and \(-1\) when they sold.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: fitting Deltashark's book</span>
+    <h3>Fills are \(800\) at 4 ticks and \(440\) at 6 ticks. What are \(\kappa\) and the best width?</h3>
+    <ol class="steps">
+      <li>Divide: \(440 / 800 = e^{-2\kappa}\), so \(\kappa = \tfrac{1}{2}\ln(800/440) \approx 0.30\) per tick.</li>
+      <li>Best width: \(s^{*} = 1/0.30 \approx 3.35\) ticks.</li>
+      <li>At \(s^{*}\), fills are \(800\,e^{-0.30 \times (3.35 - 4)} \approx 973\), so revenue \(\approx 486 \times 3.35 \times 12.50 \approx \$20{,}350\), a little more than at 4 ticks.</li>
+    </ol>
+    <p class="answer">Deltashark's 4-tick quote is close to the peak. Widening to 6 ticks moves well past it.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A maker quotes \(0.08\) wide and completes \(500\) balanced fills (\(250\) round trips). What is gross spread revenue per share of unit size?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.08 \div 2 \times 500 = 20\), or \(250 \times 0.08 = 20\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) At 4 ticks wide a maker does \(400\) round trips; at 6 ticks, \(220\). Tick value \(12.50\). How much more revenue does the tighter quote produce?</span></p>
+      <details><summary>Show answer</summary><div><span>\(400 \times 4 \times 12.50 = 20{,}000\) against \(220 \times 6 \times 12.50 = 16{,}500\): \(3{,}500\) more.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A colleague says question 1's revenue is \(500 \times 0.08 = 40\). What's gone wrong?</span></p>
+      <details><summary>Show answer</summary><div><span>They've counted the full spread on every fill. Each fill earns half the spread against the mid; a pair of fills (a round trip) earns the full spread once. The error doubles revenue.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A share is quoted \(40.00 / 40.04\). A retail buy is filled at \(40.03\). What are the quoted and effective spreads?</span></p>
+      <details><summary>Show answer</summary><div><span>Quoted: \(0.04\). Mid \(= 40.02\), so effective \(= 2 \times (40.03 - 40.02) = 0.02\), half the quoted spread thanks to price improvement.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Fills fall away with \(\kappa = 0.25\) per tick. What width maximises spread revenue?</span></p>
+      <details><summary>Show answer</summary><div><span>\(s^{*} = 1/\kappa = 4\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why would a market maker pay a broker for its customers' orders?</span></p>
+      <details><summary>Show answer</summary><div><span>Because the value of flow depends on how informed it is. Retail orders are small, balanced and rarely predict short-term price moves, so the maker keeps most of the spread on them: its realised spread is close to its effective spread. That makes the flow worth paying for, and the maker can still give the customer a better price than the exchange quote and pay the broker, because it isn't losing money to informed traders on that flow.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: a market maker's quoted spreads haven't changed, but its profits have halved. Where would you look?</span></p>
+      <details><summary>Show answer</summary><div><span>At the P&amp;L identity, term by term. First the volume: has flow moved to tighter competitors, so \(N\) fell? Then the realised spread against the effective spread by client and venue: has some flow become more informed, so adverse selection rose? Then inventory: is flow more one-sided, so positions are held longer and closed at worse prices? And finally fees and rebates. The quoted spread is only the starting point of the revenue line.</span></div></details></div>
+  </div>
+{% endsec %}
