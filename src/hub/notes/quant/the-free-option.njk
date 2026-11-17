@@ -1,0 +1,217 @@
+---
+title: The Free Option
+shelf: quant
+chapter: market-making
+subtopic: Adverse Selection
+order: 1
+summary: Why a standing quote is a free option that other traders exercise mainly when it is wrong, so a maker's fills are a sample biased towards its own mistakes; the toll on every fill (half-spread minus informed share times adverse move), the breakeven spread, and why more volume scales the problem instead of curing it; the Glosten–Milgrom model, in which a market maker with no costs at all still needs a spread, and learns the true value from the order flow; measuring toxicity with markouts and realised spreads by segment, and the disputed VPIN measure; the maker's four defences (speed, width and size, choosing its flow, reading its own fills); and adverse selection in FX (last look), gold, bond RFQs (the winner's curse), property and lending.
+lede: 'Every quote a market maker shows is an offer anyone can accept, at any moment, without warning. Most people accept it for ordinary reasons. But the traders who know the price is about to move accept it fastest, and only when it suits them. This note explains why that makes a market maker''s trades a biased sample of its own mistakes, how much it costs, how a market maker can learn the truth from the orders it receives, and what it does to defend itself.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, probability, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/the-free-option.js]
+
+quiz:
+  - q: 'A maker earns a half-spread of 2 ticks. A quarter of its fills come from informed traders, who are right about an average 10-tick move. What should it do about volume?'
+    opts: ['Increase volume: more fills will make up for the losing ones', 'Nothing: adverse selection averages out over many trades', 'Fix the margin first: each fill expects 2 − 0.25 × 10 = −0.5 ticks, so more volume just loses more']
+    right: 2
+    why: 'Volume scales adverse selection rather than curing it. With a negative expected value per fill, the maker has to widen, speed up its requoting or change who it trades with before volume is worth anything. Deltashark calls "we lose per trade but make it up on volume" the exact inversion of the business''s arithmetic.'
+  - q: 'In the Glosten–Milgrom model, why does the spread narrow as more trades arrive?'
+    opts: ['Because each buy or sell carries a little information about the true value, so the market maker''s uncertainty shrinks and so does what it needs to charge to protect itself', 'Because informed traders run out of money', 'Because the market maker''s inventory falls back to zero']
+    right: 0
+    why: 'Informed traders buy when the value is high and sell when it is low, so every order nudges the maker''s belief. As the belief firms up, there is less left for informed traders to profit from, and the bid and offer close in on the true value.'
+  - q: 'A dealer is one of five asked to quote a corporate bond, and the client trades with whoever is best. Why should the winning dealer be worried?'
+    opts: ['Because the client might not pay', 'Because winning means it quoted the most generous price of the five, which is more likely if its estimate was the furthest wrong: the winner''s curse', 'Because the other dealers will report it']
+    right: 1
+    why: 'When several dealers compete, the one whose price is furthest in the client''s favour wins, and that''s often the one whose estimate was most mistaken. Add a client who may know more than the dealers, and winning becomes a warning sign. Dealers allow for this by quoting a little worse the more competitors they know are being asked.'
+
+connected:
+  - { label: Builds on, title: Earning the Spread, where: Quant · Market Making, url: /hub/quant/earning-the-spread/ }
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: Competition, Speed and Edge, where: Quant · Quant Trading Firms, url: /hub/quant/competition-speed-and-edge/ }
+  - { label: Used in, title: Private Information, where: Quant · Game Theory in Trading, url: /hub/quant/ }
+---
+
+<style>
+  .fo-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "A Quote Is a Free Option", "Why do the trades a market maker gets tend to be its worst ones?", "A free option" %}
+  <div class="prose">
+    <p>Imagine a bookmaker who posts odds on a football match on Saturday morning and doesn't change them all day. At 2pm the team announces that its star striker is injured. Most of the bookmaker's customers haven't heard, so they keep betting as normal. But a handful who follow the team's news feed rush to bet against it at the old odds before they change. The bookmaker isn't unlucky. It has left an open offer out while the facts changed, and the people best placed to take advantage did.</p>
+    <p>Deltashark's framing: a standing quote is a <strong>free option</strong> to everyone else. It says "trade with me at this price, whenever you choose." Other traders exercise it selectively, most eagerly exactly when the quote is wrong. That's {% gl "adverse selection" %}adverse selection{% endgl %}: the maker's fills are not a random sample of the flow but a sample biased towards its own mistakes.</p>
+  </div>
+  <div class="prose">
+    <h3>Why it doesn't even out</h3>
+    <p>Suppose news means the price should be higher, but the maker's offer is still at the old level. Informed traders race to buy from that {% gl "stale quote" %}stale offer{% endgl %}, and the maker ends up short in a rising market before it can change its quote. There's no matching windfall on the other side. When the quote is right, fills arrive at the normal, mixed rate. When it's wrong, they arrive fast and all on one side. So the maker's fills are <strong>correlated with the price moving against it afterwards</strong>, and on average its inventory is acquired on the wrong side of the information.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "The Toll on Every Fill", "How much does adverse selection cost, and what spread does it force?", "The toll on every fill" %}
+  <div class="formula"><span class="lbl">Expected P&amp;L per fill (Deltashark)</span>\[ E[\pi \mid \text{fill}] = \frac{s}{2} - q \times m \]</div>
+  <div class="prose">
+    <p>The maker earns half the spread on every fill, but on a share \(q\) of fills it's facing an {% gl "informed flow" %}informed trader{% endgl %}, and the price then moves against it by \(m\) on average. The Order Book's interactive "Can the market maker afford to quote?" let you play with this arithmetic. Here's what it implies.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): the breakeven spread</span>
+    <h3>Informed traders are \(15\%\) of flow and, when present, are on the right side of an average \(20\)-tick move. How wide must the maker quote?</h3>
+    <ol class="steps">
+      <li>The expected toll per fill: \(q \times m = 0.15 \times 20 = 3\) ticks.</li>
+      <li>The half-spread must cover it: \(s/2 \ge 3\), so \(s \ge 6\) ticks.</li>
+      <li>Quoting tighter than 6 ticks loses money on average <em>whatever the volume</em>: each fill arrives already tainted.</li>
+    </ol>
+    <p class="answer">Adverse selection puts a floor under the spread. Because every maker faces the same floor, it's part of the spread every market charges, not a private problem for one firm.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The trap Deltashark warns about</span>
+    <p>Volume doesn't cure adverse selection: it scales it. If each fill expects to lose, more fills lose more, and a maker's busiest moments are often exactly the informed ones. "We lose on each trade but make it up on volume" is the precise opposite of how this business works. The margin has to be fixed first, through width, speed or choosing who to trade with, before volume is worth anything.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Learning from the Flow", "If a market maker can't see who's informed, how does it ever find the right price?", "Learning from the flow" %}
+  <div class="prose">
+    <p>In 1985, Lawrence Glosten and Paul Milgrom wrote down the cleanest version of this problem, and Deltashark calls it the formal insight behind all of it: <strong>the spread exists because of adverse selection</strong>. Their market maker has no inventory risk, no running costs and makes no profit on average, and it still has to charge a spread. The losses to informed traders have to be paid for by gains from the uninformed.</p>
+    <p>The model is simple. An asset is worth either a high or a low value, and only some traders know which. Each new trader is informed with probability \(\mu\) (they buy if the value is high and sell if it's low) or uninformed (they buy or sell at random). The market maker sets its offer at what the asset is worth <em>given that someone wants to buy</em>, and its bid at what it's worth <em>given that someone wants to sell</em>. A buy is slightly more likely when the value is high, so a buy is a small piece of evidence, and the maker updates its belief using {% gl "bayes' theorem" %}Bayes' theorem{% endgl %} after every trade. Watch it learn.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Learning from the flow</h3><p>The asset is worth either 102 or 98, and the market maker starts thinking each is equally likely. A stream of traders arrives, some informed. The shaded band is the bid and offer after each trade. Choose the true value and how many traders are informed.</p></div>
+    <div class="controls">
+      <div class="presets fo-pick" id="gm-v" aria-label="True value"></div>
+      <div class="ctrl"><label for="gm-mu">Informed share</label><input type="range" id="gm-mu" min="5" max="60" step="5" value="20"><output id="gm-mu-out" for="gm-mu">20%</output></div>
+      <div class="presets"><button type="button" id="gm-again">Another run</button></div>
+    </div>
+    <svg class="chart" id="chart-gm" viewBox="0 0 640 280" role="img" aria-label="The market maker's bid and offer after each trade, closing in on the true value as it learns from the order flow"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Bid and offer</span><span><i class="sw grey"></i>True value (the maker can't see it)</span></div>
+    <div class="readout" id="gm-read"></div>
+    <p class="look" id="gm-story"></p>
+  </div>
+  <div class="prose">
+    <p>Three things to notice. The opening spread grows with the informed share: at \(\mu = 20\%\) it's \(0.8\), at \(60\%\) it's \(2.4\). The spread narrows as the maker learns, because there's less left for informed traders to win. And prices discover the truth without anyone announcing it: the informed traders' orders carry their information into the price. That's price discovery, and the market maker is the one who pays the informed for it, out of the spread charged to everyone else.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Measuring Toxicity", "How does a market maker know which flow is picking it off?", "Measuring toxicity" %}
+  <div class="prose">
+    <p>Nobody wears a badge saying they're informed, so makers judge flow by what happens after it. Earning the Spread introduced the {% gl "realised spread" %}realised spread{% endgl %}: what the maker kept once the price had moved. Deltashark's point is that it measures exactly this battle. Track the average realised spread per fill, segment by segment (by client, venue, time of day, order size). <strong>A segment with negative realised spreads is the accounting signature of being systematically picked off by it.</strong></p>
+    <p>Desks look at the whole path, not just the five-minute point. A {% gl "markout" %}markout{% endgl %} is how far the price has moved against the maker at set times after its fills: one second, five seconds, a minute, five minutes. Its shape tells the maker <em>what kind</em> of informed trader it's facing.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Markouts</h3><p>The average price move against the market maker after it fills three kinds of client, in ticks. Above your half-spread line, the maker is losing on that flow. Then try making your own requoting faster.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="mk-h">Your half-spread</label><input type="range" id="mk-h" min="0.5" max="5" step="0.25" value="2"><output id="mk-h-out" for="mk-h">2 ticks</output></div>
+      <div class="presets fo-pick" id="mk-speed" aria-label="Your requoting speed"></div>
+    </div>
+    <svg class="chart" id="chart-mk" viewBox="0 0 640 280" role="img" aria-label="Average price move against the market maker over time after its fills, for retail, institutional and fast trading flow"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Fast trading firms</span><span><i class="sw grey"></i>Retail app orders and an institutional algo</span></div>
+    <div class="readout" id="mk-read"></div>
+    <p class="look" id="mk-story"></p>
+  </div>
+  <div class="prose">
+    <h3>VPIN: a toxicity alarm, and an argument</h3>
+    <p>David Easley, Marcos López de Prado and Maureen O'Hara built a real-time toxicity measure called {% gl "vpin" %}VPIN{% endgl %} (volume-synchronised probability of informed trading). It watches how one-sided trading is, in equal-sized buckets of volume. Deltashark reports it was elevated in the hours before the 2010 Flash Crash, as market makers sensed rising toxicity and pulled out. That claim is disputed. Torben Andersen and Oleg Bondarenko found VPIN to be a poor predictor of short-term volatility, and found that it only hit its all-time high after the crash, not before. The original authors replied that the critics had tested a method they don't advocate. The argument is a useful reminder: any single toxicity number needs testing against simpler measures before anyone trusts it.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Maker's Defences", "What can a market maker do about traders who know more?", "The maker's defences" %}
+  <div class="prose">
+    <p>Deltashark's four defences follow directly from the mechanism:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Defence</th><th>How it works</th><th>Where it shows up</th></tr></thead>
+      <tbody>
+        <tr><td>Speed</td><td>Requote faster than informed traders can exercise the stale option, which shrinks the window in which the adverse move \(m\) can build</td><td>The defensive case for low latency (Competition, Speed and Edge; Microstructure later)</td></tr>
+        <tr><td>Width and size</td><td>Quote wider and smaller when the informed share or news risk rises: scheduled releases, one-sided flow, unusual volume</td><td>Spreads widening before results and data (Setting the Width)</td></tr>
+        <tr><td>Choosing the flow</td><td>Trade with flow that has a low informed share wherever the market's structure allows</td><td>Payment for order flow, client tiering (Earning the Spread)</td></tr>
+        <tr><td>Reading its own fills</td><td>Treat a run of same-side fills as evidence that the quote is wrong, and lean the quote away from it</td><td>Quote skewing (Quote Skewing)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The last one is Glosten–Milgrom in practice. A maker that gets sold to five times in a row should lower its idea of fair value, just as the model's maker did. That's also why Inventory Risk will say that inventory built up quickly is a warning sign: the flow that fills your book fastest is disproportionately informed.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Where does adverse selection bite in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: last look</h3>
+    <p>FX dealers have a defence most markets don't: {% gl "last look" %}last look{% endgl %}, a short window after a client hits a streamed price in which the dealer can reject the trade if the market has moved. It's a direct answer to the free option. The dealer's streamed price is an offer, and last look lets it refuse to honour offers that have gone stale. It's controversial for the same reason: the client can't tell whether a rejection protected the dealer from a stale price or just from a trade it didn't like. The FX Global Code sets out how dealers should use it and tell clients about it. In FX, informed flow clusters around scheduled data (US payrolls, central bank decisions) and the 4pm London fix.</p>
+    <h3>Gold</h3>
+    <p>Gold reacts sharply to US data and to the dollar, so gold market makers widen around the same scheduled releases. The twice-daily LBMA Gold Price auction concentrates a lot of flow at known times, which is another moment when quoting is risky.</p>
+    <h3>Bonds: the winner's curse</h3>
+    <p>Corporate bonds mostly trade by request for quote: a client asks several dealers for a price and trades with the best one. That creates the {% gl "winner's curse" %}winner's curse{% endgl %}. The dealer that wins is the one whose price was most generous, which is more likely if its estimate of value was furthest off, or if the client knows something none of the dealers do. So dealers quote slightly worse the more competitors they know are being asked. Government bonds face classic adverse selection around auctions and data releases, when the market's view of interest rates can jump.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Picked off</h3><span class="tag desk">Desk</span></div><p>Traded against at a stale price by someone faster or better informed.</p><p class="eg">"We got picked off on the payrolls print."</p></div>
+    <div class="term"><div class="term-top"><h3>Toxic</h3><span class="tag desk">Desk</span></div><p>Flow that tends to be followed by the price moving against you.</p><p class="eg">"That client's flow is toxic, widen them."</p></div>
+    <div class="term"><div class="term-top"><h3>Markout</h3><span class="tag desk">Desk</span></div><p>How far the price moved against you at set times after a fill.</p><p class="eg">"One-second markouts on that venue are awful."</p></div>
+    <div class="term"><div class="term-top"><h3>Run over</h3><span class="tag desk">Desk</span></div><p>Filled again and again on one side as the price moves through you.</p><p class="eg">"We got run over on the offer all morning."</p></div>
+    <div class="term"><div class="term-top"><h3>Stale</h3><span class="tag desk">Desk</span></div><p>A quote that hasn't caught up with new information.</p><p class="eg">"Our prices were stale for 40 micros."</p></div>
+    <div class="term"><div class="term-top"><h3>Winner's curse</h3><span class="tag desk">Desk</span></div><p>Winning a competitive quote because your price was the most wrong.</p><p class="eg">"Five in comp and we won it: winner's curse."</p></div>
+    <div class="term"><div class="term-top"><h3>In comp</h3><span class="tag desk">Desk</span></div><p>A request for quote sent to several dealers at once.</p><p class="eg">"It's three in comp, sharpen up."</p></div>
+    <div class="term"><div class="term-top"><h3>Reject</h3><span class="tag desk">Desk</span></div><p>A dealer declining a trade during last look.</p><p class="eg">"Their reject rate on news is through the roof."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where adverse selection turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: which side of the option are you on?</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>As a trader, you want to be the informed side. That means having a real reason to think the price will move, not just reacting slower than the market to the same headline. If you trade the moment data comes out, you're usually not informed: faster firms have already moved the price, and your broker's spread has widened to protect it from exactly that flow. It also explains rules you'll meet: many prop firms ban strategies that exploit slow price feeds (latency arbitrage) and some restrict trading around news, because those are ways of exercising the free option against them.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: the seller knows the house</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A house seller knows about the damp, the neighbours and the planning dispute; the buyer doesn't. That's adverse selection, and the buyer's defences are the same as a market maker's: survey and research (better information), a lower offer (a wider spread), and walking away from sellers who seem in a hurry for no clear reason (reading the flow). At property auctions, the winner's curse applies: the highest bidder is often the one who misjudged the property most.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: who takes the loan?</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Digital lenders face the same problem as a market maker. Borrowers know more about their own ability to repay than the lender does. Raise the interest rate to cover bad loans, and the careful borrowers walk away while the riskiest still accept, because they don't expect to pay it all back. The pool gets worse, a pattern economists call adverse selection in credit. The defences echo this note: better data (bank statements, airtime and mobile money history), small first loans that grow with good behaviour (quote small until you've read the flow), and pricing by segment.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you write down adverse selection and the Glosten–Milgrom quotes?" %}
+  <div class="formula"><span class="lbl">The toll per fill and the breakeven spread</span>\[ E[\pi \mid \text{fill}] = \frac{s}{2} - q\,m \qquad s_{\min} = 2\,q\,m \]</div>
+  <div class="formula"><span class="lbl">Glosten–Milgrom: quotes when the value is \(V_H\) or \(V_L\) and the maker believes \(P(V_H) = p\)</span>\[ \text{offer} = E[V \mid \text{buy}] = \frac{p\,\beta_H V_H + (1-p)\,\beta_L V_L}{p\,\beta_H + (1-p)\,\beta_L} \qquad \beta_H = \mu + \tfrac{1-\mu}{2},\;\; \beta_L = \tfrac{1-\mu}{2} \]</div>
+  <div class="formula"><span class="lbl">Updating the belief after a buy (Bayes' theorem)</span>\[ p' = \frac{p\,\beta_H}{p\,\beta_H + (1-p)\,\beta_L} \]</div>
+  <div class="prose">
+    <p>\(\beta_H\) is the chance of a buy when the value is high (every informed trader buys, plus half the uninformed), and \(\beta_L\) the chance when it's low (only the uninformed half). The bid is the same calculation with sells, where the roles swap. At \(p = \tfrac{1}{2}\) the offer works out to the midpoint plus \(\mu \times \tfrac{V_H - V_L}{2}\), so the opening spread is \(\mu (V_H - V_L)\).</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>\(V_H = 102\), \(V_L = 98\), \(\mu = 0.2\), and the maker starts at \(p = 0.5\). What are its first quotes, and what does it believe after one buy?</h3>
+    <ol class="steps">
+      <li>\(\beta_H = 0.2 + 0.4 = 0.6\) and \(\beta_L = 0.4\).</li>
+      <li>Offer \(= \dfrac{0.5 \times 0.6 \times 102 + 0.5 \times 0.4 \times 98}{0.5} = 100.4\); by symmetry the bid is \(99.6\). Spread \(0.8\).</li>
+      <li>After a buy: \(p' = \dfrac{0.5 \times 0.6}{0.5 \times 0.6 + 0.5 \times 0.4} = 0.6\). The maker now thinks the high value is 60% likely, and both quotes move up.</li>
+    </ol>
+    <p class="answer">One trade moved the market maker's belief by ten percentage points. That's how order flow moves prices even when nobody announces anything.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A maker earns a half-spread of \(2\) ticks. Informed flow is \(10\%\) of fills and costs \(15\) ticks when faced. What is expected P&amp;L per fill in ticks?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2 - 0.1 \times 15 = 0.5\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Informed share \(20\%\), average adverse move \(10\) ticks. What is the minimum full spread at which quoting breaks even?</span></p>
+      <details><summary>Show answer</summary><div><span>\(s/2 \ge 0.2 \times 10 = 2\), so \(s \ge 4\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>In the Glosten–Milgrom set-up with values \(102\) and \(98\), what is the opening spread when \(\mu = 0.4\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\mu (V_H - V_L) = 0.4 \times 4 = 1.6\): bid \(99.2\), offer \(100.8\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A maker's half-spread is \(1.5\) ticks. Its five-minute markout is \(0.3\) ticks on retail flow and \(2.4\) ticks on one fast trading firm. What are its realised spreads on each, per fill?</span></p>
+      <details><summary>Show answer</summary><div><span>Retail: \(1.5 - 0.3 = 1.2\) ticks kept. Fast firm: \(1.5 - 2.4 = -0.9\) ticks, a loss on every fill. That segment is picking the maker off.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>(Deltashark knowledge check) How does the concept of "toxicity" apply to order flow, and how is it measured?</span></p>
+      <details><summary>Show answer</summary><div><span>Toxicity is the probability that a trade came from an informed counterparty, so the price will move against the maker afterwards. Makers measure it with realised spreads and markouts by segment; VPIN is a real-time estimate based on how one-sided volume is. High toxicity makes makers widen and quote smaller. (VPIN's track record before the Flash Crash is disputed.)</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>(Deltashark knowledge check) What happens to a market maker's P&amp;L during a flash crash, and why?</span></p>
+      <details><summary>Show answer</summary><div><span>Adverse selection becomes extreme: the maker can't tell informed selling from panic, and its pricing models break down as the book empties. Makers that keep quoting get filled at stale prices, so most widen sharply or pull their quotes. That's rational for each one, but it removes liquidity just when it's needed, which is why regulators set quoting obligations and circuit breakers.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're market making and you've been sold to six times in a row in the last minute. What do you do?</span></p>
+      <details><summary>Show answer</summary><div><span>Treat it as information. A run of same-side fills is evidence my quote is too high, so I'd lower my estimate of fair value and lean both quotes down (making it less attractive to sell to me and more attractive to buy from me), and probably quote smaller or wider until the picture is clearer. I'd check whether there's news, whether related markets have moved, and which counterparties are selling. If it's the inventory alone I'd skew; if it's informed flow, width and size matter more than skew.</span></div></details></div>
+  </div>
+{% endsec %}

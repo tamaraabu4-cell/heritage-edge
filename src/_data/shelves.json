@@ -230,7 +230,7 @@
       { "title": "Market Making", "blurb": "Always ready to buy or sell, and how that pays.",
         "subtopics": ["The Market Maker's Job",
           "Spread Capture",
-          { "name": "Adverse Selection", "planned": ["The Free Option"] },
+          "Adverse Selection",
           { "name": "Inventory Risk", "planned": ["Inventory Risk"] },
           { "name": "Quote Skewing", "planned": ["Quote Skewing"] },
           { "name": "Spread Width", "planned": ["Setting the Width"] }] },
