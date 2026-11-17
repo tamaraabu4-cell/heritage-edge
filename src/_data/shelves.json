@@ -232,7 +232,7 @@
           "Spread Capture",
           "Adverse Selection",
           "Inventory Risk",
-          { "name": "Quote Skewing", "planned": ["Quote Skewing"] },
+          "Quote Skewing",
           { "name": "Spread Width", "planned": ["Setting the Width"] }] },
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
         "subtopics": ["Tick Sizes", "Order Flow", "Latency and Speed"] },

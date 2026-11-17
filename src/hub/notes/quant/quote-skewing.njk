@@ -1,0 +1,235 @@
+---
+title: Quote Skewing
+shelf: quant
+chapter: market-making
+subtopic: Quote Skewing
+order: 1
+summary: How a market maker steers its inventory back to zero by moving both quotes in the same direction instead of crossing the spread; quoting around an inventory-adjusted price (P_fair − kI) and Deltashark's worked lean; what skewing costs (edge given up on the side you want filled) and why it's cheaper than paying to exit later; skew as information both ways, and why makers dampen and randomise it; the Avellaneda–Stoikov indifference price (mid − qγσ²(T − t)) and what each term does; the trap of skewing into a trend, where the right defence is width and size; and skewing in FX, gold and bonds, including dealers' axes.
+lede: 'A market maker with too much inventory doesn''t have to pay to get rid of it. It can nudge its prices so that the next customers do the work: a slightly better offer attracts buyers, a slightly worse bid puts off sellers, and the position drains away by itself. This note explains how to set that lean, what it costs, what it gives away, and the one situation where it makes things worse.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/quote-skewing.js]
+
+quiz:
+  - q: 'A market maker is long and wants to shed inventory. How does it skew its quotes?'
+    opts: ['It lowers both its bid and its offer: the lower offer attracts buyers, and the lower bid puts off sellers who would add to the long', 'It raises its offer and lowers its bid, making the spread wider', 'It raises both quotes, so it sells at a higher price']
+    right: 0
+    why: 'Skewing moves the centre of the quotes, not the width. A long maker quotes around a price below fair value, so selling becomes more likely and buying less likely, and the inventory drifts back to zero.'
+  - q: 'In the Avellaneda–Stoikov model, r = s − qγσ²(T − t). Which change makes the market maker skew less?'
+    opts: ['A larger inventory q', 'A more volatile market (larger σ)', 'Less time left until it must be flat, so less time to carry the risk (smaller T − t)']
+    right: 2
+    why: 'The skew is the inventory times risk aversion times variance times the time left to hold it. Larger inventory, more risk aversion or higher volatility all mean a bigger skew. In the model, less time left means less risk still to carry, so the skew shrinks.'
+  - q: 'A maker is long and skews its quotes down, but the price keeps falling and it keeps getting sold to. What''s gone wrong?'
+    opts: ['Nothing: it should keep skewing harder', 'Skew manages inventory picked up by chance; here the flow is informed, so each lower quote is still too high and the maker buys again at every step down. It should widen and quote smaller', 'It should stop quoting the offer entirely']
+    right: 1
+    why: 'Deltashark''s trap: skewing into a trend sells low and buys lower. Skew assumes your fair value is right and only your inventory is off. When the flow is informed, fair value is what''s wrong, and the defences are width, size and updating fair value.'
+
+connected:
+  - { label: Builds on, title: Inventory Risk, where: Quant · Market Making, url: /hub/quant/inventory-risk/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Builds on, title: Earning the Spread, where: Quant · Market Making, url: /hub/quant/earning-the-spread/ }
+  - { label: Used in, title: Order Flow, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .qs-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Steering with Prices", "How can a market maker get rid of inventory without paying the spread?", "Steering with prices" %}
+  <div class="prose">
+    <p>Picture someone reselling concert tickets outside a venue. At 7pm they still have twenty tickets for a 7:30 show. They don't need to dump them on another reseller at a loss. They drop the price they're asking, so passers-by buy more, and they also drop the price they'll pay for anyone else's spare tickets, so fewer people sell to them. Both changes push the same way: fewer tickets in hand.</p>
+    <p>Deltashark calls {% gl "quote skewing" %}skewing{% endgl %} the market maker's steering wheel. A maker that wants to shed {% gl "inventory" %}inventory{% endgl %} doesn't need to cross the spread (Inventory Risk's costly exit). It can <strong>move both quotes in the same direction</strong>, making one side more attractive and the other less, so the arrival rates of buyers and sellers tilt until the inventory drains towards zero.</p>
+    <p>A maker that's long lowers both quotes compared with fair value. The lower offer undercuts competitors and attracts buyers, who reduce the long. The lower bid moves away from sellers, who would add to it. How far it leans shows how urgent it is: a small lean for a small position, quotes pushed right through the market when inventory is near its limit. Formally, the maker quotes around an inventory-adjusted price instead of fair value itself.</p>
+  </div>
+  <div class="formula"><span class="lbl">The inventory-adjusted quoting price (Deltashark)</span>\[ P_{\text{res}} = P_{\text{fair}} - k \times I \]</div>
+  <div class="prose">
+    <p>\(I\) is inventory (positive when long), and \(k\) how far the quoting centre moves per unit held. The bid and offer sit either side of \(P_{\text{res}}\). At \(I = 0\), the maker quotes symmetrically around fair value. Deltashark and the Avellaneda–Stoikov model both call \(P_{\text{res}}\) the <em>reservation price</em>. That's a different meaning from the buyer's walk-away price in What Is a Market?, so this hub calls it the {% gl "indifference price" %}indifference price{% endgl %}: the price at which the maker would be equally happy to buy or sell, given what it already holds.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Lean the quote</h3><p>Fair value 100.00 and a normal half-spread of 4 cents. Change the inventory and how hard the maker leans per share held. The grey marks are the unskewed quotes.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="lq-i">Inventory</label><input type="range" id="lq-i" min="-10000" max="10000" step="500" value="6000"><output id="lq-i-out" for="lq-i">+6,000</output></div>
+      <div class="ctrl"><label for="lq-k">Lean per share</label><input type="range" id="lq-k" min="0" max="10" step="0.5" value="5"><output id="lq-k-out" for="lq-k">0.000005</output></div>
+    </div>
+    <svg class="chart" id="chart-lq" viewBox="0 0 640 170" role="img" aria-label="A price line showing fair value, the inventory-adjusted price, and the skewed bid and offer against the normal ones"></svg>
+    <div class="readout" id="lq-read"></div>
+    <p class="look" id="lq-story"></p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): leaning the quote</span>
+    <h3>Fair value \(100.00\), normal quote \(99.96 / 100.04\). The maker is long \(6{,}000\) shares with \(k = 0.000005\) per share. Where does it quote?</h3>
+    <ol class="steps">
+      <li>Lean: \(0.000005 \times 6{,}000 = 0.03\), so \(P_{\text{res}} = 100.00 - 0.03 = 99.97\).</li>
+      <li>Quotes: \(99.97 \pm 0.04 = 99.93 / 100.01\).</li>
+      <li>Offer \(100.01 < 100.04\): buyers arrive faster. Bid \(99.93 < 99.96\): sellers arrive slower. Both kinds of fill now shrink the position.</li>
+    </ol>
+    <p class="answer">The maker gives up edge on the side it wants filled, selling 3 cents closer to fair value than before. That sacrifice is the continuous, voluntary cost of keeping inventory under control, and it's cheaper on average than paying the whole spread to get out later.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Steer the Book", "Does skewing actually keep inventory down, and what does it cost?", "Steer the book" %}
+  <div class="prose">
+    <p>Earning the Spread modelled how fills fall away as a quote moves further from fair value: the chance of being hit drops exponentially with distance. That's exactly what makes skewing work. Lower the offer by a few cents and buyers arrive noticeably faster; lower the bid and sellers arrive noticeably slower. Below, two market makers face the same customers on the same day. One skews, one doesn't.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Steer the book</h3><p>A day of customers who trade more often when a quote is close to (or better than) the true value. The grey maker always quotes symmetrically; the coloured one skews. Change the skew strength, then try a day when the price trends down.</p></div>
+    <div class="controls">
+      <div class="presets qs-pick" id="sb-day" aria-label="Kind of day"></div>
+      <div class="ctrl"><label for="sb-k">Skew strength</label><input type="range" id="sb-k" min="0" max="0.3" step="0.02" value="0.1"><output id="sb-k-out" for="sb-k">0.10</output></div>
+      <div class="presets"><button type="button" id="sb-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-sb" viewBox="0 0 640 280" role="img" aria-label="Inventory through the day for a market maker that skews and one that doesn't"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Maker that skews</span><span><i class="sw grey"></i>Maker that doesn't</span></div>
+    <div class="readout" id="sb-read"></div>
+    <p class="look" id="sb-story"></p>
+  </div>
+  <div class="prose">
+    <p>On a calm day, skewing keeps the inventory close to zero for a small cost in spread captured. Push the strength up and the inventory barely moves, but the maker is giving away more edge on every fill. On the trending day, look at the P&amp;L, not just the inventory line. Skewing still helps, because leaning down drags the quotes towards where the price is going, but the skewing maker keeps losing on inventory at every step down. That's the subject of section 5.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Skew as Information, Both Ways", "What does a skewed quote tell other traders?", "Skew as information" %}
+  <div class="prose">
+    <p>Deltashark points out that skewing is also how a maker's beliefs get into its prices. The same lean that manages inventory can express an update to fair value after one-sided fills: The Free Option's defence against {% gl "adverse selection" %}adverse selection{% endgl %} by reading your own flow. A run of sells moves the maker's view of fair value down and leaves it long, and both point the quotes the same way.</p>
+    <p>But other traders read it in reverse. A market whose quotes lean persistently says something about the market maker: that it has inventory, or information, or both. Sophisticated counterparties probe for it, for example by sending small orders to see how the quotes react. <strong>Skew leaks.</strong> So makers dampen and randomise the link between inventory and quotes, making their book's state harder to reconstruct from the tape.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A maker's quoting problem comes down to two numbers, set together after every fill. The <strong>centre</strong> (skew) manages inventory and carries fair value. The <strong>width</strong> manages adverse selection and volatility (Setting the Width). Each fill updates inventory, fair value or both, and the pair of quotes moves accordingly.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Avellaneda–Stoikov Indifference Price", "Is there a principled way to decide how hard to skew?", "Avellaneda–Stoikov" %}
+  <div class="prose">
+    <p>In 2008, Marco Avellaneda and Sasha Stoikov wrote down the standard academic model of a market maker with inventory risk. Their maker quotes around an indifference price that adjusts the mid for inventory and risk aversion:</p>
+  </div>
+  <div class="formula"><span class="lbl">The Avellaneda–Stoikov indifference price</span>\[ r(s, q, t) = s - q\,\gamma\,\sigma^{2}\,(T - t) \]</div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Term</th><th>Meaning</th><th>Bigger means…</th></tr></thead>
+      <tbody>
+        <tr><td>\(s\)</td><td>The current mid-price</td><td>The whole quote moves with the market</td></tr>
+        <tr><td>\(q\)</td><td>Inventory (positive when long)</td><td>A bigger lean: long pushes the price down, short pushes it up</td></tr>
+        <tr><td>\(\gamma\)</td><td>Risk aversion</td><td>A more nervous maker leans harder for the same position</td></tr>
+        <tr><td>\(\sigma^{2}\)</td><td>The price's variance</td><td>In a jumpy market, holding is riskier, so lean harder</td></tr>
+        <tr><td>\(T - t\)</td><td>Time left until the maker must be flat</td><td>More time left to carry the risk, so lean harder</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Compare it with Deltashark's simple version: \(k = \gamma\sigma^{2}(T - t)\). The model explains <em>why</em> the lean should be bigger in volatile markets and for nervous makers, which the simple version takes as given. The other half of the model, the optimal width, is in Setting the Width.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Mid \(100\). A maker is long \(2{,}000\) shares, with risk aversion \(\gamma = 0.00001\), daily volatility \(\sigma = \$2\) and half a day to go. Where is its indifference price?</h3>
+    <ol class="steps">
+      <li>\(\sigma^{2} = 4\), \(T - t = 0.5\).</li>
+      <li>Lean: \(2{,}000 \times 0.00001 \times 4 \times 0.5 = 0.04\).</li>
+      <li>\(r = 100 - 0.04 = 99.96\). If the stock were twice as volatile (\(\sigma = \$4\)), the lean would quadruple to \(0.16\).</li>
+    </ol>
+    <p class="answer">Volatility enters squared, so the lean responds strongly when markets get jumpy.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Trap: Skewing into a Trend", "When does skewing make things worse?", "Skewing into a trend" %}
+  <div class="prose">
+    <p>Deltashark's warning for this lesson: skewing into a trend can chase the market. A maker shedding a long by lowering its quotes while the price is genuinely falling buys again at each step down: <strong>selling low and buying lower</strong>. Skew manages inventory acquired by chance. It assumes the maker's fair value is right and only its position is off. When the flow is {% gl "informed flow" %}informed{% endgl %}, it's fair value that's wrong, and the correct defence is width and size, not lean alone.</p>
+    <p>Telling the two situations apart is the real skill, and Deltashark says it's what its market making games train:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Signs</th><th>Inventory by chance</th><th>Informed flow</th></tr></thead>
+      <tbody>
+        <tr><td>Markouts after fills</td><td>Flat: the price doesn't follow</td><td>The price keeps moving in the direction of the trades</td></tr>
+        <tr><td>Related markets</td><td>Quiet</td><td>Moving the same way (futures, ETFs, other venues)</td></tr>
+        <tr><td>Who's trading</td><td>A mix, small sizes</td><td>The same fast counterparties, one side</td></tr>
+        <tr><td>The right response</td><td>Skew and wait</td><td>Move fair value, widen, quote smaller, hedge</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How does skewing show up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>FX dealers skew the prices they stream to clients all day. A bank that's built up a euro long from client flow will show a slightly lower EUR/USD offer to everyone, hoping clients take the position off its hands before it has to sell on EBS or LSEG Matching. Because each client sees a slightly different price, the skew is harder for any one of them to spot.</p>
+    <h3>Gold</h3>
+    <p>Bullion dealers skew their spot and forward prices to rebalance metal and futures positions. If a dealer is long physical gold in London and short COMEX futures, it might shade its London offer to sell metal and narrow the gap.</p>
+    <h3>Bonds: axes</h3>
+    <p>Bond dealers make skew explicit. They send clients lists of their <strong>axes</strong>: bonds they want to buy or sell, usually to reduce inventory, at keener prices than usual. Trading platforms show axe indications next to dealer quotes. For a client, an axe is a good price; for the dealer, it's skewing done out loud, because bond flow is too sparse for a small price lean to attract buyers on its own.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Skew</h3><span class="tag desk">Desk</span></div><p>Move both quotes the same way to steer inventory.</p><p class="eg">"Skew us down a tick, we're long."</p></div>
+    <div class="term"><div class="term-top"><h3>Lean</h3><span class="tag desk">Desk</span></div><p>The size and direction of the skew.</p><p class="eg">"Lean harder, we're near the limit."</p></div>
+    <div class="term"><div class="term-top"><h3>Shade</h3><span class="tag desk">Desk</span></div><p>Make a price slightly better or worse for one side.</p><p class="eg">"Shade the offer for them, we want out."</p></div>
+    <div class="term"><div class="term-top"><h3>Axe</h3><span class="tag desk">Desk</span></div><p>A position a dealer wants to trade out of, offered at a keen price.</p><p class="eg">"Our axe today is to sell the 2031s."</p></div>
+    <div class="term"><div class="term-top"><h3>Better bid</h3><span class="tag desk">Desk</span></div><p>Keener to buy than to sell (skewed up).</p><p class="eg">"We're better bid in cable."</p></div>
+    <div class="term"><div class="term-top"><h3>Better offered</h3><span class="tag desk">Desk</span></div><p>Keener to sell than to buy (skewed down).</p><p class="eg">"Show them better offered, we're long."</p></div>
+    <div class="term"><div class="term-top"><h3>Fade</h3><span class="tag desk">Desk</span></div><p>Trade against a move or a flow.</p><p class="eg">"Don't fade it, that flow's informed."</p></div>
+    <div class="term"><div class="term-top"><h3>Probe</h3><span class="tag desk">Desk</span></div><p>Send small orders to see how a market maker reacts.</p><p class="eg">"Someone's probing our skew with odd lots."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where skewing turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: reading skew, and skewing yourself</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>When you ask several brokers or banks for a price and one is clearly keener on one side, it's probably axed: it has inventory to move. That can be a good price for you, but a persistent one-sided lean across the whole market may mean dealers expect the price to move. For your own trading, scaling out of a winning position in pieces is a form of skewing: you lean towards reducing exposure as it grows. And Deltashark's trap applies to you too: adding to a losing position at lower and lower prices is skewing into a trend.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: price to clear the stock</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A developer with unsold villas skews in the same way: it lowers asking prices or adds incentives (furniture packages, paid fees) to attract buyers, and it slows down buying new land so it doesn't add inventory. The trap is the same as in markets. If prices are falling because the area is genuinely losing value, cutting the asking price a little at a time just sells each unit lower; it's better to recognise the change, reprice properly, and stop building.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: rebalancing a currency app</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app that's running short of dollars can skew its rates: make buying dollars slightly dearer and selling dollars to it slightly better. Users who were going to sell dollars anyway now prefer the app, and some who wanted to buy wait, so its dollar inventory recovers without it having to buy in the market. If the naira is falling because of real news, though, that's informed flow: skewing alone just buys naira at worse and worse rates, and the app needs to reset its rates and limit transaction sizes.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "Why does skewing pull inventory back towards zero?" %}
+  <div class="formula"><span class="lbl">Skewed quotes around the indifference price</span>\[ P_{\text{res}} = P_{\text{fair}} - kI \qquad \text{bid} = P_{\text{res}} - h \qquad \text{offer} = P_{\text{res}} + h \]</div>
+  <div class="formula"><span class="lbl">Arrival rates when fills fall away exponentially with distance \(\delta\) from fair value</span>\[ \lambda_{\text{buyers}} = A\,e^{-\kappa (h - kI)} \qquad \lambda_{\text{sellers}} = A\,e^{-\kappa (h + kI)} \]</div>
+  <div class="formula"><span class="lbl">The pull back towards zero (for small skews)</span>\[ \frac{dI}{dt} = \lambda_{\text{sellers}} - \lambda_{\text{buyers}} \approx -\,2A\kappa\, e^{-\kappa h}\, k\, I \]</div>
+  <div class="prose">
+    <p>The drift in inventory is proportional to minus the inventory itself, so the further the book is from zero, the harder skewing pulls it back. That's the same shape as a spring, or as the mean reversion you'll meet in Mean Reversion and Pairs. The pull is stronger when flow is sensitive to price (large \(\kappa\)) and when the maker leans harder (large \(k\)).</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Half-spread \(h = 1\) tick, \(\kappa = 0.8\) per tick, \(k = 0.1\) ticks per lot. The maker is long \(10\) lots. How much faster do buyers arrive than sellers?</h3>
+    <ol class="steps">
+      <li>Offer distance: \(h - kI = 1 - 1 = 0\) ticks; bid distance: \(h + kI = 2\) ticks.</li>
+      <li>Ratio of arrival rates: \(e^{-0.8 \times 0} \div e^{-0.8 \times 2} = e^{1.6} \approx 5\).</li>
+      <li>Buyers now arrive about five times as often as sellers, so the long drains quickly.</li>
+    </ol>
+    <p class="answer">A one-tick lean, small next to the price, changes the balance of flow fivefold. That's why skewing is the maker's cheapest tool.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) Fair value \(80.00\), \(k = 0.00001\) per share, inventory long \(4{,}000\) shares. Where is the reservation price?</span></p>
+      <details><summary>Show answer</summary><div><span>\(80.00 - 0.00001 \times 4{,}000 = 80.00 - 0.04 = 79.96\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A maker's normal half-spread is \(0.05\). Skewing moves its offer from \(100.05\) to \(100.02\) to shed a long. How much edge per share is sacrificed on sales versus the unskewed offer?</span></p>
+      <details><summary>Show answer</summary><div><span>\(100.05 - 100.02 = 0.03\) per share.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Fair value \(50.00\), normal half-spread \(0.03\), \(k = 0.00002\), and the maker is <em>short</em> \(2{,}500\) shares. Where does it quote?</span></p>
+      <details><summary>Show answer</summary><div><span>\(P_{\text{res}} = 50.00 - 0.00002 \times (-2{,}500) = 50.05\). Quotes: \(50.02 / 50.08\). Both are higher, so buying (to cover the short) is more likely and selling less likely.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>In the Avellaneda–Stoikov model, a maker's lean is \(0.04\). Volatility doubles and the time left halves. What's the new lean?</span></p>
+      <details><summary>Show answer</summary><div><span>The lean scales with \(\sigma^{2}(T - t)\): \(\times 4 \times \tfrac{1}{2} = \times 2\), so \(0.08\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why is skewing usually cheaper than crossing the spread to get out of inventory?</span></p>
+      <details><summary>Show answer</summary><div><span>Crossing gives up the whole half-spread on every share at once. Skewing gives up only a little edge per fill, and only on the fills that reduce the position, while still earning some spread on them. It's slower, though, so it works for inventory picked up by chance, not for an urgent position or informed flow.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>(Deltashark knowledge check, inventory) How do market makers use skew in practice?</span></p>
+      <details><summary>Show answer</summary><div><span>They quote around an indifference price that shifts with inventory: when short they raise both quotes (more attractive to sell to them, less attractive to buy), when long they lower both. Together with shrinking size on the side that's building up, hedging and hard limits, it keeps inventory near zero.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're long and skewing, but you keep getting sold to and the price keeps falling. Do you skew harder?</span></p>
+      <details><summary>Show answer</summary><div><span>Not just harder. Skew assumes my fair value is right and only my position is off. If the price keeps following the fills, the flow is informed and my fair value is wrong. I'd move fair value down to where the market is going, widen and shrink my quotes on the bid, hedge the market part of the position, and if needed pay to cut it. Skewing harder alone means buying again at every step down.</span></div></details></div>
+  </div>
+{% endsec %}
