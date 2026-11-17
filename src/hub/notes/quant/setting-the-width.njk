@@ -1,0 +1,252 @@
+---
+title: Setting the Width
+shelf: quant
+chapter: market-making
+subtopic: Spread Width
+order: 1
+summary: The width of a quote as a price on uncertainty, built from three parts (the toll to informed traders, the cost of carrying inventory, and fees) that set a floor every fill must clear; why spreads widen with volatility, information and thin flow, and Deltashark's volatile hour that needs a spread nearly twice as wide; above the floor, width as a revenue choice, where the best width is the floor plus a markup set by competition; the full Avellaneda–Stoikov model (indifference price plus optimal spread); why copying a competitor's width is a trap; a market making game that puts width, skew and limits together around a news release; the whole chapter on one page; and spreads in FX (the January 2019 yen flash event), gold and bonds.
+lede: 'Setting the centre of a quote is about inventory. Setting its width is about everything else: how many traders know more than you, how jumpy the market is, how long you''ll be stuck holding what you buy, and how hard your competitors are fighting for the flow. This last note of the chapter builds the width up from its parts, shows when wider is richer and when it isn''t, and then lets you run a market making desk through a news release.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, probability, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/setting-the-width.js]
+
+quiz:
+  - q: 'Just before a scheduled data release, the informed share of flow doubles and volatility doubles. What happens to the minimum spread a market maker should quote?'
+    opts: ['Nothing, because the release hasn''t happened yet', 'It rises sharply: both the adverse selection toll and the inventory cost per fill go up, so the floor moves and the quote should widen (or be pulled)', 'It falls, because more traders arrive before news']
+    right: 1
+    why: 'Each part of the floor maps to a risk. Deltashark''s example goes from a 4-tick quote to a 7-tick floor. A maker that keeps quoting 4 wide through the release is selling underpriced options to informed traders. Wider spreads around news are liquidity correctly priced, not liquidity failing.'
+  - q: 'Two widths: A earns 0.4 ticks net per fill on 40 fills an hour, B earns 0.8 ticks on 25 fills. Which is better?'
+    opts: ['B: 25 × 0.8 = 20 ticks an hour against 40 × 0.4 = 16', 'A, because it trades more', 'They are the same']
+    right: 0
+    why: 'Above the floor, width is a revenue choice: margin times fill rate. Near the floor the margin is so thin that extra volume can''t make up for it, so the wider quote wins here. When the floor is low and flow is very sensitive to price, the answer flips.'
+  - q: 'A competitor quotes tighter than you. When should you match them?'
+    opts: ['Always, or you''ll lose the flow', 'Never: their quote must be mispriced', 'Only if their floor really is lower (faster requoting, cheaper flow, better fair value); width should come from your own measured tolls, recycling speed and costs, then be adjusted for competition']
+    right: 2
+    why: 'Deltashark''s trap: being undercut doesn''t always mean being wrong. If the competitor is mispricing the risk, matching them means sharing their losses. If they really have a lower floor, the fix is to lower yours (speed, flow, models), not just to copy the number.'
+
+connected:
+  - { label: Builds on, title: Quote Skewing, where: Quant · Market Making, url: /hub/quant/quote-skewing/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Builds on, title: Inventory Risk, where: Quant · Market Making, url: /hub/quant/inventory-risk/ }
+  - { label: Next, title: Tick Sizes, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .sw-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "A Price on Uncertainty", "What decides how wide a market maker's quote should be?", "A price on uncertainty" %}
+  <div class="prose">
+    <p>Think about a builder pricing a fixed-price job. For a new extension on clear ground, the quote is the materials and labour plus a small margin. For an old house where nobody knows what's behind the walls, the quote is much higher, because the builder adds a contingency for what might go wrong. The builder isn't being greedy. The extra is the price of the uncertainty they're agreeing to carry.</p>
+    <p>Deltashark says the width of a market maker's quote is exactly that: <strong>a price on uncertainty</strong>, and its minimum is a {% gl "spread floor" %}floor{% endgl %}. Every part of it maps to a risk or a cost, and that explains a pattern seen in every market: spreads widen when volatility rises, when some traders know more than others, and when flow thins out.</p>
+  </div>
+  <div class="formula"><span class="lbl">The half-spread floor (Deltashark)</span>\[ \frac{s}{2} \;\ge\; \underbrace{q\,m}_{\text{adverse selection}} \;+\; \underbrace{c_{\text{inv}}}_{\text{inventory cost per fill}} \;+\; \underbrace{c_{\text{op}}}_{\text{fees and costs}} \]</div>
+  <div class="prose">
+    <p>Each fill has to expect to cover its toll to {% gl "informed flow" %}informed traders{% endgl %} (The Free Option), its share of the cost of carrying {% gl "inventory" %}inventory{% endgl %} until it's passed on (Inventory Risk), and explicit costs such as exchange fees. Competition pushes the half-spread down towards this floor from above. The inventory term grows with volatility over the expected holding time, \(\sigma\sqrt{h}\), so anything that makes prices jumpier or flow slower raises the floor. In fast markets both happen at once (volatility jumps and flow turns one-sided), which is why quoted spreads gap wider in stress: <strong>the floor moved, and the quotes moved with it</strong>.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): repricing the quote for a volatile hour</span>
+    <h3>Normally: informed toll 1 tick, inventory cost 0.5, fees 0.5, so a 2-tick half-spread floor and a 4-wide quote. Ahead of a scheduled release, the informed share doubles the toll to 2 and volatility doubles the inventory term to 1. What should the maker quote?</h3>
+    <ol class="steps">
+      <li>New floor: \(s/2 \ge 2 + 1 + 0.5 = 3.5\) ticks.</li>
+      <li>So \(s \ge 7\) ticks, not 4.</li>
+      <li>A maker that keeps quoting 4 wide through the release is selling underpriced options to informed traders.</li>
+    </ol>
+    <p class="answer">The right quote is nearly twice as wide, or no quote at all. Wide spreads around information events aren't liquidity failing; they're liquidity correctly priced.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Price the width</h3><p>Build the half-spread floor from its three parts. Pick a market condition, then adjust the parts. The marker shows a quote of 4 ticks wide (2 each side) for comparison.</p></div>
+    <div class="controls">
+      <div class="presets sw-pick" id="pw-pick" aria-label="Market condition"></div>
+      <div class="ctrl"><label for="pw-q">Informed share</label><input type="range" id="pw-q" min="0" max="40" step="1" value="10"><output id="pw-q-out" for="pw-q">10%</output></div>
+      <div class="ctrl"><label for="pw-m">Informed move</label><input type="range" id="pw-m" min="2" max="30" step="1" value="10"><output id="pw-m-out" for="pw-m">10 ticks</output></div>
+      <div class="ctrl"><label for="pw-v">Volatility</label><input type="range" id="pw-v" min="0.25" max="4" step="0.25" value="1"><output id="pw-v-out" for="pw-v">×1.00</output></div>
+      <div class="ctrl"><label for="pw-h">Holding time</label><input type="range" id="pw-h" min="0.25" max="9" step="0.25" value="1"><output id="pw-h-out" for="pw-h">1 min</output></div>
+    </div>
+    <svg class="chart" id="chart-pw" viewBox="0 0 640 170" role="img" aria-label="A stacked bar of the half-spread floor: adverse selection, inventory cost and fees, against a 2-tick half-spread marker"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Informed toll (dark) and inventory (light)</span><span><i class="sw grey"></i>Fees</span></div>
+    <div class="readout" id="pw-read"></div>
+    <p class="look" id="pw-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Above the Floor", "If the floor is the minimum, how wide should a market maker actually quote?", "Above the floor" %}
+  <div class="prose">
+    <p>Once the floor is covered, width becomes a revenue decision. Earning the Spread showed the hump: wider quotes earn more per fill but fill less often, because some traders won't pay more and competitors' tighter quotes catch the flow first. Expected revenue per hour is margin times fill rate, and the maker's width decision is a continual search for the peak as conditions move the curve around.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): choosing between two widths</span>
+    <h3>At 4 ticks wide: 30 fills an hour, net margin after tolls 0.5 ticks a fill. At 6 wide: 18 fills, net margin 1.5. Which is better?</h3>
+    <ol class="steps">
+      <li>4 wide: \(30 \times 0.5 = 15\) ticks an hour.</li>
+      <li>6 wide: \(18 \times 1.5 = 27\) ticks an hour.</li>
+      <li>The wider quote wins despite fewer fills: near the floor, margin is so thin that volume can't make up for it.</li>
+    </ol>
+    <p class="answer">The comparison flips when the floor is low and flow is very price-sensitive, which is the everyday state of liquid markets. There's no universally correct width, only the current peak of margin times volume.</p>
+  </div>
+  <div class="prose">
+    <p>With Earning the Spread's model of fills falling away exponentially (\(N = A e^{-\kappa s}\)), the peak has a neat form. Net revenue is \((s/2 - f)\,A e^{-\kappa s}\), where \(f\) is the floor, and it's highest at:</p>
+  </div>
+  <div class="formula"><span class="lbl">The best width above a floor</span>\[ s^{*} = 2f + \frac{1}{\kappa} \]</div>
+  <div class="prose">
+    <p>The best quote is <strong>the floor, plus a markup set by competition</strong>. In crowded markets, flow is very price-sensitive (\(\kappa\) is large), so the markup is tiny and quotes sit barely above the floor. In thin markets with few rivals (\(\kappa\) small), the markup can be large. Deltashark draws the conclusion: that's why spreads vary more across instruments than any one cost does.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "The Full Avellaneda–Stoikov Model", "What does the standard model say about width and centre together?", "Avellaneda–Stoikov" %}
+  <div class="prose">
+    <p>Quote Skewing introduced half of the {% gl "avellaneda–stoikov model" %}Avellaneda–Stoikov model{% endgl %}: the {% gl "indifference price" %}indifference price{% endgl %} that sets the centre. The other half sets the total width of the quote around it:</p>
+  </div>
+  <div class="formula"><span class="lbl">Avellaneda–Stoikov (2008): centre and width</span>\[ r = s - q\,\gamma\,\sigma^{2}(T - t) \qquad \delta^{a} + \delta^{b} = \gamma\,\sigma^{2}(T - t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{\kappa}\right) \]</div>
+  <div class="prose">
+    <p>The bid and offer sit around \(r\), a total of \(\delta^{a} + \delta^{b}\) apart. The width has two parts, which match this note's two sections:</p>
+    <ul>
+      <li><strong>\(\gamma\sigma^{2}(T - t)\): the inventory part.</strong> More risk aversion, more volatility or more time left to carry positions means a wider quote. It's this model's version of \(c_{\text{inv}}\).</li>
+      <li><strong>\(\tfrac{2}{\gamma}\ln(1 + \gamma/\kappa)\): the competition part.</strong> It depends on \(\kappa\), how quickly fills fall away with distance. For a maker who barely minds risk (\(\gamma\) close to zero), it becomes \(2/\kappa\): exactly the markup above, written per side (\(1/\kappa\) on each).</li>
+    </ul>
+    <p>What the model leaves out is the informed trader: it has no {% gl "adverse selection" %}adverse selection{% endgl %} term. Real desks add one, which is the \(qm\) part of Deltashark's floor. Avellaneda–Stoikov is the starting point for most market making research and for many crypto market making bots, so it's worth knowing well for interviews.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>\(\gamma = 0.1\), \(\kappa = 1.5\) per tick, and \(\sigma^{2}(T - t) = 2\) ticks². What's the optimal total width?</h3>
+    <ol class="steps">
+      <li>Inventory part: \(0.1 \times 2 = 0.2\) ticks.</li>
+      <li>Competition part: \(\tfrac{2}{0.1}\ln(1 + 0.1/1.5) = 20 \times \ln(1.0667) \approx 20 \times 0.0645 \approx 1.29\) ticks.</li>
+      <li>Total: \(\approx 1.49\) ticks, centred on the indifference price.</li>
+    </ol>
+    <p class="answer">Here competition sets most of the width. Double the volatility (so \(\sigma^{2}\) quadruples) and the inventory part grows to \(0.8\), for a total of about \(2.1\) ticks.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Don't Copy the Competitor", "If someone quotes tighter than you, should you match them?", "Don't copy the competitor" %}
+  <div class="prose">
+    <p>Deltashark's trap for this lesson: matching a competitor's tighter quote is only right if their floor really is lower. They might requote faster, see cheaper flow, or have a better fair value model. It's wrong if they're simply mispricing the risk. And being undercut doesn't always mean you're wrong. <strong>Width should come from your own measured tolls, your own recycling speed and your own costs, then be adjusted for competition</strong>, not copied from it.</p>
+    <p>The way to lower your floor is to work on its parts: faster requoting cuts the informed toll (The Free Option's markouts), better flow cuts it further (client tiering), quicker recycling cuts the inventory cost (Quote Skewing), and scale cuts the cost per fill. That's the business case for everything a market making firm invests in.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Run the Desk", "What happens when you put width, skew and limits together?", "Run the desk" %}
+  <div class="prose">
+    <p>Time to put the chapter together. Below, you run a market making desk for a day in a futures contract worth \(\$12.50\) a tick. There's a data release at 1:30pm (when US data lands in London), and for ten minutes before it some traders already know which way it will go. You choose the width, how hard to skew, and what to do around the release. The inventory limit is 40 lots.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Run the desk</h3><p>Ordinary customers all day, informed traders just before the 1:30pm release, and a jump of 10 ticks when it lands. Set your quoting and see where the P&amp;L comes from. Try the presets first.</p></div>
+    <div class="controls">
+      <div class="presets sw-pick" id="rd-pick" aria-label="Desk presets"></div>
+      <div class="ctrl"><label for="rd-w">Width</label><input type="range" id="rd-w" min="1" max="8" step="0.5" value="2"><output id="rd-w-out" for="rd-w">2 ticks</output></div>
+      <div class="ctrl"><label for="rd-k">Skew</label><input type="range" id="rd-k" min="0" max="0.3" step="0.02" value="0.1"><output id="rd-k-out" for="rd-k">0.10</output></div>
+      <div class="presets sw-pick" id="rd-news" aria-label="Around the release"></div>
+      <div class="presets"><button type="button" id="rd-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-rd" viewBox="0 0 640 280" role="img" aria-label="The desk's running profit and loss through the day, with the release marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Running P&amp;L</span><span><i class="sw grey"></i>The release</span></div>
+    <div class="readout" id="rd-read"></div>
+    <p class="look" id="rd-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 6, "The Whole Chapter on One Page", "What are all the market maker's decisions, and where did each come from?", "The chapter on one page" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Decision or idea</th><th>The rule</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>What's being sold</td><td>Immediacy; the round trip earns the spread once</td><td>The Market Maker's Job</td></tr>
+        <tr><td>Who pays whom</td><td>Fees, rebates and designations change the economics</td><td>Designated Makers, Fees and Special Markets</td></tr>
+        <tr><td>Revenue</td><td>\(R = \tfrac{s}{2}N\); hump-shaped in width</td><td>Earning the Spread</td></tr>
+        <tr><td>The informed toll</td><td>\(E[\pi \mid \text{fill}] = \tfrac{s}{2} - qm\)</td><td>The Free Option</td></tr>
+        <tr><td>Holding risk</td><td>\(\sigma_{\text{inv}} = |I|\,\sigma\sqrt{h}\); path, not average</td><td>Inventory Risk</td></tr>
+        <tr><td>The centre</td><td>\(P_{\text{res}} = P_{\text{fair}} - kI\)</td><td>Quote Skewing</td></tr>
+        <tr><td>The width</td><td>\(\tfrac{s}{2} \ge qm + c_{\text{inv}} + c_{\text{op}}\); best \(s^{*} = 2f + 1/\kappa\)</td><td>Setting the Width</td></tr>
+        <tr><td>Profit</td><td>\(\pi = \tfrac{s}{2}N - AS - IC - \text{fees}\)</td><td>Earning the Spread</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember from the chapter</span>
+    <p>A market maker sets two numbers after every fill: where to centre its quotes (inventory and fair value) and how wide to make them (information, volatility, holding time and competition). Everything else, from speed to client tiering to hard limits, exists to make those two numbers cheaper to get right.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "When do spreads widen in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>FX spreads follow the floor around the clock. They're tightest when London and New York overlap, wider in the quiet hours, and widest at the Sunday reopening, on holidays and around big data. The clearest example of the floor jumping is the yen flash event of 3 January 2019. In the thin gap between the New York close and the Asian open, with Japan on holiday, the yen jumped against the dollar in minutes. The Reserve Bank of Australia reported bid-ask spreads widening from around 2 {% gl "pip" %}pips{% endgl %} to 100–300 pips. Market makers weren't failing: with almost no flow and huge uncertainty, the floor really was that high.</p>
+    <h3>Gold</h3>
+    <p>Gold spreads widen around US data and Fed decisions, at the Asian open, and in stress, when the inventory cost rises because bullion is harder to move between London, New York and Asia (as in March 2020).</p>
+    <h3>Bonds</h3>
+    <p>Benchmark government bonds have tight spreads in normal times, but they widen around inflation data and central bank meetings, and they blew out in March 2020 when dealers' balance sheets filled up. Corporate bonds have far wider spreads all the time: the holding time is days rather than seconds, so the inventory term is large, and some clients know more about the company's credit than the dealer.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Wide</h3><span class="tag desk">Desk</span></div><p>A large spread.</p><p class="eg">"Market's wide into the number."</p></div>
+    <div class="term"><div class="term-top"><h3>Tight</h3><span class="tag desk">Desk</span></div><p>A small spread.</p><p class="eg">"It's a penny tight all day in the front month."</p></div>
+    <div class="term"><div class="term-top"><h3>Pull</h3><span class="tag desk">Desk</span></div><p>Cancel your quotes and stop making a market for a while.</p><p class="eg">"Pull everything thirty seconds before payrolls."</p></div>
+    <div class="term"><div class="term-top"><h3>Back in</h3><span class="tag desk">Desk</span></div><p>Quoting again after pulling.</p><p class="eg">"We're back in, two wide."</p></div>
+    <div class="term"><div class="term-top"><h3>Size down</h3><span class="tag desk">Desk</span></div><p>Show smaller quantities on your quotes.</p><p class="eg">"Size down, the flow's getting toxic."</p></div>
+    <div class="term"><div class="term-top"><h3>Floor</h3><span class="tag desk">Desk</span></div><p>The narrowest spread that still covers your costs and risks.</p><p class="eg">"We're quoting right on the floor in that name."</p></div>
+    <div class="term"><div class="term-top"><h3>Gap</h3><span class="tag desk">Desk</span></div><p>A sudden widening, or a jump in price with nothing trading in between.</p><p class="eg">"Spreads gapped out on the headline."</p></div>
+    <div class="term"><div class="term-top"><h3>Thin</h3><span class="tag desk">Desk</span></div><p>Little flow and little size in the book.</p><p class="eg">"It's thin over the holiday, keep it wide."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where spread width turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: when your costs jump</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Your broker's spread follows the same floor, so plan your trading around it. Trading EUR/USD or gold in the London–New York overlap is cheap; trading at the Sunday open, on a holiday or in the minute after a big release can cost many times as much. The January 2019 yen event is also a warning about stop orders: in a thin market, a stop becomes a market order into a book with 100-pip spreads. If you trade around news, size for the spread you'll actually get, not the one on a quiet afternoon.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: why some places have wide spreads</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>In property, the "spread" is the gap between what a quick-sale buyer pays and what a patient seller gets. It's wide where the floor is high: unusual or holiday properties (long holding time, few buyers), areas where values are uncertain, and markets where the other side may know more (a local seller against a foreign buyer). Pricing villas means estimating that floor for each location: how long a unit will sit, how much prices could move meanwhile, and how much the buyer knows that you don't.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: pricing naira in a storm</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app's spread should follow the floor too: tighter on quiet days, wider before CBN announcements and in weeks when the naira is moving fast, when informed users (those who know about a policy change or a big payment) are more likely and holding currency inventory is riskier. Copying a rival's rate is Deltashark's trap: if the rival is underpricing the risk, matching them means sharing their losses. Building the spread from measured costs per conversion is the sounder way to price.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do the floor, the peak and Avellaneda–Stoikov fit together?" %}
+  <div class="formula"><span class="lbl">The floor, with an inventory cost proportional to \(\sigma\sqrt{h}\)</span>\[ f = q\,m + \lambda\,\sigma\sqrt{h} + c_{\text{op}} \qquad s_{\min} = 2f \]</div>
+  <div class="formula"><span class="lbl">Net revenue above the floor, and its peak</span>\[ \Pi(s) = \left(\frac{s}{2} - f\right) A e^{-\kappa s} \qquad \frac{d\Pi}{ds} = 0 \;\Rightarrow\; \frac{s^{*}}{2} - f = \frac{1}{2\kappa} \;\Rightarrow\; s^{*} = 2f + \frac{1}{\kappa} \]</div>
+  <div class="prose">
+    <p>\(\lambda\) is how much the desk charges per unit of risk held; in the Price the width interactive it's \(0.5\), so normal conditions (\(\sigma = 1\) tick a minute, \(h = 1\) minute) give Deltashark's \(0.5\)-tick inventory cost. The peak formula comes from differentiating \(\Pi(s)\): \(\tfrac{1}{2}e^{-\kappa s} - \kappa(\tfrac{s}{2} - f)e^{-\kappa s} = 0\).</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The floor is 2 ticks a side and \(\kappa = 0.5\) per tick. What's the best width? And if a new competitor makes the flow twice as price-sensitive?</h3>
+    <ol class="steps">
+      <li>\(s^{*} = 2 \times 2 + 1/0.5 = 4 + 2 = 6\) ticks.</li>
+      <li>With \(\kappa = 1\): \(s^{*} = 4 + 1 = 5\) ticks.</li>
+      <li>Competition removed a tick of markup, but it can't take the quote below the 4-tick floor.</li>
+    </ol>
+    <p class="answer">Competition squeezes the markup; only better technology, flow or models can lower the floor itself.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) Informed toll \(1.5\) ticks per fill, inventory cost \(1\) tick, fees \(0.5\). What is the minimum full spread in ticks?</span></p>
+      <details><summary>Show answer</summary><div><span>Half-spread \(\ge 1.5 + 1 + 0.5 = 3\), so the full spread is at least \(6\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Width A: \(40\) fills an hour at \(0.4\) ticks net margin. Width B: \(25\) fills an hour at \(0.8\). Which earns more per hour, and how many ticks does the better one earn?</span></p>
+      <details><summary>Show answer</summary><div><span>A: \(40 \times 0.4 = 16\). B: \(25 \times 0.8 = 20\). B earns more, \(20\) ticks an hour.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A maker's inventory cost per fill is \(0.5\) ticks in normal conditions. Volatility doubles and holding time quadruples. What's the new inventory cost, if it scales with \(\sigma\sqrt{h}\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.5 \times 2 \times \sqrt{4} = 2\) ticks per fill.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>The floor is \(1.5\) ticks a side and \(\kappa = 2\). What's the best width?</span></p>
+      <details><summary>Show answer</summary><div><span>\(s^{*} = 2 \times 1.5 + 1/2 = 3.5\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>In Avellaneda–Stoikov, what happens to the optimal width when the market maker becomes very relaxed about risk (\(\gamma \to 0\))?</span></p>
+      <details><summary>Show answer</summary><div><span>The inventory part \(\gamma\sigma^{2}(T - t)\) goes to zero and the competition part \(\tfrac{2}{\gamma}\ln(1 + \gamma/\kappa)\) tends to \(2/\kappa\). The width is then set purely by how price-sensitive the flow is.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why do spreads widen before major economic announcements?</span></p>
+      <details><summary>Show answer</summary><div><span>Because the floor rises. The chance that the next trader knows something (or reacts faster) goes up, so the adverse selection toll rises; volatility is about to jump, so the cost of holding any inventory rises; and some makers pull quotes, so flow is thinner and holding times longer. A maker quoting its normal width would be selling cheap options to whoever trades first after the news. Wider spreads are liquidity correctly priced.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're quoting a stock and a competitor consistently shows one tick tighter. What do you do?</span></p>
+      <details><summary>Show answer</summary><div><span>First, work out whether their floor is really lower. I'd look at my own markouts and realised spreads: if my flow is toxic at my current width, matching them would lose money. I'd check whether they're faster (my fills come when the market moves), whether they see better flow, or whether their fair value is better. If their floor is genuinely lower, I'd work on mine (speed, models, flow) rather than just copying the number. If they're mispricing, I'd let them have the flow and watch whether they keep quoting there.</span></div></details></div>
+  </div>
+{% endsec %}

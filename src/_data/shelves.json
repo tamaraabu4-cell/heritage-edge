@@ -233,7 +233,7 @@
           "Adverse Selection",
           "Inventory Risk",
           "Quote Skewing",
-          { "name": "Spread Width", "planned": ["Setting the Width"] }] },
+          "Spread Width"] },
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
         "subtopics": ["Tick Sizes", "Order Flow", "Latency and Speed"] },
       { "title": "Game Theory in Trading", "blurb": "Trading against people who know things you don't.",
