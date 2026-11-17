@@ -1,0 +1,269 @@
+---
+title: The Market Maker's Job
+shelf: quant
+chapter: market-making
+subtopic: The Market Maker's Job
+order: 1
+summary: What a market maker actually sells (immediacy, paid for by the spread); the round trip as the unit of revenue and the three things that disturb it (price moves while holding, informed counterparties, not getting filled); bridging time between buyers and sellers who arrive at different moments, and why the maker's inventory is exactly the queue of customers who would otherwise be waiting; making versus taking as two businesses in the same trade, and who does which; designated and voluntary market makers, and why being there in a crash is what the role is really paid for (stub quotes and the 2010 Flash Crash); from floor specialists earning eighths of a dollar to a few electronic firms earning fractions of a penny at enormous scale; and market making in FX, gold and bonds.
+lede: 'A market maker is the shop that is always open. It will buy from you or sell to you right now, in reasonable size, whoever you are, and the gap between its two prices is the fee for not having to wait. This note takes the job apart: what is being sold, how the business carries buyers and sellers across time, why it wants to own nothing, and how a role once played by people shouting on a floor became a technology business run by a handful of firms.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/the-market-makers-job.js]
+
+quiz:
+  - q: 'What is a market maker actually selling?'
+    opts: ['A forecast of where the price is going next', 'Shares it bought cheaply earlier and is waiting to sell at a profit', 'Immediacy: the chance to trade right now without waiting for someone who wants the other side']
+    right: 2
+    why: 'The maker has no view and wants no position. It sells the service of always being there, and the spread is the price of that service. Its profit comes from turnover (many round trips), not from the direction of the price.'
+  - q: 'A hedge fund and a market maker each buy 5,000 shares of the same stock at about the same moment. What is the difference?'
+    opts: ['There is none: a trade is a trade', 'For the fund it is a position it chose because of a view, and it paid the spread to get it; for the maker it is unwanted inventory, picked up while earning the spread, to be worked off as quickly as possible', 'The market maker always loses money on the trade']
+    right: 1
+    why: 'Same shares, two businesses. The fund is a taker expressing a view; the maker is serving flow and treats the 5,000 shares as a cost of doing that. Deltashark: the two businesses meet in every transaction, each paying for what the other supplies.'
+  - q: 'In the "Bridging time" interactive, what does the market maker''s inventory equal at every moment?'
+    opts: ['The number of customers who would be standing in line, waiting for someone on the other side, if there were no market maker', 'The profit the maker has made so far', 'The width of the spread']
+    right: 0
+    why: 'Each customer the maker serves would otherwise have waited for a match. The maker absorbs that queue into its own book: when sellers bunch up, it is long by exactly the number of unmatched sellers. That is what bridging time means, and it is also where inventory risk comes from.'
+
+connected:
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: "Market Makers, Prop Firms and Hedge Funds", where: Quant · Quant Trading Firms, url: /hub/quant/market-makers-prop-firms-and-hedge-funds/ }
+  - { label: Builds on, title: What Quant Trading Is, where: Quant · Quant Trading Firms, url: /hub/quant/what-quant-trading-is/ }
+  - { label: Used in, title: Inventory Risk, where: Quant · Market Making, url: /hub/quant/ }
+---
+
+<style>
+  .mj-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .mt-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; }
+  .mt-row { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: var(--bg); }
+  .mt-case { font-size: 14px; margin: 0 0 6px; }
+  .mt-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mt-opts button { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--hub-card, transparent); color: var(--text); cursor: pointer; }
+  .mt-opts button.right { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .mt-opts button.wrong { text-decoration: line-through; color: var(--text-2); }
+  .mt-why { margin: 8px 0 0; font-size: 14px; color: var(--text-2); }
+  .mt-why strong { color: var(--text); }
+  .mt-score { margin-top: 10px; font-weight: 600; }
+</style>
+
+{% sec 1, "Selling Immediacy", "What does a market maker do, and what is it paid for?", "Selling immediacy" %}
+  <div class="prose">
+    <p>Think about the shop near a university that buys second-hand textbooks. In June, a student who has finished her course walks in and sells her economics textbook for £20 on the spot. She doesn't have to find next year's student herself, agree a price or wait until September. In October, a new student walks in and buys the same book for £30. The shop never wanted to read it. It carried the book across the summer, took the risk that a new edition would make it worthless, and was paid £10 for the service.</p>
+    <p>A {% gl "market maker" %}market maker{% endgl %} does exactly this, thousands of times a second. It quotes a {% gl "two-way price" %}two-way price{% endgl %}, a bid to buy and an offer to sell, continuously, in reasonable size, to anyone who turns up. Deltashark's one-line description: the business is <strong>selling {% gl "immediacy" %}immediacy{% endgl %}</strong>. Anyone can trade now instead of waiting for a {% gl "natural" %}natural{% endgl %} buyer or seller to appear on the other side, and the {% gl "bid-ask spread" %}spread{% endgl %} between the maker's two prices is the fee for that service.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark)</span>
+    <h3>A market maker quotes \(99.95\) bid, \(100.05\) offered. A seller hits the bid. A few minutes later, a buyer lifts the offer. What did the maker earn?</h3>
+    <ol class="steps">
+      <li>The seller hits the bid: the maker buys at \(99.95\) and is now long one share.</li>
+      <li>The buyer lifts the offer: the maker sells at \(100.05\) and is {% gl "flat" %}flat{% endgl %} again.</li>
+      <li>Profit: \(\pi = 100.05 - 99.95 = 0.10\) per share, the whole spread, with nothing left on the books.</li>
+    </ol>
+    <p class="answer">Buy at the bid, sell at the offer, back to flat: one {% gl "round trip" %}round trip{% endgl %} earns the full spread once.</p>
+  </div>
+  <div class="prose">
+    <p>Deltashark calls this clean cycle the unit of revenue. <strong>Everything else in market making is something that disturbs it</strong>, and each disturbance is a cost. The rest of this chapter takes them one at a time:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>What goes wrong with the round trip</th><th>What it's called</th><th>Where it's covered</th></tr></thead>
+      <tbody>
+        <tr><td>The price moves while the maker is holding the share</td><td>{% gl "inventory risk" %}Inventory risk{% endgl %}</td><td>Inventory Risk, Quote Skewing</td></tr>
+        <tr><td>The person on the other side knew the price was about to move</td><td>{% gl "adverse selection" %}Adverse selection{% endgl %}</td><td>The Free Option</td></tr>
+        <tr><td>The maker's order is too far back in the queue to be filled at all</td><td>Fill risk (queue position)</td><td>The Order Book, and Microstructure later</td></tr>
+        <tr><td>Fees, technology and staff have to be paid whatever happens</td><td>Running costs</td><td>Earning the Spread, Setting the Width</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "Bridging Time", "Why does a market need someone in the middle at all?", "Bridging time" %}
+  <div class="prose">
+    <p>Buyers and sellers don't arrive together. A pension fund wants to sell at 10:00; a retail investor wants to buy at 10:20. Without anyone in between, the seller has two choices: wait twenty minutes, or keep dropping the price until somebody bites. Deltashark's picture is that the maker <strong>stands between them in time</strong>: it buys from the 10:00 seller, holds the shares, and sells to the 10:20 buyer. Neither of them had to find the other. The maker carried the position, and the risk, across the gap.</p>
+    <p>Over thousands of arrivals, the maker's {% gl "inventory" %}inventory{% endgl %} moves up and down around zero: it builds up when sellers bunch together and runs down when buyers do. Meanwhile, the people trading simply see a market that is always there. Try it below.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Bridging time</h3><p>A trading day of customers arriving at random, each wanting to buy or sell one lot of 100 shares. The market maker fills every one of them immediately. Change how busy the stock is and how one-sided the flow is.</p></div>
+    <div class="controls">
+      <div class="presets mj-pick" id="bt-pick" aria-label="Example days"></div>
+      <div class="ctrl"><label for="bt-n">Customers</label><input type="range" id="bt-n" min="5" max="120" step="1" value="40"><output id="bt-n-out" for="bt-n">40/hr</output></div>
+      <div class="ctrl"><label for="bt-p">Share who buy</label><input type="range" id="bt-p" min="30" max="70" step="1" value="50"><output id="bt-p-out" for="bt-p">50%</output></div>
+      <div class="presets"><button type="button" id="bt-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-bt" viewBox="0 0 640 280" role="img" aria-label="The market maker's inventory through a trading day, moving above and below zero as sellers and buyers arrive"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Maker's inventory (lots), which is also the line of customers who'd be waiting without it</span></div>
+    <div class="readout" id="bt-read"></div>
+    <p class="look" id="bt-story"></p>
+  </div>
+  <div class="prose">
+    <p>Look at what the line really is. Without a market maker, the customers who can't find a match have to stand in line. When five more sellers than buyers have arrived, five sellers are waiting. With a market maker, nobody waits, and the maker owns five lots instead. <strong>The maker's inventory is that line of waiting customers, taken onto its own books.</strong> That is the service. It is also, as Inventory Risk shows, the main thing that can hurt the maker: when the flow is one-sided, the line gets long and the maker gets stuck with it.</p>
+    <p>Notice too that even a perfectly balanced day doesn't stay near zero. Each customer is a coin toss, and coin tosses come in streaks, so the inventory takes a random walk. Over \(N\) customers it typically drifts about \(\sqrt{N}\) lots away from where it started: around \(16\) lots on a day of \(250\) customers. A real market maker doesn't wait for luck to bring it back. It leans its prices to attract the trades that shrink the position, which is the subject of Quote Skewing.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember</span>
+    <p>A market maker is paid for carrying other people's trades across time. Its inventory is the queue of customers it saved from waiting, so a busy, balanced market is easy to serve, and a quiet or one-sided one is where the risk builds up.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Same Trade, Two Businesses", "How is making different from taking, if both just buy and sell?", "Two businesses" %}
+  <div class="prose">
+    <p>Deltashark names the market maker's target state <strong>inventory neutrality</strong>: profit from flow, not from direction. Inventory is the by-product of serving customers, to be recycled quickly, not a position taken because of a view. The maker's edge is the spread times how often it turns its inventory over. Any profit or loss from the price moving is just noise around that, and the maker doesn't want it either way.</p>
+    <p>That gives the cleanest way to tell making from taking. Suppose a hedge fund and a market maker each buy 5,000 shares of the same stock. For the fund, it's a <strong>position</strong>: it chose the shares because it thinks they'll rise, and it paid the spread to get in. For the maker, it's an <strong>exposure to be worked off</strong>: it ended up with the shares because sellers turned up, and earned the spread for having them. The two businesses meet in every trade, each paying for what the other supplies: the taker pays for immediacy, and the maker is paid for taking on the timing risk.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Market maker</th><th>Market taker</th></tr></thead>
+      <tbody>
+        <tr><td>Wants</td><td>To be flat, with as many round trips as possible</td><td>A position, because of a view</td></tr>
+        <tr><td>Earns</td><td>The spread (and often an exchange rebate)</td><td>The price move, if the view is right</td></tr>
+        <tr><td>Pays for</td><td>Inventory risk and being picked off</td><td>The spread and market impact</td></tr>
+        <tr><td>Holds for</td><td>Seconds to minutes (Deltashark: the typical holding time at the biggest electronic makers is measured in seconds)</td><td>Hours to months</td></tr>
+        <tr><td>Edge comes from</td><td>Speed, pricing models, reading the flow</td><td>Research, macro views, signals</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The line blurs in practice, which is why intent matters more than the order type. A fund that buys slowly with limit orders sitting on the bid is technically providing liquidity, but it's still a taker: it wants the position, and if the order doesn't fill it will cross the spread in the end. And some firms make in one market while taking in another. Test yourself.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Maker or taker?</h3><p>Eight participants. Is each one mostly making, mostly taking, or both depending on the market? Judge by what they're trying to do, not just the type of order they send.</p></div>
+    <ul class="mt-list" id="mt-list"></ul>
+    <p class="mt-score" id="mt-score" aria-live="polite"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Being There When It's Hard", "What do market makers owe the market, and when do they disappear?", "Being there when it's hard" %}
+  <div class="prose">
+    <p>Some market makers sign up for the job formally. A {% gl "designated market maker" %}designated market maker{% endgl %} registers with an exchange and promises to quote within a maximum spread, for a minimum size, for a minimum share of the trading day. In return it gets fee rebates, priority in some situations, or direct payments. Others make markets with no promises at all, wherever the expected revenue is worth it. The next note, Designated Makers, Fees and Special Markets, looks at those deals in detail.</p>
+    <p>Deltashark makes a sharp point here. The promise only formalises what competition demands anyway. A maker that vanishes exactly when quoting gets expensive (in volatile, one-sided markets) supplies very little of the immediacy it is supposedly paid for. So both contracts and reputation reward being there <strong>continuously</strong>, not just on calm days.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The Flash Crash, 6 May 2010<span class="why">As prices fell, many market makers pulled their quotes because they could no longer tell informed selling from panic. Some were still meeting the rule to show a two-sided quote, but only with {% gl "stub quote" %}stub quotes{% endgl %}: placeholder prices like a bid at one cent or an offer at \(\$100{,}000\), never meant to trade. With nothing else left in the book, orders filled against them, and shares in Accenture, a large blue-chip company, briefly traded at a penny.</span></span></li>
+    <li><span class="n">2</span><span>The fix, December 2010<span class="why">The SEC approved exchange and FINRA rules banning stub quotes. Registered market makers must now keep quotes within a set band around the best bid and offer, 8% for the largest US stocks and wider for others, throughout regular hours.</span></span></li>
+    <li><span class="n">3</span><span>The trade-off that remains<span class="why">A rule can force a maker to quote. It can't force the quote to be tight or large. In stress, makers widen and shrink their quotes rather than leave, which keeps the market open but expensive. Setting the Width shows why that's the rational response.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 5, "From the Floor to Fibre", "How did market making become a technology business run by a few firms?", "From the floor to fibre" %}
+  <div class="prose">
+    <p>What Quant Trading Is told the general story of trading moving from the pit to the server. For market making in US shares, the change went like this:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>When</th><th>Who made the market</th><th>Typical spread</th><th>What changed</th></tr></thead>
+      <tbody>
+        <tr><td>Before 2001</td><td>NYSE floor {% gl "specialist" %}specialists{% endgl %}: one firm per stock, managing quotes by hand</td><td>An eighth or a sixteenth of a dollar (12.5 or 6.25 cents)</td><td>A relationship business with wide spreads and very high profits per trade</td></tr>
+        <tr><td>2001–2005</td><td>Specialists, plus electronic networks competing with exchanges</td><td>1 to 5 cents</td><td>{% gl "decimalisation" %}Decimalisation{% endgl %} cut the minimum price step to one cent</td></tr>
+        <tr><td>2005–2015</td><td>Electronic market makers ({% gl "high-frequency trading" %}high-frequency{% endgl %} firms)</td><td>One cent in busy stocks</td><td>Trading split across dozens of venues; firms that could quote everywhere at once, in microseconds, won. By 2010 they did over half of US share volume</td></tr>
+        <tr><td>2015 to today</td><td>A handful of large firms</td><td>One cent on exchanges; less than a cent off-exchange for retail orders</td><td>Margins too thin for small players, so the industry consolidated</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Deltashark's summary is that market making went from a relationship business with monopoly profits to a technology arms race where margins are razor-thin and <strong>scale is the only advantage that lasts</strong>. The kit a competitive electronic market maker runs:</p>
+    <ul>
+      <li><strong>Servers next to the exchange.</strong> {% gl "colocation" %}Colocation{% endgl %} in the same data centres as the matching engines (for example Mahwah, New Jersey for the NYSE and Carteret, New Jersey for Nasdaq), plus microwave and laser links between data centres.</li>
+      <li><strong>Logic in hardware.</strong> The fastest decisions run on FPGAs, chips programmed for one job, which cuts reaction times from microseconds to nanoseconds.</li>
+      <li><strong>Fair value from everything.</strong> Pricing models update each stock's fair value many times a second, using thousands of related prices: ETFs, futures, options and currencies.</li>
+      <li><strong>Reading the flow.</strong> Models classify incoming orders as likely informed or uninformed and adjust spread and size to match (The Free Option).</li>
+      <li><strong>Live risk.</strong> Systems that watch inventory across every position and hedge or move quotes automatically.</li>
+    </ul>
+    <p>Deltashark estimates the cost of building and running this at \(\$100\)m to \(\$500\)m. That's why so few firms can do it.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: fractions of a penny at scale</span>
+    <h3>A market maker quotes a one-cent spread on a \(\$150\) share. How big is that, and how does it add up to a business?</h3>
+    <ol class="steps">
+      <li>Spread in {% gl "basis point" %}basis points{% endgl %}: \(0.01 \div 150 \times 10{,}000 \approx 0.67\) bp. Each fill earns half of that against the {% gl "mid" %}mid{% endgl %}: half a cent a share.</li>
+      <li>Illustration only: half a cent on a billion shares a day is \(\$5\)m a day, about \(\$1.26\)bn over \(252\) trading days.</li>
+      <li>That's <em>gross</em>. Adverse selection, inventory losses, fees and the technology bill all come out before any profit.</li>
+    </ol>
+    <p class="answer">Tiny margins only work at enormous volume, and only enormous firms can afford the technology to earn them.</p>
+  </div>
+  <div class="prose">
+    <p>The firms are the ones from The Firms. Citadel Securities says it handles nearly a quarter of all US share volume and over a third of US retail volume; Virtu, Jane Street, Jump and GTS are among the others. Deltashark raises the obvious worry: when a few firms provide most of the liquidity in the world's biggest stock market, what happens if several of them step back on the same bad day? The Flash Crash was a small preview. That concentration is one reason regulators care so much about quoting obligations and circuit breakers.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Who makes the market in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>Spot FX has no central exchange, so market makers do almost all the work. Big dealer banks and non-bank firms such as XTX and Citadel Securities stream two-way prices to clients on their own platforms and on multi-dealer venues. FX is also the clearest example of bridging time inside one firm. When one client buys euros and another sells them a few seconds later, a large dealer simply matches them on its own books, which is called {% gl "internalisation" %}internalisation{% endgl %}. The 2025 BIS Triennial Survey found dealers matching more than 80% of customer trades internally. They only go to the interdealer order books (EBS and LSEG Matching) to offload what's left over. A big dealer's inventory is the leftover after thousands of client trades cancel out.</p>
+    <h3>Gold</h3>
+    <p>In the London over-the-counter market, bullion banks make the market, quoting two-way prices to clients and to each other. The LBMA has a category of market-making members that commit to doing this throughout the day. In COMEX gold futures, electronic market makers quote on the exchange's order book, just as they do in shares.</p>
+    <h3>Bonds</h3>
+    <p>Bond dealers keep inventory for far longer than share market makers: days or weeks, not seconds, because most bonds trade rarely. (Imagine the Bridging time interactive with only a few customers a day.) That's why bond spreads are wider and why dealers need balance sheet to do the job. Government bond markets also have formal market makers: gilt-edged market makers (GEMMs) in the UK and primary dealers in the US take on obligations in return for privileges, as the next note explains.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Two-way</h3><span class="tag desk">Desk</span></div><p>A bid and an offer quoted together.</p><p class="eg">"Can you show me a two-way in ten million?"</p></div>
+    <div class="term"><div class="term-top"><h3>Make a market</h3><span class="tag desk">Desk</span></div><p>Stand ready to buy or sell at your quoted prices.</p><p class="eg">"We make markets in most of the big bond ETFs."</p></div>
+    <div class="term"><div class="term-top"><h3>Round trip</h3><span class="tag desk">Desk</span></div><p>A buy and a sell that bring the position back to zero.</p><p class="eg">"We did 400 round trips in it today."</p></div>
+    <div class="term"><div class="term-top"><h3>Flat</h3><span class="tag desk">Desk</span></div><p>Holding no position.</p><p class="eg">"Get me flat before the number."</p></div>
+    <div class="term"><div class="term-top"><h3>Naturals</h3><span class="tag desk">Desk</span></div><p>Buyers and sellers who actually want the asset, as opposed to intermediaries.</p><p class="eg">"No naturals around, it's just us and the other makers."</p></div>
+    <div class="term"><div class="term-top"><h3>Axe</h3><span class="tag desk">Desk</span></div><p>Something a dealer wants to buy or sell, usually to reduce inventory. The dealer will price it more keenly.</p><p class="eg">"We're axed to sell the 2034s."</p></div>
+    <div class="term"><div class="term-top"><h3>Warehouse</h3><span class="tag desk">Desk</span></div><p>Hold a client's trade on your own books for a while instead of passing it straight on.</p><p class="eg">"We'll warehouse it and work it out over the afternoon."</p></div>
+    <div class="term"><div class="term-top"><h3>Internalise</h3><span class="tag desk">Desk</span></div><p>Match one client's trade against another's inside your own book.</p><p class="eg">"We internalised most of that flow; only the residual hit EBS."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where the market maker turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: your broker may be your market maker</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>When you buy EUR/USD or gold on a retail platform, the other side of your trade is usually a market maker, and often it's the broker itself. Many retail FX and CFD brokers run a "dealing desk": they take the other side of clients' trades, earn the spread, and keep whatever clients lose overall, only passing on risk they don't want to hold. That's why UK CFD providers must publish the share of retail accounts that lose money. Two habits follow. Treat the spread as the price of immediacy and check how wide it gets around news and at the daily rollover. And notice that your broker is running the business in this chapter, with you as part of its flow.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: estate agents and "we buy any house"</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>An estate agent is a broker: it introduces buyer and seller and earns a fee, but it never owns the house, so the seller waits months for the right buyer. A quick-sale company that buys any house for cash in days is a market maker: it sells immediacy, pays well below market value for it (that's its spread), carries the house as inventory, and resells it later. The same choice will come up when selling villas. Selling fast always costs money, and that cost is the price of immediacy. Owning houses as stock means carrying inventory risk the whole time.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: who makes Nigerian markets?</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigerian shares are thinly traded, so customers on NGX often wait for a match. That's the quiet-stock setting in the Bridging time interactive, and it's why NGX launched a market making programme in 2012. In the official FX market, dealer banks quote two-way naira prices on the electronic platform (EFEMS) the CBN introduced in December 2024. In the cash market, bureau de change operators play the same role on a small scale. A Nigerian fintech that offered instant naira–dollar conversion would be a market maker in this sense: its spread would have to pay for holding naira and dollar inventory while flows are lopsided.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on a market maker's day?" %}
+  <div class="formula"><span class="lbl">One round trip, and what each fill earns against the mid</span>\[ \pi_{\text{round trip}} = (P_{\text{offer}} - P_{\text{bid}}) \times q \qquad e_{\text{fill}} = |P_{\text{fill}} - m| = \frac{s}{2} \qquad s_{\text{bp}} = \frac{s}{m} \times 10^4 \]</div>
+  <div class="formula"><span class="lbl">Inventory and completed round trips</span>\[ I_t = (\text{lots bought from sellers}) - (\text{lots sold to buyers}) \qquad \text{round trips} = \frac{N - |I_{\text{end}}|}{2} \]</div>
+  <div class="prose">
+    <p>\(m\) is the mid (halfway between bid and offer), \(s\) the spread, \(q\) the size. \(N\) is the number of fills in the day, so if \(B\) sellers hit the bid and \(S\) buyers lift the offer, \(N = B + S\), \(I = B - S\), and the matched pairs number \(\min(B, S) = (N - |I|)/2\). Whatever is left in \(I_{\text{end}}\) is unmatched inventory the maker still has to get rid of. When each customer is equally likely to buy or sell, \(I\) is a random walk: its standard deviation after \(N\) customers is \(\sqrt{N}\) lots, which is why even balanced flow leaves the maker holding something.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A maker quoting \(0.10\) wide fills \(120\) customers of one lot (100 shares) each. \(70\) sold to it and \(50\) bought from it. Where does it end the day?</h3>
+    <ol class="steps">
+      <li>Inventory: \(I = 70 - 50 = +20\) lots, so it's long \(2{,}000\) shares.</li>
+      <li>Round trips: \((120 - 20) \div 2 = 50\), each earning \(0.10 \times 100 = \$10\), so \(\$500\) of spread so far.</li>
+      <li>The other \(20\) lots are still on its books. If the price falls \(0.25\) before it can sell them, that's \(20 \times 100 \times 0.25 = \$500\) lost, the whole day's spread gone.</li>
+    </ol>
+    <p class="answer">A one-sided day turns spread revenue into an inventory problem. That's the subject of Inventory Risk.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A maker quotes \(49.90 / 50.10\) and completes a full round trip (one buy at the bid, one sell at the offer) in \(3{,}000\) shares. What is the gross P&amp;L?</span></p>
+      <details><summary>Show answer</summary><div><span>\((50.10 - 49.90) \times 3{,}000 = 0.20 \times 3{,}000 = \$600\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A maker buys at its bid of \(99.95\) and the mid is \(100.00\). Relative to mid, how much edge per share did the fill capture?</span></p>
+      <details><summary>Show answer</summary><div><span>\(100.00 - 99.95 = 0.05\): half the spread.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>A share is quoted \(39.99 / 40.01\). How wide is the spread in basis points?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.02 \div 40 \times 10{,}000 = 5\) bp.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>In a day, \(170\) customers sell one lot to a maker and \(130\) buy one lot from it. What is its inventory at the close, and how many round trips did it complete?</span></p>
+      <details><summary>Show answer</summary><div><span>Inventory \(= 170 - 130 = +40\) lots (long). Round trips \(= (300 - 40) \div 2 = 130\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Why would a busy, balanced stock have a tighter spread than a quiet one, even if the two companies are equally risky?</span></p>
+      <details><summary>Show answer</summary><div><span>In the busy stock, buyers and sellers arrive often and in roughly equal numbers, so the maker's inventory is recycled quickly and it holds each lot for a short time. In the quiet stock, the maker has to hold inventory much longer before an opposite customer arrives, so it carries more price risk per round trip and there are fewer round trips to spread its costs over. It charges a wider spread to cover both.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: what does a market maker sell, and why would anyone pay for it?</span></p>
+      <details><summary>Show answer</summary><div><span>Immediacy. Buyers and sellers arrive at different times and in different sizes, so without a maker you'd have to wait for a match or push the price to find one. The maker buys or sells right away and carries the position until the other side turns up. The spread is the fee for that, and it pays for the maker's risks: holding inventory while the price moves, and occasionally trading with someone who knows more. Takers pay it because waiting costs them more, whether in a missed opportunity, the price moving away, or the risk of not trading at all.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: a handful of electronic firms now provide most of the liquidity in US shares. Is that a problem?</span></p>
+      <details><summary>Show answer</summary><div><span>It has brought big benefits: spreads fell from eighths of a dollar to a penny or less, and trading is far cheaper for everyone. The risk is that liquidity becomes fragile. If several dominant firms widen or pull their quotes at the same moment, the book can empty fast, as in the 2010 Flash Crash, when stub quotes filled at a penny. The safeguards are quoting obligations for registered makers (quotes within a band of the best price), circuit breakers such as limit up-limit down, and competition from new entrants. I'd also point out that pulling quotes in a crash is rational for each maker on its own, which is exactly why the system needs rules rather than goodwill.</span></div></details></div>
+  </div>
+{% endsec %}
