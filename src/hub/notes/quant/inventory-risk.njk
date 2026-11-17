@@ -1,0 +1,224 @@
+---
+title: Inventory Risk
+shelf: quant
+chapter: market-making
+subtopic: Inventory Risk
+order: 1
+summary: How serving flow leaves a market maker holding positions it never chose, and why that risk grows with the time held rather than the number of fills; the inventory risk formula (inventory times volatility times the square root of holding time) and Deltashark's hour of inventory against a day of spread; when paying your own spread to get out is the right trade; why inventory risk lives in the path, not the average; the toolkit (hard limits, shrinking size, hedging with index futures or sector ETFs, flat by the close, flattening on other venues); how inventory risk and adverse selection hit together, with the 2010 Flash Crash's hot-potato trading; and inventory in FX, gold and bonds, where dealers' balance sheets set how much liquidity they can offer.
+lede: 'Every trade a market maker serves leaves something behind. When sellers bunch up, the maker ends up owning shares it never wanted, and until it passes them on it has exactly the same risk as a trader who bought them on purpose. This note measures that risk, explains why time is the enemy, and goes through the tools market makers use to keep it small.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/inventory-risk.js]
+
+quiz:
+  - q: 'A maker''s inventory averaged almost exactly zero over the day. What can you conclude about the risk it ran?'
+    opts: ['It ran almost no risk', 'Nothing much: a book that swings between +50,000 and −50,000 shares averages flat while carrying a large exposure the whole time, so you need the path of absolute inventory, not the mean', 'It must have been hedged']
+    right: 1
+    why: 'Inventory risk lives in the path. Deltashark compares it to drawdowns: the endpoint (or the average) can look fine while the journey was dangerous. Desks track average absolute inventory, peak inventory and how long positions were held.'
+  - q: 'A maker holds 10,000 shares. How does its one-sigma risk change if it holds them for four hours instead of one?'
+    opts: ['It quadruples', 'It stays the same, because the position is the same size', 'It doubles: risk grows with the square root of time held']
+    right: 2
+    why: 'σ_inv = |I| × σ × √h. Four times the holding time gives √4 = 2 times the risk. That''s why inventory age is an alarm on a market making desk: every minute held adds risk and earns nothing.'
+  - q: 'Why do inventory risk and adverse selection make a dangerous combination?'
+    opts: ['Because flow that builds inventory quickly is disproportionately informed, so big positions tend to arrive just as the price moves against them', 'Because they are the same thing measured twice', 'Because hedging one makes the other worse']
+    right: 0
+    why: 'One-sided, fast flow is exactly what informed trading looks like. So the two subtractions in the P&L identity are correlated, and market makers'' stress tests assume they hit together: informed selling filling the book on the wrong side of a trend.'
+
+connected:
+  - { label: Builds on, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/the-market-makers-job/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Builds on, title: Inside a Trading Desk, where: Quant · Quant Trading Firms, url: /hub/quant/inside-a-trading-desk/ }
+  - { label: Used in, title: Drawdowns, where: Trading · Risk and Position Sizing, url: /hub/trading/ }
+---
+
+<style>
+  .ir-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "A Position Nobody Chose", "What risk does a market maker carry, if it doesn't take views?", "A position nobody chose" %}
+  <div class="prose">
+    <p>Think of a greengrocer. It buys fruit every morning to sell during the day, not because it's betting on strawberry prices. But every hour a box sits unsold, it gets a little closer to going off. A good greengrocer doesn't worry much about the boxes it sells by lunchtime. It worries about the ones still there at closing time.</p>
+    <p>A market maker's {% gl "inventory" %}inventory{% endgl %} is the same. Deltashark puts it bluntly: inventory turns a flow business into a directional one against its will. A maker that's long \(20{,}000\) shares has, until it's {% gl "flat" %}flat{% endgl %} again, exactly the P&amp;L of a trader who bought \(20{,}000\) shares on purpose, with none of the conviction. And unlike adverse selection, which arrives with each fill, inventory risk <strong>builds up with the time the position is held</strong>.</p>
+  </div>
+  <div class="formula"><span class="lbl">Inventory risk over the holding time (Deltashark)</span>\[ \sigma_{\text{inv}} = |I| \times \sigma \times \sqrt{h} \]</div>
+  <div class="prose">
+    <p>\(I\) is the inventory, \(\sigma\) the instrument's {% gl "volatility" %}volatility{% endgl %} per period (in money per share, or as a percentage times the value held), and \(h\) the number of periods it takes to pass the position on. It's the ordinary position-risk arithmetic, applied to a position acquired by accident. The holding time is what matters most, because every tool the maker has (skewing, paying to exit, slowing down how fast it buys) trades off recycling speed against recycling cost.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): what an hour of inventory costs</span>
+    <h3>A maker is long \(10{,}000\) shares of a \(\$50\) stock whose hourly volatility is \(0.3\%\). What is one hour of holding worth in risk?</h3>
+    <ol class="steps">
+      <li>Value held: \(10{,}000 \times 50 = \$500{,}000\).</li>
+      <li>One-sigma move over an hour: \(500{,}000 \times 0.003 = \$1{,}500\).</li>
+      <li>Against spread revenue measured in hundredths of a dollar per share, a single one-sigma move on this one position can wipe out a day of round trips.</li>
+    </ol>
+    <p class="answer">That ratio, position risk against flow margin, is why market makers treat inventory age as an alarm: there's no profit motive for holding, and the risk grows with the square root of the wait.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Hold or Pay to Exit?", "When should a market maker cross its own spread to get rid of inventory?", "Hold or pay to exit?" %}
+  <div class="prose">
+    <p>The maker always has a way out: cross the spread and sell the inventory at the bid (or buy back a short at the offer). That turns an uncertain position into a certain cost, the half-spread it gives up. Deltashark is clear that <strong>paying your own spread isn't failure</strong>. It's the right trade whenever the risk of holding is worth more than the half-spread that getting out forfeits. The comparison is lopsided, because the exit cost is fixed while the risk keeps growing with time.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Hold or pay to exit?</h3><p>The one-sigma risk of holding a position as the minutes pass, against the fixed cost of crossing the spread to get out now. Where the lines cross is roughly how long holding is worth it.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="hx-i">Position</label><input type="range" id="hx-i" min="1000" max="50000" step="1000" value="10000"><output id="hx-i-out" for="hx-i">10,000</output></div>
+      <div class="ctrl"><label for="hx-v">Hourly vol</label><input type="range" id="hx-v" min="0.1" max="1.5" step="0.05" value="0.3"><output id="hx-v-out" for="hx-v">0.30%</output></div>
+      <div class="ctrl"><label for="hx-c">Half-spread</label><input type="range" id="hx-c" min="0.5" max="10" step="0.5" value="2"><output id="hx-c-out" for="hx-c">2¢</output></div>
+    </div>
+    <svg class="chart" id="chart-hx" viewBox="0 0 640 280" role="img" aria-label="The risk of holding a position rising with the square root of time, against a flat line for the cost of exiting now"></svg>
+    <div class="legend"><span><i class="sw tone"></i>One-sigma risk of holding</span><span><i class="sw grey"></i>Cost of crossing the spread now</span></div>
+    <div class="readout" id="hx-read"></div>
+    <p class="look" id="hx-story"></p>
+  </div>
+  <div class="prose">
+    <p>The chart shows why holding times at the largest electronic market makers are measured in seconds, as Deltashark notes. For a liquid stock, the crossing point arrives within a minute or two. Holding longer isn't free: the expected price move is zero, but the risk is real, and the maker isn't paid anything to carry it. The comparison here is deliberately simple. A risk-averse desk effectively puts a price on each unit of risk, and Quote Skewing shows the cheaper middle path between waiting and paying: leaning the quotes so the flow takes the position off its hands.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Path, Not the Average", "How do you measure the inventory risk a market maker actually ran?", "Path, not the average" %}
+  <div class="prose">
+    <p>Deltashark's trap for this lesson: averaging a maker's inventory over a day and finding it near zero says nothing about the risk it ran. A book that swings between \(+50{,}000\) and \(-50{,}000\) shares averages flat, while carrying a large exposure the whole time. <strong>Inventory risk lives in the path</strong>: absolute inventory through time, not the mean. It's the same lesson as drawdowns, where the path matters as much as where you end up.</p>
+    <p>That's where hard limits come in. Makers set a maximum inventory per instrument (and in total), sized so that a worst-case move on a full position stays inside what the firm can afford to lose. Hit the limit and the system flattens automatically, crossing the spread if it has to. A tighter limit means less risk, but more forced exits, each costing the half-spread. Try it.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Path, not the average</h3><p>A day of random customer flow in a $50 stock, 100 shares a fill. The dashed lines are the maker's hard limit: when inventory reaches it, the maker sells (or buys) back to half the limit by crossing a 2-cent half-spread. Change the limit and the flow.</p></div>
+    <div class="controls">
+      <div class="presets ir-pick" id="pa-pick" aria-label="Kind of day"></div>
+      <div class="ctrl"><label for="pa-l">Hard limit</label><input type="range" id="pa-l" min="2000" max="40000" step="1000" value="15000"><output id="pa-l-out" for="pa-l">15,000</output></div>
+      <div class="presets"><button type="button" id="pa-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-pa" viewBox="0 0 640 280" role="img" aria-label="A market maker's inventory through the day, bouncing between hard limits, with forced exits marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Inventory (shares)</span><span><i class="sw grey"></i>Hard limits and forced exits</span></div>
+    <div class="readout" id="pa-read"></div>
+    <p class="look" id="pa-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Toolkit", "What do market makers actually do to keep inventory under control?", "The toolkit" %}
+  <div class="prose">
+    <p>Deltashark's lesson and the Market Making vs. Taking module together list the tools, roughly in the order a maker reaches for them:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Tool</th><th>What it does</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td>Skew the quotes</td><td>Lean both bid and offer so the flow shrinks the position (Quote Skewing)</td><td>Gives up a little edge on the side you want filled</td></tr>
+        <tr><td>Shrink size</td><td>Show less on the side that's building up inventory, so fewer fills add to it</td><td>Fewer round trips</td></tr>
+        <tr><td>Hedge with something related</td><td>Short \(10{,}000\) JPMorgan shares? Buy S&amp;P 500 futures or a financials ETF to cancel the market and sector parts of the risk</td><td>A little spread on the hedge; leaves the stock's own risk</td></tr>
+        <tr><td>Flatten on another venue</td><td>Got long on the NYSE? Sell on Nasdaq or in a dark pool, wherever the price is best</td><td>Crossing a spread somewhere</td></tr>
+        <tr><td>Hard limits</td><td>A maximum position per name (Deltashark's example: \(\$5\)m) that triggers automatic flattening</td><td>Forced exits, sometimes at bad prices</td></tr>
+        <tr><td>Flat by the close</td><td>Carry nothing, or only small, well-hedged positions, overnight</td><td>Paying to exit before the close</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The last rule has a neat reason behind it. <strong>Overnight risk is uncompensated</strong>: the maker earns no spread while the market is shut but stays exposed to {% gl "gap risk" %}gap risk{% endgl %} from overnight news. All risk, no revenue.</p>
+    <p>Hedging deserves a closer look, because it only removes part of the risk. A stock's moves have a market part (how it moves with the index, measured by its {% gl "beta" %}beta{% endgl %}) and its own part (company news). An index future cancels the first and leaves the second.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: hedging a long with index futures</span>
+    <h3>A maker is long \(\$2\)m of a stock with beta \(1.2\), daily volatility \(2\%\), and an index with daily volatility \(1\%\). How should it hedge, and what's left?</h3>
+    <ol class="steps">
+      <li>Hedge: sell \(1.2 \times \$2\text{m} = \$2.4\)m of index futures.</li>
+      <li>The stock's daily variance: \(2\%^2 = 4\). The market part: \((1.2 \times 1\%)^2 = 1.44\). Its own part: \(4 - 1.44 = 2.56\), so \(\sqrt{2.56} = 1.6\%\) a day.</li>
+      <li>Risk before the hedge: \(2\text{m} \times 2\% = \$40{,}000\) a day. After: \(2\text{m} \times 1.6\% = \$32{,}000\).</li>
+    </ol>
+    <p class="answer">The hedge cut risk by only a fifth. For a single stock, most of the risk is its own, which is why passing the shares on, not hedging them, is the main defence.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "When the Two Risks Meet", "Why is a big inventory most dangerous exactly when it's biggest?", "When the two risks meet" %}
+  <div class="prose">
+    <p>Deltashark ends the lesson with the point that makes market making hard. Inventory risk and adverse selection are linked. <strong>Flow that builds inventory fast is disproportionately informed</strong>, so large inventories arrive exactly when the market is moving against them. The two subtractions in the P&amp;L identity are correlated, and stress tests for a market making book assume they hit together: one-sided, informed flow filling the book on the wrong side of a trend.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>The Flash Crash's hot potato<span class="why">On 6 May 2010, high-frequency firms in the S&amp;P 500 E-mini future first bought from a huge seller, building up a net long of about \(3{,}300\) contracts, then sold to cut it. With few other buyers, they began passing contracts back and forth. The SEC–CFTC report found that in 14 seconds from 2:45:13pm they traded over \(27{,}000\) contracts, about 49% of all volume, while adding only about \(200\) contracts net. It looked like liquidity, but it was inventory limits in action: nobody wanted to hold.</span></span></li>
+    <li><span class="n">2</span><span>Why it matters for the rest of the chapter<span class="why">Skewing manages inventory picked up by chance. When the flow is informed, leaning the quote just repeats the loss at a lower price (Quote Skewing's trap). The right defence then is width and size (Setting the Width).</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "How do dealers carry inventory in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>FX dealers warehouse risk from client trades and wait for opposite flow to cancel it (The Market Maker's Job's internalisation). Limits are set on the {% gl "net open position" %}net open position{% endgl %} in each currency, and weekends are a classic gap risk: a dealer still long a currency at Friday's close is exposed to anything that happens before trading restarts in Asia (Sunday evening, London time). How much inventory dealers can carry depends on their balance sheets. A BIS working paper found that FX spot liquidity shrinks by more than 80% when dealers' balance sheets are constrained by things like leverage ratios and funding costs.</p>
+    <h3>Gold</h3>
+    <p>Bullion dealers hold metal and hedge it with COMEX futures, swapping between the two through exchange for physical deals. The hedge is good but not perfect: in March 2020, London and New York gold prices came apart because metal couldn't be moved between them fast enough, and dealers hedged in one market against inventory in the other took losses (Relative Value covers it).</p>
+    <h3>Bonds</h3>
+    <p>Bond dealers hold inventory for days or weeks and hedge interest-rate risk with government bond futures or swaps, sized by {% gl "dv01" %}DV01{% endgl %}. What's left is the risk of the specific bond: its credit, or how it trades against the bonds used to hedge it. Since 2008, capital rules have made holding bond inventory more expensive for banks, so dealers carry less. That's one reason bond markets struggled in March 2020: sellers needed dealers to warehouse bonds, and dealers' balance sheets were full.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Heavy</h3><span class="tag desk">Desk</span></div><p>Holding more inventory than you'd like.</p><p class="eg">"We're heavy in the 10s, lean the offer."</p></div>
+    <div class="term"><div class="term-top"><h3>Flatten</h3><span class="tag desk">Desk</span></div><p>Get the position back to zero.</p><p class="eg">"Flatten everything before the Fed."</p></div>
+    <div class="term"><div class="term-top"><h3>Ageing</h3><span class="tag desk">Desk</span></div><p>How long a position has been held.</p><p class="eg">"Ageing on that block is three hours, get it out."</p></div>
+    <div class="term"><div class="term-top"><h3>Beta hedge</h3><span class="tag desk">Desk</span></div><p>Hedging a stock with index futures sized by its beta.</p><p class="eg">"Beta hedge it with minis and work the stock."</p></div>
+    <div class="term"><div class="term-top"><h3>Gap risk</h3><span class="tag desk">Desk</span></div><p>The risk of the price jumping while the market is shut.</p><p class="eg">"Too much gap risk to carry it over the weekend."</p></div>
+    <div class="term"><div class="term-top"><h3>Hot potato</h3><span class="tag desk">Desk</span></div><p>Market makers passing the same position back and forth because nobody wants to hold it.</p><p class="eg">"Volume's huge but it's just hot potato."</p></div>
+    <div class="term"><div class="term-top"><h3>Limit up</h3><span class="tag desk">Desk</span></div><p>At the maximum position allowed.</p><p class="eg">"I'm limit up in yen, can't take any more."</p></div>
+    <div class="term"><div class="term-top"><h3>Residual</h3><span class="tag desk">Desk</span></div><p>The risk left after hedging.</p><p class="eg">"Futures took the beta; the residual's all stock-specific."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where inventory risk turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: the square root of time works on you too</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Every position you hold carries the same \(|I| \times \sigma \times \sqrt{h}\) risk, so size positions by how long you plan to hold them as well as how far your stop is. A trade meant for an afternoon that's still open on Friday night has picked up weekend gap risk it was never sized for. Prop firms often limit positions over the weekend or around news for exactly that reason. And the main lesson of this note is a good trading habit: average exposure tells you little; check your worst exposure and how long you sat in it.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: unsold units are inventory</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>A developer's unsold villas are inventory in exactly this sense. Every month on the market adds carrying costs (finance, maintenance, security) and exposure to the property market moving. Pre-selling units off-plan is the developer's version of offloading inventory before it builds up, and cutting the price to sell the last few is paying the spread to exit. The square-root rule says holding risk grows more slowly than holding time, but carrying costs grow in a straight line, so time on the market is doubly expensive.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: currency inventory and the CBN's limits</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app ends up holding whichever currency its users are selling. When flows are one-sided (everyone wants dollars), it runs out of dollars or has to buy them in the market at a worse rate. Banks face formal limits: as Short Selling and Securities Lending noted, the CBN's January 2024 rules cap Nigerian banks' net open position in foreign currency, a hard inventory limit set by the regulator. Any fintech holding currency inventory needs its own limits, sized for how fast the naira can move.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on inventory risk and hedging?" %}
+  <div class="formula"><span class="lbl">Inventory risk, and the break-even time between holding and paying to exit</span>\[ \sigma_{\text{inv}}(h) = |I|\,\sigma_{\$}\,\sqrt{h} \qquad |I|\,\sigma_{\$}\sqrt{h^{*}} = |I|\,c \;\Rightarrow\; h^{*} = \left(\frac{c}{\sigma_{\$}}\right)^{2} \]</div>
+  <div class="formula"><span class="lbl">Beta hedge and what's left</span>\[ \text{hedge} = -\beta \times \text{position} \qquad \sigma_{\text{own}} = \sqrt{\sigma_{\text{stock}}^{2} - \beta^{2}\sigma_{\text{index}}^{2}} \]</div>
+  <div class="prose">
+    <p>\(\sigma_{\$}\) is the dollar volatility per share per period (price times percentage volatility) and \(c\) the half-spread per share. The break-even time doesn't depend on the size of the position, only on how big the half-spread is compared with volatility. Wider spreads or calmer markets justify holding longer.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A \(\$50\) stock has hourly volatility \(0.3\%\) and a half-spread of \(2\) cents. How long before holding is riskier than paying to exit?</h3>
+    <ol class="steps">
+      <li>Dollar volatility per share per hour: \(50 \times 0.003 = \$0.15\).</li>
+      <li>\(h^{*} = (0.02 \div 0.15)^2 \approx 0.018\) hours, about \(1.1\) minutes.</li>
+      <li>With a \(5\)-cent half-spread: \((0.05 \div 0.15)^2 \approx 0.11\) hours, about \(7\) minutes.</li>
+    </ol>
+    <p class="answer">In liquid stocks, holding inventory for more than a minute or two carries more risk than the exit costs. That's why electronic market makers recycle in seconds.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A maker is long \(8{,}000\) shares at a price of \(25\) with daily volatility \(2\%\). What is the one-sigma daily P&amp;L swing of the inventory?</span></p>
+      <details><summary>Show answer</summary><div><span>\(8{,}000 \times 25 \times 0.02 = \$4{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Exiting \(5{,}000\) shares of unwanted inventory by hitting the bid costs the half-spread of \(0.04\) per share. What is the cost of going flat?</span></p>
+      <details><summary>Show answer</summary><div><span>\(5{,}000 \times 0.04 = \$200\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>The position in question 1 is held for a quarter of a day instead of a full day. What is its one-sigma risk?</span></p>
+      <details><summary>Show answer</summary><div><span>\(4{,}000 \times \sqrt{0.25} = \$2{,}000\). A quarter of the time, half the risk.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A maker is short \(\$3\)m of a stock with beta \(0.8\). How should it hedge with index futures?</span></p>
+      <details><summary>Show answer</summary><div><span>Buy \(0.8 \times \$3\text{m} = \$2.4\)m of index futures. The hedge cancels the market part of the risk; the stock's own risk stays.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Two makers both end the day flat. One's inventory never went beyond \(\pm 5{,}000\) shares; the other's swung between \(\pm 40{,}000\). Which ran more risk, and how would you show it?</span></p>
+      <details><summary>Show answer</summary><div><span>The second, by far. I'd compare the average of the absolute inventory over the day, the peak inventory, and the one-sigma risk at the peak (\(|I| \times \sigma \times \sqrt{h}\)). Ending flat says nothing about the path.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>(Deltashark knowledge check) What is inventory risk and how do market makers manage it?</span></p>
+      <details><summary>Show answer</summary><div><span>The risk of building up a directional position, long or short, that loses money if the price moves before it's passed on. Makers manage it by skewing quotes to attract offsetting flow, shrinking size on the side that's building up, hedging with related instruments (index futures, ETFs, options), offsetting aggressively on other venues, and setting hard limits that trigger automatic flattening.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're a market maker, it's 3:50pm and you're long \(30{,}000\) shares with ten minutes to the close. What do you do?</span></p>
+      <details><summary>Show answer</summary><div><span>Overnight risk is uncompensated, so I want to be flat or close to it by the close. First I'd skew my quotes down to attract buyers and shrink my bid size so I stop adding. If that's not enough, I'd hedge the market part with index futures straight away, then work the stock out, including in the closing auction if it's deep enough. If I'm still long near the close, I'd pay the spread rather than carry gap risk overnight. I'd also ask why I got so long: if it was one-sided flow ahead of news, I'd be quicker to get out, because that inventory is more likely to be on the wrong side.</span></div></details></div>
+  </div>
+{% endsec %}

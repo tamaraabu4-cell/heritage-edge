@@ -231,7 +231,7 @@
         "subtopics": ["The Market Maker's Job",
           "Spread Capture",
           "Adverse Selection",
-          { "name": "Inventory Risk", "planned": ["Inventory Risk"] },
+          "Inventory Risk",
           { "name": "Quote Skewing", "planned": ["Quote Skewing"] },
           { "name": "Spread Width", "planned": ["Setting the Width"] }] },
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
