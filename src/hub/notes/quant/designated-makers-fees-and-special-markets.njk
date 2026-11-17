@@ -1,0 +1,247 @@
+---
+title: Designated Makers, Fees and Special Markets
+shelf: quant
+chapter: market-making
+subtopic: The Market Maker's Job
+order: 2
+summary: Voluntary versus designated market makers, and the deal behind a designation (obligations to quote in return for privileges); the NYSE's designated market makers (Citadel Securities, Virtu and GTS), their auctions and supplemental liquidity providers, against Nasdaq's competing makers; how exchanges pay for liquidity through maker-taker, inverted and flat fees, the distortions rebates create, and the long fight over the 30-mil access fee cap (the 2018 pilot struck down, the 2024 cut to 10 mils upheld in 2025 but delayed to November 2027); ETF market makers and authorised participants, creation and redemption, and bond ETFs trading at discounts in March 2020; options market makers, delta hedging and how dealer gamma calms or amplifies the market; and gilt-edged market makers, primary dealers and Nigeria's primary dealer market makers.
+lede: 'Most market makers trade wherever it pays. Some sign a deal: they promise to keep quoting, even when it hurts, and get privileges in return. Exchanges also pay for liquidity through their fees, which quietly shapes who posts orders and where brokers send them. And two markets need a special kind of maker: ETFs, where the maker can create and destroy fund units to keep the price honest, and options, where the maker''s hedging can calm the whole market or push it further in the direction it was already going.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/designated-makers-fees-and-special-markets.js]
+
+quiz:
+  - q: 'Why would a market maker accept a designation that forces it to keep quoting in volatile markets?'
+    opts: ['Because the privileges that come with it (rebates, auction roles, priority, or direct access to government bond auctions) are worth more than the cost of quoting on bad days', 'Because designated makers are not allowed to lose money', 'Because it lets the maker ignore the spread rules other firms follow']
+    right: 0
+    why: 'A designation is a trade: obligations to be present in return for privileges. NYSE DMMs run the opening and closing auctions and receive credits; gilt-edged market makers get direct access to the DMO''s auctions and the inter-dealer brokers. The maker signs up when the privileges are worth more than the cost of quoting when it would rather not.'
+  - q: 'An ETF trades at 50.30 while the shares inside it are worth 50.00 per ETF share. What does an authorised participant do?'
+    opts: ['Buys the ETF and hands it back to the issuer for the shares inside', 'Nothing: ETF prices are set by the issuer', 'Buys the shares inside, delivers them to the issuer in exchange for new ETF shares, and sells those ETF shares at 50.30, pushing the price back towards 50.00']
+    right: 2
+    why: 'That is creation. The AP pockets about 0.30 a share before costs, and its selling closes the gap. When the ETF trades below its NAV, the AP does the opposite (redemption): buys the cheap ETF, hands it back for the underlying, and sells those.'
+  - q: 'Options dealers as a group are short gamma. A sharp fall in the index begins. What does their hedging do?'
+    opts: ['It cushions the fall, because hedging always buys when prices drop', 'It adds to the fall: to stay hedged, short-gamma dealers must sell more of the underlying as it falls', 'Nothing, because dealer hedging only happens at expiry']
+    right: 1
+    why: 'A short-gamma dealer''s delta moves against it as the price moves, so to stay neutral it sells into falls and buys into rallies, which amplifies moves. Long-gamma dealers do the opposite and dampen them. This is why traders watch estimates of dealer positioning.'
+
+connected:
+  - { label: Builds on, title: "The Market Maker's Job", where: Quant · Market Making, url: /hub/quant/the-market-makers-job/ }
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Builds on, title: Regulation, where: Markets · How Markets Work, url: /hub/markets/regulation/ }
+  - { label: Used in, title: Greeks and Volatility, where: Quant · Greeks and Volatility, url: /hub/quant/ }
+---
+
+<style>
+  .dm-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Two Ways to Be a Market Maker", "What's the difference between a market maker and a designated one?", "Two ways to be a market maker" %}
+  <div class="prose">
+    <p>Think of chemists. Most open the hours that suit their trade, and close when it's quiet. But a few sign a deal with the local health service to open late on Sundays and bank holidays, when hardly anyone comes in. In return they get a fee and a guaranteed place on the rota. The town gets something it couldn't rely on otherwise: a chemist that is open when it's needed, not just when it's busy.</p>
+    <p>Market makers come in the same two kinds. Most are <strong>voluntary</strong>: they quote wherever the expected revenue is worth it and can step back whenever they like. Some are {% gl "designated market maker" %}designated{% endgl %}: they sign an agreement to quote continuously, within a maximum spread, for a minimum size, for a minimum share of the day, in return for privileges. The Market Maker's Job explained why: what the role is really paid for is being there when it's hard. A designation is how exchanges and governments buy that promise in advance.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Who</th><th>Where</th><th>Promises to</th><th>Gets in return</th></tr></thead>
+      <tbody>
+        <tr><td>Designated market maker (DMM)</td><td>NYSE-listed shares</td><td>Keep a fair, orderly market in its stocks; quote continuously; run the opening and closing auctions</td><td>Exchange credits, a central role in the auctions, some priority on the floor</td></tr>
+        <tr><td>Competing market makers</td><td>Nasdaq shares</td><td>Keep two-sided quotes within a band of the best price</td><td>Little beyond the business itself; many firms compete in each stock</td></tr>
+        <tr><td>{% gl "lead market maker" %}Lead market maker{% endgl %}</td><td>ETFs on US exchanges</td><td>Quote tight, deep markets in the ETFs it is assigned</td><td>Fee credits and incentives, more so for new, small ETFs</td></tr>
+        <tr><td>Options market makers</td><td>Options exchanges</td><td>Quote across a large share of the strikes and expiries in their classes</td><td>Lower fees and a larger share of incoming orders</td></tr>
+        <tr><td>{% gl "gilt-edged market maker" %}Gilt-edged market makers{% endgl %} and primary dealers</td><td>Government bonds (UK, US, Nigeria)</td><td>Bid at every auction and make two-way prices to customers</td><td>Direct access to the auctions and other privileges (section 6)</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "The NYSE Floor", "What do the market makers on the New York Stock Exchange floor actually do?", "The NYSE floor" %}
+  <div class="prose">
+    <p>The NYSE still has a trading floor, and each listed company is assigned to one designated market maker. The {% gl "specialist" %}specialists{% endgl %} of The Market Maker's Job were replaced by DMMs in 2008, and the business is now run by electronic trading firms. The NYSE lists three: Citadel Securities, Virtu and GTS. Citadel Securities says it is the DMM for about 62% of NYSE listings. (Deltashark's module says the business is all owned by Virtu now. The NYSE's own list disagrees.)</p>
+    <p>A DMM's jobs, from Deltashark and the NYSE:</p>
+    <ul>
+      <li><strong>Keep a fair and orderly market</strong> in its stocks: quote continuously, within set spread widths, and add liquidity when prices start to jump around.</li>
+      <li><strong>Run the opening and closing {% gl "auction" %}auctions{% endgl %}.</strong> These matter far more than they sound. The closing price is the one used for index values, fund valuations and many derivatives, and the closing auction is now one of the busiest moments of the trading day.</li>
+      <li><strong>Open new listings.</strong> On an IPO's first day, the DMM gathers the orders and sets the first price.</li>
+    </ul>
+    <p>In return, DMMs get exchange credits, a central role in the auctions (Deltashark notes they see incoming auction orders before the auction runs, which helps them price it), and some priority on the floor. The NYSE also pays a second group, <strong>supplemental liquidity providers</strong>: high-volume electronic firms paid extra for adding liquidity, with no auction duties. Nasdaq works differently: no single designated firm per stock, but many market makers competing to quote it.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "How Exchanges Pay for Liquidity", "Why do exchanges pay some traders and charge others, and what goes wrong?", "How exchanges pay for liquidity" %}
+  <div class="prose">
+    <p>Where Trades Happen introduced the {% gl "maker-taker" %}maker-taker{% endgl %} model: an exchange pays a rebate to the order that was waiting in the book and charges an {% gl "access fee" %}access fee{% endgl %} to the order that traded against it, keeping the difference. The logic is a loop. More resting orders make the market tighter and deeper, which attracts more takers, whose fees pay for the rebates. Deltashark credits it with narrowing spreads, but it isn't the only model:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Model</th><th>Who pays, who's paid</th><th>Examples</th><th>Good for</th><th>Drawback</th></tr></thead>
+      <tbody>
+        <tr><td>Maker-taker</td><td>Taker pays a fee; maker gets a rebate</td><td>NYSE, Nasdaq, Cboe BZX</td><td>Lots of displayed orders, tight quoted spreads</td><td>Some orders are posted mainly to collect rebates</td></tr>
+        <tr><td>{% gl "inverted venue" %}Inverted{% endgl %} (taker-maker)</td><td>Maker pays a fee; taker gets a rebate</td><td>Cboe EDGA, Nasdaq BX</td><td>Getting filled fast when you want to trade now</td><td>Less displayed liquidity</td></tr>
+        <tr><td>Low, flat fees</td><td>Small or no fees on either side; no rebates</td><td>IEX</td><td>No rebate games; simple costs</td><td>Less reason to post orders there</td></tr>
+        <tr><td>Off-exchange retail</td><td>No exchange fee; the wholesaler pays the broker for the order (PFOF)</td><td>Citadel Securities and Virtu filling US retail orders</td><td>Free trading and small price improvement for retail</td><td>The broker may favour the wholesaler that pays it most</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Fees are measured in {% gl "mil" %}mils{% endgl %}: hundredths of a cent per share. A one-cent spread is \(100\) mils, so half a spread (what a fill earns against the mid) is \(50\) mils, and a \(30\)-mil fee is more than half of it. That's why these tiny numbers matter so much. Try it.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Who pays whom?</h3><p>One share trades at the best price. Pick the exchange's fee model, the size of the spread, and whether the old or the newly adopted fee cap applies. Fee levels are typical, for illustration.</p></div>
+    <div class="controls">
+      <div class="presets dm-pick" id="wp-model" aria-label="Fee model"></div>
+      <div class="presets dm-pick" id="wp-spread" aria-label="Spread"></div>
+      <div class="presets dm-pick" id="wp-cap" aria-label="Fee cap"></div>
+    </div>
+    <svg class="chart" id="chart-wp" viewBox="0 0 640 230" role="img" aria-label="Bars showing, per share in mils, what the taker pays, what the maker earns and what the exchange keeps"></svg>
+    <div class="legend"><span><i class="sw grey"></i>Half the spread (against the mid)</span><span><i class="sw tone"></i>Exchange fee or rebate</span></div>
+    <div class="readout" id="wp-read"></div>
+    <p class="look" id="wp-story"></p>
+  </div>
+  <div class="prose">
+    <h3>What the rebates distort</h3>
+    <p>Deltashark lists two problems. First, some firms post orders mainly to <strong>collect rebates</strong>, cancelling them the instant a large order arrives. The book looks deep and the spread looks tight, but the size isn't really there (The Order Book called this fleeting liquidity). Second, there's a <strong>conflict for brokers</strong>. A broker sending your limit order to an exchange may keep the rebate, so it's tempted to send it to the venue that pays most, even if that venue has the longest queue and the worst chance of filling your order.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>2005: the cap<span class="why">Regulation NMS limited the fee for taking a displayed best price to \(\$0.003\) a share (30 mils). Rebates are funded by that fee, so the cap became, in practice, the level everyone priced around.</span></span></li>
+    <li><span class="n">2</span><span>2018–2020: the pilot that never ran<span class="why">The SEC designed a pilot to test lower fees and a ban on rebates in groups of stocks. The exchanges sued, and in June 2020 a US appeals court ruled that the SEC didn't have the authority to run a programme whose only purpose was to gather data.</span></span></li>
+    <li><span class="n">3</span><span>2024–2025: the cut<span class="why">In September 2024 the SEC adopted a lower cap of 10 mils (\(\$0.001\)) and a half-penny tick for stocks whose spreads are usually tight. The exchanges challenged it again, and in October 2025 the same court upheld it.</span></span></li>
+    <li><span class="n">4</span><span>Now: still waiting<span class="why">The start date has been pushed back twice and is now the first business day of November 2027, while the SEC reconsiders the wider rules, including a proposal to scrap the trade-through rule that the fee cap was built around. So the 30-mil cap still applies today.</span></span></li>
+  </ul>
+{% endsec %}
+
+{% sec 4, "ETF Market Makers", "How does an ETF's price stay close to what it owns?", "ETF market makers" %}
+  <div class="prose">
+    <p>An {% gl "exchange-traded fund" %}ETF{% endgl %} is a fund whose units trade on an exchange like a share. Its {% gl "net asset value" %}net asset value{% endgl %} is what the investments inside it are worth per unit. Nothing forces the trading price to equal that value, except a special kind of market maker. {% gl "authorised participant" %}Authorised participants{% endgl %} (APs) are allowed to swap baskets of the underlying investments for new ETF units with the fund issuer, or to swap units back for the basket. That's called {% gl "creation and redemption" %}creation and redemption{% endgl %}, and it turns any gap between price and value into an arbitrage.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: closing a premium</span>
+    <h3>An ETF trades at \(50.30\). The shares inside it are worth \(50.00\) per ETF unit. A creation unit is \(50{,}000\) ETF units. What does an AP do?</h3>
+    <ol class="steps">
+      <li>Buy the basket of underlying shares: \(50{,}000 \times 50.00 = \$2{,}500{,}000\).</li>
+      <li>Deliver the basket to the issuer and receive \(50{,}000\) new ETF units.</li>
+      <li>Sell them at \(50.30\): \(\$2{,}515{,}000\). Profit \(\$15{,}000\) before trading costs and the issuer's creation fee.</li>
+    </ol>
+    <p class="answer">The AP's buying of the basket and selling of the ETF push the two prices together. When the ETF trades below its value, the AP does the reverse: it buys the cheap ETF, redeems it for the basket, and sells the basket.</p>
+  </div>
+  <div class="prose">
+    <p>In practice the AP and the ETF's market maker are often the same firm, which quotes the ETF all day and creates or redeems at the end of the day to flatten its position. Deltashark names Jane Street as the dominant ETF market maker globally, especially in bond and international ETFs, where the baskets are hardest to trade and so the barriers to entry are highest.</p>
+    <h3>When the ETF and its value disagree: March 2020</h3>
+    <p>In the dash for cash of March 2020, many large bond ETFs traded well below their net asset value. On 12 March, the biggest US investment-grade corporate bond ETF (LQD) closed about 5% below its NAV, after never closing more than 1% away from it in 2018 or 2019. Was the ETF broken? BlackRock's answer: the ETF traded tens of thousands of times that day, while many of its bonds barely traded at all, so the NAV was built from stale prices. The ETF was showing where bond prices really were faster than the bonds themselves. Creation and redemption can only close a gap if the AP can actually trade the basket, and in a frozen bond market it couldn't do so cheaply.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Options Market Makers and Dealer Gamma", "Why are options the hardest market to make, and how can their hedging move the whole market?", "Options and dealer gamma" %}
+  <div class="prose">
+    <p>Deltashark points out that a single stock can have over \(2{,}000\) options listed on it: many strike prices across many expiry dates. An options market maker has to quote all of them at once and keep them consistent with each other, because they're all priced off the same underlying share, the same interest rates and the same view of volatility. When the share moves, every quote has to move. Citadel Securities says it sends 25 billion options quotes a day. The biggest options makers include Citadel Securities, Susquehanna (SIG), Optiver, IMC and Wolverine. That's why The Firms grouped Optiver, IMC and SIG as options houses.</p>
+    <p>An options maker doesn't want a view on the share price, any more than a share market maker does. So after selling a call option (which gains as the share rises, a loss for the seller), it buys some of the share to cancel out the exposure. That's {% gl "delta hedging" %}delta hedging{% endgl %}: holding just enough of the underlying to offset the option's {% gl "delta" %}delta{% endgl %}. The catch is that delta changes as the price moves (that rate of change is {% gl "gamma" %}gamma{% endgl %}), so the hedge has to be adjusted all the time. Which way the dealer adjusts depends on whether it has bought or sold options overall, and that's {% gl "dealer gamma" %}dealer gamma{% endgl %}:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Dealers overall have…</th><th>When the price rises they…</th><th>When it falls they…</th><th>Effect on the market</th></tr></thead>
+      <tbody>
+        <tr><td>Bought options: long gamma</td><td>Sell the underlying</td><td>Buy the underlying</td><td>Calms it: dealers lean against moves</td></tr>
+        <tr><td>Sold options: short gamma</td><td>Buy the underlying</td><td>Sell the underlying</td><td>Amplifies it: dealers chase moves</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Dealer gamma</h3><p>A day in an index, with a sudden 1.5% drop after lunch. The grey line is the day with no options dealers hedging. Choose how dealers are positioned and how big their hedging is compared with the rest of the market.</p></div>
+    <div class="controls">
+      <div class="presets dm-pick" id="dg-pos" aria-label="Dealer position"></div>
+      <div class="ctrl"><label for="dg-g">Hedging size</label><input type="range" id="dg-g" min="0.05" max="0.6" step="0.05" value="0.35"><output id="dg-g-out" for="dg-g">0.35</output></div>
+      <div class="presets"><button type="button" id="dg-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-dg" viewBox="0 0 640 280" role="img" aria-label="An index price through a trading day with and without options dealers' hedging"></svg>
+    <div class="legend"><span><i class="sw tone"></i>With dealers hedging</span><span><i class="sw grey"></i>No options dealers</span></div>
+    <div class="readout" id="dg-read"></div>
+    <p class="look" id="dg-story"></p>
+  </div>
+  <div class="prose">
+    <p>Deltashark says that understanding this "dealer positioning" has become an important input for equity and macro hedge funds. Nobody sees the dealers' books directly, so firms estimate them from options volumes and open interest. The model above is deliberately simple. It treats each minute's hedging as a reaction to the last minute's move, which is enough to show the direction of the effect. Greeks and Volatility will cover the maths of delta and gamma properly.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Who has formal market-making duties in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>Bonds: the clearest designated makers</h3>
+    <p>Governments need someone to buy their bonds at every auction and keep them tradable afterwards, so they sign up primary dealers. In the UK they're called gilt-edged market makers (GEMMs). The DMO's GEMM Guidebook sets out the deal. GEMMs must take part in gilt auctions and make effective two-way prices to customers, on demand, in all the gilts they're recognised for. In return they get privileges, including bidding directly at the DMO's auctions and exclusive access to the inter-dealer brokers that GEMMs use to trade with each other. The US has an equivalent set of primary dealers, which bid at Treasury auctions and trade with the New York Fed.</p>
+    <h3>FX: no designations</h3>
+    <p>Spot FX has no exchange and no designated makers. Dealer banks and non-bank firms make markets voluntarily, and the discipline comes from competition and the FX Global Code rather than formal obligations. That's one reason liquidity in FX can thin out quickly at awkward moments, such as the weekly reopening on Sunday evening or around a central bank surprise.</p>
+    <h3>Gold: ETFs backed by bars</h3>
+    <p>The largest gold ETFs hold physical bars in London vaults, and their APs create and redeem units with gold rather than shares. When investors pour into a gold ETF, APs buy bars and deliver them to the fund's vault; when they sell, APs take bars out. So gold ETF flows show up as real demand for bullion in London, and the ETF's price stays tied to the metal.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>DMM</h3><span class="tag desk">Desk</span></div><p>Designated market maker: the NYSE firm responsible for a stock and its auctions.</p><p class="eg">"The DMM's printing a big imbalance into the close."</p></div>
+    <div class="term"><div class="term-top"><h3>LMM</h3><span class="tag desk">Desk</span></div><p>Lead market maker: the firm assigned to quote an ETF.</p><p class="eg">"We're LMM on about forty of their funds."</p></div>
+    <div class="term"><div class="term-top"><h3>Mils</h3><span class="tag desk">Desk</span></div><p>Hundredths of a cent per share, the unit for exchange fees.</p><p class="eg">"Take fee's thirty mils, rebate's twenty."</p></div>
+    <div class="term"><div class="term-top"><h3>Inverted</h3><span class="tag desk">Desk</span></div><p>A taker-maker venue, where you're paid to take liquidity.</p><p class="eg">"Route it to the inverted book, we need the fill."</p></div>
+    <div class="term"><div class="term-top"><h3>AP</h3><span class="tag desk">Desk</span></div><p>Authorised participant: a firm allowed to create and redeem ETF units.</p><p class="eg">"APs were redeeming all week."</p></div>
+    <div class="term"><div class="term-top"><h3>Create / redeem</h3><span class="tag desk">Desk</span></div><p>Swap a basket for new ETF units, or units back for the basket.</p><p class="eg">"It's trading rich, so we'll create tonight."</p></div>
+    <div class="term"><div class="term-top"><h3>Short gamma</h3><span class="tag desk">Desk</span></div><p>Positioned so that hedging means buying rallies and selling dips.</p><p class="eg">"Street's short gamma below 6,000, so a break could get ugly."</p></div>
+    <div class="term"><div class="term-top"><h3>Pinning</h3><span class="tag desk">Desk</span></div><p>A price sticking near a big options strike into expiry, as long-gamma hedging leans against moves away from it.</p><p class="eg">"It's pinned to the strike, nothing's moving till expiry."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where designated makers, fees and special markets turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: costs you don't see, and moves you can't explain</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Two habits come out of this note. First, look for the costs hidden in a "free" trade. On a commission-free app, the costs are in the spread, the price improvement you didn't get, and where your order was sent. In the UK, where payment for order flow is banned, brokers usually get prices for retail share orders from a group of market makers called retail service providers. Second, if you trade index products, gold or bond ETFs, remember that some moves are mechanical: dealer hedging can speed up a fall when dealers are short gamma, and big options expiries can pin a price near a strike. That isn't new information about value, just hedging, and it often reverses.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: listed versus locked</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property shows the bond ETF story even more starkly. In March 2020, several large UK open-ended property funds suspended dealing because valuers couldn't price the buildings, so investors couldn't get out at all. Listed property companies and REITs kept trading every day, at large discounts. Like LQD, the listed price was the honest one: it showed what investors would pay that day, while the funds' valuations were stale. If the villa business ever raises money through a fund, choosing between a listed and an unlisted structure is really a choice about who gives investors immediacy, and at what price.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: primary dealer market makers</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>Nigeria uses designated makers in its government bond market. The Debt Management Office licenses {% gl "primary dealer market maker" %}primary dealer market makers{% endgl %} (PDMMs), mostly the big banks, to take up and distribute new FGN bonds and to keep them trading afterwards. FMDQ reactivated their obligation to show two-way quotes in selected benchmark FGN bonds and all benchmark treasury bills from 1 July 2025, after a period when tight market liquidity had made it hard to keep up. It's the same lesson as the Flash Crash: designated makers are most useful exactly when quoting is hardest, which is also when they're most tempted to stop. A Nigerian fintech that wanted to offer bond trading to retail savers would depend on these banks' quotes.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you put numbers on fees, ETF gaps and dealer hedging?" %}
+  <div class="formula"><span class="lbl">Per share, against the mid, with half-spread \(h\), taker fee \(f_T\) and maker rebate \(r_M\) (negative when they're the other way round)</span>\[ \text{taker cost} = h + f_T \qquad \text{maker gain} = h + r_M \qquad \text{exchange keeps} = f_T - r_M \]</div>
+  <div class="formula"><span class="lbl">The ETF gap an AP can capture</span>\[ \text{profit} \approx (P_{\text{ETF}} - \text{NAV}) \times \text{units} - \text{costs} \qquad \text{premium} = \frac{P_{\text{ETF}} - \text{NAV}}{\text{NAV}} \]</div>
+  <div class="formula"><span class="lbl">The dealer gamma model in the interactive</span>\[ r_t = \varepsilon_t + \phi\, r_{t-1} \qquad \phi = -g \;\text{(long gamma)},\;\; +g \;\text{(short gamma)} \qquad \text{shock} \times \frac{1}{1 - \phi} \]</div>
+  <div class="prose">
+    <p>\(r_t\) is each minute's return and \(\varepsilon_t\) the news and ordinary trading. Hedging adds a fraction \(\phi\) of the last move: against it for long gamma, with it for short gamma. Over a whole day, the effects of a shock add up to \(1/(1-\phi)\) of it, and volatility scales by about \(\sqrt{(1+\phi)/(1-\phi)}\).</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A 1.5% shock hits. Dealers' hedging size is \(g = 0.35\). How far does the market end up falling if dealers are long gamma, and if they're short gamma?</h3>
+    <ol class="steps">
+      <li>Long gamma: \(\phi = -0.35\), so \(1.5\% \div 1.35 \approx 1.1\%\). Dealers buying the dip absorb about a quarter of the fall.</li>
+      <li>Short gamma: \(\phi = +0.35\), so \(1.5\% \div 0.65 \approx 2.3\%\). Dealers selling into the fall make it about half as big again.</li>
+      <li>Everyday volatility changes too. Over periods longer than a few minutes it scales by \(\sqrt{(1+\phi)/(1-\phi)}\): about \(\times 0.69\) with long gamma and \(\times 1.44\) with short gamma.</li>
+    </ol>
+    <p class="answer">The same news can produce very different days depending on how options dealers are positioned.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>An exchange charges takers 30 mils and pays makers 20 mils. On a stock quoted one cent wide, what does a taker pay against the mid per share, and what does the exchange keep on 2 million shares?</span></p>
+      <details><summary>Show answer</summary><div><span>Taker: \(50 + 30 = 80\) mils, or \(\$0.008\) a share. Exchange: \(30 - 20 = 10\) mils, so \(2{,}000{,}000 \times \$0.001 = \$2{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A bond ETF trades at \(97.00\) while its NAV is \(98.50\). What is the premium or discount, and what would an AP do?</span></p>
+      <details><summary>Show answer</summary><div><span>\((97.00 - 98.50) \div 98.50 \approx -1.5\%\), a discount. The AP buys the ETF, redeems it for the bonds and sells the bonds, if it can sell them near the prices in the NAV. If the bonds are hard to trade (as in March 2020), the discount can persist because the NAV itself is stale.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Dealers are short gamma with hedging size \(g = 0.2\). A shock of 2% hits. Roughly how far does the market move in total?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2\% \div (1 - 0.2) = 2.5\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>(Deltashark knowledge check) Why does the maker-taker fee model exist, and how does it affect market structure?</span></p>
+      <details><summary>Show answer</summary><div><span>It pays rebates to orders that add liquidity and charges fees to orders that remove it, to encourage displayed orders, which narrows spreads and helps price discovery. The distortions: some orders are posted mainly to capture rebates and cancelled when a large order arrives, and brokers may route to the venue with the highest rebate rather than the best chance of a fill.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>(Deltashark knowledge check) How do wholesalers like Citadel Securities handle retail orders, and why is it controversial?</span></p>
+      <details><summary>Show answer</summary><div><span>They pay brokers for the orders (payment for order flow) and fill them off-exchange at prices slightly better than the best quoted price. It pays because retail flow is mostly uninformed. The controversy: brokers may send orders to whoever pays them most rather than whoever executes best, and retail might get even better prices if their orders competed on exchanges.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why would the SEC want to cut the access fee cap from 30 to 10 mils, and why might exchanges object?</span></p>
+      <details><summary>Show answer</summary><div><span>With a one-cent spread, a 30-mil fee is more than half the half-spread, so the price on the screen hides a large part of the real cost, and rebates funded by those fees distort routing and encourage orders posted for the rebate. A lower cap brings displayed prices closer to true costs, especially alongside half-penny ticks. Exchanges object because smaller fees mean smaller rebates, which could reduce the incentive to post orders on lit exchanges, and less revenue for them. The court upheld the cut in 2025, but it's been delayed to November 2027.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: a bond ETF trades 5% below its NAV in a crisis. Is the ETF broken?</span></p>
+      <details><summary>Show answer</summary><div><span>Not necessarily. The NAV is built from bond prices, and in a crisis many bonds don't trade, so the NAV can be stale. The ETF trades constantly, so it may be showing the real price. The AP arbitrage only closes the gap if the AP can trade the bonds cheaply, which is hard when the bond market is frozen. In March 2020, LQD closed about 5% below NAV on 12 March and the gap shrank to almost nothing the next day.</span></div></details></div>
+  </div>
+{% endsec %}
