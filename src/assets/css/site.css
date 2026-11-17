@@ -593,7 +593,7 @@ main, .site-footer { transition: margin-left 0.3s ease; }
   font-weight: 700;
   letter-spacing: -0.035em;
 }
-.page-title span, .hero-title span { color: var(--text-2); }
+.page-title span { color: var(--text-2); }
 .page-intro {
   max-width: 680px;
   margin-top: 18px;
