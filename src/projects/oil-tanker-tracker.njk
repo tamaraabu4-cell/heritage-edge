@@ -1,0 +1,161 @@
+---
+layout: layouts/project.njk
+title: Oil Tanker Tracker
+permalink: /projects/oil-tanker-tracker.html
+styles: [hub.css, projects/study-layout.css, projects/project.css, projects/tanker-tracker.css]
+scripts: ["https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"]
+meta: ["Personal project", "Live since 12 November 2026", "Python, GitHub Actions, Leaflet"]
+---
+
+{% psec 1, "Which Tankers Are Carrying Oil Right Now?", "The live map, updated by itself every hour or so", "Live map" %}
+<p class="topic-intro">
+  Every big ship broadcasts a radio signal saying who it is, where it is and how deep it's sitting in the water. This page listens to those signals in the English Channel and the southern North Sea, picks out the crude oil tankers, and works out which ones are <strong>full</strong> and which are sailing <strong>empty</strong>.
+</p>
+
+<p class="tk-updated" id="tk-updated">Loading the latest snapshot…</p>
+
+<div class="tk-counts">
+  <div class="tk-tile is-full"><b id="tk-n-full">–</b><span>Full (laden)</span></div>
+  <div class="tk-tile is-empty"><b id="tk-n-empty">–</b><span>Empty (in ballast)</span></div>
+  <div class="tk-tile is-unsure"><b id="tk-n-unsure">–</b><span>Unsure</span></div>
+</div>
+
+<div class="tk-map" id="tk-map" role="region" aria-label="Map of oil tankers in the English Channel and southern North Sea"></div>
+
+<div class="tk-legend">
+  <span><i class="tk-dot is-full"></i>Full: 80%+ of full depth</span>
+  <span><i class="tk-dot is-empty"></i>Empty: under 60%</span>
+  <span><i class="tk-dot is-unsure"></i>Unsure: in between, or depth not entered</span>
+  <span>Bigger dot = bigger ship · click a dot for its details</span>
+</div>
+
+<div class="proj-links">
+  <a class="proj-link" href="https://github.com/tamaraabu4-cell/oil-tanker-tracker">Code on GitHub &nearr;</a>
+  <a class="proj-link" href="https://github.com/tamaraabu4-cell/oil-tanker-tracker/tree/main/history">Every snapshot so far &nearr;</a>
+</div>
+{% endpsec %}
+
+{% psec 2, "Why Count Full Tankers?", "What's the point for a trader?", "Thesis" %}
+<div class="sh">In plain words</div>
+<p class="np">A tanker is like a rubber duck in the bath. Empty, it floats high. Fill it with oil and it sinks lower. So "is this ship carrying oil?" mostly comes down to "how low is it sitting in the water?" That depth is called its <strong>draught</strong>.</p>
+<p class="np">Count the full tankers arriving in a region and you're counting oil coming in. Count the empty ones leaving and you're watching ships going off to load more. Official import and export figures arrive weeks later, so watching the ships themselves gives traders an <strong>early read on supply</strong>. Firms such as Kpler and Vortexa sell exactly this kind of data to oil traders, hedge funds and governments.</p>
+
+<div class="insight">
+  <div class="insight-lbl">The question this project asks</div>
+  Can I build a working version of that from <strong>free data</strong>, run it on its own every hour, and get answers that match what's actually happening at the ports?
+</div>
+{% endpsec %}
+
+{% psec 3, "Reading a Ship's Waterline", "How does it decide full, empty or unsure?", "Method" %}
+<p class="topic-intro">Each ship reports how deep it's sitting right now. The tracker compares that with how deep a ship of its size sits when fully loaded.</p>
+
+<div class="f-label">How full is it?</div>
+<div class="f-box">\[ \%\ \text{full} = \frac{\text{draught now}}{\text{typical draught when full}} \times 100 \]</div>
+
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Ship size</th><th>Length</th><th>Typical draught when full</th></tr>
+  <tr><td>VLCC</td><td>300 m or more</td><td>\(21\) m</td></tr>
+  <tr><td>Suezmax</td><td>260 to 300 m</td><td>\(16.5\) m</td></tr>
+  <tr><td>Aframax</td><td>200 to 260 m</td><td>\(14.5\) m</td></tr>
+</table></div>
+<p class="np"><strong>80% or more</strong> counts as full, <strong>under 60%</strong> as empty, and anything in between as unsure. Readings above 100% are shown as 100%, because the "full" depths are averages for each size.</p>
+
+<div class="sh">The sieve</div>
+<p class="np">Out of the hundreds, sometimes nearly 2,000, ships heard in ten minutes, only a handful are crude oil tankers. Every ship goes through four checks:</p>
+<div class="summary-grid">
+  <div class="sum-card"><div class="sum-icon green">1</div><div class="sum-title">Is it a tanker?</div><div class="sum-body">Ship types 80 to 89 in the signal. Cargo ships, ferries and tugs drop out.</div></div>
+  <div class="sum-card"><div class="sum-icon blue">2</div><div class="sum-title">Is it crude-sized?</div><div class="sum-body">200 m or longer. Smaller tankers carry petrol, diesel and chemicals, not crude.</div></div>
+  <div class="sum-card"><div class="sum-icon amber">3</div><div class="sum-title">Is it carrying gas?</div><div class="sum-body">Gas carriers share the tanker codes, but their depth barely changes when loaded. Names with GAS, LNG or LPG are skipped.</div></div>
+  <div class="sum-card"><div class="sum-icon purple">4</div><div class="sum-title">Do I know where it is?</div><div class="sum-body">A ship's details and its position arrive as separate messages, matched by its ID number. No position, no dot.</div></div>
+</div>
+
+<div class="sh">What the data gets wrong</div>
+<p class="np">The depth and destination are typed in by the crew, by hand. That causes three problems I had to design around:</p>
+<div class="dt-wrap"><table class="dt">
+  <tr><th>Problem</th><th>Real example</th><th>What the tracker does</th></tr>
+  <tr><td>Depth not updated while unloading</td><td>ASOPOS kept showing "85% full" for days at a Rotterdam berth, then 53% once it sailed</td><td>Says so here: a full ship standing still in port may already be empty</td></tr>
+  <tr><td>One port, many spellings</td><td>Rotterdam as <code>ROTTERDAM</code>, <code>NLRTM</code> and <code>NLRTM-BOTLEK</code></td><td>Cleans them to one code</td></tr>
+  <tr><td>No real destination</td><td><code>TBA</code>, <code>?? ???</code>, and five spellings of "for orders"</td><td>Groups them as UNKNOWN or FOR ORDERS</td></tr>
+</table></div>
+
+<div class="insight">
+  <div class="insight-lbl">Trader's term: "for orders"</div>
+  A ship whose destination says <strong>FOR ORDERS</strong> has set off without a final port. Its cargo may be sold to a buyer while it's at sea, and it gets its destination then.
+</div>
+{% endpsec %}
+
+{% psec 4, "From Radio Signal to Map", "How does it run without me?", "Tech" %}
+<div class="tk-pipe" aria-label="How the data flows">
+  <span>aisstream.io<small>free ship signals</small></span><i aria-hidden="true">→</i>
+  <span>Python collector<small>listens for 10 minutes</small></span><i aria-hidden="true">→</i>
+  <span>GitHub Actions<small>runs it every hour</small></span><i aria-hidden="true">→</i>
+  <span>This page<small>reads the latest snapshot</small></span>
+</div>
+
+<p class="np"><strong>Listening.</strong> A Python script opens a live connection to aisstream.io and listens to every ship inside two boxes on the map: the English Channel, and the Dover Strait up to Rotterdam and Amsterdam. In one run it heard 1,863 ships' details and 3,279 position reports.</p>
+<p class="np"><strong>Running itself.</strong> GitHub Actions starts the script on a timer, saves the result as <code>tankers.json</code>, and keeps a dated copy of every snapshot. This page reads those files straight from GitHub, so it updates without anyone touching the site.</p>
+<p class="np"><strong>Surviving a flaky feed.</strong> The free feed is still in beta and sometimes hangs up or doesn't answer. The first version crashed and lost everything it had heard. Now the script redials, keeps what it already has, and carries on. If it hears nothing at all, it refuses to save, so an empty snapshot never wipes the map.</p>
+
+<div class="insight">
+  <div class="insight-lbl">Two lessons from running it for real</div>
+  GitHub's free timer is "best effort": asked for a run every three hours, it managed two or three a day, so it now asks every hour. And never trust a green tick on its own: one run "succeeded" in 18 seconds because a code edit had removed the line that starts the program.
+</div>
+{% endpsec %}
+
+{% psec 5, "What the First Week Showed", "Does it match what's happening at the ports?", "Result" %}
+<div class="metric-row">
+  <div class="metric"><div class="metric-lbl">Snapshots so far</div><div class="metric-val" id="tk-m-snaps">–</div><div class="metric-sub">since 12 November</div></div>
+  <div class="metric"><div class="metric-lbl">Crude tankers per snapshot</div><div class="metric-val" id="tk-m-avg">–</div><div class="metric-sub">on average</div></div>
+  <div class="metric"><div class="metric-lbl">Share that were full</div><div class="metric-val" id="tk-m-full">–</div><div class="metric-sub">of all sightings</div></div>
+</div>
+
+<div class="sh">Full, empty and unsure, snapshot by snapshot</div>
+<div class="chart-wrap" style="height:300px"><canvas id="tk-chart"></canvas></div>
+
+<div class="sh">Caught in the data</div>
+<p class="np">Because the tracker keeps visiting the same stretch of sea, it can follow individual ships from one snapshot to the next. These three show the method working:</p>
+<div class="tk-stories">
+  <article class="tk-story">
+    <h3>SOHO SQUARE unloads in Rotterdam</h3>
+    <ol>
+      <li><b>12 Nov</b>At Rotterdam, 14.5 m deep: 100% full</li>
+      <li><b>13 Nov, morning</b>Still in port, now 8.0 m: 55%, empty. Destination changed to "TBA"</li>
+      <li><b>13 Nov, night</b>Sailing out at 14.5 knots</li>
+    </ol>
+    <p>A complete delivery: arrive full, pump the oil out, leave light.</p>
+  </article>
+  <article class="tk-story">
+    <h3>KRITI FUTURE delivers to Le Havre</h3>
+    <ol>
+      <li><b>11 Nov</b>Heading for Le Havre, 15.6 m deep: 95% full</li>
+      <li><b>12 Nov</b>Back out in the Channel at 9.5 m: 58%, empty. Destination "Piraeus, for orders"</li>
+    </ol>
+    <p>The first tanker the tracker ever saw, and its whole visit in two snapshots.</p>
+  </article>
+  <article class="tk-story">
+    <h3>ASOPOS and the stale draught</h3>
+    <ol>
+      <li><b>12 Nov</b>In the Channel at 11 knots, heading for Rotterdam: 83% full</li>
+      <li><b>13 to 15 Nov</b>Arrives and ties up at Rotterdam, still showing 85%</li>
+      <li><b>18 Nov</b>Leaving at 11 knots, 7.7 m deep: 53%, empty</li>
+    </ol>
+    <p>It was unloading the whole time. The crew only updated its depth when it sailed.</p>
+  </article>
+</div>
+
+<div class="insight">
+  <div class="insight-lbl">The pattern so far</div>
+  Full tankers are mostly heading <strong>into</strong> Rotterdam, Fawley and Le Havre, where Europe's refineries are. Empty ones are leaving: several for the Americas (Houston, Guyana) and many "for orders". That fits Europe buying crude from across the Atlantic, but a week is far too short to call it a trend. That's what the next step is for.
+</div>
+{% endpsec %}
+
+{% psec 6, "What's Next", "Where does it go from here?", "Next" %}
+<div class="summary-grid">
+  <div class="sum-card"><div class="sum-icon green">1</div><div class="sum-title">A weekly signal</div><div class="sum-body">Once there are several weeks of snapshots: count full tankers arriving each week and compare it with the oil price.</div></div>
+  <div class="sum-card"><div class="sum-icon blue">2</div><div class="sum-title">Better "full" depths</div><div class="sum-body">Remember each ship's deepest-ever reading instead of an average for its size.</div></div>
+  <div class="sum-card"><div class="sum-icon amber">3</div><div class="sum-title">Nigeria</div><div class="sum-body">Add a box over the Bonny and Forcados export terminals, if the free feed covers them.</div></div>
+  <div class="sum-card"><div class="sum-icon purple">4</div><div class="sum-title">Ships that go dark</div><div class="sum-body">Use free radar satellite images to spot tankers that switch their signal off.</div></div>
+</div>
+{% endpsec %}
+
+<script src="/assets/js/projects/tanker-tracker.js" defer></script>

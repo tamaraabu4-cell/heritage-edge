@@ -1,0 +1,72 @@
+/* ==========================================================
+   Oil tanker tracker project: the live map, the count tiles,
+   the data-flow strip and the "caught in the data" stories.
+   Leaflet's own styles come first (the map library).
+   ========================================================== */
+@import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+
+.project-page {
+
+  /* Status colours: full = heritage green, empty = grey, unsure = amber */
+  --tk-full: #23573f;
+  --tk-full-bg: #e6efe9;
+  --tk-empty: #6b6b66;
+  --tk-empty-bg: #f1efe8;
+  --tk-unsure: #a15f0c;
+  --tk-unsure-bg: #fbefd9;
+
+  .tk-updated { font-family: var(--mono); font-size: 13px; color: var(--text-2); margin: 4px 0 14px; }
+
+  /* Three count tiles above the map */
+  .tk-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .tk-tile { padding: 14px 16px; border-radius: 12px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
+  .tk-tile b { font-family: var(--mono); font-size: 28px; font-weight: 500; line-height: 1.1; }
+  .tk-tile.is-full { background: var(--tk-full-bg); color: var(--tk-full); }
+  .tk-tile.is-empty { background: var(--tk-empty-bg); color: #3a3a37; }
+  .tk-tile.is-unsure { background: var(--tk-unsure-bg); color: #6b3f06; }
+
+  /* The map */
+  .tk-map { position: relative; height: 460px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; z-index: 0; }
+  .tk-map .leaflet-popup-content { font: 13px/1.5 var(--font); color: #1e1f1c; }
+  .tk-map .leaflet-popup-content h4 { margin: 0 0 2px; font-size: 15px; }
+  .tk-map .leaflet-popup-content p { margin: 2px 0; }
+
+  /* Legend under the map */
+  .tk-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 12px 0 18px; font-size: 13px; color: var(--text-2); }
+  .tk-legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .tk-dot { width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; display: inline-block; flex-shrink: 0; }
+  .tk-dot.is-full { background: var(--tk-full); }
+  .tk-dot.is-empty { background: #fff; border: 2px solid var(--tk-empty); }
+  .tk-dot.is-unsure { background: var(--tk-unsure-bg); border: 2px dashed var(--tk-unsure); }
+
+  /* aisstream -> Python -> GitHub Actions -> this page */
+  .tk-pipe { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .tk-pipe span { display: flex; flex-direction: column; padding: 10px 14px; border-radius: 10px; background: var(--hub-inset); font-size: 14px; font-weight: 600; color: var(--text); }
+  .tk-pipe small { font-size: 12px; font-weight: 400; color: var(--text-2); }
+  .tk-pipe i { font-style: normal; color: var(--text-3); }
+
+  /* Ship stories */
+  .tk-stories { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 6px 0 18px; }
+  .tk-story { border: 1px solid var(--border); border-radius: 12px; background: var(--hub-card); padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .tk-story h3 { margin: 0; font-size: 16px; line-height: 1.3; }
+  .tk-story ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; line-height: 1.5; }
+  .tk-story li { padding-left: 12px; border-left: 2px solid var(--tone); }
+  .tk-story li b { display: block; font-family: var(--mono); font-size: 11.5px; font-weight: 500; color: var(--tone); }
+  .tk-story p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--text-2); }
+
+  /* Shown in place of the map or chart if the data can't be loaded */
+  .tk-error { padding: 20px; text-align: center; font-size: 13px; color: var(--text-2); }
+
+  @media (max-width: 640px) {
+    .tk-map { height: 360px; }
+    .tk-tile b { font-size: 22px; }
+  }
+}
+
+/* Dark mode: darken the map pictures so they don't glare */
+[data-theme="dark"] .project-page .tk-map .leaflet-tile {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+[data-theme="dark"] .project-page .tk-tile.is-full { background: #1d3428; color: #9fd3b6; }
+[data-theme="dark"] .project-page .tk-tile.is-empty { background: #2c2b28; color: #d6d4cc; }
+[data-theme="dark"] .project-page .tk-tile.is-unsure { background: #3a2c14; color: #f0c27a; }

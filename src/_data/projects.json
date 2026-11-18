@@ -1,4 +1,25 @@
 [
+    {
+    "title": "Oil tanker tracker",
+    "date": "2026-11",
+    "topic": "markets",
+    "kind": "Research",
+    "status": "live",
+    "markets": ["Commodities"],
+    "tags": ["Oil", "Shipping", "Alternative data"],
+    "tools": ["Python", "WebSockets", "GitHub Actions", "Leaflet", "Chart.js"],
+    "headline": "A live map of the crude oil tankers in the English Channel and southern North Sea, showing which are full and which are sailing empty.",
+    "result": "Running on its own every hour since 12 November, and catching real deliveries as they happen.",
+    "url": "/projects/oil-tanker-tracker.html",
+    "cta": "See the live map",
+    "code": "https://github.com/tamaraabu4-cell/oil-tanker-tracker",
+    "steps": {
+      "thesis": "Full tankers sit lower in the water. Counting them gives an early read on oil supply, weeks before official figures.",
+      "method": "Compare each ship's depth with a typical full depth for its size, after filtering out small tankers and gas carriers.",
+      "tech": "Python listens to free ship signals; GitHub Actions runs it hourly; this page reads the results straight from GitHub.",
+      "result": "Running on its own every hour since 12 November, and catching real deliveries as they happen."
+    }
+  },
   {
     "title": "December FOMC trade memo",
     "date": "2026-10",
