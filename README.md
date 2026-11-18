@@ -19,7 +19,7 @@ Heritage Edge is where all of that lives. It does three jobs:
 - **A foundation**: the starting point for a long-term plan. Every trade, project and lesson here builds the capital, skills and track record needed to turn my ideas into real ventures, one step at a time.
 The name has a story. *Heritage* comes from Heritage Oil, the first company I worked for. *Edge* is what every trade is looking for.
 
-The site is built around a long-term plan: **trade → use trading capital to move into real estate and other business ventures** That's why the projects and the hub cover all three.
+The site is built around a long-term plan: **trade → use trading capital to move into real estate and other business ventures.** That's why the projects and the hub cover all three.
 
 ---
 
