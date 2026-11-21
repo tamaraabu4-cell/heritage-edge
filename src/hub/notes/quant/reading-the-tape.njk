@@ -1,0 +1,232 @@
+---
+title: Reading the Tape
+shelf: quant
+chapter: microstructure
+subtopic: Order Flow
+order: 1
+summary: The tape (every trade and quote update) as a record of who did what. Trade signing (deciding whether a buyer or a seller started each trade) with the quote rule, the tick test and the Lee–Ready rule, how often each gets it right, and the aggressor flags modern futures feeds now carry; order flow imbalance and signed volume (Deltashark's five-minute interval, 42,000 at the ask against 18,000 at the bid); the order-book version of imbalance from Cont, Kukanov and Stoikov, which explains short-term price moves better than trades alone, with a slope set by depth; the trap of reading pressure as information; and what tape exists in FX, gold and Treasuries.
+lede: 'Every trade leaves a mark on the tape: a price, a size and a time. Look closer and it also tells you which side was in a hurry. This note shows how traders work out who started each trade, how they add those up into a single number for buying or selling pressure, and how well that number predicts the next few seconds of price.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, probability, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/reading-the-tape.js]
+
+quiz:
+  - q: 'The market is 50.00 bid, 50.02 offered, and a trade prints at 50.02. Under the quote rule, who started it?'
+    opts: ['A buyer: it traded at the offer, so a buyer crossed the spread to take a resting sell order', 'A seller, because sellers post offers', 'You can''t tell without the trader''s name']
+    right: 0
+    why: 'A trade at the ask means someone was willing to pay the seller''s price immediately: the buyer was the aggressor. A trade at the bid means a seller hit a resting buy order. Only trades between the bid and ask are hard to sign, which is why the tick test exists.'
+  - q: 'In five minutes, 30,000 shares trade at the ask and 50,000 at the bid. What is the order flow imbalance?'
+    opts: ['+0.25', '−0.6', '−0.25: (30,000 − 50,000) / 80,000, so selling pressure']
+    right: 2
+    why: 'Imbalance is net signed volume over total: \((30 - 50)/(30 + 50) = -0.25\). It runs from \(-1\) (all selling) to \(+1\) (all buying). This is one of Deltashark''s quick checks.'
+  - q: 'On the last day of the month, a stock shows heavy selling imbalance into the close. What should you conclude?'
+    opts: ['Someone knows bad news, so sell', 'Very little on its own: month-end index and fund rebalancing creates huge imbalances that carry no view, and their price impact tends to fade afterwards', 'The stock will keep falling tomorrow']
+    right: 1
+    why: 'Deltashark''s trap: imbalance measures pressure, not why it''s there. Calendar flows like month-end rebalancing are big and one-sided but uninformed, so their impact reverts. To judge whether pressure is information you need context the tape doesn''t carry: the calendar, news, and whether related markets agree. The next note goes deeper.'
+
+connected:
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Builds on, title: Changing the Tick, where: Quant · Microstructure, url: /hub/quant/changing-the-tick/ }
+  - { label: Used in, title: Footprints of Size and Information, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .rt-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .tape { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .tape-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+  .tape-row .tp-q { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+  .tape-row .tp-t { font-family: var(--mono); font-size: 15px; color: var(--text); font-weight: 500; }
+  .tape-row .why { grid-column: 1 / -1; font-size: 14px; color: var(--text-2); line-height: 1.55; }
+  .tape-row .why b { color: var(--text); font-weight: 600; }
+  .tape-row .btns { display: flex; gap: 6px; }
+  .tape-row .btns button { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--hub-card); color: var(--text); cursor: pointer; }
+  .tape-row .btns button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .tape-row.right { border-color: var(--tone); }
+  .tape-row.wrong { border-color: var(--danger, #dc2626); }
+  @media (max-width: 520px) { .tape-row { grid-template-columns: 1fr; } }
+</style>
+
+{% sec 1, "The Tape Is a Diary", "What can you learn from a list of trades?", "The tape is a diary" %}
+  <div class="prose">
+    <p>Picture two sales at a fruit stall, both at £2 a box. In the first, a customer walks up and pays the price on the sign straight away. In the second, the stallholder, wanting to pack up, walks over to a shopper who'd said "I'd pay £2" and accepts. The till receipts look identical. But the first sale shows a buyer in a hurry and the second shows a seller in a hurry, and if you saw ten sales like the first in a row, you'd guess the stall was about to put its prices up.</p>
+    <p>Markets keep a till roll too. The {% gl "tape" %}tape{% endgl %} is the sequence of every trade and every quote update. Deltashark calls it a record of everyone's actions, and actions leak intent. <strong>Order flow analysis</strong> uses simple counts and sums on the tape to estimate three things: which side is starting trades, whether pressure is building, and whether the flow looks informed. This note covers the first two. The third, telling informed flow from merely big flow, is the next note, Footprints of Size and Information.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Who Started It?", "How do you tell whether a trade was a buy or a sell?", "Who started it?" %}
+  <div class="prose">
+    <p>Every trade has a buyer and a seller, so in one sense every trade is both. What matters is who was the {% gl "aggressor" %}aggressor{% endgl %}: the one who crossed the spread to trade immediately against an order that was already resting. Labelling each trade by its aggressor is called {% gl "trade signing" %}trade signing{% endgl %}, and it's the raw material for everything else in this chapter. There are three classic rules:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Rule</th><th>How it signs a trade</th><th>Weak spot</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Quote rule</strong></td><td>At or near the ask → buy. At or near the bid → sell.</td><td>Can't sign a trade exactly at the midpoint</td></tr>
+        <tr><td><strong>{% gl "tick test" %}Tick test{% endgl %}</strong></td><td>Higher than the last different trade price (an uptick) → buy. Lower (a downtick) → sell.</td><td>Ignores the quotes entirely</td></tr>
+        <tr><td><strong>{% gl "lee–ready algorithm" %}Lee–Ready{% endgl %} (1991)</strong></td><td>Use the quote rule; for trades at the midpoint, fall back on the tick test.</td><td>Trades inside the spread (dark pools, hidden orders, price improvement)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>How often do they get it right? A well-known test on Nasdaq data where the true direction was known (Ellis, Michaely and O'Hara, 2000) found the quote rule right 76% of the time, the tick test 78% and Lee–Ready 81%. All three struggled most with trades inside the quotes, and those are now far more common than in 1991, because of {% gl "midpoint execution" %}midpoint trades{% endgl %} and sub-penny price improvement.</p>
+    <p>The good news: many modern feeds don't make you guess. CME's market data, for example, tags every trade with an <strong>aggressor side</strong> (buy, sell, or none), so futures traders get signed trades for free. You still need the rules for US consolidated stock data, much over-the-counter data, and older historical datasets.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Sign the tape</h3><p>Ten trades in one stock, each with the quote at the moment it printed. Decide whether a buyer or a seller started each one, then see what the rules say and what really happened. Your labels add up to an imbalance at the bottom.</p></div>
+    <div class="tape" id="st-list"></div>
+    <div class="readout" id="st-read"></div>
+    <p class="look" id="st-story"></p>
+    <div class="presets"><button type="button" id="st-reset">Start again</button></div>
+  </div>
+{% endsec %}
+
+{% sec 3, "Order Flow Imbalance", "How do you turn signed trades into one number for pressure?", "Order flow imbalance" %}
+  <div class="prose">
+    <p>Once trades are signed, add them up. {% gl "signed volume" %}Signed volume{% endgl %} is buys minus sells. Divide by the total and you get Deltashark's {% gl "order flow imbalance" %}order flow imbalance{% endgl %} for an interval, a number between \(-1\) and \(+1\):</p>
+  </div>
+  <div class="formula"><span class="lbl">Order flow imbalance (Deltashark)</span>\[ \text{OFI} = \frac{V_{\text{buy}} - V_{\text{sell}}}{V_{\text{buy}} + V_{\text{sell}}} \]</div>
+  <div class="prose">
+    <p>\(+1\) means every trade was buyer-initiated, \(-1\) every trade seller-initiated, and \(0\) balanced. Deltashark notes that short-horizon price changes line up strongly with imbalance in the same interval, across essentially every market.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): an interval on the tape</span>
+    <h3>In five minutes, \(42{,}000\) shares trade at the ask and \(18{,}000\) at the bid. What is the imbalance, and how should you read it?</h3>
+    <ol class="steps">
+      <li>\(\text{OFI} = (42 - 18)/(42 + 18) = 24/60 = 0.4\).</li>
+      <li>Signed volume is \(+24{,}000\) shares: a strongly buy-imbalanced interval.</li>
+      <li>Then check the book and the price: was depth at the offer used up faster than it was replaced? Did the mid move up with each burst of buying?</li>
+    </ol>
+    <p class="answer">If both are yes, you're watching demand meet limited supply: price impact happening in real time.</p>
+  </div>
+  <div class="prose">
+    <p>Traders also watch <strong>cumulative signed volume</strong>, the running total across intervals. Deltashark's second quick check is an example: \(+12{,}000\), \(+9{,}000\), \(+15{,}000\) and \(+11{,}000\) add up to \(+47{,}000\) shares of net buying. Four positive intervals in a row is <em>persistent</em> pressure, which matters for the next note: a single big order sliced into pieces tends to leave exactly this kind of run.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Imbalance and Price", "How much does the price move for a given imbalance?", "Imbalance and price" %}
+  <div class="prose">
+    <p>Trades are only half the story. The book changes all the time without any trades: new limit orders join the best bid, others are cancelled from the best offer. Rama Cont, Arseniy Kukanov and Sasha Stoikov (published 2014) built an order flow imbalance that counts <em>all</em> of these events at the best prices, using quote and trade data for 50 US stocks:</p>
+    <ul>
+      <li>Buying pressure: market buys, new bids at the best bid, and cancelled offers at the best ask.</li>
+      <li>Selling pressure: market sells, new offers at the best ask, and cancelled bids at the best bid.</li>
+    </ul>
+    <p>They found that over short intervals, price changes are mainly driven by this imbalance, in a straight-line relationship whose slope is <strong>inversely proportional to depth</strong>. Thin books move a lot per share of imbalance; deep books barely move. And the relationship using trades alone was noisier and less reliable, because it misses all the quote activity.</p>
+  </div>
+  <div class="formula"><span class="lbl">Price change against book imbalance (Cont, Kukanov and Stoikov)</span>\[ \Delta P \approx \beta \times \text{OFI}_{\text{book}} \qquad \beta \approx \frac{\delta}{2D} \]</div>
+  <div class="prose">
+    <p>Here \(\text{OFI}_{\text{book}}\) is in shares, not a ratio, \(\delta\) is the tick and \(D\) is the typical number of shares at the best prices. The \(\tfrac{\delta}{2D}\) comes from their simple model of the book; real slopes are estimated from data. The interactive shows both versions side by side.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Imbalance and price</h3><p>Each dot is a 10-second interval: imbalance across, change in the mid price up. Switch between the full book imbalance and trades only, and change how deep the book is. The tone line is the best-fit slope; the dashed line is the simple model's \(\delta/2D\).</p></div>
+    <div class="controls">
+      <div class="presets rt-pick" id="ip-x" aria-label="Which imbalance"></div>
+      <div class="ctrl"><label for="ip-d">Depth at best</label><input type="range" id="ip-d" min="500" max="8000" step="250" value="2000"><output id="ip-d-out" for="ip-d">2,000</output></div>
+      <div class="ctrl"><label for="ip-q">Quote activity</label><input type="range" id="ip-q" min="0" max="2" step="0.1" value="1"><output id="ip-q-out" for="ip-q">×1.0</output></div>
+      <div class="presets"><button type="button" id="ip-again">Another hour</button></div>
+    </div>
+    <svg class="chart" id="chart-ip" viewBox="0 0 640 300" role="img" aria-label="Scatter of order flow imbalance against change in mid price for 10-second intervals, with a fitted line"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Best-fit slope</span><span><i class="sw grey"></i>Intervals, and the simple model</span></div>
+    <div class="readout" id="ip-read"></div>
+    <p class="look" id="ip-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 5, "The Trap: Pressure Isn't Information", "If buying pressure moves prices, why not just follow it?", "Pressure isn't information" %}
+  <div class="prose">
+    <p>Deltashark's warning: imbalance predicts <em>short-horizon</em> moves, but it doesn't say <em>why</em> the pressure is there. Treat pressure as information and you'll walk into every large uninformed rebalance ever executed. The month-end index flow is massively imbalanced and carries no view at all, and its price impact tends to reverse afterwards.</p>
+    <p>Flow statistics classify pressure. Deciding whether that pressure carries information needs context the statistics don't have: the calendar (month-end, index changes, option expiry), the news, and whether related markets agree. That's the subject of the next note.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The big idea</span>
+    <p>The tape tells you who's in a hurry and how hard they're pushing. It doesn't tell you whether they know something. Read the pressure, then go and find the reason.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Is there a tape to read in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>Spot FX has no single public tape: most trading happens between banks, platforms and clients, and each sees only its own slice. Dealers read <em>their own</em> client flow, which is one reason big banks have an information edge in FX and why their "flow" commentary is valued. Outsiders can use currency futures, such as CME's euro contract, where every trade carries an aggressor flag, or buy aggregated volume and flow data from settlement providers such as CLS. Be careful with "volume" on retail FX platforms: it's usually a count of price changes at your broker, not real traded volume.</p>
+    <h3>Gold</h3>
+    <p>COMEX gold futures have a full signed tape. London's over-the-counter spot market doesn't publish individual trades, so the futures tape is where most gold order flow analysis happens.</p>
+    <h3>Bonds</h3>
+    <p>Treasury futures and the main interdealer platform, BrokerTec, give a real-time view of order flow. Cash Treasury trades have been reported to FINRA's TRACE system since July 2017, but only for regulators at first. Since 25 March 2024, FINRA has published individual trades in on-the-run notes and bonds at the end of each day. That's useful for research, but too late to trade on intraday, so the live tape for Treasuries is still the futures and BrokerTec.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Lifted</h3><span class="tag desk">Desk</span></div><p>Your offer was taken by a buyer crossing the spread.</p><p class="eg">"Got lifted on 500 at 02."</p></div>
+    <div class="term"><div class="term-top"><h3>Hit</h3><span class="tag desk">Desk</span></div><p>Your bid was taken by a seller crossing the spread.</p><p class="eg">"Someone hit the bid for 20 lots."</p></div>
+    <div class="term"><div class="term-top"><h3>Paid</h3><span class="tag desk">Desk</span></div><p>A buyer took the offer: the trade was buyer-initiated.</p><p class="eg">"Fifty paid, again and again."</p></div>
+    <div class="term"><div class="term-top"><h3>Given</h3><span class="tag desk">Desk</span></div><p>A seller took the bid: the trade was seller-initiated.</p><p class="eg">"Forty given, a thousand lots."</p></div>
+    <div class="term"><div class="term-top"><h3>Print</h3><span class="tag desk">Desk</span></div><p>A trade appearing on the tape.</p><p class="eg">"Big print at the bid just now."</p></div>
+    <div class="term"><div class="term-top"><h3>Better buyer</h3><span class="tag desk">Desk</span></div><p>Buying pressure dominates the flow.</p><p class="eg">"Market's a better buyer since the open."</p></div>
+    <div class="term"><div class="term-top"><h3>Absorbed</h3><span class="tag desk">Desk</span></div><p>Heavy aggressive flow that a big resting order soaks up without the price moving.</p><p class="eg">"They've absorbed every seller at 40."</p></div>
+    <div class="term"><div class="term-top"><h3>Reload</h3><span class="tag desk">Desk</span></div><p>A resting order that keeps reappearing at the same price after being filled.</p><p class="eg">"The offer keeps reloading, there's size behind it."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where reading order flow turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: what "volume delta" charts really show</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Many trading platforms sell "footprint" and "cumulative volume delta" charts. These are signed volume and cumulative signed volume, exactly this note's ideas. They're only as good as the data underneath: on gold or euro futures, the exchange's aggressor flags make them reliable; on spot FX at a retail broker, there's no real volume to sign at all. And remember the trap: a strong delta tells you who's pushing, not whether they're right. If you test a flow-based idea, check whether it still works on month-end days and index-rebalance days, when big uninformed flow dominates.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: reading the property tape</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Housing has an order flow imbalance too. Surveys of estate agents, such as the RICS monthly survey in the UK, track new buyer enquiries against new properties coming to market. When enquiries rise and new listings fall, buyers outnumber sellers and prices tend to follow, just like a positive OFI. For a villa business, the equivalent is your own enquiry log: more serious enquiries than units available is a signal to firm up prices; the reverse is a signal to lean them down.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: your app's own tape</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app sees every request to buy or sell dollars: that's a private, fully signed tape, which is exactly the advantage FX dealers have. Tracking net dollar demand each hour (an OFI) tells the app when to nudge its rate before its dollar inventory runs out, and comparing its own imbalance with moves in the wider market shows whether its users are early (informed) or just noisy. Keep the trap in mind: salary days, school-fee season and month-end import payments create huge one-sided flow that says nothing about where the naira is going.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you compute the book imbalance and its price impact?" %}
+  <div class="formula"><span class="lbl">Signed volume and the volume imbalance over an interval</span>\[ \begin{gathered} S = \sum_{i} s_i\,v_i \qquad s_i = \begin{cases} +1 & \text{buyer-initiated} \\ -1 & \text{seller-initiated} \end{cases} \\[6pt] \text{OFI} = \frac{S}{\sum_i v_i} \end{gathered} \]</div>
+  <div class="prose">
+    <p>The book version adds up changes at the best bid and best ask between one snapshot and the next. In words: more size on the bid, or less on the ask, is buying pressure. If the bid price rises, the whole new bid counts; if it falls, the whole old bid counts against. The ask works the other way round.</p>
+  </div>
+  <div class="formula"><span class="lbl">Book imbalance between two snapshots (Cont, Kukanov and Stoikov)</span>\[ \begin{gathered} e = \Delta(\text{bid side}) - \Delta(\text{ask side}) \\[6pt] \text{same prices: } e = (q^{b}_{\text{new}} - q^{b}_{\text{old}}) - (q^{a}_{\text{new}} - q^{a}_{\text{old}}) \end{gathered} \]</div>
+  <div class="formula"><span class="lbl">Fitting the slope: least squares over many intervals</span>\[ \begin{gathered} \hat\beta = \frac{\sum_k x_k\,y_k}{\sum_k x_k^{2}} \\[6pt] R^{2} = 1 - \frac{\sum_k (y_k - \hat\beta x_k)^{2}}{\sum_k y_k^{2}} \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(x_k\) is the imbalance in interval \(k\) and \(y_k\) the change in the mid. \(R^{2}\) is the share of price moves the imbalance explains: close to \(1\) means imbalance explains almost everything, close to \(0\) means almost nothing.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The best bid stays at \(50.00\) and its size grows from \(500\) to \(800\). The best ask stays at \(50.01\) and its size falls from \(400\) to \(300\). Depth is typically \(2{,}000\) shares. What's the book imbalance, and the predicted move?</h3>
+    <ol class="steps">
+      <li>Bid side: \(800 - 500 = +300\). Ask side: \(300 - 400 = -100\).</li>
+      <li>\(e = +300 - (-100) = +400\) shares of buying pressure.</li>
+      <li>\(\beta \approx \tfrac{1}{2 \times 2{,}000} = 0.00025\) ticks per share, so \(\Delta P \approx 400 \times 0.00025 = 0.1\) ticks.</li>
+    </ol>
+    <p class="answer">No trade happened, yet the book leaned towards buying. That's exactly the information a trades-only measure misses.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) An interval prints \(30{,}000\) shares at the ask and \(50{,}000\) at the bid. What is the order flow imbalance?</span></p>
+      <details><summary>Show answer</summary><div><span>\((30{,}000 - 50{,}000)/80{,}000 = -0.25\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Signed volume runs \(+12{,}000\), \(+9{,}000\), \(+15{,}000\), \(+11{,}000\) across four intervals. What is total net signed volume?</span></p>
+      <details><summary>Show answer</summary><div><span>\(+47{,}000\) shares.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>The quote is \(20.10\) / \(20.12\). A trade prints at \(20.11\), and the last different trade price was \(20.12\). How does Lee–Ready sign it?</span></p>
+      <details><summary>Show answer</summary><div><span>It's at the midpoint, so the quote rule can't decide. The tick test sees a downtick from \(20.12\), so it's signed as a sell.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Best bid \(99.50\) for \(1{,}000\) → still \(99.50\) for \(600\). Best ask \(99.51\) for \(700\) → still \(99.51\) for \(900\). What's the book imbalance?</span></p>
+      <details><summary>Show answer</summary><div><span>Bid side \(-400\), ask side \(+200\): \(e = -400 - 200 = -600\) shares, selling pressure.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A stock usually shows \(5{,}000\) shares at the best prices. Using \(\beta \approx \delta/2D\), how many ticks would \(+3{,}000\) shares of book imbalance move the mid?</span></p>
+      <details><summary>Show answer</summary><div><span>\(3{,}000 / (2 \times 5{,}000) = 0.3\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: you have trades and quotes for a stock but no aggressor flags. How would you work out signed volume, and what could go wrong?</span></p>
+      <details><summary>Show answer</summary><div><span>I'd use Lee–Ready: the quote rule (at or near the ask is a buy, at or near the bid a sell), with the tick test for trades at the midpoint. I'd need the quote in force just before each trade, so timestamps have to line up. It goes wrong mostly for trades inside the spread, such as midpoint dark trades and price-improved retail orders, which are now common; studies found the rules right only about 76–81% of the time even in older data. If I could, I'd use a venue feed with aggressor flags instead.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: order flow imbalance has been strongly positive in a stock for twenty minutes. Do you buy?</span></p>
+      <details><summary>Show answer</summary><div><span>Not on that alone. Imbalance tells me there's buying pressure and predicts the next few seconds, but not why. I'd check the context: is it month-end or an index change, when big uninformed flows are one-sided? Is there news? Are related instruments (the sector, the index future) moving the same way? If the pressure is a rebalance, its impact usually fades and buying into it means paying up just before it reverses. If it's confirmed across markets near a news event, it's more likely to be informed.</span></div></details></div>
+  </div>
+{% endsec %}
