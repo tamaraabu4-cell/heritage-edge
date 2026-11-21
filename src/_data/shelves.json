@@ -235,7 +235,11 @@
           "Quote Skewing",
           "Spread Width"] },
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
-        "subtopics": ["Tick Sizes", "Order Flow", "Latency and Speed"] },
+        "subtopics": [
+          "Tick Sizes",
+          { "name": "Order Flow", "planned": ["Reading the Tape", "Footprints of Size and Information"] },
+          { "name": "Latency and Speed", "planned": ["What Speed Buys"] }
+        ] },
       { "title": "Game Theory in Trading", "blurb": "Trading against people who know things you don't.",
         "subtopics": ["Private Information", "Auctions", "Equilibrium"] },
       { "title": "What Makes a Strategy Systematic?", "blurb": "Rules a computer can follow and test.",

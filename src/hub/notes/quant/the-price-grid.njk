@@ -1,0 +1,246 @@
+---
+title: The Price Grid
+shelf: quant
+chapter: microstructure
+subtopic: Tick Sizes
+order: 1
+summary: Prices can only sit on a grid of fixed steps called ticks. Tick size against tick value, and why professionals count profit and loss in ticks (Deltashark's futures example, 6 ticks on 4 contracts); large-tick and small-tick markets, and why the same 1-cent tick is huge for a $5 stock and tiny for a $500 one; what happens when the tick binds (the market makers' cost floor is below one tick, so the spread is stuck at one tick and the spare profit goes to whoever is at the front of the queue); what a place in the queue is worth, front against back; and the grid in FX (pips and half-pips), gold (10 cents an ounce) and bonds (32nds).
+lede: 'Prices don''t move smoothly. Every market has a smallest step, the tick, and every bid and offer has to sit on that grid. It sounds like plumbing, but the size of the step decides how wide spreads can get, how long queues grow and what market makers compete on. This first note of the Microstructure chapter explains the grid and what a place in the queue is worth.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/the-price-grid.js]
+
+quiz:
+  - q: 'A stock trades at $5 with a 1-cent tick. Market makers would happily quote a spread of 3 basis points (bp). What does the quoted spread look like?'
+    opts: ['About 3 bp, because competition pushes it to the floor', 'It floats between 1 and 3 cents', 'Stuck at one tick, which is 20 bp. Makers can''t quote a better price, so they compete on getting to the front of the queue instead']
+    right: 2
+    why: 'One cent on a $5 stock is \(0.01 / 5 = 0.002\), or 20 bp, far above the 3 bp floor. The grid has no price between the bid and the offer, so the spread is pinned at one tick. The spare profit (20 bp against a 3 bp floor) goes to whoever is filled first, so the competition is over time and queue position, not price.'
+  - q: 'A futures contract has a tick size of 0.25 points and a multiplier of 50. You make 4 ticks on 3 contracts. What is your profit?'
+    opts: ['$150: the tick value is \(0.25 \times 50 = \$12.50\), and \(4 \times 12.50 \times 3 = 150\)', '$12.50', '$600']
+    right: 0
+    why: 'Tick value is tick size times the contract multiplier: \(0.25 \times 50 = \$12.50\) per contract. Profit is ticks times tick value times contracts: \(4 \times 12.50 \times 3 = \$150\). This is why desks count everything in ticks.'
+  - q: 'You''re near the back of a long queue at the bid, and your order is filled. Why is that often bad news?'
+    opts: ['It isn''t: a fill is always good for a market maker', 'Your order only gets reached when nearly the whole queue is eaten, which mostly happens when sellers are about to push the price through your level. So late fills tend to come just before the price drops', 'Because exchanges charge more for orders at the back']
+    right: 1
+    why: 'Small, ordinary selling only reaches the front of the queue. To reach the back, the selling has to be big enough to use up almost everything ahead of you, and that kind of selling usually moves the price down a tick. So the fills you get at the back are the ones you''d least want: adverse selection again.'
+
+connected:
+  - { label: Builds on, title: The Order Book, where: Markets · How Markets Work, url: /hub/markets/the-order-book/ }
+  - { label: Builds on, title: Setting the Width, where: Quant · Market Making, url: /hub/quant/setting-the-width/ }
+  - { label: Builds on, title: Earning the Spread, where: Quant · Market Making, url: /hub/quant/earning-the-spread/ }
+  - { label: Used in, title: What Speed Buys, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .pg-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "A Ruler with Fixed Marks", "What is a tick, and why do traders count money in ticks?", "A ruler with fixed marks" %}
+  <div class="prose">
+    <p>Imagine a market stall where every price has to be a whole pound. Apples can be £1 or £2, but never £1.40. If the stallholder would really like to charge £1.40, they have a choice: charge £1 and lose money, or charge £2 and lose customers. And if two stalls both want to sell at "about £1.40", neither can undercut the other by a few pence. They both sit at £1 or £2, and whoever got there first gets served first.</p>
+    <p>Every exchange works like that stall. Prices sit on a grid, and the smallest step on the grid is the {% gl "tick size" %}tick{% endgl %}. Deltashark's point is that the tick looks like plumbing, but it shapes spreads, queues and how market makers quote so strongly that changing it reorganises the whole market.</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>{% gl "tick size" %}Tick size{% endgl %}<span class="why">The smallest price step: 1 cent for most US stocks, 0.25 index points for the E-mini S&amp;P 500 future.</span></span></li>
+    <li><span class="n">2</span><span>{% gl "tick value" %}Tick value{% endgl %}<span class="why">What one tick is worth in cash on one share or one contract: tick size × contract multiplier.</span></span></li>
+    <li><span class="n">3</span><span>The unit of P&amp;L<span class="why">Spreads, slippage and edge per fill are all a small number of ticks, so desks count in ticks.</span></span></li>
+  </ul>
+  <div class="formula"><span class="lbl">Tick value, and profit in ticks</span>\[ \begin{gathered} \text{tick value} = \text{tick size} \times \text{multiplier} \\[6pt] \text{P\&L} = \text{ticks} \times \text{tick value} \times \text{contracts} \end{gathered} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example (Deltashark): ticks as the unit of P&amp;L</span>
+    <h3>A futures contract has a tick size of \(0.25\) points and a multiplier of \(50\). A trade captures \(6\) ticks on \(4\) contracts. What does it earn?</h3>
+    <ol class="steps">
+      <li>Tick value: \(0.25 \times 50 = \$12.50\) per contract.</li>
+      <li>Profit: \(6 \times 12.50 \times 4 = \$300\).</li>
+    </ol>
+    <p class="answer">These are the E-mini S&amp;P 500's numbers. A trader on that desk would just say "six ticks on four lots". Every cost in the business, from the spread to slippage, is a few ticks, so the tick is the natural unit for everything in this chapter.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Market</th><th>Tick size</th><th>Tick value</th></tr></thead>
+      <tbody>
+        <tr><td>US stocks (priced \(\$1\) or more)</td><td>\(\$0.01\)</td><td>\(\$0.01\) a share</td></tr>
+        <tr><td>E-mini S&amp;P 500 future (CME)</td><td>\(0.25\) points</td><td>\(\$12.50\)</td></tr>
+        <tr><td>Gold future (COMEX, 100 ounces)</td><td>\(\$0.10\) an ounce</td><td>\(\$10\)</td></tr>
+        <tr><td>10-year Treasury note future (CBOT)</td><td>half of \(\tfrac{1}{32}\) of a point</td><td>\(\$15.625\)</td></tr>
+        <tr><td>2-year Treasury note future (CBOT)</td><td>an eighth of \(\tfrac{1}{32}\)</td><td>\(\$7.8125\)</td></tr>
+        <tr><td>EUR/USD spot</td><td>a pip, \(0.0001\) (or a fraction of one)</td><td>\(\$100\) per \(\text{€}1\) million per pip</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 2, "Big Ticks and Small Ticks", "Why does the same 1-cent tick matter more for some instruments than others?", "Big ticks and small ticks" %}
+  <div class="prose">
+    <p>A 1-cent tick is the same for every US stock, but it isn't the same <em>size</em>. On a \(\$5\) stock, one cent is \(0.2\%\) of the price, or \(20\) {% gl "basis point" %}basis points{% endgl %}. On a \(\$500\) stock it's \(0.2\) bp, a hundred times smaller. What matters is how the tick compares with the spread market makers would quote if there were no grid at all, the {% gl "spread floor" %}floor{% endgl %} from Setting the Width. That splits instruments into two kinds, and Deltashark says they behave very differently.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>{% gl "large-tick" %}Large-tick{% endgl %}: the tick is bigger than the floor</th><th>{% gl "small-tick" %}Small-tick{% endgl %}: the tick is much smaller than the floor</th></tr></thead>
+      <tbody>
+        <tr><td>Quoted spread</td><td>Stuck at one tick almost all the time</td><td>Floats several ticks wide, moving with conditions</td></tr>
+        <tr><td>Queues at the best prices</td><td>Long and deep</td><td>Short</td></tr>
+        <tr><td>What makers compete on</td><td><strong>Time</strong>: getting to the front of the queue</td><td><strong>Price</strong>: stepping ahead of each other by a tick</td></tr>
+        <tr><td>Quotes</td><td>Stable, the same prices for a long time</td><td>Flickering, as makers leapfrog each other by tiny amounts</td></tr>
+        <tr><td>Examples</td><td>Cheap stocks, the E-mini S&amp;P, Treasury futures</td><td>Expensive stocks, many smaller futures, crypto with very fine grids</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Researchers often define a large-tick asset as one whose spread is almost always exactly one tick (Dayri and Rosenbaum, 2012). Notice that it isn't only about price. The E-mini S&amp;P trades at thousands of points, so its \(0.25\) tick is a tiny fraction of a basis point. But it's so liquid that market makers would quote even tighter if they could, so it's the classic large-tick market, with queues of thousands of contracts at each price.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Large tick or small tick?</h3><p>Pick an instrument, or set your own price, tick and floor. The chart shows how often the quoted spread is 1, 2, 3 … ticks wide across a day of snapshots, if makers quote their floor rounded up to the grid.</p></div>
+    <div class="controls">
+      <div class="presets pg-pick" id="lt-pick" aria-label="Instrument"></div>
+      <div class="presets pg-pick" id="lt-tick" aria-label="Tick size"></div>
+      <div class="ctrl"><label for="lt-p">Price</label><input type="range" id="lt-p" min="0" max="4" step="any" value="1.60206"><output id="lt-p-out" for="lt-p">$40</output></div>
+      <div class="ctrl"><label for="lt-f">Makers' floor</label><input type="range" id="lt-f" min="-1" max="1.3" step="any" value="0.60206"><output id="lt-f-out" for="lt-f">4 bp</output></div>
+    </div>
+    <svg class="chart" id="chart-lt" viewBox="0 0 640 240" role="img" aria-label="Bar chart of how often the quoted spread is one, two, three or more ticks wide"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Share of the day at each width</span></div>
+    <div class="readout" id="lt-read"></div>
+    <p class="look" id="lt-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 3, "When the Tick Binds", "What happens when the grid is coarser than the market wants?", "When the tick binds" %}
+  <div class="formula"><span class="lbl">When the tick binds (Deltashark)</span>\[ \begin{gathered} s_{\text{floor}} < 1 \text{ tick} \;\Rightarrow\; s = 1 \text{ tick} \\[6pt] \text{and competition moves to the queue} \end{gathered} \]</div>
+  <div class="prose">
+    <p>If the spread market makers need is less than one tick, they still can't quote anything narrower than one tick, because there's no price on the grid in between. So the spread sits at one tick, and every fill earns more than the maker needs. Deltashark calls this surplus a reward for {% gl "queue position" %}queue priority{% endgl %}: <strong>time priority becomes the profit centre</strong>.</p>
+    <p>Think back to the apple stalls. Both would sell at £1.40 but have to choose £2, and every customer is a little more profitable than it needs to be. The two stalls can't fight on price, so they fight on being first: opening earlier, standing nearer the entrance. In a large-tick market that fight is about being early to join each new price level and fast enough to stay near the front. That's the first link between tick size and the speed race, which the last note of this chapter, What Speed Buys, comes back to.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: the surplus in a pinned spread</span>
+    <h3>A \(\$20\) stock has a 1-cent tick. Market makers' floor is a full spread of \(3\) bp. About \(10\) million shares a day trade against resting quotes. How big is the spare profit, and who gets it?</h3>
+    <ol class="steps">
+      <li>One tick in basis points: \(0.01 / 20 = 0.0005 = 5\) bp. The floor is \(3\) bp, which is \(0.6\) cents.</li>
+      <li>The floor is less than one tick, so the spread is pinned at \(1\) cent.</li>
+      <li>Each fill earns half the spread, \(0.5\) cents, against half the floor, \(0.3\) cents: \(0.2\) cents a share to spare.</li>
+      <li>Across the day: \(0.002 \times 10{,}000{,}000 = \$20{,}000\).</li>
+    </ol>
+    <p class="answer">About \(\$20{,}000\) a day in this stock is spare, and it can't be competed away on price. It goes to the orders at the front of the queues, so firms spend money on being there.</p>
+  </div>
+  <div class="prose">
+    <p>Small-tick markets are the opposite. There, the grid is fine enough for the spread to sit near the floor, and if a maker wants more fills it can simply quote a tick better. That brings its own problems: quotes that change many times a second, and "{% gl "pennying" %}pennying{% endgl %}", where a trader steps one tiny tick ahead of a large resting order to get in front of it at almost no cost. The next note, Changing the Tick, looks at what happens when regulators move the grid in either direction.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The big idea</span>
+    <p>The tick is a floor under the spread. When the market's own floor is below it, the spread is stuck at one tick and the spare profit goes to the front of the queue. When the market's floor is above it, makers compete on price instead. Same rules, two completely different games.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "What Is Your Place in the Queue Worth?", "Is it better to be first in line at a price, and by how much?", "What a queue spot is worth" %}
+  <div class="prose">
+    <p>The Order Book showed how {% gl "price-time priority" %}price-time priority{% endgl %} works: at the same price, whoever arrived first is filled first. In a large-tick market the queues are long, so <em>where</em> you are in the line matters a lot. Two things make the front better than the back:</p>
+    <ul>
+      <li><strong>You get filled more often.</strong> Small, everyday selling only reaches the first few orders in the bid queue.</li>
+      <li><strong>Your fills are better ones.</strong> To reach the back of the queue, the selling has to be big enough to eat almost the whole level, and selling that big usually pushes the price down a tick straight afterwards. So orders at the back mostly get filled just before the price moves against them. This is {% gl "adverse selection" %}adverse selection{% endgl %} again, from The Free Option, but now it depends on where you stand in the line.</li>
+    </ul>
+    <p>Ciamac Moallemi and Kai Yuan at Columbia built a model of this and tested it on real data. For some large-tick stocks, they found that the value of a good queue position can be about as big as the whole bid–ask spread. That's why market making firms track their place in every queue and why being early to a new price level is worth paying for.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>What is your queue spot worth?</h3><p>You have a small buy order resting at the best bid, with other shares ahead of you. In the next few minutes, some ordinary selling arrives. Sometimes a big sweep clears the whole level, and then the price drops a tick. A fill earns half a tick if the price stays, and loses half a tick if the level is cleared. Move your place in the line and see what your order is worth.</p></div>
+    <div class="controls">
+      <div class="presets pg-pick" id="qv-pick" aria-label="Market presets"></div>
+      <div class="ctrl"><label for="qv-q">Queue at the bid</label><input type="range" id="qv-q" min="1000" max="20000" step="500" value="5000"><output id="qv-q-out" for="qv-q">5,000</output></div>
+      <div class="ctrl"><label for="qv-mu">Typical selling</label><input type="range" id="qv-mu" min="500" max="8000" step="250" value="2000"><output id="qv-mu-out" for="qv-mu">2,000</output></div>
+      <div class="ctrl"><label for="qv-pi">Chance of a sweep</label><input type="range" id="qv-pi" min="0" max="40" step="1" value="10"><output id="qv-pi-out" for="qv-pi">10%</output></div>
+      <div class="ctrl"><label for="qv-k">Shares ahead of you</label><input type="range" id="qv-k" min="0" max="5000" step="50" value="1000"><output id="qv-k-out" for="qv-k">1,000</output></div>
+    </div>
+    <svg class="chart" id="chart-qv" viewBox="0 0 640 280" role="img" aria-label="Value of a resting order, in ticks per share, against how many shares are ahead of it in the queue"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Expected value of the order</span><span><i class="sw grey"></i>Value if you're filled</span></div>
+    <div class="readout" id="qv-read"></div>
+    <p class="look" id="qv-story"></p>
+  </div>
+  <div class="prose">
+    <p>Two things to notice. First, the grey line falls to minus half a tick at the back: if you're last in line and you get filled, it's almost certainly because the level is being cleared. Second, the gap between front and back is a big fraction of the one-tick spread, which is Moallemi and Yuan's result in miniature. When the spread can't move, the queue is where the money is.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "And in FX, Gold and Bonds?", "What does the grid look like in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>Spot FX is priced in {% gl "pip" %}pips{% endgl %}, the fourth decimal place for most pairs (\(0.0001\) in EUR/USD) and the second for yen pairs. A pip on EUR/USD is worth \(\$100\) per \(\text{€}1\) million. The grid isn't the same everywhere, because FX has no single exchange. Many bank and broker price streams quote to a tenth of a pip (the fifth decimal), while EBS, the main interdealer platform for euro and yen, has traded the big pairs in half-pips since 2012. As an example, at a rate of \(1.16\), a half-pip is about \(0.4\) bp, which is about the floor for the world's most traded currency pair. The story of how EBS ended up there belongs to the next note.</p>
+    <h3>Gold</h3>
+    <p>COMEX gold futures move in steps of \(\$0.10\) an ounce, worth \(\$10\) on a 100-ounce contract. As an example, at \(\$4{,}000\) an ounce that's only \(0.25\) bp, so the most traded gold future behaves like a large-tick market, with deep queues at each price. Spot gold in London trades over the counter, quoted to the cent by banks, so there the "grid" is whatever each dealer chooses to stream.</p>
+    <h3>Bonds</h3>
+    <p>US Treasuries are still priced in fractions: points (1% of face value) and {% gl "thirty-second" %}32nds{% endgl %} of a point, which are themselves split. On BrokerTec, the main interdealer platform, the 10-year note trades in halves of a 32nd and the 2-year in eighths (halved in November 2018, the first change since the platform began in 2000). Treasury futures follow the same pattern: the 10-year future's tick is half a 32nd (\(\$15.625\)) and the 2-year's is an eighth (\(\$7.8125\)). Bund and gilt futures use decimals instead, \(0.01\) a tick, worth \(\text{€}10\) and \(\text{£}10\). These are some of the deepest large-tick markets in the world, where the queue at a single price can be worth billions.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Tick</h3><span class="tag desk">Desk</span></div><p>One step on the price grid, and the unit everything is counted in.</p><p class="eg">"Made three ticks on the fade."</p></div>
+    <div class="term"><div class="term-top"><h3>One tick wide</h3><span class="tag desk">Desk</span></div><p>The tightest market possible: bid and offer one step apart.</p><p class="eg">"Front month's one tick wide, 5,000 up on each side."</p></div>
+    <div class="term"><div class="term-top"><h3>Join</h3><span class="tag desk">Desk</span></div><p>Put your order at the existing best price, at the back of its queue.</p><p class="eg">"Just join the bid, don't pay up."</p></div>
+    <div class="term"><div class="term-top"><h3>Improve</h3><span class="tag desk">Desk</span></div><p>Quote one tick better than the current best price, starting a new queue with you at the front.</p><p class="eg">"Improve by a tick and you're first."</p></div>
+    <div class="term"><div class="term-top"><h3>Pinned</h3><span class="tag desk">Desk</span></div><p>A spread stuck at its one-tick minimum.</p><p class="eg">"It's pinned all day; it's all about queue."</p></div>
+    <div class="term"><div class="term-top"><h3>Pennying</h3><span class="tag desk">Desk</span></div><p>Stepping one tiny tick in front of a big resting order to get filled first.</p><p class="eg">"Every time we show size, someone pennies us."</p></div>
+    <div class="term"><div class="term-top"><h3>Big figure</h3><span class="tag desk">Desk</span></div><p>In FX, the part of the price before the last two digits (the "1.16" in 1.1642). Traders quote only the pips.</p><p class="eg">"Forty, forty-two" means 1.1640 bid, 1.1642 offered.</p></div>
+    <div class="term"><div class="term-top"><h3>Thirty-seconds</h3><span class="tag desk">Desk</span></div><p>How Treasury prices are quoted; "ticks" in bonds often means 32nds.</p><p class="eg">"Tens are down eight ticks" means down 8/32.</p></div>
+  </div>
+{% endsec %}
+
+{% sec 7, "How does this link to Trading, Real Estate and Fintech?", "Where the price grid turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: count in ticks, and know which game you're in</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Write your trading plan in ticks and pips, not just pounds: "risk 20 ticks to make 40" travels between contracts once you know each tick value (\(\$10\) on gold, \(\$15.625\) on the 10-year future). It also tells you your costs. Crossing a one-tick-wide market costs one tick per round trip, so a strategy that aims for two ticks is giving half of it away. In large-tick markets, a resting limit order from a retail account usually joins at the back of a long queue, so it fills mostly when the price is about to run through it. That's this note's grey line, and it's why "my limit orders only fill on the bad trades" is a common complaint.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: prices on a grid too</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property prices aren't set in pennies. Asking prices cluster at round numbers and just under search-filter bands on property portals, and UK research (Best and Kleven, 2018) found house prices bunching just below stamp duty thresholds. That's a grid set by habit and tax rather than by an exchange. When pricing villas, the step you choose matters: listing at €495,000 rather than €510,000 can put a property in front of a whole different set of buyers searching "up to €500,000".</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: choosing a grid for your own market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>If you build a marketplace where users post naira–dollar bids and offers, you have to choose the tick. Too coarse (say ₦5 a dollar when the rate is around ₦1,500) and spreads get stuck wide, queues build up and nobody can offer a better rate. Too fine (a kobo) and users can step a fraction ahead of each other's orders, quotes flicker, and big orders get pennied. A sensible tick is around the spread a careful dealer would charge on a normal day, which is exactly the trade-off exchanges face when they set theirs.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 8, "The Maths Underneath", "How do you put numbers on the grid and the queue?" %}
+  <div class="formula"><span class="lbl">The tick in basis points, and the floor in ticks</span>\[ \begin{gathered} \text{tick (bp)} = 10^{4} \times \frac{\delta}{P} \\[6pt] \text{floor in ticks} = \frac{s_{\text{floor}}}{\delta} \\[6pt] \text{quoted spread} = \max\!\left(1, \left\lceil \frac{s_{\text{floor}}}{\delta} \right\rceil\right) \text{ ticks} \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(\delta\) is the tick size and \(P\) the price. The \(\lceil \cdot \rceil\) brackets mean "round up": a maker can't quote a spread that isn't a whole number of ticks, and won't quote one below its floor. When the floor is below one tick, the answer is always \(1\), and the instrument is large-tick.</p>
+    <p>For the queue, the What is your queue spot worth? interactive uses a simple one-period model. Ordinary selling of size \(V\) arrives, spread out like an exponential with average \(\mu\); with chance \(\pi\) a sweep clears the whole queue of \(Q\) shares instead. You have \(k\) shares ahead of you. A fill earns half a tick if the price stays, and loses half a tick (half a tick earned, one tick lost) if the level is cleared.</p>
+  </div>
+  <div class="formula"><span class="lbl">Fill chance and expected value at position \(k\), in ticks per share</span>\[ \begin{gathered} P(\text{fill}) = (1 - \pi)\,e^{-k/\mu} + \pi \\[6pt] E[\text{value}] = \tfrac{1}{2}(1 - \pi)(a - 2b) - \tfrac{1}{2}\pi \\[6pt] \text{where } a = e^{-k/\mu},\; b = e^{-Q/\mu} \end{gathered} \]</div>
+  <div class="formula"><span class="lbl">The break-even place in the queue</span>\[ \begin{gathered} e^{-k^{*}/\mu} = 2e^{-Q/\mu} + \frac{\pi}{1 - \pi} \\[6pt] \Rightarrow\; k^{*} = -\mu \ln\!\left(2e^{-Q/\mu} + \frac{\pi}{1 - \pi}\right) \end{gathered} \]</div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The queue is \(Q = 5{,}000\) shares, typical selling \(\mu = 2{,}000\), and the chance of a sweep \(\pi = 10\%\). What is the front of the queue worth, and where does an order stop being worth having?</h3>
+    <ol class="steps">
+      <li>\(e^{-Q/\mu} = e^{-2.5} \approx 0.082\).</li>
+      <li>At the front (\(k = 0\)): \(\tfrac{1}{2}(0.9)(1 - 0.164) - 0.05 \approx 0.38 - 0.05 = 0.33\) ticks a share.</li>
+      <li>At the back (\(k = 5{,}000\)): \(\tfrac{1}{2}(0.9)(0.082 - 0.164) - 0.05 \approx -0.09\) ticks a share.</li>
+      <li>Break-even: \(2(0.082) + 0.1/0.9 \approx 0.275\), so \(k^{*} = -2{,}000 \ln 0.275 \approx 2{,}580\) shares.</li>
+    </ol>
+    <p class="answer">The front is worth about \(0.4\) ticks a share more than the back, nearly half the one-tick spread. Any order with more than about \(2{,}580\) shares ahead of it expects to lose. Raise the sweep chance to \(30\%\) and the break-even moves forward to about \(1{,}050\) shares.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A contract has a tick value of \(12.50\). A maker nets \(2\) ticks per round trip and completes \(150\) round trips on \(1\) contract each. What is the day's P&amp;L?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2 \times 12.50 \times 150 = \$3{,}750\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) A stock trades at \(20.00\) with a \(0.01\) tick. What is the minimum possible quoted spread in basis points?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.01 / 20 = 0.0005 = 5\) bp. The spread can't be narrower than one tick.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>You're long \(20\) 10-year Treasury note futures and the price rises \(3\) ticks. What's your profit?</span></p>
+      <details><summary>Show answer</summary><div><span>Tick value \(\$15.625\): \(3 \times 15.625 \times 20 = \$937.50\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>A \(\$250\) stock has a 1-cent tick and market makers' floor is a full spread of \(2\) bp. Is it large-tick or small-tick, and roughly how wide will the quoted spread be?</span></p>
+      <details><summary>Show answer</summary><div><span>One tick is \(0.01/250 = 0.4\) bp, so the floor is \(2/0.4 = 5\) ticks. It's small-tick: the spread floats around \(5\) cents and makers compete on price.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>In the queue model, with no chance of a sweep (\(\pi = 0\)) and a very long queue, what is an order at the front worth? Why does adding sweeps lower the value even at the front?</span></p>
+      <details><summary>Show answer</summary><div><span>With \(\pi = 0\) and \(e^{-Q/\mu} \approx 0\), the front is worth \(\tfrac{1}{2}\) a tick: every fill earns the half-spread and the price never moves against you. Sweeps fill everyone, including the front, and those fills lose half a tick, so each percentage point of sweep chance costs every order in the queue.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why would a market maker pay much more for speed in a large-tick stock than in a small-tick one?</span></p>
+      <details><summary>Show answer</summary><div><span>In a large-tick stock the spread is pinned at one tick, so makers can't compete on price; the spare profit goes to the orders at the front of the queue. Getting there means joining new price levels first and cancelling fast when a level is about to be cleared, and both need speed. In a small-tick stock you can win flow by quoting a better price instead, so queue position is worth less and speed is mainly for protecting quotes.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're four-thousandth in a five-thousand-share queue at the bid, and you get filled. Good news or bad?</span></p>
+      <details><summary>Show answer</summary><div><span>Usually bad. For selling to reach that deep into the queue, it had to be large, and large selling that eats a level usually takes the price down a tick next. So a fill near the back is a sign that the level is about to break, and you've just bought before the drop. I'd expect my markouts on back-of-queue fills to be negative and would either cancel earlier or skew my quotes.</span></div></details></div>
+  </div>
+{% endsec %}

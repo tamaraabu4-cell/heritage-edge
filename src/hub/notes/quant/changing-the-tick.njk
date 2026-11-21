@@ -1,0 +1,262 @@
+---
+title: Changing the Tick
+shelf: quant
+chapter: microstructure
+subtopic: Tick Sizes
+order: 2
+summary: What happens when regulators and venues move the price grid. Wider ticks thicken queues and displayed depth but widen spreads; narrower ticks tighten spreads but thin out displayed size and make quotes flicker, so neither direction is free. The evidence from real experiments (the US Tick Size Pilot of 2016–18, Japan's TOPIX 100 tick cuts in 2014, and MiFID II's tick tables from 2018, later extended to systematic internalisers); why round numbers attract take-profit orders and stop-losses just beyond them (Osler), and how that makes prices stall and then jump; the ways traders get around the grid (midpoint trades, rebates, sub-penny price improvement); and tick changes in FX (EBS's switch from tenths of a pip back to half-pips in 2012) and Treasuries (the 2-year note's tick halved in 2018).
+lede: 'The Price Grid showed that the tick decides which game market makers play. So who decides the tick, and what happens when they change it? This note looks at the real experiments where regulators and venues moved the grid, finds out who won and who lost, and then looks at two things the grid creates by accident: piles of orders at round numbers, and a whole industry of ways to trade between the ticks.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/changing-the-tick.js]
+
+quiz:
+  - q: 'The US Tick Size Pilot raised the tick from 1 cent to 5 cents for about 1,200 smaller stocks. Which stocks did it hurt most?'
+    opts: ['Stocks whose spreads were already wider than 15 cents', 'Stocks whose spreads were below 5 cents before the Pilot: the new tick forced their spreads wider than market makers needed, so small orders paid more', 'None: spreads stayed the same everywhere']
+    right: 1
+    why: 'For a stock that traded 2 cents wide, a 5-cent tick makes the narrowest possible spread 5 cents. The SEC''s economists found market quality got worse most for these tick-constrained stocks. Displayed depth at the best price rose, but small orders paid wider spreads and large orders didn''t get cheaper either. For stocks already trading wider than about 15 cents, spreads actually narrowed a little.'
+  - q: 'In 2014 the Tokyo Stock Exchange cut the tick size for its 100 most liquid stocks. What would you expect to happen?'
+    opts: ['Spreads narrow, but less size shows at each price and trades get smaller', 'Spreads widen and queues grow', 'Nothing, because liquid stocks aren''t affected by the tick']
+    right: 0
+    why: 'These were large-tick stocks: the old tick held their spreads wider than market makers needed. Cutting it let spreads fall (one study found effective spreads dropped by about 70% over the two stages), while displayed depth at each price shrank because the same orders were spread over more price levels.'
+  - q: 'EUR/USD rises towards 1.1600, stalls just below it for a while, then breaks through and jumps 15 pips in a minute. What''s the most likely explanation?'
+    opts: ['A central bank stepped in at exactly 1.1600', 'It''s random: round numbers have no special meaning', 'Take-profit sell orders cluster at the round number and absorb the buying; once they''re used up, stop-loss buy orders clustered just above it fire as market orders and push the price further']
+    right: 2
+    why: 'Carol Osler''s study of a dealing bank''s order book found exactly this: take-profit orders bunch at round numbers (so trends often pause there), and stop-loss orders bunch just beyond them (so once a round number breaks, the stops add fuel). It''s the order book, not magic, that makes round numbers matter.'
+
+connected:
+  - { label: Builds on, title: The Price Grid, where: Quant · Microstructure, url: /hub/quant/the-price-grid/ }
+  - { label: Builds on, title: 'Designated Makers, Fees and Special Markets', where: Quant · Market Making, url: /hub/quant/designated-makers-fees-and-special-markets/ }
+  - { label: Builds on, title: Where Trades Happen, where: Markets · How Markets Work, url: /hub/markets/where-trades-happen/ }
+  - { label: Used in, title: Reading the Tape, where: Quant · Microstructure, url: /hub/quant/ }
+---
+
+<style>
+  .ct-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Moving the Grid", "What happens to a market when its tick gets bigger or smaller?", "Moving the grid" %}
+  <div class="prose">
+    <p>Think about bus stops. If stops are a mile apart, crowds build up at each one and you might walk a long way to reach one, but each bus fills up quickly and runs fast. If there's a stop every ten metres, you never walk far, but buses stop constantly, nobody waits in a proper queue and the ride is jerky. Neither spacing is "right": it depends on how many people use the route.</p>
+    <p>The tick works the same way. Deltashark's summary of the evidence is that changing it in either direction has costs:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Wider tick</th><th>Narrower tick</th></tr></thead>
+      <tbody>
+        <tr><td>Quoted spread</td><td>Wider, if the tick was already near the spread</td><td>Narrower, if the old tick was holding it up</td></tr>
+        <tr><td>Size shown at the best price</td><td>More: orders crowd onto fewer price levels</td><td>Less: the same orders spread over more levels</td></tr>
+        <tr><td>Queues</td><td>Longer; time priority matters more</td><td>Shorter; price competition matters more</td></tr>
+        <tr><td>Quotes</td><td>Change less often</td><td>Change much more often</td></tr>
+        <tr><td>Who tends to gain</td><td>Market makers at the front of queues</td><td>Small orders crossing the spread</td></tr>
+        <tr><td>Who tends to lose</td><td>Small orders paying the wider spread</td><td>Anyone who wanted to see real size at one price; slow traders who get pennied</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Because neither direction is free, Deltashark says tick regimes get <strong>recalibrated from time to time rather than settled once</strong>. You've already seen one recalibration: the US decision in 2024 to allow half-penny ticks for stocks whose spreads are usually tight, covered in Designated Makers, Fees and Special Markets. The interactive below shows the trade-off for three kinds of stock.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Widen or shrink the tick</h3><p>Pick a stock by how wide market makers would quote it with no grid at all, then move the tick. The tone line is what a small order pays to cross (half the spread). The grey line is what makers actually need, so the gap between them is spare profit for whoever is at the front of the queue. The numbers are illustrative.</p></div>
+    <div class="controls">
+      <div class="presets ct-pick" id="wt-stock" aria-label="Kind of stock"></div>
+      <div class="presets ct-pick" id="wt-tick" aria-label="Quick tick sizes"></div>
+      <div class="ctrl"><label for="wt-t">Tick</label><input type="range" id="wt-t" min="-0.602" max="1" step="any" value="0"><output id="wt-t-out" for="wt-t">1¢</output></div>
+    </div>
+    <svg class="chart" id="chart-wt" viewBox="0 0 640 260" role="img" aria-label="Cost to cross the spread and makers' needed half-spread, against tick size"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Half-spread a small order pays</span><span><i class="sw grey"></i>Half-spread makers need</span></div>
+    <div class="readout" id="wt-read"></div>
+    <p class="look" id="wt-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Three Real Experiments", "What actually happened when the tick was changed?", "Three real experiments" %}
+  <div class="prose">
+    <h3>The US Tick Size Pilot (2016–2018): making the tick bigger</h3>
+    <p>Small companies complained that their shares were hard to trade, and some argued that a bigger tick would pay market makers enough to support them. Congress's 2012 JOBS Act asked the SEC to study it, and the {% gl "tick size pilot" %}Tick Size Pilot{% endgl %} began in October 2016. About 1,200 smaller stocks (market value of \(\$3\) billion or less) moved to a 5-cent tick, while about 1,400 similar stocks stayed at 1 cent as a control group. One test group also had a {% gl "trade-at rule" %}trade-at rule{% endgl %}, which pushed trades back onto exchanges.</p>
+    <p>The results were close to what The Price Grid would predict:</p>
+    <ul>
+      <li>Stocks that had traded with spreads below 5 cents were forced wider, because the tick was now bigger than the spread makers needed. The SEC's economists found market quality got worse most for these {% gl "tick-constrained" %}tick-constrained{% endgl %} stocks, with higher volatility and less efficient prices.</li>
+      <li>Displayed depth at the best price rose for every test group. But much of it was the same orders crowding onto one price level, and large orders didn't get cheaper to trade.</li>
+      <li>One study found the cost for retail-sized orders that cross the spread rose by almost half. Another found the share prices of tick-constrained test stocks fell by about 2–3% relative to the control group.</li>
+      <li>For stocks already trading wider than about 15 cents, spreads actually narrowed, by about 4 cents in one SEC study. One likely reason: with fewer possible prices, makers could no longer step a cent in front of each other, so it paid to commit to a tighter quote.</li>
+    </ul>
+    <p>The Pilot ended in 2018 and wasn't extended. Its lesson: a bigger tick helps market makers at the front of the queue, not the companies or their investors.</p>
+
+    <h3>Japan (2014): making the tick smaller</h3>
+    <p>The Tokyo Stock Exchange went the other way. On 14 January 2014 and again on 22 July 2014, it gave its 100 largest and most liquid stocks (the TOPIX 100) a finer tick table. These were large-tick stocks, held artificially wide by the old grid. One study found effective spreads fell from about 14 basis points to 9 after the first stage and to about 4 after the second, a drop of roughly 70%. The TSE's own analysis found the more liquid a stock had been, the more its spread narrowed. As expected, depth at the best price also fell and average trade sizes got smaller.</p>
+
+    <h3>Europe (2018): one table for everyone</h3>
+    <p>Before 2018, European venues competed by cutting their ticks, each trying to offer the finest prices. MiFID II, which took effect on 3 January 2018, ended that with a single table: every share's tick depends on its price and on a <em>liquidity band</em> (how often it trades), so busier stocks get finer ticks. France's regulator, the AMF, found the early effects on liquidity and stability were positive. One gap was quickly exploited: {% gl "systematic internaliser" %}systematic internalisers{% endgl %} (banks and trading firms trading against clients on their own books) didn't have to follow the table, so they could quote a fraction better than the exchanges. The EU closed the gap from 26 March 2020, while still letting them match large orders at the midpoint.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Experiment</th><th>Change</th><th>What happened</th></tr></thead>
+      <tbody>
+        <tr><td>US Tick Size Pilot, Oct 2016–2018</td><td>1¢ → 5¢ for ~1,200 small stocks</td><td>Tight stocks forced wider; more depth at the best price; costs up for small orders</td></tr>
+        <tr><td>Tokyo TOPIX 100, Jan and Jul 2014</td><td>Finer ticks for the most liquid stocks</td><td>Effective spreads ~14 bp → ~4 bp; less depth per price; smaller trades</td></tr>
+        <tr><td>MiFID II, Jan 2018 (SIs from Mar 2020)</td><td>One EU table by price and liquidity</td><td>Ended the race to cut ticks; SIs briefly quoted between ticks until the rule was extended</td></tr>
+        <tr><td>US half-penny tick, adopted Sept 2024</td><td>½¢ for stocks that usually trade one tick wide</td><td>Not yet in force: compliance is due in November 2027</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: what the Pilot cost a small investor</span>
+    <h3>A small-company stock traded 2 cents wide with a 1-cent tick. Under the Pilot its spread became 5 cents. An investor buys 500 shares with a market order. What did the change cost them?</h3>
+    <ol class="steps">
+      <li>Before: they pay half the spread over the mid, \(0.01 \times 500 = \$5\).</li>
+      <li>After: \(0.025 \times 500 = \$12.50\).</li>
+      <li>The extra \(\$7.50\) is spare profit for whoever sold to them, usually a market maker at the front of the queue.</li>
+    </ol>
+    <p class="answer">Two and a half times the cost on a small trade. That's the kind of effect the SEC's economists found for tick-constrained stocks, and why the Pilot wasn't renewed.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Why There's No Perfect Tick", "If every change has costs, how should a tick be chosen?", "No perfect tick" %}
+  <div class="prose">
+    <p>Put the experiments together and a rule of thumb appears: <strong>the best tick is about the size of the spread market makers would quote anyway</strong>. Much bigger, and the tick holds the spread artificially wide (the US Pilot's tight stocks). Much smaller, and the grid adds flicker and {% gl "pennying" %}pennying{% endgl %} without making trading cheaper. That's why modern rules tie the tick to something measurable: MiFID II uses price and how often a stock trades, and the US half-penny rule uses how wide each stock's spread usually is.</p>
+    <p>There's a catch. The spread makers need changes over time and through the day, while tick tables are reviewed only occasionally, so every stock drifts in and out of being constrained. And because exchange fees and rebates are charged per share, they interact with the tick: a 0.3-cent rebate is a big deal on a one-cent spread and almost nothing on a twenty-cent one. Regulators who change the tick usually end up looking at fees too, which is exactly what the SEC did in 2024.</p>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The big idea</span>
+    <p>A tick is a deal between people who show prices and people who take them. Make it bigger and you pay the people showing prices to queue; make it smaller and you make them compete on price, but show less. Good tick rules aim to keep the tick close to the spread the market would choose for itself.</p>
+  </div>
+{% endsec %}
+
+{% sec 4, "Round Numbers", "Why do prices behave differently at 50.00 than at 49.87?", "Round numbers" %}
+  <div class="prose">
+    <p>Deltashark points out a second effect of the grid: people anchor on round numbers. They set targets at 1.1600, not 1.1587, and that shows up in the order book. The best evidence comes from FX. Carol Osler studied thousands of stop-loss and take-profit orders left with a large dealing bank and found two clear patterns (Journal of Finance, 2003):</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>{% gl "take-profit order" %}Take-profit orders{% endgl %} cluster strongly <strong>at</strong> round numbers<span class="why">Someone long EUR/USD from 1.1550 leaves an order to sell at 1.1600. Lots of these sitting at one level absorb buying, so a rising price often pauses or turns there. This is "resistance" in technical analysis, explained by orders.</span></span></li>
+    <li><span class="n">2</span><span>{% gl "stop order" %}Stop-loss orders{% endgl %} cluster just <strong>beyond</strong> round numbers<span class="why">Someone short from 1.1580 puts a stop to buy at 1.1603, just past the figure. Once the price gets through 1.1600, these stops fire one after another as market orders, each pushing the price further. Osler later showed that trends speed up when prices reach these levels: a {% gl "price cascade" %}price cascade{% endgl %}.</span></span></li>
+  </ul>
+  <div class="lab">
+    <div class="lab-head"><h3>Through the figure</h3><p>Buyers keep pushing EUR/USD up towards 1.1600. The bars on the left show resting orders: take-profit sells (grey) piled at and just below the figure, and stop-loss buys (tone) sitting just above it. Set the buying pressure and press Run.</p></div>
+    <div class="controls">
+      <div class="ctrl"><label for="rn-b">Buying pressure</label><input type="range" id="rn-b" min="0.5" max="6" step="0.5" value="3"><output id="rn-b-out" for="rn-b">3.0</output></div>
+      <div class="ctrl"><label for="rn-s">Stops above</label><input type="range" id="rn-s" min="0" max="1.5" step="0.25" value="1"><output id="rn-s-out" for="rn-s">×1</output></div>
+      <div class="presets"><button type="button" id="rn-go">Run</button><button type="button" id="rn-again">Another day</button></div>
+    </div>
+    <svg class="chart" id="chart-rn" viewBox="0 0 640 320" role="img" aria-label="Resting orders by price level beside the price path as buyers push towards 1.1600"></svg>
+    <div class="legend"><span><i class="sw grey"></i>Take-profit sells</span><span><i class="sw tone"></i>Stop-loss buys, and the price path</span></div>
+    <div class="readout" id="rn-read"></div>
+    <p class="look" id="rn-story"></p>
+  </div>
+  <div class="prose">
+    <p>The same thing happens in stocks at whole dollars, in gold at round hundreds, and in bond yields at round levels like 4.00%. It's also why some traders hunt for stops: if you know thousands of stop-buys sit just above 1.1600, pushing the price through the figure can set them off. For your own trading, the lesson is not to put your stop exactly where everyone else does.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Getting Around the Grid", "If the tick holds the spread wide, how do traders trade inside it?", "Getting around the grid" %}
+  <div class="prose">
+    <p>Deltashark's last point: "the tick defines the lattice; the game adapts around it". When the tick binds, there's spare profit inside the spread, so traders find ways to get at it:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Way around</th><th>How it works</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "midpoint execution" %}Midpoint trades{% endgl %}</td><td>{% gl "dark pool" %}Dark pools{% endgl %} and some order types match buyers and sellers at the exact middle of the spread</td><td>Halves the tick: both sides save half the spread</td></tr>
+        <tr><td>Maker rebates</td><td>The exchange pays the resting order a fraction of a cent</td><td>A one-tick spread can be worth quoting even when the maths without fees says no</td></tr>
+        <tr><td>{% gl "price improvement" %}Sub-penny price improvement{% endgl %}</td><td>US rules ({% gl "rule 612" %}Rule 612{% endgl %}) ban quoting in fractions of a cent for stocks above \(\$1\), but trades can be done at them. {% gl "wholesaler" %}Wholesalers{% endgl %} fill retail orders a fraction of a cent better than the quote</td><td>Retail gets a little of the spare profit back</td></tr>
+        <tr><td>Internalisers between ticks</td><td>Europe's systematic internalisers quoted between the exchange ticks in 2018–20</td><td>Took flow from exchanges until the rule changed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example: what the midpoint saves</span>
+    <h3>A stock is quoted \(20.00\) / \(20.01\). A fund wants to buy \(10{,}000\) shares and another wants to sell \(10{,}000\). What does a midpoint match save compared with both crossing the spread?</h3>
+    <ol class="steps">
+      <li>Mid: \(20.005\). Each side would otherwise pay half a cent over (or under) the mid: \(0.005 \times 10{,}000 = \$50\).</li>
+      <li>At the midpoint, each pays the mid: \(\$50\) saved each, \(\$100\) in total.</li>
+      <li>The cost: neither side knows if or when a match will appear, and the order isn't shown to the market.</li>
+    </ol>
+    <p class="answer">Midpoint trading turns a one-tick spread into an effective half-tick, which is why it grows whenever ticks bind.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "And in FX, Gold and Bonds?", "Have my three markets changed their ticks?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX: tenths of a pip, then back to halves</h3>
+    <p>FX has run its own tick experiment. Newer platforms such as Hotspot offered pricing in tenths of a pip from 2007, and in 2011 EBS, the main interdealer platform for euro and yen, followed for the major pairs to compete. It didn't go well: traders could step a tenth of a pip ahead of large orders for almost nothing, quotes flickered, and many orders were cancelled within milliseconds. On 17 September 2012 EBS moved EUR/USD, USD/JPY, GBP/USD and other majors back to half-pips, and EUR/CHF followed on 26 November. EBS reported fewer orders cancelled within half a second, and Citi's head of FX e-trading said large sizes had become cheaper to trade. A finer grid had made the biggest market in the world worse for the people trading real size.</p>
+    <h3>Gold</h3>
+    <p>COMEX gold's \(\$0.10\) tick hasn't changed, but round numbers matter a lot in gold. Levels like each new hundred dollars attract take-profits, stops and option strikes, and moves through them can be sharp, just like 1.1600 in EUR/USD.</p>
+    <h3>Bonds: the 2-year Treasury</h3>
+    <p>US Treasuries made the opposite change to the Tick Size Pilot. On 19 November 2018, BrokerTec halved the tick on the 2-year note from a quarter to an eighth of a 32nd, the first change since the platform began in 2000. The CBOT's 2-year futures followed on 14 January 2019. The 2-year was a classic large-tick market with huge queues, and New York Fed researchers found market quality improved significantly after the cut. BrokerTec later cut the 3-year tick too.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Tick-constrained</h3><span class="tag desk">Desk</span></div><p>A stock whose spread would be narrower if the tick allowed it.</p><p class="eg">"It's tick-constrained, always a penny wide with 50k on each side."</p></div>
+    <div class="term"><div class="term-top"><h3>The figure</h3><span class="tag desk">Desk</span></div><p>In FX, a round big-figure level with zero pips, like 1.1600.</p><p class="eg">"Euro's sitting just under the figure."</p></div>
+    <div class="term"><div class="term-top"><h3>Through the figure</h3><span class="tag desk">Desk</span></div><p>The price has broken past a round number.</p><p class="eg">"We're through the figure, stops are going."</p></div>
+    <div class="term"><div class="term-top"><h3>Stops above</h3><span class="tag desk">Desk</span></div><p>Stop-loss buy orders are known to sit above a level (or "stops below" for sells).</p><p class="eg">"Big stops above 60, watch it."</p></div>
+    <div class="term"><div class="term-top"><h3>Defend the level</h3><span class="tag desk">Desk</span></div><p>Someone with a big order at a round number keeps absorbing the flow there.</p><p class="eg">"Option guys are defending 2,400 all day."</p></div>
+    <div class="term"><div class="term-top"><h3>Mid</h3><span class="tag desk">Desk</span></div><p>The halfway price between bid and offer; trading "at mid" means getting inside the tick.</p><p class="eg">"Work it at mid in the dark."</p></div>
+    <div class="term"><div class="term-top"><h3>Half-pip</h3><span class="tag desk">Desk</span></div><p>The EBS tick for major currency pairs, 0.00005 in EUR/USD.</p><p class="eg">"Half-pip wide in euro on EBS this morning."</p></div>
+    <div class="term"><div class="term-top"><h3>Sub-penny</h3><span class="tag desk">Desk</span></div><p>A trade price in fractions of a cent, allowed for executions but not for quotes.</p><p class="eg">"Got a sub-penny print from the wholesaler."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 8, "How does this link to Trading, Real Estate and Fintech?", "Where changing the grid turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: where to put your orders around round numbers</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>Osler's findings turn into three practical rules for FX and gold. Take profits just <em>before</em> a round number, not at it, because the queue of other take-profits there means you might not get filled. Don't put your stop just beyond a round number, where everyone else's is, because that's where cascades start and where you'll get the worst fill. And treat a clean break through a big figure as information: stops are firing, and the move may keep going for a while. Write these into your trading plan and test them in your backtests instead of just believing them.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: when the government moves the grid</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Stamp duty thresholds act like ticks: house prices bunch just below them. When the UK raised the starting threshold for stamp duty from £125,000 to £250,000 in September 2022 and then moved it back in April 2025, the place where prices bunch moved with it. If you're pricing or buying property near a threshold, check whether it's about to change, because the "grid" can move under your feet just like it did for stocks in the Tick Size Pilot.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: let the tick grow up with the market</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>MiFID II's idea of ticks by liquidity band is a good design for a young market. A new naira–dollar marketplace with little trading could start with a coarser tick, so orders gather into proper queues and users can see real size, then move each currency pair to a finer tick as volume grows, just as Tokyo did for its busiest stocks. Round numbers matter here too: if everyone watches ₦1,500 to the dollar, expect orders, and nervous users, to bunch around it.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 9, "The Maths Underneath", "How do you work out who gains and who loses from a tick change?" %}
+  <div class="formula"><span class="lbl">Quoted spread on a grid, and the spare profit it creates</span>\[ \begin{gathered} s(\delta) = \delta \times \max\!\left(1, \left\lceil \frac{s_{\text{floor}}}{\delta} \right\rceil\right) \\[6pt] \text{spare per share} = \frac{s(\delta) - s_{\text{floor}}}{2} \end{gathered} \]</div>
+  <div class="prose">
+    <p>Change the tick \(\delta\) and the spread jumps to the next multiple of the new tick at or above the floor. A small order pays \(s/2\); the gap between \(s\) and the floor is spare profit that goes to the front of the queue. In the Widen or shrink the tick interactive, the floor also wobbles through the day, so the averages come out a little above these single numbers.</p>
+  </div>
+  <div class="formula"><span class="lbl">What else changes with the tick (rough rules of thumb)</span>\[ \begin{gathered} \text{depth at the best price} \approx \rho \times \delta \\[6pt] \text{quote changes per minute} \approx \left(\frac{\sigma}{\delta}\right)^{2} \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(\rho\) is how many shares rest per cent of price near the top of the book, so a wider tick gathers more of them into the best level. \(\sigma\) is how far the price moves in a minute. A price wandering at random takes about \((\delta/\sigma)^2\) minutes to move one tick, so halving the tick makes quotes change about four times as often. That's the flicker EBS saw with tenths of a pip.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>Makers would quote a stock \(2\) cents wide. The book holds \(\rho = 2{,}000\) shares per cent near the top, and the price moves about \(\sigma = 3\) cents a minute. Compare a 1-cent tick with a 5-cent tick.</h3>
+    <ol class="steps">
+      <li>1 cent: spread \(2\)¢, small order pays \(1\)¢, depth at best about \(2{,}000\) shares, quotes change about \((3/1)^2 = 9\) times a minute.</li>
+      <li>5 cents: spread \(5\)¢, small order pays \(2.5\)¢ (\(1.5\)¢ of it spare), depth at best about \(10{,}000\) shares, quotes change about \((3/5)^2 \approx 0.4\) times a minute.</li>
+    </ol>
+    <p class="answer">More depth and calmer quotes, paid for by small orders. That's the Tick Size Pilot's trade-off in three lines.</p>
+  </div>
+{% endsec %}
+
+{% sec 10, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A stock trades \(3\) cents wide with a 1-cent tick. The tick becomes 5 cents. What's the new narrowest spread, and how much more does a 1,000-share market order pay?</span></p>
+      <details><summary>Show answer</summary><div><span>The spread rises to \(5\) cents. Half-spread goes from \(1.5\) to \(2.5\) cents, so the order pays \(0.01 \times 1{,}000 = \$10\) more.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>A stock trades \(20\) cents wide with a 1-cent tick. Would a 5-cent tick widen its spread?</span></p>
+      <details><summary>Show answer</summary><div><span>Not much, if at all: \(20\) is already a multiple of \(5\), so the tick doesn't bind. In the Pilot, stocks this wide actually saw spreads narrow slightly.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Using \(\text{quote changes} \approx (\sigma/\delta)^2\), how much more often do quotes change if the tick is cut from a half-pip to a tenth of a pip?</span></p>
+      <details><summary>Show answer</summary><div><span>The tick is divided by \(5\), so quote changes rise by about \(5^2 = 25\) times.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Effective spreads on a Tokyo stock fell from \(14\) bp to \(4\) bp. How much does that save on a ¥\(100\) million buy order? (Effective spread is a round trip, so one trade pays half.)</span></p>
+      <details><summary>Show answer</summary><div><span>Half of \(14 - 4 = 10\) bp is \(5\) bp, and \(0.0005 \times 100{,}000{,}000 = 50{,}000\), so ¥\(50{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>Two funds match \(20{,}000\) shares at the midpoint of a \(50.00\) / \(50.02\) market. What does each save compared with crossing the spread?</span></p>
+      <details><summary>Show answer</summary><div><span>Half-spread is \(1\) cent: \(0.01 \times 20{,}000 = \$200\) each.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: a regulator asks whether a bigger tick would help small companies' shares trade better. What do you say?</span></p>
+      <details><summary>Show answer</summary><div><span>The US tested exactly this in the Tick Size Pilot (2016–18). For stocks that were trading tighter than the new 5-cent tick, spreads were forced wider and small orders paid more. Depth at the best price rose, but mostly because orders crowded onto fewer levels, and large orders didn't get cheaper. The gain went to market makers at the front of queues. A tick only helps if it's close to the spread the market would set itself, so I'd tie it to each stock's typical spread, as MiFID II and the 2024 US rule do, rather than make it bigger across the board.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: why do currency prices often stall at round numbers and then move fast once they break through?</span></p>
+      <details><summary>Show answer</summary><div><span>Because of where people leave orders. Osler's study of a dealing bank's orders found take-profit orders cluster at round numbers, so they soak up flow and the price pauses there. Stop-loss orders cluster just beyond round numbers, so once the level breaks, the stops trigger as market orders and push the price further, which can trigger more stops: a cascade. Knowing this, a market maker widens or leans its quotes near big figures, and a trader avoids leaving stops exactly there.</span></div></details></div>
+  </div>
+{% endsec %}
