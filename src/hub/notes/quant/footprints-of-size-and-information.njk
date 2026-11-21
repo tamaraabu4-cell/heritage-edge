@@ -1,0 +1,239 @@
+---
+title: Footprints of Size and Information
+shelf: quant
+chapter: microstructure
+subtopic: Order Flow
+order: 2
+summary: How big orders give themselves away even when they're sliced into small pieces (persistent one-sided imbalance, child orders of regular size or timing, the same price level hit across venues at once), and why order signs have long memory; how informed flow differs from merely big flow (its impact doesn't fade, it bunches around news, and it shows up in related markets at the same time), with the evidence that impact relaxes to about two-thirds of its peak once a big order finishes; Deltashark's month-end trap and the London 4pm FX fix as the clearest example of big, predictable, uninformed flow; flow toxicity measures; how executors, market makers and directional traders all use the same statistics; and footprints in FX, gold and Treasuries.
+lede: 'Reading the Tape measured pressure. This note asks the harder question: who is behind it? A pension fund buying a billion dollars of stock leaves a trail however carefully it slices the order, and a trader who knows something leaves a different kind of trail. Learning to tell the two apart is what separates reading flow from just watching it.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, probability, hedge-funds, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/footprints-of-size-and-information.js]
+
+quiz:
+  - q: 'A fund slices a large buy order into small pieces of random sizes at random times. Which footprint is it still most likely to leave?'
+    opts: ['Lots of trades of exactly the same size', 'A run of net buying that lasts far longer than chance would allow, because the total still has to be bought', 'Nothing at all: randomising hides it completely']
+    right: 1
+    why: 'Randomising size and timing hides the obvious patterns, but not the total. If the fund must buy 30,000 shares in half an hour, there will be persistent one-sided imbalance across many intervals. That persistence is also why order signs have long memory: one big order split into many small ones keeps pushing in the same direction.'
+  - q: 'Two orders push a stock up by the same amount while they''re being executed. Afterwards, one''s impact stays and the other''s mostly fades. Which is more likely to have been informed?'
+    opts: ['The one whose impact stayed: informed trading moves the price to a new fair value, so it doesn''t snap back', 'The one whose impact faded', 'You can''t ever tell']
+    right: 0
+    why: 'Deltashark''s key distinction: informed flow''s impact doesn''t revert, because the price has learned something. Uninformed flow (a rebalance, a cash flow) pushes the price temporarily and the market pulls it back once the pressure stops. On average across all big orders, impact settles at about two-thirds of its peak.'
+  - q: 'Ten minutes before the London 4pm fix on the last day of the month, EUR/USD drops sharply with no news. What''s the most sensible reading?'
+    opts: ['Someone knows bad news about the euro', 'The euro is starting a new downtrend', 'Probably predictable month-end hedging flow: big, one-sided and uninformed, so the move is likely to be temporary']
+    right: 2
+    why: 'Month-end fixes concentrate huge benchmark and hedging orders into a few minutes. Research (Melvin and Prins, Evans) found large, predictable moves before month-end fixes that aren''t driven by news. A sharp move into the fix with no catalyst is usually price pressure, not information, which is exactly Deltashark''s month-end trap.'
+
+connected:
+  - { label: Builds on, title: Reading the Tape, where: Quant · Microstructure, url: /hub/quant/reading-the-tape/ }
+  - { label: Builds on, title: Algorithmic Execution, where: Markets · How Markets Work, url: /hub/markets/algorithmic-execution/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Used in, title: Private Information, where: Quant · Game Theory in Trading, url: /hub/quant/ }
+---
+
+<style>
+  .fp-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+  .fp-clue { font-size: 15px; color: var(--text); background: var(--tone-bg); border-radius: 10px; padding: 10px 12px; margin: 0; }
+  .fp-clue[hidden] { display: none; }
+</style>
+
+{% sec 1, "Every Big Order Leaves Tracks", "Why can't a large order hide, even when it's cut into small pieces?", "Every big order leaves tracks" %}
+  <div class="prose">
+    <p>Imagine moving house without a removal van. You make thirty car trips over a weekend, each with a few boxes, trying not to make a fuss. No single trip looks unusual. But the neighbours notice the same car leaving every forty minutes, always loaded, always going the same way. You split the job up, and the splitting is what gives you away.</p>
+    <p>Big orders in markets work the same way. A fund that wants to buy a million shares doesn't send one order; it sends a {% gl "metaorder" %}metaorder{% endgl %} (the whole job) as hundreds of small {% gl "child order" %}child orders{% endgl %}, as Algorithmic Execution explained. Deltashark lists the footprints that leak even so:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Persistent same-sign imbalance<span class="why">Net buying interval after interval, longer than chance would produce. The total still has to be bought, however it's sliced.</span></span></li>
+    <li><span class="n">2</span><span>Child orders of suspiciously regular size or timing<span class="why">500 shares every 30 seconds is a pattern any program can find.</span></span></li>
+    <li><span class="n">3</span><span>The same side taken at several venues within milliseconds<span class="why">A router sweeping every exchange's offer at once shows a buyer who wants more than one venue can give.</span></span></li>
+  </ul>
+  <div class="prose">
+    <p>The first footprint has been measured across whole markets. Buy and sell orders don't arrive like coin flips: if the last market order was a buy, the next one is more likely to be a buy too, and this effect fades only very slowly, over thousands of trades. Researchers call this the {% gl "long memory" %}long memory{% endgl %} of order flow. Fabrizio Lillo, Szabolcs Mike and Doyne Farmer (2005) showed it follows naturally from order splitting: when big orders are broken into pieces and the sizes of big orders vary enormously, the signs of trades end up correlated over very long stretches.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Spot the Slicer", "Can you find a hidden buyer in thirty minutes of trades?", "Spot the slicer" %}
+  <div class="prose">
+    <p>Below is half an hour of trades in one stock from many different traders, about eight a minute. Hidden among them, an algorithm is buying \(30{,}000\) shares for a fund. Pick how carefully it hides, and watch the two kinds of footprint: the dots themselves, and the running total of signed volume underneath.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Spot the slicer</h3><p>Top: every trade, by time and size (buys in tone, sells in grey). Bottom: cumulative signed volume, with the shaded band showing how far it would usually wander by chance. Choose the algorithm, then reveal its trades.</p></div>
+    <div class="controls">
+      <div class="presets fp-pick" id="ss-algo" aria-label="How the buyer slices"></div>
+      <div class="presets"><button type="button" id="ss-show" aria-pressed="false">Show the algo's trades</button><button type="button" id="ss-again">Another half hour</button></div>
+    </div>
+    <svg class="chart" id="chart-ss" viewBox="0 0 640 380" role="img" aria-label="Trades by time and size, with cumulative signed volume and a chance band below"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Buys and cumulative signed volume</span><span><i class="sw grey"></i>Sells and the chance band</span></div>
+    <div class="readout" id="ss-read"></div>
+    <p class="look" id="ss-story"></p>
+  </div>
+  <div class="prose">
+    <p>The lesson for anyone executing a big order: randomising size and timing removes the easy patterns, but the persistent imbalance remains, because it <em>is</em> the order. The only ways to shrink it are to trade more slowly (a smaller share of the market's volume), to find natural sellers to cross with directly, or to accept being seen.</p>
+  </div>
+{% endsec %}
+
+{% sec 3, "Informed or Just Big?", "How do you tell a trader who knows something from one who simply has a lot to trade?", "Informed or just big?" %}
+  <div class="prose">
+    <p>Both push the price while they trade. Deltashark gives three differences in how informed flow leaks:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th></th><th>Informed flow</th><th>Big but uninformed flow</th></tr></thead>
+      <tbody>
+        <tr><td>After it stops</td><td>Impact <strong>stays</strong>: the price has learned something</td><td>Impact <strong>fades</strong>: the market pulls the price back</td></tr>
+        <tr><td>When it happens</td><td>Bunches near information events (earnings, data, news)</td><td>Follows the calendar (month-end, index changes, fund inflows)</td></tr>
+        <tr><td>Related markets</td><td>Move too: an informed trade in an index future echoes in its stocks straight away</td><td>Often move alone</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The first row is the {% gl "permanent impact" %}permanent{% endgl %} and {% gl "temporary impact" %}temporary{% endgl %} split from Algorithmic Execution, and it has been measured. While a big order trades, its {% gl "market impact" %}impact{% endgl %} grows roughly with the square root of its size (the {% gl "square-root law" %}square-root law{% endgl %} from The Four Engines). When it stops, the price relaxes. Farmer, Gerig, Lillo and Waelbroeck (2013) argued from "fair pricing" that on average the price should settle at about <strong>two-thirds of the peak</strong>, and a study of more than 8 million US institutional metaorders (Bucci and co-authors, 2019) found exactly that by the end of the day, with the decay carrying on slowly over the following days.</p>
+    <p>Two-thirds is an average over everyone. Orders driven by information keep more of their impact; orders driven by cash flows and rebalancing give more back. The catch is that <strong>while the order is still trading, the two look almost the same</strong>. Try it:</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>Informed or just big?</h3><p>A fund buys over one hour (shaded), then stops. Pick an informed buyer or a month-end rebalance to see how each path behaves afterwards. Or try a mystery order: you see only the first hour and a clue, then guess.</p></div>
+    <div class="controls">
+      <div class="presets fp-pick" id="ib-type" aria-label="Who is buying"></div>
+      <div class="ctrl"><label for="ib-q">Order size</label><input type="range" id="ib-q" min="2" max="25" step="1" value="10"><output id="ib-q-out" for="ib-q">10% of a day's volume</output></div>
+      <div class="presets"><button type="button" id="ib-again">Another day</button></div>
+    </div>
+    <p class="fp-clue" id="ib-clue" hidden></p>
+    <div class="presets fp-pick" id="ib-guess" hidden aria-label="Your guess"></div>
+    <svg class="chart" id="chart-ib" viewBox="0 0 640 280" role="img" aria-label="Price impact in basis points while a large order trades and after it stops"></svg>
+    <div class="legend"><span><i class="sw tone"></i>The price, relative to the start</span><span><i class="sw grey"></i>Expected path</span></div>
+    <div class="readout" id="ib-read"></div>
+    <p class="look" id="ib-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Month-End Trap", "Why is the biggest, most one-sided flow often the least informative?", "The month-end trap" %}
+  <div class="prose">
+    <p>Deltashark's warning, now with evidence. Flow statistics classify pressure; working out whether the pressure contains information needs context the statistics don't carry. The month-end is the classic case: pension funds, index funds and currency hedgers all rebalance on the same day, so order flow becomes massively one-sided for reasons that have nothing to do with the future.</p>
+    <p>The clearest example is in FX. At the end of each month, global equity investors adjust their currency hedges, and much of that trading is done at the <strong>{% gl "london 4pm fix" %}London 4pm fix{% endgl %}</strong>, the benchmark rate set from trading in a short window around 4pm. Michael Melvin and John Prins at BlackRock (2015) found that when foreign stock markets had risen over the month, their currencies tended to fall in the run-up to the month-end fix, as hedgers sold to cover their bigger positions. Martin Evans found the moves into month-end fixes were far larger than on other days, around 15 basis points on average against about 7. None of it was news; it was calendar flow, and much of it faded.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Before you read pressure as information, check…</th><th>Points to uninformed</th><th>Points to informed</th></tr></thead>
+      <tbody>
+        <tr><td>The calendar</td><td>Month-end, quarter-end, index rebalances, option expiry, a fix</td><td>Just before earnings, data or a central bank decision</td></tr>
+        <tr><td>The news</td><td>Nothing new</td><td>A headline, a leak, a surprise</td></tr>
+        <tr><td>Related markets</td><td>Only this instrument moves</td><td>The future, the sector, the currency or the bond market agree</td></tr>
+        <tr><td>Afterwards</td><td>The move gives back much of its gain</td><td>The move holds</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The big idea</span>
+    <p>Size and information both push prices, but only information keeps them there. The tape shows you the push; the calendar, the news and the neighbours tell you which kind it is.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Toxicity Meters", "How do market makers turn footprints into a live warning?", "Toxicity meters" %}
+  <div class="prose">
+    <p>Deltashark describes flow toxicity measures as a way to formalise all this: estimate, interval by interval, the chance that current flow is informed, using how persistent the imbalance is and how fast volume is speeding up. Market makers feed those estimates straight into their width and size decisions. The best-known example is {% gl "vpin" %}VPIN{% endgl %}, which The Free Option covered along with the debate about how well it works. Desks also build their own versions from {% gl "markout" %}markouts{% endgl %} by client and venue, which measure toxicity after the fact.</p>
+    <p>A good toxicity meter combines this note's clues: one-sided flow that keeps going, volume picking up, moves that hold rather than fade, and agreement from related markets. When it rises, makers widen, show less size, lean their quotes, or step back, which is exactly the toolkit from Setting the Width.</p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Three Users, One Statistic", "Who else is reading the same footprints?", "Three users, one statistic" %}
+  <div class="prose">
+    <p>Deltashark's last point is that flow analysis is symmetric: the same statistics serve three different jobs, because all three are estimating the same hidden thing, what the current flow is made of.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Who</th><th>Uses flow analysis to…</th><th>In practice</th></tr></thead>
+      <tbody>
+        <tr><td>Executors (funds, brokers' algos)</td><td>Defend: measure their own footprint the way others would, then hide it</td><td>Randomise child sizes and timing, cap participation, cross with naturals, check {% gl "information leakage" %}leakage{% endgl %} after each order</td></tr>
+        <tr><td>Market makers</td><td>Price {% gl "adverse selection" %}adverse selection{% endgl %} in real time</td><td>Widen, size down or skew when flow looks informed</td></tr>
+        <tr><td>Directional traders</td><td>Gather evidence about pressure and positioning</td><td>Lean against calendar flow that should fade; follow flow confirmed by news and related markets</td></tr>
+      </tbody>
+    </table>
+  </div>
+{% endsec %}
+
+{% sec 7, "And in FX, Gold and Bonds?", "Where do the big footprints show up in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>The 4pm fix is the biggest scheduled footprint in any market. Banks and research providers publish estimates of month-end rebalancing flows ahead of time, usually as dollar buying or selling, and large option expiries at 10am New York can add to the pressure. The 2013–15 benchmark scandals (covered in Inside a Trading Desk) happened because some dealers traded ahead of the client fix orders they could see; since then the fix is calculated over a five-minute window and the FX Global Code sets rules on how dealers may handle those orders.</p>
+    <h3>Gold</h3>
+    <p>Gold has its own scheduled moments: the LBMA Gold Price auctions in London each morning and afternoon, the COMEX close, and flows into and out of gold ETFs, whose creations and redemptions show up as physical buying or selling. Central bank buying, which has been large in recent years, is a classic example of big, patient, mostly price-insensitive flow.</p>
+    <h3>Bonds</h3>
+    <p>Treasuries have calendar footprints too: bond index funds buy longer bonds at month-end when index rules extend the index's duration, and auction days bring a burst of predictable supply. Informed flow in rates tends to cluster around data releases and Fed communications, and it shows up across related markets at once: futures, cash bonds and interest rate swaps moving together.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Footprint</h3><span class="tag desk">Desk</span></div><p>The visible trace a big order leaves in the tape.</p><p class="eg">"Their algo's footprint is all over the close."</p></div>
+    <div class="term"><div class="term-top"><h3>There's a buyer</h3><span class="tag desk">Desk</span></div><p>A large, persistent buyer seems to be working an order.</p><p class="eg">"There's a buyer in there, it's paid every dip all morning."</p></div>
+    <div class="term"><div class="term-top"><h3>Real money</h3><span class="tag desk">Desk</span></div><p>Big, slow investors such as pension funds and asset managers, as opposed to fast traders.</p><p class="eg">"That's real money rebalancing, not a macro view."</p></div>
+    <div class="term"><div class="term-top"><h3>Month-end</h3><span class="tag desk">Desk</span></div><p>The last trading days of a month, when rebalancing flow dominates.</p><p class="eg">"Ignore the move, it's just month-end."</p></div>
+    <div class="term"><div class="term-top"><h3>Into the fix</h3><span class="tag desk">Desk</span></div><p>Trading in the minutes before a benchmark fixing.</p><p class="eg">"Dollar's bid into the fix on hedging flows."</p></div>
+    <div class="term"><div class="term-top"><h3>Gave it back</h3><span class="tag desk">Desk</span></div><p>A move that reversed once the pressure behind it stopped.</p><p class="eg">"Rallied into the close and gave it all back by 9:30."</p></div>
+    <div class="term"><div class="term-top"><h3>Sticky</h3><span class="tag desk">Desk</span></div><p>A move that held after the flow stopped, a hint that it was informed.</p><p class="eg">"That move's sticky, someone knew something."</p></div>
+    <div class="term"><div class="term-top"><h3>Leaking</h3><span class="tag desk">Desk</span></div><p>An order's intentions becoming visible to others before it's finished.</p><p class="eg">"We're leaking, slow the algo down."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 9, "How does this link to Trading, Real Estate and Fintech?", "Where footprints turn up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: fade the calendar, respect the news</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>For FX, gold and bonds, the calendar is a free edge source and a risk to manage. Know the month-end and quarter-end dates, the 4pm fix and the big option expiries, and expect sharp moves around them that often reverse. Don't read a month-end move as the start of a trend, and don't put tight stops near the fix on those days. A testable idea for your backtests: on month-end days, does the move from 3:30pm to 4pm London tend to reverse over the next hour? Compare it with the same window on ordinary days before trusting it.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: forced sellers and informed buyers</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has the same two kinds of big flow. A fund that must sell to meet redemptions, or a developer clearing stock before the year end, is big but uninformed: prices dip and later recover. A local buyer who knows a new rail link or hotel is coming is informed: the price they pay sticks. When you see a burst of sales in an area, ask the same questions as this note: is there a calendar or cash-flow reason, or news? And does the move hold?</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: reading your users' flow</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app will see both kinds of footprint. Salary days, school fees and month-end import payments are big, predictable and uninformed; the app can price for them and even pre-position its dollars. A handful of users who suddenly buy large amounts before a CBN announcement may be informed, and the app should treat that flow the way a market maker does: widen, limit size, or check whether related markets (parallel rates, bond yields) are moving too. Tracking markouts by user segment is the practical way to tell them apart.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 10, "The Maths Underneath", "How do you put numbers on impact, its decay and the chance band?" %}
+  <div class="formula"><span class="lbl">Impact while trading (square-root law), and after</span>\[ \begin{gathered} I_{\text{peak}} \approx Y\,\sigma\sqrt{\frac{Q}{V}} \\[6pt] I_{\text{after}} \approx \tfrac{2}{3}\,I_{\text{peak}} \text{ on average} \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(Q\) is the order size, \(V\) the day's volume, \(\sigma\) the daily volatility and \(Y\) a constant of order one (the interactive uses \(0.7\)). In the Informed or just big? interactive, informed orders keep all of their peak impact and month-end rebalances keep about \(30\%\) of it, so a mix of the two averages out near two-thirds.</p>
+  </div>
+  <div class="formula"><span class="lbl">How far signed volume wanders by chance</span>\[ \begin{gathered} \text{chance band after } n \text{ trades} \approx \pm 2\,\bar{v}_{\text{rms}}\sqrt{n} \\[6pt] \text{a hidden buyer adds } +\,q\,n_{\text{algo}} \end{gathered} \]</div>
+  <div class="prose">
+    <p>Random buys and sells cancel out, so their running total grows only like \(\sqrt{n}\) (\(\bar{v}_{\text{rms}}\) is the typical trade size). A hidden buyer's total grows like \(n\), in a straight line. Given enough time, the straight line always escapes the \(\sqrt{n}\) band, which is why persistence is the footprint that can't be hidden.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>A fund buys \(10\%\) of a day's volume in a stock with daily volatility of \(1.5\%\) (\(150\) bp), with \(Y = 0.7\). What's the peak impact, and what's left afterwards if it was informed, a rebalance, or average?</h3>
+    <ol class="steps">
+      <li>Peak: \(0.7 \times 150 \times \sqrt{0.1} \approx 0.7 \times 150 \times 0.316 \approx 33\) bp.</li>
+      <li>Informed: about \(33\) bp stays. Rebalance: about \(0.3 \times 33 \approx 10\) bp stays.</li>
+      <li>Average over all big orders: about \(\tfrac{2}{3} \times 33 \approx 22\) bp.</li>
+    </ol>
+    <p class="answer">Anyone who bought alongside a rebalance near its peak loses about \(23\) bp as it fades; alongside an informed buyer, they keep the gain. Same footprint during the order, opposite outcome afterwards.</p>
+  </div>
+{% endsec %}
+
+{% sec 11, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>A metaorder's impact peaked at \(45\) bp. If it settles at two-thirds of the peak, how much does the price give back?</span></p>
+      <details><summary>Show answer</summary><div><span>It settles at \(30\) bp, so it gives back \(15\) bp.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>Using \(I \approx 0.7\,\sigma\sqrt{Q/V}\) with \(\sigma = 200\) bp, what's the peak impact of buying \(4\%\) of a day's volume? And \(16\%\)?</span></p>
+      <details><summary>Show answer</summary><div><span>\(0.7 \times 200 \times 0.2 = 28\) bp and \(0.7 \times 200 \times 0.4 = 56\) bp. Four times the size only doubles the impact.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Random trades average \(700\) shares. After \(400\) trades, roughly how wide is the \(\pm 2\) standard deviation chance band for cumulative signed volume?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2 \times 700 \times \sqrt{400} = 2 \times 700 \times 20 = 28{,}000\) shares either side. A hidden buyer needs to have bought well over \(28{,}000\) shares to stand out clearly.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>Name three ways an executing algorithm can reduce its footprint, and the one footprint it can't remove.</span></p>
+      <details><summary>Show answer</summary><div><span>Randomise child order sizes, randomise timing, spread across venues and dark pools, cross with natural sellers, and lower its participation rate. It can't remove the persistent imbalance itself, because that's the order; it can only stretch it out over more time.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>The S&amp;P 500 future jumps and, within milliseconds, most of its stocks follow. A single stock rises 2% with nothing else moving. Which looks more like information?</span></p>
+      <details><summary>Show answer</summary><div><span>The future: informed flow tends to show up in related instruments at once. The lone stock might be informed too (company news), but a move with no echo anywhere else is also what a big uninformed order looks like, so I'd check the news and watch whether it holds.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: why are order signs positively autocorrelated over long horizons, and why doesn't that make prices easy to predict?</span></p>
+      <details><summary>Show answer</summary><div><span>Because big orders are split into many small ones, so a buy tends to be followed by more buys from the same metaorder (Lillo, Mike and Farmer). Prices don't become predictable because liquidity providers know this too: they anticipate continued buying and adjust quotes, and the impact of each new trade in a run is smaller. The market prices in the expected persistence, so only the surprise part of the flow moves the price much.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: on month-end, sterling falls sharply into the 4pm fix with no news. A colleague wants to sell more. What do you say?</span></p>
+      <details><summary>Show answer</summary><div><span>I'd be cautious. Month-end fixes concentrate hedging and index flows that are large, predictable and uninformed, and research shows big pre-fix moves at month-end that don't reflect news. If nothing else is moving (gilts, rate expectations, other dollar pairs) it's probably price pressure that will fade after 4pm. Selling into it means selling near the low. I'd rather wait for the fix to pass, or even consider leaning the other way with a small, tightly risk-managed position.</span></div></details></div>
+  </div>
+{% endsec %}

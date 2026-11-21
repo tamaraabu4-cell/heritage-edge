@@ -237,7 +237,7 @@
       { "title": "Microstructure", "blurb": "The tiny details of how prices actually move.",
         "subtopics": [
           "Tick Sizes",
-          { "name": "Order Flow", "planned": ["Reading the Tape", "Footprints of Size and Information"] },
+          "Order Flow",
           { "name": "Latency and Speed", "planned": ["What Speed Buys"] }
         ] },
       { "title": "Game Theory in Trading", "blurb": "Trading against people who know things you don't.",
