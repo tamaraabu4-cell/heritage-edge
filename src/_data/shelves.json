@@ -238,7 +238,7 @@
         "subtopics": [
           "Tick Sizes",
           "Order Flow",
-          { "name": "Latency and Speed", "planned": ["What Speed Buys"] }
+          "Latency and Speed"
         ] },
       { "title": "Game Theory in Trading", "blurb": "Trading against people who know things you don't.",
         "subtopics": ["Private Information", "Auctions", "Equilibrium"] },

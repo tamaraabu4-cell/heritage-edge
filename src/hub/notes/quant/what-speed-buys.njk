@@ -1,0 +1,276 @@
+---
+title: What Speed Buys
+shelf: quant
+chapter: microstructure
+subtopic: Latency and Speed
+order: 1
+summary: 'Latency as the sum of three delays (data arriving, deciding, the order travelling) and the three things speed buys (defence for quotes, priority in queues, and wins in races to stale prices), with Deltashark''s 40 against 60 microsecond race; how often races really happen (the FCA''s London study, Aquilina, Budish and O''Neill: about one a minute per FTSE 100 stock, mostly over in 5–10 microseconds, about a fifth of volume, and a roughly 0.5 basis point tax on trading); the latency stack from colocation to microwave towers and FPGAs, and why microwave beats fibre; matching your latency budget to how fast your signal fades; designs that blunt the race, including Eurex''s passive liquidity protection; the whole chapter on one page; and speed in FX, gold and Treasuries.'
+lede: 'The last note of the chapter is about time. A price is only useful if you can act on it before it changes, and in modern markets the gap between first and second place can be a few millionths of a second. This note shows what that speed actually buys, who pays for it, how firms get it, and how to tell whether your own strategy needs any of it.'
+goals: [trading, realestate, fintech]
+themes: [trading, markets, probability, code, real-estate, fintech]
+noteScripts: [/assets/js/notes/quant/what-speed-buys.js]
+
+quiz:
+  - q: 'News moves a stock''s fair value 10 ticks above a resting offer. Firm A reacts in 40 microseconds, firm B in 60. What does each earn?'
+    opts: ['A earns 10 ticks × size, B earns nothing: only the first order reaches the stale quote before it''s cancelled', 'They split it, 6 ticks to A and 4 to B', 'B earns more because it''s more careful']
+    right: 0
+    why: 'Deltashark''s worked race: it''s winner-takes-all. Twenty microseconds of advantage captures 100% of the prize. That''s why firms will pay large fixed costs to shave tiny amounts of time: every race pays the whole pot to whoever arrives first.'
+  - q: 'You run a strategy whose edge halves every three days, from a laptop with 50 milliseconds of latency. Should you pay for colocation?'
+    opts: ['Yes: faster is always better', 'Only if you trade large size', 'No: with a three-day half-life, 50 milliseconds loses a vanishingly small fraction of the edge. Your money is better spent on research and sizing']
+    right: 2
+    why: 'Deltashark: the right latency budget is matched to the decay rate of the signal. Speed matters for quoting and short-horizon arbitrage, which compete in microseconds. Anything held for days competes on information and sizing, where being early by a microsecond (or a millisecond) is worth nothing.'
+  - q: 'Why would an exchange delay only aggressive orders (orders that would trade immediately), and not passive ones?'
+    opts: ['To slow the market down for everyone equally', 'To give market makers a moment to cancel stale quotes before fast takers can hit them, so they can afford to quote tighter and bigger', 'Because aggressive orders are illegal']
+    right: 1
+    why: 'This is an asymmetric speed bump, like Eurex''s passive liquidity protection. Market makers'' cancels aren''t delayed, so when news arrives they can pull out-of-date quotes before the delayed snipers reach them. That shrinks the toll market makers pay to fast traders, and the hope is they pass it on as better quotes.'
+
+connected:
+  - { label: Builds on, title: 'Competition, Speed and Edge', where: Quant · Quant Trading Firms, url: /hub/quant/competition-speed-and-edge/ }
+  - { label: Builds on, title: The Free Option, where: Quant · Market Making, url: /hub/quant/the-free-option/ }
+  - { label: Builds on, title: The Price Grid, where: Quant · Microstructure, url: /hub/quant/the-price-grid/ }
+  - { label: Next, title: Private Information, where: Quant · Game Theory in Trading, url: /hub/quant/ }
+---
+
+<style>
+  .sp-pick button[aria-pressed="true"] { background: var(--tone); color: var(--on-tone); border-color: var(--tone); }
+</style>
+
+{% sec 1, "Arriving First", "What is latency, and why does it decide who wins?", "Arriving first" %}
+  <div class="prose">
+    <p>Think of the first morning of the January sales. Three kinds of people care about being early. The shop assistant wants to swap old price tags before bargain hunters spot a mistake. The shoppers at the front of the queue get first pick of the best items. And a few professional resellers rush to whichever shop has accidentally left last week's lower prices up, to buy everything before the tags are changed. All three are racing the clock, for different reasons.</p>
+    <p>In markets, the clock is {% gl "latency" %}latency{% endgl %}: the total delay between something happening and your order acting on it. Deltashark splits it into three parts: market data takes time to arrive, decisions take time to make, and orders take time to reach the venue. Add them up and you know who acts first. When the right response to an event is obvious to everyone, acting first is most of what matters.</p>
+  </div>
+  <div class="formula"><span class="lbl">Latency is a sum of delays</span>\[ L = \underbrace{t_{\text{data}}}_{\text{news reaches you}} + \underbrace{t_{\text{decide}}}_{\text{your code reacts}} + \underbrace{t_{\text{order}}}_{\text{order reaches the venue}} \]</div>
+  <div class="prose">
+    <p>The Three Seats showed one firm's budget for this: \(4 + 3 + 5 + 28 = 40\) microseconds from market data in to order out. A microsecond (μs) is a millionth of a second; light travels only about 300 metres in that time.</p>
+  </div>
+{% endsec %}
+
+{% sec 2, "Three Things Speed Buys", "What exactly do firms get for being fast?", "Three things speed buys" %}
+  <div class="prose">
+    <p>Deltashark's framing: speed is best understood through what it buys.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Purchase</th><th>What it means</th><th>Who needs it</th><th>Where we met it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Defence</strong></td><td>Cancel or update your quotes before news makes them {% gl "stale quote" %}stale{% endgl %}. A resting quote is a free option, and its value to attackers grows the longer it stays out of date.</td><td>Market makers</td><td>The Free Option; Setting the Width (the toll \(qm\))</td></tr>
+        <tr><td><strong>Priority</strong></td><td>Be first to join a new price level, so you sit at the front of the queue.</td><td>Market makers in large-tick markets</td><td>The Price Grid (what a queue spot is worth)</td></tr>
+        <tr><td><strong>Offence</strong></td><td>When public news means a price elsewhere is stale (say, an index future moves and a stock's quote lags), take it before it's fixed.</td><td>{% gl "latency arbitrage" %}Latency arbitrageurs{% endgl %}</td><td>Competition, Speed and Edge</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Defence and offence are two sides of the same race: the fastest taker collects the difference, and the slowest quoter pays it. For a market maker, every microsecond cut from requoting directly cuts the adverse selection toll in its {% gl "spread floor" %}spread floor{% endgl %}.</p>
+  </div>
+    <div class="worked">
+      <span class="lbl">Worked example (Deltashark): a latency race, priced</span>
+      <h3>News moves fair value \(10\) ticks above a resting offer. Firm A reacts in \(40\) μs, firm B in \(60\) μs. Only the faster order reaches the stale quote before it's cancelled.</h3>
+      <ol class="steps">
+        <li>A: \(\pi_A = 10 \text{ ticks} \times \text{size}\).</li>
+        <li>B: \(\pi_B = 0\).</li>
+      </ol>
+      <p class="answer">Winner takes all: \(20\) μs of advantage captures \(100\%\) of the prize. That explains spending that per-trade arithmetic can't: shaving microseconds is worth big fixed costs when every race pays the whole pot to first place.</p>
+    </div>
+    <div class="worked">
+      <span class="lbl">Worked example (Deltashark): defence, priced</span>
+      <h3>Faster requoting cuts a maker's informed toll from \(2.0\) to \(1.4\) ticks per fill, over \(5{,}000\) fills a day. What's the daily saving?</h3>
+      <ol class="steps">
+        <li>Saving per fill: \(2.0 - 1.4 = 0.6\) ticks.</li>
+        <li>Per day: \(0.6 \times 5{,}000 = 3{,}000\) ticks.</li>
+      </ol>
+      <p class="answer">At \(\$12.50\) a tick that's \(\$37{,}500\) a day, or over \(\$9\) million a year, which pays for a lot of hardware. Defensive speed is often the bigger business case.</p>
+    </div>
+{% endsec %}
+
+{% sec 3, "How Often Races Happen", "Are latency races a rare curiosity or a big part of trading?", "How often races happen" %}
+  <div class="prose">
+    <p>Races are hard to see in ordinary data, because you only see the winner's trade, not the losers' failed orders. Researchers at the UK's Financial Conduct Authority, Matteo Aquilina and Peter O'Neill, with Eric Budish from the University of Chicago, solved this by using the London Stock Exchange's full message data: 2.2 billion messages for FTSE 350 stocks over 43 trading days in autumn 2015, including every failed attempt. What they found:</p>
+  </div>
+  <ul class="facts">
+    <li><span class="n">1</span><span>Races are frequent<span class="why">About one a minute for each FTSE 100 stock.</span></span></li>
+    <li><span class="n">2</span><span>Races are extremely fast<span class="why">The most common race lasts 5–10 millionths of a second.</span></span></li>
+    <li><span class="n">3</span><span>Races are a big share of trading<span class="why">About 20% of all volume, and roughly a third of price impact and of the effective spread.</span></span></li>
+    <li><span class="n">4</span><span>A few firms dominate<span class="why">The top six firms account for over 80% of all race wins and losses.</span></span></li>
+    <li><span class="n">5</span><span>Each race is small, the total isn't<span class="why">The average race is worth about half a tick, but together they act like a tax of roughly 0.5 basis points on trading, which the authors scale up to about \(\$5\) billion a year across global stock markets.</span></span></li>
+  </ul>
+  <div class="lab">
+    <div class="lab-head"><h3>Win the race</h3><p>News arrives. A market maker sends a cancel for its now-stale quote, and two snipers send orders to take it. Each firm's reaction time varies a little from race to race ({% gl "jitter" %}jitter{% endgl %}). Whoever's message arrives first wins: if it's the maker's cancel, nobody trades. Add a delay to aggressive orders and see who benefits.</p></div>
+    <div class="controls">
+      <div class="presets sp-pick" id="wr-pick" aria-label="Race presets"></div>
+      <div class="ctrl"><label for="wr-m">Maker's cancel</label><input type="range" id="wr-m" min="5" max="120" step="1" value="45"><output id="wr-m-out" for="wr-m">45 μs</output></div>
+      <div class="ctrl"><label for="wr-a">Sniper A</label><input type="range" id="wr-a" min="5" max="120" step="1" value="30"><output id="wr-a-out" for="wr-a">30 μs</output></div>
+      <div class="ctrl"><label for="wr-b">Sniper B</label><input type="range" id="wr-b" min="5" max="120" step="1" value="38"><output id="wr-b-out" for="wr-b">38 μs</output></div>
+      <div class="ctrl"><label for="wr-j">Jitter</label><input type="range" id="wr-j" min="1" max="20" step="1" value="6"><output id="wr-j-out" for="wr-j">±6 μs</output></div>
+      <div class="ctrl"><label for="wr-d">Delay on takers</label><input type="range" id="wr-d" min="0" max="100" step="1" value="0"><output id="wr-d-out" for="wr-d">0 μs</output></div>
+    </div>
+    <svg class="chart" id="chart-wr" viewBox="0 0 640 260" role="img" aria-label="When each firm's message arrives, and the share of races each one wins"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Maker's cancel</span><span><i class="sw grey"></i>Snipers' orders</span></div>
+    <div class="readout" id="wr-read"></div>
+    <p class="look" id="wr-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 4, "The Latency Stack", "How do firms actually get faster?", "The latency stack" %}
+  <div class="prose">
+    <p>Deltashark points out that the latency stack is physical. Every layer can be bought by anyone willing to pay, and because races are relative, each firm's spending is driven by its rivals' spending: the arms race from Competition, Speed and Edge, where the finish line keeps moving but the prize doesn't grow.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Layer</th><th>What it is</th><th>What it saves</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "colocation" %}Colocation{% endgl %}</td><td>Your servers in the exchange's own data centre</td><td>Kilometres of cable become metres: milliseconds to microseconds</td></tr>
+        <tr><td>{% gl "direct feed" %}Direct feeds{% endgl %}</td><td>Each exchange's raw data, not the slower {% gl "consolidated tape" %}consolidated feed{% endgl %}</td><td>The time it takes the consolidator to gather and republish</td></tr>
+        <tr><td>{% gl "microwave network" %}Microwave{% endgl %} and shortwave links</td><td>Radio towers in a straight line between financial centres; shortwave bounces off the atmosphere across oceans</td><td>Light in glass fibre travels about a third slower than through air, and fibre routes bend</td></tr>
+        <tr><td>{% gl "kernel bypass" %}Kernel bypass{% endgl %}</td><td>Network cards that hand data straight to the trading program, skipping the operating system</td><td>Microseconds per message</td></tr>
+        <tr><td>{% gl "fpga" %}FPGAs{% endgl %}</td><td>Chips programmed to run the trading logic in hardware</td><td>Microseconds become nanoseconds</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>The Chicago–New Jersey route shows how this played out. Competition, Speed and Edge told the story of Spread Networks' straight fibre line in 2010, at about 13 milliseconds for a round trip. By 2013 a microwave network from McKay Brothers had cut the round trip to about 8.2 milliseconds, simply because radio through air beats light through glass: air's refractive index is about \(1.0003\), glass fibre's about \(1.5\). Microwave is less reliable (heavy rain can knock links out), so firms use both. Across the Atlantic, where you can't build towers, some firms have tried shortwave radio for the same reason.</p>
+  </div>
+{% endsec %}
+
+{% sec 5, "Matching Speed to the Signal", "How fast does your strategy actually need to be?", "Matching speed to the signal" %}
+  <div class="prose">
+    <p>Not all trading needs the frontier. Deltashark: speed-sensitivity is a property of the strategy. Quoting and short-horizon arbitrage compete in microseconds; execution algorithms in milliseconds to seconds; anything holding for days competes on information and sizing, where being a microsecond early is worth nothing. <strong>The right latency budget is the one matched to how fast the signal you're trading fades.</strong></p>
+    <p>One way to picture it: if a signal's edge halves every \(h\) (its {% gl "half-life" %}half-life{% endgl %}), then a delay of \(L\) leaves you \(2^{-L/h}\) of the edge. When \(L\) is far smaller than \(h\), you keep almost everything and more speed buys nothing; when \(L\) is close to \(h\) or bigger, speed is the whole game.</p>
+  </div>
+  <div class="lab">
+    <div class="lab-head"><h3>What does a microsecond buy?</h3><p>Pick a strategy and see how much of its edge survives from five different set-ups, from an FPGA in the exchange's data centre to a person clicking a mouse. The curve shows the share of edge kept at every delay. Note the time axis: each step is ten times longer than the last.</p></div>
+    <div class="controls">
+      <div class="presets sp-pick" id="ms-pick" aria-label="Strategy"></div>
+      <div class="presets sp-pick" id="ms-setup" aria-label="Your set-up"></div>
+    </div>
+    <svg class="chart" id="chart-ms" viewBox="0 0 640 260" role="img" aria-label="Share of a strategy's edge kept against latency on a log scale, with five set-ups marked"></svg>
+    <div class="legend"><span><i class="sw tone"></i>Edge kept</span><span><i class="sw grey"></i>Each set-up's latency</span></div>
+    <div class="readout" id="ms-read"></div>
+    <p class="look" id="ms-story"></p>
+  </div>
+{% endsec %}
+
+{% sec 6, "Designs That Blunt the Race", "If pure speed races waste money, what can venues do about it?", "Designs that blunt the race" %}
+  <div class="prose">
+    <p>Deltashark's view: the private value of speed is bigger than its value to society, because races consume resources without adding liquidity. That motivates three design experiments, all introduced in Competition, Speed and Edge:</p>
+  </div>
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Design</th><th>How it works</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>{% gl "speed bump" %}Speed bump{% endgl %} (sometimes asymmetric)</td><td>A small fixed delay on incoming orders; if only takers are delayed, makers can cancel stale quotes first</td><td>IEX's 350 μs coil; Eurex's {% gl "passive liquidity protection" %}passive liquidity protection{% endgl %}</td></tr>
+        <tr><td>{% gl "frequent batch auction" %}Frequent batch auctions{% endgl %}</td><td>Orders collected and matched at intervals, so arrival order inside a batch doesn't matter: races on time become competition on price</td><td>Proposed by Budish, Cramton and Shim (2015); the opening and closing auctions most exchanges already run work the same way</td></tr>
+        <tr><td>Randomised or batched processing</td><td>Orders held for a short, sometimes random, time, so a tiny speed edge rarely decides the winner</td><td>EBS's {% gl "latency floor" %}latency floor{% endgl %} in FX</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>Eurex's version is the clearest recent example. It switched on passive liquidity protection for its FX futures in May 2019, then tested it in French and German equity options (a 3 millisecond delay on aggressive orders in French single-stock options, 1 millisecond in German ones). After encouraging results it added FTSE 100 index options in 2021 and EURO STOXX 50 index options in October 2022. Optiver, a big options market maker, reported that competition at the top of the book and liquidity improved. Each design shifts profit between takers, makers and natural investors, which is why Deltashark calls this one of the liveliest areas of market design.</p>
+  </div>
+{% endsec %}
+
+{% sec 7, "The Chapter on One Page", "How do ticks, order flow and speed fit together?", "The chapter on one page" %}
+  <div class="table-wrap">
+    <table class="numbers">
+      <thead><tr><th>Idea</th><th>The rule</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>The grid</td><td>If the spread makers need is under one tick, the spread is stuck at one tick and the queue earns the surplus</td><td>The Price Grid</td></tr>
+        <tr><td>Changing the grid</td><td>Bigger ticks: deeper queues, wider spreads. Smaller: tighter spreads, thinner size, flicker</td><td>Changing the Tick</td></tr>
+        <tr><td>Pressure</td><td>Sign trades; \(\text{OFI} = (V_b - V_s)/(V_b + V_s)\); book imbalance moves price with slope \(\propto 1/\text{depth}\)</td><td>Reading the Tape</td></tr>
+        <tr><td>Who's behind it</td><td>Size leaves persistent imbalance; information leaves impact that stays (average about two-thirds of the peak)</td><td>Footprints of Size and Information</td></tr>
+        <tr><td>Who acts first</td><td>Speed buys defence, priority and offence; match latency to your signal's half-life</td><td>What Speed Buys</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="big-idea">
+    <span class="lbl">The one thing to remember from the chapter</span>
+    <p>Prices move in steps, pushed by order flow, and the people who see and act first collect most of the small edges. Your job is to know which game you're in: the grid, the flow and the clock decide it before any strategy does.</p>
+  </div>
+{% endsec %}
+
+{% sec 8, "And in FX, Gold and Bonds?", "Where does speed matter in my three markets?", "FX, gold and bonds" %}
+  <div class="prose">
+    <h3>FX</h3>
+    <p>FX has some of the fiercest races, because the same currency pair trades on many platforms and in London, New York and Tokyo at once. It also has some of the strongest counter-measures: EBS's latency floor, randomised matching on other platforms, Eurex's passive liquidity protection on its FX futures, and {% gl "last look" %}last look{% endgl %}, which lets dealers reject trades on prices that have just gone stale.</p>
+    <h3>Gold</h3>
+    <p>Gold trades as COMEX futures in Chicago-area data centres, as spot in London, and through ETFs in New York, so price gaps between them are a classic target for speed. ICE proposed a delay for aggressive orders in some of its gold and silver futures around the same time as Eurex's experiment, a sign that exchanges in metals worry about the same thing.</p>
+    <h3>Bonds</h3>
+    <p>On-the-run Treasuries are a speed market: principal trading firms race between Treasury futures in Chicago and cash Treasuries on the electronic interdealer platforms, which is one reason the Chicago–New Jersey microwave links matter for bonds as much as for stocks. Older Treasuries and corporate bonds trade by request-for-quote, where seconds don't matter and relationships do.</p>
+  </div>
+{% endsec %}
+
+{% sec 9, "Key Words", "What does the desk call these things?" %}
+  <div class="terms">
+    <div class="term"><div class="term-top"><h3>Colo</h3><span class="tag desk">Desk</span></div><p>Short for colocation: servers in the exchange's data centre.</p><p class="eg">"Our colo box in Aurora is down, we're pulling quotes."</p></div>
+    <div class="term"><div class="term-top"><h3>Wire-to-wire</h3><span class="tag desk">Desk</span></div><p>Latency from market data hitting your network card to your order leaving it.</p><p class="eg">"We're under two micros wire-to-wire on the FPGA."</p></div>
+    <div class="term"><div class="term-top"><h3>Micros</h3><span class="tag desk">Desk</span></div><p>Microseconds.</p><p class="eg">"We lost that race by three micros."</p></div>
+    <div class="term"><div class="term-top"><h3>Jitter</h3><span class="tag desk">Desk</span></div><p>How much your latency varies from message to message.</p><p class="eg">"Average is fine, it's the jitter that's killing us."</p></div>
+    <div class="term"><div class="term-top"><h3>Sniped</h3><span class="tag desk">Desk</span></div><p>A stale quote taken by a faster trader before you could cancel it.</p><p class="eg">"Got sniped on the open, the future moved first."</p></div>
+    <div class="term"><div class="term-top"><h3>Pulled in time</h3><span class="tag desk">Desk</span></div><p>Cancelled a quote before it could be picked off.</p><p class="eg">"Pulled in time, no fills on the headline."</p></div>
+    <div class="term"><div class="term-top"><h3>The tower</h3><span class="tag desk">Desk</span></div><p>A microwave link, and by extension the speed edge it gives.</p><p class="eg">"Rain took the tower out, we're on fibre today."</p></div>
+    <div class="term"><div class="term-top"><h3>Hot path</h3><span class="tag desk">Desk</span></div><p>The code that runs between seeing data and sending an order; every nanosecond on it matters.</p><p class="eg">"Keep logging off the hot path."</p></div>
+  </div>
+{% endsec %}
+
+{% sec 10, "How does this link to Trading, Real Estate and Fintech?", "Where speed turns up in each part of the plan.", "How it links to the plan" %}
+  <div class="link-block">
+    <div class="link-block-head"><h3>Trading: don't enter races you can't win</h3><a class="theme-link tone-forest" href="/hub/trading/">Trading</a></div>
+    <div class="prose">
+      <p>From home, your latency is tens of milliseconds at best, thousands of times slower than the firms in this note. So pick strategies whose edge lasts minutes to days, where that delay costs almost nothing, and avoid anything that depends on reacting to news or prices first, such as scalping a few ticks around data releases. Prop firm rules often ban latency arbitrage and news trading for the same reason. Your edge has to come from research, patience and sizing, not the clock.</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Real estate: speed means hearing first</h3><a class="theme-link tone-burgundy" href="/hub/real-estate/">Real Estate</a></div>
+    <div class="prose">
+      <p>Property has latency too, measured in days rather than microseconds. The best deals (an off-market villa, a distressed sale) go to whoever hears first and can commit fastest: agents' early calls are the "direct feed", having finance and lawyers ready is the "colocation". The same three purchases apply: defence (re-pricing your listings fast when the market moves), priority (first viewing), and offence (buying a mispriced plot before others notice).</p>
+    </div>
+  </div>
+
+  <div class="link-block">
+    <div class="link-block-head"><h3>Fintech and Nigeria: defence for your quotes</h3><a class="theme-link tone-navy" href="/hub/fintech/">Fintech and Nigeria</a></div>
+    <div class="prose">
+      <p>A naira–dollar app that shows users a rate is a market maker with stale-quote risk. When the official or parallel rate jumps, the users who react first get yesterday's price, and the app pays the toll. The defence is the same as on an exchange: update quoted rates automatically and quickly from reliable feeds, pause or widen when the source rate is moving fast, and consider a short "quote valid for" window, the app's own version of last look, stated clearly to users.</p>
+    </div>
+  </div>
+{% endsec %}
+
+{% sec 11, "The Maths Underneath", "How do you put numbers on races, distance and decay?" %}
+  <div class="formula"><span class="lbl">Who wins a two-way race, if reaction times are normally spread</span>\[ \begin{gathered} P(A \text{ first}) = \Phi\!\left(\frac{\mu_B - \mu_A}{\sqrt{\sigma_A^{2} + \sigma_B^{2}}}\right) \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(\mu\) is each firm's average reaction time, \(\sigma\) its jitter, and \(\Phi\) the standard normal probability from What Quant Trading Is. A small average lead wins almost every time if jitter is low, and much less often if jitter is high: consistency matters as much as raw speed.</p>
+  </div>
+  <div class="formula"><span class="lbl">How long a signal takes to travel, and how much edge survives</span>\[ \begin{gathered} t = \frac{d \times n}{c} \qquad c \approx 300 \text{ km per ms} \\[6pt] \text{edge kept} = 2^{-L/h} \end{gathered} \]</div>
+  <div class="prose">
+    <p>\(d\) is distance, \(n\) the refractive index (about \(1.5\) in fibre, \(1.0003\) in air), \(L\) your latency and \(h\) the signal's half-life.</p>
+  </div>
+  <div class="worked">
+    <span class="lbl">Worked example</span>
+    <h3>The straight-line distance from the CME's data centre near Chicago to the New Jersey stock exchange data centres is roughly \(1{,}190\) km. What's the fastest possible round trip by microwave, and by fibre on the same straight line?</h3>
+    <ol class="steps">
+      <li>Microwave, one way: \(1{,}190 \times 1.0003 / 300 \approx 3.97\) ms. Round trip: about \(7.9\) ms.</li>
+      <li>Fibre on the same line, one way: \(1{,}190 \times 1.5 / 300 \approx 5.95\) ms. Round trip: about \(11.9\) ms.</li>
+      <li>Real fibre routes bend, which is why Spread Networks' best was about \(13\) ms, and real microwave links need relay towers, which is why the best are just under \(8\) ms.</li>
+    </ol>
+    <p class="answer">Physics sets the floor; the arms race is about getting as close to it as money allows.</p>
+  </div>
+{% endsec %}
+
+{% sec 12, "Practice", "Have a go, then open the answer. These double as interview questions." %}
+  <div class="practice">
+    <div class="pq"><p class="pq-text"><span class="n">1</span><span>(Deltashark quick check) A stale-quote race pays \(8\) ticks at \(12.50\) per tick on \(10\) contracts, winner-take-all. What does the winner collect?</span></p>
+      <details><summary>Show answer</summary><div><span>\(8 \times 12.50 \times 10 = \$1{,}000\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">2</span><span>(Deltashark quick check) Faster requoting cuts a maker's informed toll from \(2.0\) to \(1.4\) ticks per fill over \(5{,}000\) fills a day. What is the daily saving in ticks?</span></p>
+      <details><summary>Show answer</summary><div><span>\((2.0 - 1.4) \times 5{,}000 = 3{,}000\) ticks.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">3</span><span>Firm A averages \(30\) μs with \(\pm 4\) μs jitter; firm B averages \(33\) μs with \(\pm 3\) μs. Roughly how often does A win?</span></p>
+      <details><summary>Show answer</summary><div><span>\(\Phi(3/\sqrt{16 + 9}) = \Phi(0.6) \approx 73\%\). A three-microsecond lead wins about three races in four, not all of them.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">4</span><span>How long does light take to travel \(50\) km through fibre?</span></p>
+      <details><summary>Show answer</summary><div><span>\(50 \times 1.5 / 300 = 0.25\) ms, or \(250\) μs, about five microseconds per kilometre.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">5</span><span>A signal has a half-life of \(2\) seconds. What share of its edge survives \(50\) ms of latency? And \(1\) second?</span></p>
+      <details><summary>Show answer</summary><div><span>\(2^{-0.05/2} \approx 98\%\) and \(2^{-1/2} \approx 71\%\).</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">6</span><span>Interview question: is high-frequency speed good or bad for ordinary investors?</span></p>
+      <details><summary>Show answer</summary><div><span>Both. Defensive speed lets market makers quote tighter and bigger, because they're picked off less; that helps investors. Offensive speed, sniping stale quotes, is a transfer from market makers to the fastest firms, and makers pass that cost on through wider spreads. The FCA study estimated races add up to roughly a 0.5 basis point tax on trading. So the debate is about designs (asymmetric speed bumps, batch auctions) that keep the defensive benefits while reducing the races.</span></div></details></div>
+    <div class="pq"><p class="pq-text"><span class="n">7</span><span>Interview question: you're building your first trading system on a cloud server. How do you decide whether latency matters?</span></p>
+      <details><summary>Show answer</summary><div><span>Estimate how fast my signal decays: measure how much of the expected move happens within a second, a minute, an hour of the signal. Then compare that half-life with my end-to-end latency (tens of milliseconds on a cloud server, plus my broker's). If the half-life is minutes or longer, latency costs almost nothing and I'll spend effort on research and costs instead. If most of the move happens in under a second, I'm competing with firms thousands of times faster, so I'd drop or redesign the strategy rather than try to win that race.</span></div></details></div>
+  </div>
+{% endsec %}
